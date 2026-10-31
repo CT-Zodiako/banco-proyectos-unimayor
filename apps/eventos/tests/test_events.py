@@ -77,6 +77,11 @@ class ExpiryTest(unittest.TestCase):
         self.assertTrue(ev.is_expired(event(start="2026-10-30"), TODAY))
         self.assertTrue(ev.is_expired(event(), TODAY))
 
+    def test_cfp_without_deadline_running_until_its_end_is_kept(self):
+        # Same rule as the page (site/filters.js): a cfp without deadline closes at its end, else its start.
+        self.assertFalse(ev.is_expired(event(start="2026-10-20", end="2026-11-02"), TODAY))
+        self.assertTrue(ev.is_expired(event(start="2026-10-20", end="2026-10-30"), TODAY))
+
     def test_attend_uses_the_end_then_the_start(self):
         attend = {"kind": "attend"}
         self.assertFalse(ev.is_expired(event(**attend, start="2026-10-01", end="2026-10-31"), TODAY))

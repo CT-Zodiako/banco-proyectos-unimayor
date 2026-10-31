@@ -485,12 +485,15 @@ def merge_events(events):
 
 
 def is_expired(event, today):
-    """cfp: deadline before today; attend: end (else start) before today. No reference date: needs a future start."""
+    """cfp: deadline (else end, else start) before today; attend: end (else start) before today.
+
+    Matches isExpired in site/filters.js. Events without any date are dropped here (the page would keep them).
+    """
     today = today.isoformat()
-    reference = event["deadline"] if event["kind"] == "cfp" else (event["end"] or event["start"])
-    if reference:
-        return reference < today
-    return not event["start"] or event["start"] < today
+    reference = event["end"] or event["start"]
+    if event["kind"] == "cfp" and event["deadline"]:
+        reference = event["deadline"]
+    return not reference or reference < today
 
 
 def drop_expired(events, today):

@@ -79,9 +79,9 @@ Learning, Robótica, Sistemas Ciberfísicos, Desarrollo de Software, Videojuegos
   letters and digits: "IEEE-RICAI 2027" and "RICAI 2027" are both `ricai2027`. The year comes from the title,
   else from the start or deadline. The fields of the best source are kept (manual > ccf-deadlines > WikiCFP >
   Devpost), missing fields are filled from the others, and topics are joined.
-- **Expiry** (same rule as the page): a `cfp` event is expired when its deadline is before today; an `attend`
-  event when its end date (else its start date) is before today. An event that ends or closes today is still
-  shown. Events with no such date are kept only if they start today or later.
+- **Expiry** (same rule as the page): a `cfp` event is expired when its deadline (else its end date, else its
+  start date) is before today; an `attend` event when its end date (else its start date) is before today. An event
+  that ends or closes today is still shown. Events with no date at all are left out.
 - `sources` in `data.js` counts the events of each source that made it into the file, after dedupe and expiry.
 
 ## Commands

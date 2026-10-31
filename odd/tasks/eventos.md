@@ -77,4 +77,8 @@ Each event:
   dev-only: loaded only when data.js is missing, never copied to the bank (scripts/sync-eventos.mjs excludes it).
 - L10. Slice boundary: T1 (0a01bcd, ~1,600 lines incl. fixtures and generated data.js) and T2 (f1d5ef3, ~750 lines)
   exceed the ~400-line slice because each is one new self-contained app part; delivery stays push to master (S5), no PR.
+- L11. Independent verify (Risk item 5, Dockerfile/nginx): PASS on S1–S5 and checks A–E (Docker image differential vs
+  decf34d: existing routes unchanged; /eventos/ 200, sample-data.js 404). Advisory fixed (RED then GREEN): the pipeline
+  now expires a cfp without deadline by end, else start, like site/filters.js. Local logo.jpg mode set to 755 (git
+  already stored 100755; local Docker builds returned 403).
 
