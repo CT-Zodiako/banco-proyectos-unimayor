@@ -7,7 +7,17 @@ Static page that suggests, for each of the 100 projects of the
 2. **Free to publish** — [DOAJ](https://doaj.org/) lists no APC *and* no other fees.
 3. **Free to read** — listed in DOAJ (open access). Together with (2): diamond open access.
 
-The page also shows the Publindex homologation (Q1=A1, Q2=A2, Q3=B, Q4=C), SJR, H index, languages,
+For each project the page shows two views with the same filters and sort:
+
+- **Lista** (default, design 04): journals ranked by an estimated affinity (0–100 %) shown as a ring, with a
+  "¿Por qué X %?" breakdown, template download, author instructions, scope and links.
+- **Tabla** (design 02): sortable comparison table and a side-by-side comparison of up to 3 journals.
+
+"⚙ Filtros personalizados" opens a side panel that crosses minimum affinity, quartile/Publindex, maximum weeks,
+language, region, minimum SJR and H index, review process, CC BY license and fit, plus saved filters (built-in
+"Semillero" and "Grupo", and the user's own, stored in the browser's localStorage). The affinity combines topic fit
+40, quartile vs project level 25, publication time 15, language 10 and Ibero-American journal 10; it is not an
+acceptance probability (no public acceptance-rate data exists). The page also shows the Publindex homologation (Q1=A1, Q2=A2, Q3=B, Q4=C), SJR, H index, languages,
 review type, weeks to publication, license, SCImago categories and links to the journal, its author
 instructions, DOAJ and SCImago.
 
@@ -15,11 +25,12 @@ instructions, DOAJ and SCImago.
 
 | Path | Purpose |
 |---|---|
-| `site/` | The page: `index.html`, `styles.css`, `app.js`, generated `data.js` and `catalog.js` |
+| `site/` | The page: `index.html`, `styles.css`, `app.js`, `table.js` (pure table logic), `logo.jpg`, generated `data.js` and `catalog.js` |
 | `pipeline/donde_publicar.py` | Loading, filtering, joining and matching logic |
 | `pipeline/build.py` | Command that generates `site/data.js` and `site/catalog.js` |
-| `tests/` | Unit and end-to-end tests (stdlib `unittest`) |
+| `tests/` | Pipeline tests (Python `unittest`) and table logic tests (`node --test "tests/*.test.cjs"`) |
 | `data/projects.json` | Projects exported from `apps/banco-proyectos` (`npm run export:projects`) |
+| `data/templates.json` | Template files found by `python3 -E -m pipeline.templates` (optional input of the build) |
 | `data/raw/` | DOAJ CSV and SCImago CSV (not versioned) |
 | `odd/tasks/donde-publicar.md` | Feature specification and decision log |
 
@@ -36,6 +47,7 @@ instructions, DOAJ and SCImago.
 ```bash
 python3 -E -m pipeline.build          # writes site/data.js and site/catalog.js
 python3 -I -m unittest discover -s tests -t .
+node --test "tests/*.test.cjs"                # comparison table logic
 ```
 
 `pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths.
@@ -76,6 +88,14 @@ The page also works when `site/index.html` is opened directly from disk.
 
 The explicit `index.html` works with both the Vite dev server and Firebase Hosting. When a project is selected,
 the header link goes back to `/proyecto/<id>`. Unknown or missing ids open the page with the project list.
+
+## Downloadable templates
+
+`python3 -E -m pipeline.templates` (network, ~1–2 minutes) reads each journal's instructions-for-authors page and
+keeps only strict template files: `.docx/.dotx/.doc/.dot/.tex/.zip` links whose file name says *template* or
+*plantilla*, hosted on the journal's own domain, that answer with a non-HTML file. Results go to
+`data/templates.json`; run `python3 -E -m pipeline.build` afterwards and the "Formato" column shows
+"⬇ Plantilla Word/LaTeX" buttons. Journals without a detected template keep the "Instrucciones ↗" link.
 
 After changing projects in the bank, regenerate: `npm run export:projects` (in `apps/banco-proyectos`), then
 `python3 -E -m pipeline.build` here.

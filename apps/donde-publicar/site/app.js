@@ -1,31 +1,52 @@
-/* "¿Dónde publicar este proyecto?" — client-side rendering of site/data.js (and catalog.js on demand). */
+/* "¿Dónde publicar este proyecto?" — journals for one project (design 04: list by estimated affinity with a custom
+   filters panel; design 02: comparison table), full catalog and help.
+   Data: window.DONDE_PUBLICAR (data.js), window.DONDE_PUBLICAR_CATALOGO (catalog.js, on demand).
+   Logic: window.DPTable (table.js). */
 (function () {
   "use strict";
 
   const DATA = window.DONDE_PUBLICAR;
+  const T = window.DPTable;
   const PAGE_SIZE = 15;
-  const QUARTILES = ["Q1", "Q2", "Q3", "Q4"];
-  const FIT_LABELS = {
-    fuerte: "Encaje fuerte: sector + tecnología",
-    tecnologia: "Encaje por tecnología",
-    sector: "Encaje por sector",
-  };
+  const PRESET_STORAGE_KEY = "donde-publicar.presets.v1";
+  const PUBLINDEX = { Q1: "A1", Q2: "A2", Q3: "B", Q4: "C" };
+  const FIT_LABELS = { fuerte: "Sector + tecnología", tecnologia: "Tecnología", sector: "Sector" };
+  const FIT_FILTER_LABELS = { fuerte: "Sector + tecnología", tecnologia: "Solo tecnología" };
   const LANGUAGE_LABELS = {
     English: "Inglés", Spanish: "Español", Portuguese: "Portugués", French: "Francés", German: "Alemán",
     Italian: "Italiano", Chinese: "Chino", Russian: "Ruso", Indonesian: "Indonesio", Turkish: "Turco",
-    Polish: "Polaco", Catalan: "Catalán",
+    Polish: "Polaco", Catalan: "Catalán", Ukrainian: "Ucraniano", Czech: "Checo", Serbian: "Serbio", Croatian: "Croata",
   };
+  const COUNTRY_LABELS = {
+    "United Kingdom": "Reino Unido", "United States": "Estados Unidos", "Iran, Islamic Republic of": "Irán",
+    Spain: "España", Poland: "Polonia", Germany: "Alemania", Italy: "Italia", "Russian Federation": "Rusia",
+    Brazil: "Brasil", Singapore: "Singapur", "Korea, Republic of": "Corea del Sur", Netherlands: "Países Bajos",
+    Türkiye: "Turquía", Croatia: "Croacia", Switzerland: "Suiza", Czechia: "Chequia", France: "Francia",
+    Lithuania: "Lituania", Ukraine: "Ucrania", Malaysia: "Malasia", Romania: "Rumania", Canada: "Canadá",
+    Slovenia: "Eslovenia", Iraq: "Irak", Hungary: "Hungría", Japan: "Japón", Norway: "Noruega", Mexico: "México",
+    Peru: "Perú", Belgium: "Bélgica", Sweden: "Suecia", Denmark: "Dinamarca", Finland: "Finlandia", Greece: "Grecia",
+    Ireland: "Irlanda", Austria: "Austria", Bulgaria: "Bulgaria", Thailand: "Tailandia", "Hong Kong": "Hong Kong",
+    "Taiwan, Province of China": "Taiwán", "Bosnia and Herzegovina": "Bosnia y Herzegovina", Jordan: "Jordania",
+    "Moldova, Republic of": "Moldavia", "Costa Rica": "Costa Rica", Egypt: "Egipto", Pakistan: "Pakistán",
+  };
+  const SORT_DEFAULT_DIR = { title: "asc", affinity: "desc", quartile: "asc", sjr: "desc", h_index: "desc", weeks: "asc" };
+  const REVIEW_LABELS = { double: "doble ciego", single: "simple ciego", open: "abierta", editorial: "editorial", unspecified: "no especificada" };
+  const LANGUAGE_FILTER_LABELS = { Spanish: "Español", English: "Inglés", Portuguese: "Portugués" };
+  const AFFINITY_LABELS = { topic: "Encaje temático", level: "Exigencia vs. nivel del proyecto", time: "Tiempo de publicación", language: "Acepta español", region: "Revista latinoamericana" };
+  const TEMPLATE_LABELS = { Word: "Plantilla Word", LaTeX: "Plantilla LaTeX", "Archivo ZIP": "Plantilla (ZIP)" };
 
-  const journalsById = new Map(DATA.journals.map((j) => [j.id, j]));
-  const projectsById = new Map(DATA.projects.map((p) => [p.id, p]));
+  const journalsById = new Map(DATA ? DATA.journals.map((j) => [j.id, j]) : []);
+  const projectsById = new Map(DATA ? DATA.projects.map((p) => [p.id, p]) : []);
   const state = {
     projectId: null,
-    quartiles: new Set(QUARTILES),
-    spanishOnly: false,
-    strongOnly: false,
-    sort: "relevance",
-    shown: PAGE_SIZE,
+    query: "",
+    mode: "list",
+    sort: { key: "affinity", dir: "desc" },
+    compare: [],
+    advanced: { ...window.DPTable.ADVANCED_DEFAULTS },
+    userPresets: [],
     catalog: null,
+    catalogQuartile: "all",
     catalogShown: PAGE_SIZE,
   };
 
@@ -39,7 +60,7 @@
     if (options.text !== undefined && options.text !== null) node.textContent = String(options.text);
     if (options.attrs) {
       for (const [key, value] of Object.entries(options.attrs)) {
-        if (value !== undefined && value !== null) node.setAttribute(key, value);
+        if (value !== undefined && value !== null && value !== false) node.setAttribute(key, value === true ? "" : value);
       }
     }
     for (const child of children) if (child) node.appendChild(child);
@@ -55,291 +76,517 @@
     }
   }
 
-  function normalize(text) {
-    return String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const languageLabel = (language) => LANGUAGE_LABELS[language] || language;
+  const countryLabel = (country) => COUNTRY_LABELS[country] || country || "";
+  const formatIssn = (issn) => (issn && issn.length === 8 ? `${issn.slice(0, 4)}-${issn.slice(4)}` : issn);
+  const formatSjr = (sjr) => (sjr === null || sjr === undefined ? "—" : sjr.toFixed(3));
+
+  function reviewLabel(review) {
+    const text = String(review || "");
+    if (/double anonymous/i.test(text)) return "Doble ciego";
+    if (/single anonymous/i.test(text)) return "Simple ciego";
+    if (/open/i.test(text)) return "Abierta";
+    if (/editorial/i.test(text)) return "Editorial";
+    return "No especificada";
   }
 
-  function languageLabel(language) {
-    return LANGUAGE_LABELS[language] || language;
+  function quartileBadge(quartile) {
+    return el("span", { className: `q ${String(quartile).toLowerCase()}`, text: quartile,
+      attrs: { title: `Cuartil ${quartile} en SCImago · Publindex ${PUBLINDEX[quartile]}` } });
   }
 
-  function formatIssn(issn) {
-    return issn && issn.length === 8 ? issn.slice(0, 4) + "-" + issn.slice(4) : issn;
+  function link(url, label, className) {
+    const href = safeUrl(url);
+    return href ? el("a", { text: label, className, attrs: { href, target: "_blank", rel: "noopener noreferrer" } }) : null;
   }
 
-  /* ---------- Project list ---------- */
+  /* ---------- Templates and publication format ---------- */
 
-  function renderAreaOptions() {
-    const select = $("#project-area");
-    const areas = Array.from(new Set(DATA.projects.map((p) => p.area))).sort((a, b) => a.localeCompare(b, "es"));
-    for (const area of areas) select.appendChild(el("option", { text: area, attrs: { value: area } }));
+  // Short hint to tell apart several templates of the same kind; the full file name goes in the tooltip.
+  function templateHint(fileName, position) {
+    const name = fileName.toLowerCase();
+    if (/title|portada|t[ií]tulo/.test(name)) return "portada";
+    if (/response|respuesta|point/.test(name)) return "respuesta";
+    if (/review|revisi/.test(name)) return "revisión";
+    if (/main|body|manuscript|article|art[ií]culo|paper|full/.test(name)) return "texto";
+    return String(position);
   }
 
-  function filteredProjects() {
-    const query = normalize($("#project-search").value.trim());
-    const area = $("#project-area").value;
-    return DATA.projects.filter((p) => {
-      if (area && p.area !== area) return false;
-      if (!query) return true;
-      const haystack = normalize([p.number, p.title, p.area, p.sector, p.problem, p.description].join(" "));
-      return query.split(/\s+/).every((word) => haystack.includes(word));
-    });
-  }
-
-  function renderProjectList() {
-    const list = $("#project-list");
-    const projects = filteredProjects();
-    list.replaceChildren();
-    for (const project of projects) {
-      const item = el("li", {
-        className: "project-item",
-        attrs: { tabindex: "0", role: "button", "data-id": project.id,
-          "aria-current": project.id === state.projectId ? "true" : "false" },
-      }, [
-        el("span", { className: "emoji", text: project.emoji || "📁", attrs: { "aria-hidden": "true" } }),
-        el("span", {}, [
-          el("span", { className: "p-title", text: `${project.number}. ${project.title}` }),
-          el("br"),
-          el("span", { className: "p-area", text: project.area }),
-        ]),
-      ]);
-      item.addEventListener("click", () => selectProject(project.id, true));
-      item.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          selectProject(project.id, true);
-        }
-      });
-      list.appendChild(item);
-    }
-    $("#project-count").textContent = `${projects.length} de ${DATA.projects.length} proyectos`;
-  }
-
-  /* ---------- Journal card ---------- */
-
-  function journalCard(journal, match) {
-    const card = $("#journal-card").content.firstElementChild.cloneNode(true);
-    const qBadge = $(".q", card);
-    qBadge.textContent = journal.quartile;
-    qBadge.classList.add(journal.quartile.toLowerCase());
-    qBadge.title = `Cuartil ${journal.quartile} en SCImago · Publindex ${journal.publindex}`;
-    $(".journal-title", card).textContent = journal.title;
-
-    const fit = $(".fit", card);
-    if (match) {
-      fit.textContent = FIT_LABELS[match.fit] || match.fit;
-      fit.classList.add("fit-" + match.fit);
-    } else {
-      fit.remove();
-    }
-
-    const languages = (journal.languages || []).map(languageLabel).join(", ");
-    $(".journal-meta", card).textContent = [journal.publisher, journal.country, languages && "Idiomas: " + languages]
-      .filter(Boolean).join(" · ");
-
-    const facts = [
-      ["Publindex", journal.publindex],
-      ["SJR", journal.sjr != null ? journal.sjr.toFixed(3) : "—"],
-      ["Índice H", journal.h_index != null ? journal.h_index : "—"],
-      ["Revisión", journal.review || "—"],
-      ["Tiempo a publicación", journal.weeks_to_publication ? `${journal.weeks_to_publication} semanas` : "—"],
-      ["Licencia", journal.license || "—"],
-      ["Costo para autores", "Sin APC ni otros cobros"],
-      ["ISSN", (journal.issns || []).map(formatIssn).join(" / ")],
-    ];
-    const dl = $(".journal-facts", card);
-    for (const [label, value] of facts) {
-      dl.appendChild(el("div", {}, [el("dt", { text: label }), el("dd", { text: value })]));
-    }
-
-    const why = $(".journal-why", card);
-    if (match && match.themes.length) {
-      why.appendChild(el("span", { text: "Por qué encaja: " }));
-      for (const theme of match.themes) {
-        why.appendChild(el("span", { className: "tag", text: DATA.themes[theme] || theme }));
+  /* Template files found on the journal's own site (pipeline.templates); the browser downloads them on click. */
+  function templateLinks(journal, className = "dl") {
+    const templates = journal.templates || [];
+    const fileName = (url) => decodeURIComponent(new URL(url).pathname.split("/").pop() || "");
+    return templates.map((template) => {
+      const label = TEMPLATE_LABELS[template.kind] || "Plantilla";
+      const name = fileName(template.url);
+      const sameKind = templates.filter((t) => t.kind === template.kind);
+      const kind = template.kind === "Archivo ZIP" ? "ZIP" : template.kind;
+      const anchor = link(template.url, sameKind.length > 1
+        ? `⬇ ${kind} · ${templateHint(name, sameKind.indexOf(template) + 1)}` : `⬇ ${label}`, className);
+      if (anchor) {
+        // Same tab: a non-HTML file downloads without leaving the page (target=_blank left an empty tab open).
+        anchor.removeAttribute("target");
+        anchor.setAttribute("download", "");
+        anchor.setAttribute("title", `Descargar ${name}`);
+        anchor.setAttribute("aria-label", `Descargar ${label} de ${journal.title} (${name})`);
       }
-    } else {
-      why.remove();
-    }
-
-    const cats = (journal.categories || []).map((c) => (c.quartile ? `${c.name} (${c.quartile})` : c.name));
-    $(".journal-cats", card).textContent = cats.length ? "Categorías SCImago: " + cats.join(" · ") : "";
-
-    const links = $(".journal-links", card);
-    const linkSpecs = [
-      [journal.url, "Sitio de la revista", "primary"],
-      [journal.author_instructions_url, "Instrucciones para autores"],
-      [journal.doaj_url, "Ficha en DOAJ"],
-      [journal.scimago_url, "Ficha en SCImago"],
-    ];
-    for (const [url, label, className] of linkSpecs) {
-      const href = safeUrl(url);
-      if (!href) continue;
-      links.appendChild(el("a", {
-        text: label, className: className || "",
-        attrs: { href, target: "_blank", rel: "noopener noreferrer" },
-      }));
-    }
-    return card;
+      return anchor;
+    }).filter(Boolean);
   }
 
-  /* ---------- Project detail ---------- */
-
-  function projectMatches(project) {
-    let rows = project.matches
-      .map((match) => ({ match, journal: journalsById.get(match.journal_id) }))
-      .filter((row) => row.journal && state.quartiles.has(row.journal.quartile));
-    if (state.spanishOnly) rows = rows.filter((row) => (row.journal.languages || []).includes("Spanish"));
-    if (state.strongOnly) rows = rows.filter((row) => row.match.fit === "fuerte");
-    const byQuartile = (a, b) => a.journal.quartile.localeCompare(b.journal.quartile) || (b.journal.sjr || 0) - (a.journal.sjr || 0);
-    if (state.sort === "quartile") rows.sort(byQuartile);
-    if (state.sort === "speed") {
-      rows.sort((a, b) => (a.journal.weeks_to_publication || 999) - (b.journal.weeks_to_publication || 999));
-    }
-    return rows;
+  function formatLinks(journal) {
+    const authors = link(journal.author_instructions_url, "Instrucciones ↗");
+    const scope = link(journal.aims_scope_url, "Alcance ↗");
+    if (authors) authors.setAttribute("aria-label", `Formato de publicación de ${journal.title} (instrucciones para autores)`);
+    if (scope) scope.setAttribute("aria-label", `Alcance de ${journal.title} (aims and scope)`);
+    return el("div", { className: "fmt" }, [...templateLinks(journal), authors, scope]);
   }
 
-  function quartileFilters(name, onChange) {
-    const fieldset = el("fieldset", { className: "chips", attrs: { "aria-label": "Cuartil" } }, [el("legend", { text: "Cuartil" })]);
-    for (const quartile of QUARTILES) {
-      const input = el("input", { attrs: { type: "checkbox", name, value: quartile } });
-      input.checked = state.quartiles.has(quartile);
-      input.addEventListener("change", () => {
-        if (input.checked) state.quartiles.add(quartile);
-        else state.quartiles.delete(quartile);
-        onChange();
-      });
-      fieldset.appendChild(el("label", {}, [input, document.createTextNode(" " + quartile)]));
-    }
-    return fieldset;
-  }
+  /* ---------- Rows of the selected project ---------- */
 
-  function toggle(id, label, checked, onChange) {
-    const input = el("input", { attrs: { type: "checkbox", id } });
-    input.checked = checked;
-    input.addEventListener("change", () => onChange(input.checked));
-    return el("label", { className: "toggle", attrs: { for: id } }, [input, document.createTextNode(" " + label)]);
-  }
-
-  function renderProjectDetail() {
-    const container = $("#project-detail");
+  function projectRows() {
     const project = projectsById.get(state.projectId);
-    if (!project) return;
-    container.replaceChildren();
+    if (!project) return [];
+    return project.matches
+      .map((match) => ({ match, journal: journalsById.get(match.journal_id) }))
+      .filter((row) => row.journal)
+      .map((row) => ({ ...row, affinity: T.affinity(project, row.match, row.journal) }));
+  }
 
-    const counts = Object.fromEntries(QUARTILES.map((q) => [q, 0]));
-    for (const match of project.matches) {
-      const journal = journalsById.get(match.journal_id);
-      if (journal) counts[journal.quartile] += 1;
+  function visibleRows() {
+    const filtered = T.filterRows(projectRows(), { ...state.advanced, query: state.query });
+    return T.sortRows(filtered, state.sort);
+  }
+
+  function affinityParts(affinity) {
+    return Object.entries(affinity.parts).map(([key, value]) => `${AFFINITY_LABELS[key]} ${value}/${T.AFFINITY_MAX[key]}`).join(" · ");
+  }
+
+  function affinityCell(affinity) {
+    const level = T.affinityLevel(affinity.total);
+    const bar = el("i", { attrs: { "aria-hidden": "true" } }, [el("span", { attrs: { style: `width:${affinity.total}%` } })]);
+    return el("div", { className: `aff aff-${level}`, attrs: { title: `Afinidad estimada: ${affinityParts(affinity)}` } },
+      [el("b", { text: `${affinity.total} %` }), bar]);
+  }
+
+  /* ---------- Design 04: list view ---------- */
+
+  function affinityBreakdown(affinity) {
+    const bars = el("div", { className: "bars" });
+    for (const [key, value] of Object.entries(affinity.parts)) {
+      const max = T.AFFINITY_MAX[key];
+      bars.append(
+        el("span", { text: AFFINITY_LABELS[key] }),
+        el("i", { attrs: { role: "img", "aria-label": `${value} de ${max}` } }, [el("span", { attrs: { style: `width:${Math.round((value / max) * 100)}%` } })]),
+        el("em", { text: `${value}/${max}` }),
+      );
     }
-    const strong = project.matches.filter((m) => m.fit === "fuerte").length;
+    return bars;
+  }
 
-    const domainTags = el("div", { className: "tags", attrs: { "aria-label": "Temas de sector" } });
-    for (const theme of project.themes.domain) domainTags.appendChild(el("span", { className: "tag domain", text: DATA.themes[theme] || theme }));
-    const techTags = el("div", { className: "tags", attrs: { "aria-label": "Temas de tecnología" } });
-    for (const theme of project.themes.tech) {
-      if (theme === "computacion_general" || theme === "tecnologia_aplicada") continue;
-      techTags.appendChild(el("span", { className: "tag tech", text: DATA.themes[theme] || theme }));
+  function resultRow({ journal, affinity }, open) {
+    const level = T.affinityLevel(affinity.total);
+    const ring = el("div", { className: `ring aff-${level}`, attrs: { style: `--v:${affinity.total}`, role: "img",
+      "aria-label": `Afinidad estimada ${affinity.total} %` } }, [
+      el("div", {}, [el("span", {}, [el("b", { text: `${affinity.total}%` }), el("span", { text: "afinidad" })])]),
+    ]);
+    const title = el("h3", {}, [
+      link(journal.url, journal.title) || document.createTextNode(journal.title),
+      quartileBadge(journal.quartile),
+      el("span", { className: "pub", text: `Publindex ${PUBLINDEX[journal.quartile]}` }),
+    ]);
+    const meta = [countryLabel(journal.country), (journal.languages || []).map(languageLabel).join(", "),
+      journal.weeks_to_publication ? `${journal.weeks_to_publication} semanas` : null,
+      reviewLabel(journal.review), journal.license].filter(Boolean).join(" · ");
+    const why = el("details", { className: "why", attrs: { open } }, [
+      el("summary", { text: `¿Por qué ${affinity.total} %?` }),
+      affinityBreakdown(affinity),
+    ]);
+
+    const templates = templateLinks(journal);
+    const instructions = link(journal.author_instructions_url, "Instrucciones para autores", templates.length ? "btn" : "btn primary");
+    const acts = el("div", { className: "acts" }, [
+      ...templates,
+      instructions,
+      el("div", { className: "btn-links" }, [link(journal.aims_scope_url, "Alcance"), link(journal.url, "Sitio"),
+        link(journal.doaj_url, "DOAJ"), link(journal.scimago_url, "SCImago")]),
+    ]);
+    return el("article", { className: "result" }, [ring, el("div", {}, [title, el("div", { className: "meta", text: meta }), why]), acts]);
+  }
+
+  function renderList(rows) {
+    const list = $("#list-view");
+    list.replaceChildren(...rows.map((row, index) => resultRow(row, index === 0)));
+  }
+
+  /* ---------- Design 02: table view ---------- */
+
+  function renderTableRows(rows) {
+    const full = state.compare.length >= T.MAX_COMPARE;
+    const body = $("#journals-body");
+    body.replaceChildren();
+    for (const { match, journal, affinity } of rows) {
+      const selected = state.compare.includes(journal.id);
+      const checkbox = el("input", { attrs: {
+        type: "checkbox", "aria-label": `Comparar ${journal.title}`,
+        disabled: !selected && full, title: !selected && full ? `Máximo ${T.MAX_COMPARE} revistas` : null,
+      } });
+      checkbox.checked = selected;
+      checkbox.addEventListener("change", () => {
+        state.compare = T.toggleCompare(state.compare, journal.id);
+        renderResults();
+        renderCompare();
+      });
+      const title = link(journal.url, journal.title) || el("b", { text: journal.title });
+      body.appendChild(el("tr", { className: selected ? "selected" : "" }, [
+        el("td", {}, [checkbox]),
+        el("td", { className: "name" }, [title, el("span", { text: [journal.publisher, countryLabel(journal.country)].filter(Boolean).join(" · ") })]),
+        el("td", {}, [affinityCell(affinity)]),
+        el("td", { className: "num" }, [quartileBadge(journal.quartile), document.createTextNode(PUBLINDEX[journal.quartile])]),
+        el("td", { className: "num", text: formatSjr(journal.sjr) }),
+        el("td", { className: "num", text: journal.h_index ?? "—" }),
+        el("td", { className: "num", text: journal.weeks_to_publication ?? "—" }),
+        el("td", { text: (journal.languages || []).map(languageLabel).join(", ") }),
+        el("td", { text: reviewLabel(journal.review) }),
+        el("td", { text: journal.license || "—" }),
+        el("td", {}, [el("span", { className: `fit fit-${match.fit}`, text: FIT_LABELS[match.fit] || match.fit })]),
+        el("td", {}, [formatLinks(journal)]),
+      ]));
+    }
+    for (const th of $$("#journals-table th[data-sort]")) {
+      if (th.dataset.sort === state.sort.key) th.setAttribute("aria-sort", state.sort.dir === "asc" ? "ascending" : "descending");
+      else th.removeAttribute("aria-sort");
+    }
+  }
+
+  /* ---------- Shared rendering ---------- */
+
+  function renderResults() {
+    const all = projectRows();
+    const rows = visibleRows();
+    const list = state.mode === "list";
+    $("#list-view").hidden = !list || rows.length === 0;
+    $("#table-view").hidden = list || rows.length === 0;
+    $("#table-empty").hidden = rows.length > 0;
+    if (list) renderList(rows);
+    else renderTableRows(rows);
+
+    const selectedText = !list && state.compare.length
+      ? ` · ${state.compare.length} seleccionada${state.compare.length > 1 ? "s" : ""} para comparar` : "";
+    $("#table-count").replaceChildren(el("b", { text: rows.length }), document.createTextNode(` de ${all.length} revistas${selectedText}`));
+    $("#adv-apply").textContent = `Ver ${rows.length} revista${rows.length === 1 ? "" : "s"}`;
+    $("#sort-select").value = state.sort.key;
+    renderChips();
+  }
+
+  // The compare tray is fixed at the bottom: reserve exactly its height so it never covers the last rows.
+  function reserveTraySpace() {
+    const tray = $("#compare-tray");
+    document.body.style.paddingBottom = tray.hidden ? "" : `${tray.offsetHeight + 16}px`;
+  }
+
+  function renderCompare() {
+    const journals = state.compare.map((id) => journalsById.get(id)).filter(Boolean);
+    const tray = $("#compare-tray");
+    tray.hidden = journals.length === 0 || state.mode !== "table";
+    if (tray.hidden) return reserveTraySpace();
+
+    $("#compare-title").textContent = `Comparando ${journals.length} revista${journals.length > 1 ? "s" : ""}`;
+    const affinityById = Object.fromEntries(projectRows().map((r) => [r.journal.id, r.affinity]));
+    const best = T.compareBest(journals, Object.fromEntries(Object.entries(affinityById).map(([id, a]) => [id, a.total])));
+    const grid = $("#compare-grid");
+    grid.style.gridTemplateColumns = `190px repeat(${journals.length}, minmax(200px, 1fr))`;
+    grid.replaceChildren();
+
+    const cell = (text, className, role = "cell") => el("div", { className, text, attrs: { role } });
+    grid.appendChild(cell("", "k", "columnheader"));
+    for (const journal of journals) {
+      const remove = el("button", { text: "×", attrs: { type: "button", "aria-label": `Quitar ${journal.title} de la comparación` } });
+      remove.addEventListener("click", () => {
+        state.compare = T.toggleCompare(state.compare, journal.id);
+        renderResults();
+        renderCompare();
+      });
+      grid.appendChild(el("div", { className: "h", attrs: { role: "columnheader" } }, [el("span", { text: journal.title }), remove]));
     }
 
-    const copyStatus = el("span", { className: "copy-status", attrs: { role: "status" } });
-    const copyButton = el("button", { className: "btn-secondary", text: "🔗 Copiar enlace de este proyecto" });
-    copyButton.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(location.href);
-        copyStatus.textContent = "Enlace copiado";
-      } catch (_) {
-        copyStatus.textContent = location.href;
+    const rows = [
+      ["Afinidad estimada", (j) => (affinityById[j.id] ? `${affinityById[j.id].total} %` : "—"), "affinity"],
+      ["Desglose de la afinidad", (j) => (affinityById[j.id] ? affinityParts(affinityById[j.id]) : "—"), null, "parts"],
+      ["Cuartil · Publindex", (j) => `${j.quartile} · ${PUBLINDEX[j.quartile]}`, "quartile"],
+      ["SJR", (j) => formatSjr(j.sjr), "sjr"],
+      ["Índice H", (j) => j.h_index ?? "—", "h_index"],
+      ["Semanas a publicación", (j) => j.weeks_to_publication ?? "—", "weeks"],
+      ["Revisión · Licencia", (j) => `${reviewLabel(j.review)} · ${j.license || "—"}`, null],
+      ["Idiomas", (j) => (j.languages || []).map(languageLabel).join(", "), null],
+      ["País · Editorial", (j) => [countryLabel(j.country), j.publisher].filter(Boolean).join(" · "), null],
+    ];
+    for (const [label, value, bestKey, className] of rows) {
+      grid.appendChild(cell(label, "k", "rowheader"));
+      for (const journal of journals) {
+        const isBest = bestKey && best[bestKey].includes(journal.id);
+        grid.appendChild(cell(String(value(journal)), isBest ? "best" : className || ""));
       }
-    });
-
-    const head = el("header", { className: "detail-head" }, [
-      el("p", { className: "muted small", text: `Proyecto ${project.number} · ${project.level}` }),
-      el("h2", { text: `${project.emoji} ${project.title}` }),
-      el("div", { className: "tags" }, [
-        el("span", { className: "tag", text: project.area }),
-        el("span", { className: "tag", text: project.sector }),
-      ]),
-      project.problem ? el("p", { className: "problem", text: project.problem }) : null,
-      el("p", { className: "small muted", text: "Temas usados para buscar revistas:" }),
-      domainTags,
-      techTags,
-      el("div", { className: "share-row" }, [copyButton, copyStatus]),
-    ]);
-
-    const summary = el("div", { className: "summary", attrs: { "aria-label": "Resumen de revistas sugeridas" } }, [
-      el("div", { className: "stat" }, [el("b", { text: project.matches.length }), el("span", { text: "revistas sugeridas" })]),
-      el("div", { className: "stat" }, [el("b", { text: strong }), el("span", { text: "con encaje fuerte" })]),
-      ...QUARTILES.map((q) => el("div", { className: "stat stat-" + q.toLowerCase() }, [el("b", { text: counts[q] }), el("span", { text: `${q} · Publindex ${({ Q1: "A1", Q2: "A2", Q3: "B", Q4: "C" })[q]}` })])),
-    ]);
-
-    const sortSelect = el("select", { attrs: { id: "sort-select" } });
-    for (const [value, label] of [["relevance", "Mejor encaje primero"], ["quartile", "Mejor cuartil primero"], ["speed", "Publicación más rápida"]]) {
-      const option = el("option", { text: label, attrs: { value } });
-      if (value === state.sort) option.selected = true;
-      sortSelect.appendChild(option);
     }
-    sortSelect.addEventListener("change", () => { state.sort = sortSelect.value; state.shown = PAGE_SIZE; renderResults(); });
+    grid.appendChild(cell("Enlaces", "k", "rowheader"));
+    for (const journal of journals) {
+      grid.appendChild(el("div", { className: "links", attrs: { role: "cell" } }, [
+        ...templateLinks(journal),
+        link(journal.author_instructions_url, "Instrucciones para autores"),
+        link(journal.aims_scope_url, "Alcance"),
+        link(journal.url, "Sitio"),
+        link(journal.doaj_url, "DOAJ"),
+        link(journal.scimago_url, "SCImago"),
+      ]));
+    }
+    reserveTraySpace();
+  }
 
-    const filters = el("div", { className: "filters" }, [
-      quartileFilters("project-q", () => { state.shown = PAGE_SIZE; renderResults(); }),
-      toggle("spanish-only", "Acepta artículos en español", state.spanishOnly, (v) => { state.spanishOnly = v; state.shown = PAGE_SIZE; renderResults(); }),
-      toggle("strong-only", "Solo encaje fuerte", state.strongOnly, (v) => { state.strongOnly = v; state.shown = PAGE_SIZE; renderResults(); }),
-      el("label", { className: "field", attrs: { for: "sort-select" } }, [el("span", { text: "Ordenar" }), sortSelect]),
-    ]);
+  /* ---------- Custom filters panel (design 04) ---------- */
 
-    const resultsCount = el("p", { className: "muted small", attrs: { id: "results-count", "aria-live": "polite" } });
-    const results = el("div", { className: "journal-list", attrs: { id: "results" } });
-    const more = el("button", { className: "btn-secondary more", text: "Ver más revistas", attrs: { id: "results-more" } });
-    more.addEventListener("click", () => { state.shown += PAGE_SIZE; renderResults(); });
+  function filterChips() {
+    const a = state.advanced;
+    const d = T.ADVANCED_DEFAULTS;
+    const chips = [];
+    if (a.minAffinity !== d.minAffinity) chips.push(["minAffinity", `Afinidad ≥ ${a.minAffinity} %`]);
+    if (a.quartiles.length) chips.push(["quartiles", a.quartiles.map((q) => `${q} · ${PUBLINDEX[q]}`).join(", ")]);
+    if (a.maxWeeks !== d.maxWeeks) chips.push(["maxWeeks", `Hasta ${a.maxWeeks} semanas`]);
+    if (a.language !== d.language) chips.push(["language", `Idioma: ${LANGUAGE_FILTER_LABELS[a.language]}`]);
+    if (a.region !== d.region) chips.push(["region", a.region === "colombia" ? "Revista colombiana" : "Revista iberoamericana"]);
+    if (a.minSjr !== d.minSjr) chips.push(["minSjr", `SJR ≥ ${a.minSjr.toLocaleString("es-CO")}`]);
+    if (a.minH !== d.minH) chips.push(["minH", `Índice H ≥ ${a.minH}`]);
+    if (a.reviews.length) chips.push(["reviews", `Revisión: ${a.reviews.map((r) => REVIEW_LABELS[r]).join(", ")}`]);
+    if (a.ccBy) chips.push(["ccBy", "Solo CC BY"]);
+    if (a.fits.length) chips.push(["fits", a.fits.map((f) => FIT_FILTER_LABELS[f]).join(", ")]);
+    return chips;
+  }
 
-    container.append(head, summary, el("h3", { text: "Revistas sugeridas" }), filters, resultsCount, results, more);
+  function renderChips() {
+    const chips = filterChips();
+    const container = $("#adv-chips");
+    container.replaceChildren();
+    for (const [key, label] of chips) {
+      const remove = el("button", { text: "×", attrs: { type: "button", "aria-label": `Quitar filtro ${label}` } });
+      remove.addEventListener("click", () => setAdvanced({ [key]: T.ADVANCED_DEFAULTS[key] }));
+      container.appendChild(el("span", { className: "chip" }, [document.createTextNode(label), remove]));
+    }
+    if (chips.length) {
+      const clear = el("button", { className: "chip-clear", text: "Limpiar todo", attrs: { type: "button" } });
+      clear.addEventListener("click", resetAdvanced);
+      container.appendChild(clear);
+    }
+    const count = T.countAdvanced(state.advanced);
+    const badge = $("#adv-count");
+    badge.hidden = count === 0;
+    badge.textContent = String(count);
+  }
+
+  function syncPanel() {
+    const a = state.advanced;
+    $("#adv-affinity").value = String(a.minAffinity);
+    $("#adv-affinity-out").textContent = a.minAffinity ? `${a.minAffinity} %` : "Sin mínimo";
+    $("#adv-weeks").value = String(a.maxWeeks ?? 52);
+    $("#adv-weeks-out").textContent = a.maxWeeks === null ? "Sin límite" : `${a.maxWeeks} semanas`;
+    $("#adv-language").value = a.language;
+    $("#adv-region").value = a.region;
+    if (document.activeElement !== $("#adv-sjr")) $("#adv-sjr").value = a.minSjr === null ? "" : a.minSjr.toLocaleString("es-CO");
+    if (document.activeElement !== $("#adv-h")) $("#adv-h").value = a.minH ?? "";
+    for (const pill of $$("#adv-quartiles .pill")) pill.setAttribute("aria-pressed", a.quartiles.includes(pill.dataset.value) ? "true" : "false");
+    for (const pill of $$("#adv-fits .pill")) pill.setAttribute("aria-pressed", a.fits.includes(pill.dataset.value) ? "true" : "false");
+    $("#adv-review-double").checked = a.reviews.includes("double");
+    $("#adv-review-single").checked = a.reviews.includes("single") || a.reviews.includes("open");
+    $("#adv-ccby").checked = a.ccBy;
+  }
+
+  function setAdvanced(patch) {
+    state.advanced = { ...state.advanced, ...patch };
+    syncPanel();
     renderResults();
   }
 
-  function renderResults() {
-    const project = projectsById.get(state.projectId);
-    if (!project) return;
-    const rows = projectMatches(project);
-    const results = $("#results");
-    results.replaceChildren();
-    if (!rows.length) {
-      results.appendChild(el("p", { className: "no-results", text: "Ninguna revista cumple estos filtros. Pruebe activar más cuartiles o quitar el filtro de idioma." }));
+  function resetAdvanced() {
+    state.advanced = { ...T.ADVANCED_DEFAULTS };
+    syncPanel();
+    renderResults();
+  }
+
+  function numberOrNull(value) {
+    const n = Number(String(value).trim().replace(",", "."));
+    return String(value).trim() === "" || !Number.isFinite(n) || n < 0 ? null : n;
+  }
+
+  const toggled = (values, value) => (values.includes(value) ? values.filter((v) => v !== value) : [...values, value]);
+
+  function openPanel(show) {
+    $("#adv-panel").hidden = !show;
+    $("#results-layout").classList.toggle("with-panel", show);
+    $("#adv-toggle").setAttribute("aria-expanded", show ? "true" : "false");
+    if (show) $("#adv-close").focus();
+  }
+
+  function setupPanel() {
+    $("#adv-toggle").addEventListener("click", () => openPanel($("#adv-panel").hidden));
+    $("#adv-close").addEventListener("click", () => { openPanel(false); $("#adv-toggle").focus(); });
+    $("#adv-apply").addEventListener("click", () => { openPanel(false); $("#table-count").scrollIntoView({ block: "center" }); });
+    $("#adv-reset").addEventListener("click", resetAdvanced);
+    $("#adv-panel").addEventListener("keydown", (e) => { if (e.key === "Escape") { openPanel(false); $("#adv-toggle").focus(); } });
+    $("#adv-affinity").addEventListener("input", (e) => setAdvanced({ minAffinity: Number(e.target.value) }));
+    $("#adv-weeks").addEventListener("input", (e) => setAdvanced({ maxWeeks: Number(e.target.value) >= 52 ? null : Number(e.target.value) }));
+    $("#adv-language").addEventListener("change", (e) => setAdvanced({ language: e.target.value }));
+    $("#adv-region").addEventListener("change", (e) => setAdvanced({ region: e.target.value }));
+    $("#adv-sjr").addEventListener("input", (e) => setAdvanced({ minSjr: numberOrNull(e.target.value) }));
+    $("#adv-h").addEventListener("input", (e) => setAdvanced({ minH: numberOrNull(e.target.value) }));
+    for (const pill of $$("#adv-quartiles .pill")) {
+      pill.addEventListener("click", () => setAdvanced({ quartiles: toggled(state.advanced.quartiles, pill.dataset.value) }));
     }
-    for (const row of rows.slice(0, state.shown)) results.appendChild(journalCard(row.journal, row.match));
-    $("#results-count").textContent = `Mostrando ${Math.min(state.shown, rows.length)} de ${rows.length} revistas`;
-    $("#results-more").hidden = rows.length <= state.shown;
+    for (const pill of $$("#adv-fits .pill")) {
+      pill.addEventListener("click", () => setAdvanced({ fits: toggled(state.advanced.fits, pill.dataset.value) }));
+    }
+    const reviews = () => [...($("#adv-review-double").checked ? ["double"] : []), ...($("#adv-review-single").checked ? ["single", "open"] : [])];
+    $("#adv-review-double").addEventListener("change", () => setAdvanced({ reviews: reviews() }));
+    $("#adv-review-single").addEventListener("change", () => setAdvanced({ reviews: reviews() }));
+    $("#adv-ccby").addEventListener("change", (e) => setAdvanced({ ccBy: e.target.checked }));
+  }
+
+  /* ---------- Saved filters (built-in presets + the user's own, in localStorage) ---------- */
+
+  function loadUserPresets() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY) || "[]");
+      return Array.isArray(stored) ? stored.filter((p) => p && typeof p.label === "string" && p.filters && typeof p.filters === "object") : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveUserPresets() {
+    try { localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(state.userPresets)); } catch (_) { /* storage unavailable */ }
+  }
+
+  function renderPresets() {
+    const list = $("#preset-list");
+    list.replaceChildren();
+    const items = [...T.PRESETS.map((p) => ({ preset: p, own: false })), ...state.userPresets.map((p) => ({ preset: p, own: true }))];
+    items.forEach(({ preset, own }, index) => {
+      const apply = el("button", { className: "preset", text: preset.label, attrs: { type: "button", title: "Aplicar este filtro guardado" } });
+      apply.addEventListener("click", () => { state.advanced = T.applyPreset(preset); syncPanel(); renderResults(); });
+      const item = el("span", { className: "preset-item" }, [apply]);
+      if (own) {
+        const del = el("button", { className: "del", text: "×", attrs: { type: "button", "aria-label": `Borrar el filtro guardado ${preset.label}` } });
+        del.addEventListener("click", () => {
+          state.userPresets = state.userPresets.filter((p) => p !== preset);
+          saveUserPresets();
+          renderPresets();
+        });
+        item.appendChild(del);
+      }
+      list.appendChild(item);
+      if (index < items.length - 1) list.appendChild(document.createTextNode("·"));
+    });
+  }
+
+  function setupPresets() {
+    state.userPresets = loadUserPresets();
+    renderPresets();
+    const form = $("#preset-form");
+    $("#preset-new").addEventListener("click", () => {
+      form.hidden = !form.hidden;
+      if (!form.hidden) $("#preset-name").focus();
+    });
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      try {
+        const preset = T.makePreset($("#preset-name").value, state.advanced);
+        state.userPresets = [...state.userPresets.filter((p) => p.id !== preset.id), preset];
+        saveUserPresets();
+        renderPresets();
+        $("#preset-name").value = "";
+        $("#preset-error").textContent = "";
+        form.hidden = true;
+        $("#preset-new").focus();
+      } catch (error) {
+        $("#preset-error").textContent = error.message;
+      }
+    });
+  }
+
+  /* ---------- Project selection ---------- */
+
+  function renderProjectHeader() {
+    const project = projectsById.get(state.projectId);
+    const back = $("#back-link");
+    if (!project) {
+      $("#project-emoji").textContent = "🔎";
+      $("#project-kicker").textContent = "¿Dónde publicar?";
+      $("#project-title").textContent = "Elija un proyecto";
+      back.href = "/proyectos";
+      back.textContent = "← Volver al banco de proyectos";
+      $("#project-picker").hidden = false;
+      $("#project-results").hidden = true;
+      return;
+    }
+    $("#project-emoji").textContent = project.emoji || "📁";
+    $("#project-kicker").textContent = `¿Dónde publicar? · Proyecto ${project.number} · ${project.area} · ${project.level}`;
+    $("#project-title").textContent = project.title;
+    back.href = `/proyecto/${encodeURIComponent(project.id)}`;
+    back.textContent = "← Volver al proyecto";
+    $("#project-picker").hidden = true;
+    $("#project-results").hidden = false;
+    document.title = `${project.title} · ¿Dónde publicar?`;
   }
 
   function selectProject(id, updateUrl) {
-    if (!projectsById.has(id)) return;
-    state.projectId = id;
-    state.shown = PAGE_SIZE;
+    state.projectId = projectsById.has(id) ? id : null;
+    state.compare = [];
     if (updateUrl) {
       const url = new URL(location.href);
-      url.searchParams.set("p", id);
-      url.hash = "";
+      if (state.projectId) url.searchParams.set("p", state.projectId);
+      else url.searchParams.delete("p");
       history.replaceState(null, "", url);
     }
-    $$(".project-item").forEach((item) => item.setAttribute("aria-current", item.dataset.id === id ? "true" : "false"));
-    renderProjectDetail();
-    const detail = $("#project-detail");
-    if (window.matchMedia("(max-width: 900px)").matches) detail.scrollIntoView({ behavior: "smooth", block: "start" });
-    else if (detail.getBoundingClientRect().top < 0) detail.scrollIntoView({ block: "start" });
-    document.title = `${projectsById.get(id).title} · ¿Dónde publicar?`;
-    // Served by the project bank: go back to the selected project's page.
-    const back = $("#back-link");
-    back.href = `/proyecto/${encodeURIComponent(id)}`;
-    back.textContent = "← Volver al proyecto";
+    renderProjectHeader();
+    if (state.projectId) renderResults();
+    renderCompare();
+  }
+
+  function setMode(mode) {
+    state.mode = mode;
+    for (const b of $$("[data-mode]")) b.setAttribute("aria-pressed", b.dataset.mode === mode ? "true" : "false");
+    renderResults();
+    renderCompare();
   }
 
   /* ---------- Catalog ---------- */
 
+  function journalCard(journal) {
+    const card = $("#journal-card").content.firstElementChild.cloneNode(true);
+    $(".journal-title-row", card).prepend(quartileBadge(journal.quartile));
+    $(".journal-title", card).textContent = journal.title;
+    const languages = (journal.languages || []).map(languageLabel).join(", ");
+    $(".journal-meta", card).textContent = [journal.publisher, countryLabel(journal.country), languages && `Idiomas: ${languages}`]
+      .filter(Boolean).join(" · ");
+    const facts = [
+      ["Publindex", PUBLINDEX[journal.quartile]], ["SJR", formatSjr(journal.sjr)], ["Índice H", journal.h_index ?? "—"],
+      ["Revisión", reviewLabel(journal.review)], ["Semanas a publicación", journal.weeks_to_publication ?? "—"],
+      ["Licencia", journal.license || "—"], ["ISSN", (journal.issns || []).map(formatIssn).join(" / ")],
+    ];
+    const dl = $(".journal-facts", card);
+    for (const [label, value] of facts) dl.appendChild(el("div", {}, [el("dt", { text: label }), el("dd", { text: value })]));
+    const cats = (journal.categories || []).map((c) => (c.quartile ? `${c.name} (${c.quartile})` : c.name));
+    $(".journal-cats", card).textContent = cats.length ? `Categorías SCImago: ${cats.join(" · ")}` : "";
+    const links = $(".journal-links", card);
+    for (const node of [link(journal.url, "Sitio de la revista", "primary"), link(journal.author_instructions_url, "Instrucciones para autores"),
+      link(journal.aims_scope_url, "Alcance de la revista"), link(journal.doaj_url, "Ficha en DOAJ"), link(journal.scimago_url, "Ficha en SCImago")]) {
+      if (node) links.appendChild(node);
+    }
+    return card;
+  }
+
   function loadCatalog() {
-    if (state.catalog || window.DONDE_PUBLICAR_CATALOGO) {
-      state.catalog = state.catalog || window.DONDE_PUBLICAR_CATALOGO;
-      renderCatalog();
-      return;
+    if (state.catalog) return renderCatalog();
+    if (window.DONDE_PUBLICAR_CATALOGO) {
+      state.catalog = window.DONDE_PUBLICAR_CATALOGO;
+      return renderCatalog();
     }
     const script = document.createElement("script");
     script.src = "catalog.js";
@@ -350,58 +597,77 @@
 
   function renderCatalog() {
     if (!state.catalog) return;
-    const query = normalize($("#catalog-search").value.trim());
-    const quartiles = new Set($$('input[name="catalog-q"]:checked').map((i) => i.value));
-    const spanish = $("#catalog-spanish").checked;
-    const rows = state.catalog.filter((journal) => {
-      if (!quartiles.has(journal.quartile)) return false;
-      if (spanish && !(journal.languages || []).includes("Spanish")) return false;
-      if (!query) return true;
-      const haystack = normalize([journal.title, journal.publisher, journal.country, (journal.categories || []).map((c) => c.name).join(" "), (journal.issns || []).join(" ")].join(" "));
-      return query.split(/\s+/).every((word) => haystack.includes(word));
+    const rows = T.filterRows(state.catalog.map((journal) => ({ match: { fit: "all" }, journal })), {
+      query: $("#catalog-search").value, quartile: state.catalogQuartile, spanish: $("#catalog-spanish").checked,
     });
     const results = $("#catalog-results");
     results.replaceChildren();
-    for (const journal of rows.slice(0, state.catalogShown)) results.appendChild(journalCard(journal, null));
+    for (const { journal } of rows.slice(0, state.catalogShown)) results.appendChild(journalCard(journal));
     if (!rows.length) results.appendChild(el("p", { className: "no-results", text: "Sin resultados para esta búsqueda." }));
     $("#catalog-count").textContent = `Mostrando ${Math.min(state.catalogShown, rows.length)} de ${rows.length} revistas`;
     $("#catalog-more").hidden = rows.length <= state.catalogShown;
   }
 
-  /* ---------- Tabs ---------- */
+  function setupSegmented(group, onSelect) {
+    const buttons = $$("button", group);
+    for (const button of buttons) {
+      button.addEventListener("click", () => {
+        buttons.forEach((b) => b.setAttribute("aria-pressed", b === button ? "true" : "false"));
+        onSelect(button.dataset.value);
+      });
+    }
+  }
+
+  /* ---------- Tabs and init ---------- */
 
   function showView(view) {
     for (const button of $$(".tabs button")) {
       const selected = button.dataset.view === view;
       button.setAttribute("aria-selected", selected ? "true" : "false");
-      $("#view-" + button.dataset.view).hidden = !selected;
+      $(`#view-${button.dataset.view}`).hidden = !selected;
     }
+    $("#compare-tray").hidden = view !== "project" || state.mode !== "table" || state.compare.length === 0;
+    reserveTraySpace();
     if (view === "catalog") loadCatalog();
   }
 
-  /* ---------- Init ---------- */
-
   function init() {
-    if (!DATA) {
-      $("#project-detail").textContent = "No se encontraron los datos (data.js). Ejecute el generador del README.";
+    if (!DATA || !T) {
+      $("#project-title").textContent = "No se encontraron los datos de la página (data.js o table.js).";
       return;
     }
-    renderAreaOptions();
-    renderProjectList();
-    $("#project-search").addEventListener("input", renderProjectList);
-    $("#project-area").addEventListener("change", renderProjectList);
+    const picker = $("#picker-select");
+    for (const project of DATA.projects) {
+      picker.appendChild(el("option", { text: `${project.number}. ${project.title}`, attrs: { value: project.id } }));
+    }
+    picker.addEventListener("change", () => selectProject(picker.value, true));
+
+    $("#table-search").addEventListener("input", (e) => { state.query = e.target.value; renderResults(); });
+    $("#sort-select").addEventListener("change", (e) => { state.sort = { key: e.target.value, dir: SORT_DEFAULT_DIR[e.target.value] }; renderResults(); });
+    for (const button of $$("[data-mode]")) button.addEventListener("click", () => setMode(button.dataset.mode));
+    for (const th of $$("#journals-table th[data-sort]")) {
+      $("button", th).addEventListener("click", () => {
+        const key = th.dataset.sort;
+        const dir = state.sort.key === key ? (state.sort.dir === "asc" ? "desc" : "asc") : SORT_DEFAULT_DIR[key];
+        state.sort = { key, dir };
+        renderResults();
+      });
+    }
+    $("#compare-clear").addEventListener("click", () => { state.compare = []; renderResults(); renderCompare(); });
+    setupPanel();
+    setupPresets();
+
     for (const button of $$(".tabs button")) button.addEventListener("click", () => showView(button.dataset.view));
     $("#catalog-search").addEventListener("input", () => { state.catalogShown = PAGE_SIZE; renderCatalog(); });
-    $$('input[name="catalog-q"]').forEach((input) => input.addEventListener("change", () => { state.catalogShown = PAGE_SIZE; renderCatalog(); }));
     $("#catalog-spanish").addEventListener("change", () => { state.catalogShown = PAGE_SIZE; renderCatalog(); });
+    setupSegmented($('[data-catalog="quartile"]'), (value) => { state.catalogQuartile = value; state.catalogShown = PAGE_SIZE; renderCatalog(); });
     $("#catalog-more").addEventListener("click", () => { state.catalogShown += PAGE_SIZE; renderCatalog(); });
 
     const s = DATA.sources;
     $("#data-sources").textContent = `Datos generados el ${DATA.generated}: ${s.doaj_free_journals.toLocaleString("es-CO")} revistas de DOAJ sin APC ni otros cobros, de las cuales ${s.diamond_ranked_journals.toLocaleString("es-CO")} tienen cuartil en SCImago.`;
 
-    const params = new URLSearchParams(location.search);
-    const requested = params.get("p") || location.hash.replace(/^#/, "");
-    if (projectsById.has(requested)) selectProject(requested, false);
+    const requested = new URLSearchParams(location.search).get("p") || location.hash.replace(/^#/, "");
+    selectProject(requested, false);
   }
 
   init();

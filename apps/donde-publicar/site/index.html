@@ -3,92 +3,207 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>¿Dónde publicar este proyecto? · Banco de Proyectos IoT · UNIMAYOR</title>
-<meta name="description" content="Revistas indexadas en SCImago (Q1–Q4), sin APC y de lectura gratuita (DOAJ) para cada proyecto del Banco de Proyectos IoT de UNIMAYOR.">
+<title>¿Dónde publicar este proyecto? · Banco de Proyectos · UNIMAYOR</title>
+<meta name="description" content="Revistas indexadas en SCImago (Q1–Q4), sin APC y de lectura gratuita (DOAJ) para cada proyecto del Banco de Proyectos de UNIMAYOR.">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="site-header">
-  <div class="wrap header-row">
-    <div>
-      <p class="eyebrow">Institución Universitaria Colegio Mayor del Cauca · Laboratorio de Física y Sistemas Embebidos</p>
-      <h1>¿Dónde publicar este proyecto?</h1>
-      <p class="lead">Revistas científicas <strong>indexadas</strong>, <strong>sin costo para publicar</strong> y <strong>de lectura gratuita</strong>, sugeridas para cada proyecto del banco.</p>
-    </div>
-    <a class="back-link" id="back-link" href="/proyectos">← Volver al banco de proyectos</a>
+<header class="nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="/proyectos">
+      <span class="logo-tile"><img src="logo.jpg" alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" width="46" height="43"></span>
+      <span><b>Institución Universitaria Colegio Mayor del Cauca</b><small>Laboratorio de Física y Sistemas Embebidos</small></span>
+    </a>
+    <a class="nav-link" href="/proyectos">Catálogo de Proyectos</a>
   </div>
-  <div class="wrap criteria" aria-label="Criterios de selección">
-    <div class="criterion"><span class="criterion-icon" aria-hidden="true">📊</span><div><strong>Indexada con cuartil</strong><span>Q1 a Q4 en SCImago (SJR)</span></div></div>
-    <div class="criterion"><span class="criterion-icon" aria-hidden="true">💸</span><div><strong>Sin APC ni otros cobros</strong><span>Verificado en DOAJ</span></div></div>
-    <div class="criterion"><span class="criterion-icon" aria-hidden="true">🔓</span><div><strong>Lectura gratuita</strong><span>Acceso abierto diamante</span></div></div>
-    <div class="criterion"><span class="criterion-icon" aria-hidden="true">🇨🇴</span><div><strong>Categoría Publindex</strong><span>Homologación Q1=A1 · Q2=A2 · Q3=B · Q4=C</span></div></div>
-  </div>
-  <nav class="wrap tabs" role="tablist" aria-label="Secciones">
-    <button role="tab" id="tab-projects" aria-controls="view-projects" aria-selected="true" data-view="projects">Por proyecto</button>
-    <button role="tab" id="tab-catalog" aria-controls="view-catalog" aria-selected="false" data-view="catalog">Catálogo completo</button>
-    <button role="tab" id="tab-help" aria-controls="view-help" aria-selected="false" data-view="help">Cómo leer esta página</button>
-  </nav>
 </header>
 
 <main class="wrap">
-  <!-- Per-project view -->
-  <section id="view-projects" role="tabpanel" aria-labelledby="tab-projects" class="view">
-    <div class="layout">
-      <aside class="sidebar" aria-label="Lista de proyectos">
-        <label class="field">
-          <span>Buscar proyecto</span>
-          <input id="project-search" type="search" placeholder="Ej.: EEG, invernadero, DDoS…" autocomplete="off">
-        </label>
-        <label class="field">
-          <span>Área tecnológica</span>
-          <select id="project-area"><option value="">Todas las áreas</option></select>
-        </label>
-        <p id="project-count" class="muted small" aria-live="polite"></p>
-        <ul id="project-list" class="project-list"></ul>
-      </aside>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" id="tab-project" aria-controls="view-project" aria-selected="true" data-view="project">Revistas del proyecto</button>
+    <button role="tab" id="tab-catalog" aria-controls="view-catalog" aria-selected="false" data-view="catalog">Catálogo completo</button>
+    <button role="tab" id="tab-help" aria-controls="view-help" aria-selected="false" data-view="help">Cómo leer esta página</button>
+  </nav>
 
-      <article id="project-detail" class="detail" aria-live="polite">
-        <div class="empty-state">
-          <p class="empty-icon" aria-hidden="true">🔎</p>
-          <h2>Elija un proyecto</h2>
-          <p>Seleccione un proyecto de la lista para ver las revistas donde podría publicarse.</p>
+  <!-- Per-project results (design 04: list by affinity; design 02: comparison table) -->
+  <section id="view-project" role="tabpanel" aria-labelledby="tab-project" class="view">
+    <div class="project-card">
+      <div class="project-emoji" id="project-emoji" aria-hidden="true">🔎</div>
+      <div class="project-text">
+        <p class="kicker" id="project-kicker">¿Dónde publicar?</p>
+        <h1 id="project-title">Elija un proyecto</h1>
+      </div>
+      <a class="back" id="back-link" href="/proyectos">← Volver al banco de proyectos</a>
+    </div>
+
+    <div id="project-picker" class="picker" hidden>
+      <label for="picker-select">Proyecto</label>
+      <select id="picker-select"><option value="">Seleccione un proyecto…</option></select>
+      <p class="muted small">También puede abrir esta página desde el botón «¿Dónde publicar este proyecto?» de cada proyecto del banco.</p>
+    </div>
+
+    <div id="project-results" hidden>
+      <div class="toolbar" role="search">
+        <label for="table-search" class="sr-only">Buscar revistas</label>
+        <input id="table-search" type="search" placeholder="Buscar revista, país o editorial…" autocomplete="off">
+        <label class="sort" for="sort-select">Ordenar
+          <select id="sort-select">
+            <option value="affinity">Mayor afinidad</option>
+            <option value="quartile">Mejor cuartil</option>
+            <option value="weeks">Publicación más rápida</option>
+            <option value="sjr">Mayor SJR</option>
+            <option value="h_index">Mayor índice H</option>
+            <option value="title">Nombre (A–Z)</option>
+          </select>
+        </label>
+        <div class="seg" role="group" aria-label="Vista de resultados">
+          <button type="button" data-mode="list" aria-pressed="true">Lista</button>
+          <button type="button" data-mode="table" aria-pressed="false">Tabla</button>
         </div>
-      </article>
+        <button type="button" class="btn-filters" id="adv-toggle" aria-expanded="false" aria-controls="adv-panel">
+          <span aria-hidden="true">⚙</span> Filtros personalizados <span class="badge" id="adv-count" hidden></span>
+        </button>
+      </div>
+
+      <div class="chips-row">
+        <span class="count" id="table-count" aria-live="polite"></span>
+        <div class="active-chips" id="adv-chips" aria-label="Filtros activos"></div>
+      </div>
+
+      <div class="results-layout" id="results-layout">
+        <section aria-label="Revistas sugeridas">
+          <div id="list-view" class="result-list"></div>
+          <div id="table-view" hidden>
+          <div class="table-wrap">
+        <table id="journals-table">
+          <caption class="sr-only">Revistas sugeridas para el proyecto; los encabezados ordenan la tabla</caption>
+          <thead>
+            <tr>
+              <th scope="col"><span class="sr-only">Comparar</span></th>
+              <th scope="col" data-sort="title"><button type="button">Revista</button></th>
+              <th scope="col" data-sort="affinity"><button type="button">Afinidad</button></th>
+              <th scope="col" data-sort="quartile"><button type="button">Cuartil · Publindex</button></th>
+              <th scope="col" data-sort="sjr"><button type="button">SJR</button></th>
+              <th scope="col" data-sort="h_index"><button type="button">Índice H</button></th>
+              <th scope="col" data-sort="weeks"><button type="button">Semanas</button></th>
+              <th scope="col">Idiomas</th>
+              <th scope="col">Revisión</th>
+              <th scope="col">Licencia</th>
+              <th scope="col">Encaje</th>
+              <th scope="col">Formato</th>
+            </tr>
+          </thead>
+          <tbody id="journals-body"></tbody>
+        </table>
+      </div>
+          </div>
+          <p id="table-empty" class="no-results" hidden>Ninguna revista cumple estos filtros. Quite algunos filtros o pruebe otro filtro guardado.</p>
+          <p class="disclaimer"><strong>La afinidad no es una probabilidad de aceptación.</strong> Se calcula con el encaje temático (40), la exigencia del cuartil frente al nivel del proyecto (25), el tiempo de publicación (15), el idioma (10) y si la revista es iberoamericana (10). La aceptación depende de la calidad del artículo y de la revisión por pares; lea el alcance de cada revista y confirme en su sitio que no cobra antes de enviar.</p>
+        </section>
+
+        <aside id="adv-panel" class="panel" aria-labelledby="adv-title" hidden>
+          <div class="panel-head">
+            <h2 id="adv-title">Filtros personalizados</h2>
+            <button type="button" class="panel-close" id="adv-close" aria-label="Cerrar filtros">×</button>
+          </div>
+          <p class="muted small">Combine las variables que necesite; se aplican todas a la vez.</p>
+
+          <fieldset class="pf"><legend>Afinidad mínima</legend>
+            <div class="range"><input id="adv-affinity" type="range" min="0" max="100" step="5" value="0" aria-label="Afinidad mínima"><output id="adv-affinity-out" for="adv-affinity">Sin mínimo</output></div>
+          </fieldset>
+          <fieldset class="pf"><legend>Cuartil · Publindex</legend>
+            <div class="pills" id="adv-quartiles">
+              <button type="button" class="pill" data-value="Q1" aria-pressed="false">Q1 · A1</button>
+              <button type="button" class="pill" data-value="Q2" aria-pressed="false">Q2 · A2</button>
+              <button type="button" class="pill" data-value="Q3" aria-pressed="false">Q3 · B</button>
+              <button type="button" class="pill" data-value="Q4" aria-pressed="false">Q4 · C</button>
+            </div>
+          </fieldset>
+          <fieldset class="pf"><legend>Tiempo máximo a publicación</legend>
+            <div class="range"><input id="adv-weeks" type="range" min="4" max="52" step="2" value="52" aria-label="Semanas máximas"><output id="adv-weeks-out" for="adv-weeks">Sin límite</output></div>
+          </fieldset>
+          <fieldset class="pf"><legend>Idioma y región</legend>
+            <div class="two">
+              <select id="adv-language" aria-label="Idioma de envío">
+                <option value="any">Cualquier idioma</option><option value="Spanish">Español</option>
+                <option value="English">Inglés</option><option value="Portuguese">Portugués</option>
+              </select>
+              <select id="adv-region" aria-label="Región de la revista">
+                <option value="all">Todas las regiones</option><option value="iberoamerica">Iberoamérica</option><option value="colombia">Colombia</option>
+              </select>
+            </div>
+          </fieldset>
+          <fieldset class="pf"><legend>Calidad e impacto</legend>
+            <div class="two">
+              <label class="mini" for="adv-sjr">SJR mínimo<input id="adv-sjr" type="text" inputmode="decimal" placeholder="Ej.: 0,20" autocomplete="off"></label>
+              <label class="mini" for="adv-h">Índice H mínimo<input id="adv-h" type="number" min="0" step="1" placeholder="Ej.: 10" inputmode="numeric"></label>
+            </div>
+          </fieldset>
+          <fieldset class="pf"><legend>Proceso editorial</legend>
+            <label class="chk"><input type="checkbox" id="adv-review-double"> Revisión doble ciego</label>
+            <label class="chk"><input type="checkbox" id="adv-review-single"> Revisión simple ciego o abierta</label>
+            <label class="chk"><input type="checkbox" id="adv-ccby"> Solo licencia CC BY</label>
+          </fieldset>
+          <fieldset class="pf"><legend>Encaje</legend>
+            <div class="pills" id="adv-fits">
+              <button type="button" class="pill" data-value="fuerte" aria-pressed="false">Sector + tecnología</button>
+              <button type="button" class="pill" data-value="tecnologia" aria-pressed="false">Solo tecnología</button>
+            </div>
+          </fieldset>
+
+          <div class="panel-foot">
+            <button type="button" class="btn-secondary" id="adv-reset">Restablecer</button>
+            <button type="button" class="btn-primary" id="adv-apply">Ver revistas</button>
+          </div>
+          <div class="presets">
+            <span>Filtros guardados:</span>
+            <span id="preset-list" class="preset-list"></span>
+            <button type="button" class="link-btn" id="preset-new">+ Guardar actual</button>
+            <form id="preset-form" class="preset-form" hidden>
+              <label for="preset-name" class="sr-only">Nombre del filtro guardado</label>
+              <input id="preset-name" type="text" maxlength="40" placeholder="Nombre, p. ej. Mi grupo">
+              <button type="submit" class="btn-primary">Guardar</button>
+              <span id="preset-error" class="preset-error" role="alert"></span>
+            </form>
+          </div>
+        </aside>
+      </div>
     </div>
   </section>
 
   <!-- Full catalog view -->
   <section id="view-catalog" role="tabpanel" aria-labelledby="tab-catalog" class="view" hidden>
-    <div class="catalog-head">
+    <div class="section-head">
       <h2>Catálogo de revistas diamante con cuartil</h2>
       <p class="muted">Todas las revistas de DOAJ sin APC ni otros cobros que tienen cuartil en SCImago (se excluyen las de humanidades).</p>
     </div>
-    <div class="filters" id="catalog-filters">
-      <label class="field grow"><span>Buscar revista, tema o país</span><input id="catalog-search" type="search" placeholder="Ej.: sensors, agronomy, Colombia…" autocomplete="off"></label>
-      <fieldset class="chips" aria-label="Cuartil"><legend>Cuartil</legend>
-        <label><input type="checkbox" name="catalog-q" value="Q1" checked> Q1</label>
-        <label><input type="checkbox" name="catalog-q" value="Q2" checked> Q2</label>
-        <label><input type="checkbox" name="catalog-q" value="Q3" checked> Q3</label>
-        <label><input type="checkbox" name="catalog-q" value="Q4" checked> Q4</label>
-      </fieldset>
-      <label class="toggle"><input type="checkbox" id="catalog-spanish"> Acepta artículos en español</label>
+    <div class="filters">
+      <label class="sr-only" for="catalog-search">Buscar revista, tema o país</label>
+      <input id="catalog-search" type="search" placeholder="Buscar revista, tema o país: sensors, agronomy, Colombia…" autocomplete="off">
+      <div class="seg" role="group" aria-label="Cuartil del catálogo" data-catalog="quartile">
+        <button type="button" data-value="all" aria-pressed="true">Todos</button>
+        <button type="button" data-value="Q1" aria-pressed="false">Q1</button>
+        <button type="button" data-value="Q2" aria-pressed="false">Q2</button>
+        <button type="button" data-value="Q3" aria-pressed="false">Q3</button>
+        <button type="button" data-value="Q4" aria-pressed="false">Q4</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="catalog-spanish"> Acepta español</label>
+      <span class="count" id="catalog-count" aria-live="polite">Cargando catálogo…</span>
     </div>
-    <p id="catalog-count" class="muted small" aria-live="polite">Cargando catálogo…</p>
     <div id="catalog-results" class="journal-list"></div>
     <button id="catalog-more" class="btn-secondary more" hidden>Ver más revistas</button>
   </section>
 
   <!-- Help view -->
   <section id="view-help" role="tabpanel" aria-labelledby="tab-help" class="view help" hidden>
-    <h2>Cómo leer esta página</h2>
     <div class="help-grid">
       <div class="card">
         <h3>¿Qué revistas aparecen?</h3>
         <p>Solo revistas que cumplen las tres condiciones a la vez:</p>
         <ol>
           <li><strong>Indexadas:</strong> tienen cuartil (Q1, Q2, Q3 o Q4) en <a href="https://www.scimagojr.com/" target="_blank" rel="noopener">SCImago Journal Rank</a>.</li>
-          <li><strong>Sin costo para publicar:</strong> <a href="https://doaj.org/" target="_blank" rel="noopener">DOAJ</a> indica que no cobran APC ni otros cargos (envío, páginas, color).</li>
-          <li><strong>Lectura gratuita:</strong> están en DOAJ, es decir, publican en acceso abierto. Combinado con lo anterior, es <em>acceso abierto diamante</em>.</li>
+          <li><strong>Sin costo para publicar:</strong> <a href="https://doaj.org/" target="_blank" rel="noopener">DOAJ</a> indica que no cobran APC ni otros cargos.</li>
+          <li><strong>Lectura gratuita:</strong> están en DOAJ, es decir, publican en acceso abierto diamante.</li>
         </ol>
       </div>
       <div class="card">
@@ -102,24 +217,34 @@
             <tr><td><span class="q q4">Q4</span></td><td>C</td></tr>
           </tbody>
         </table>
-        <p class="small muted">Se muestra el <strong>mejor cuartil</strong> de la revista. Minciencias toma el cuartil vigente en el año de publicación del artículo.</p>
+        <p class="small muted">Se muestra el mejor cuartil de la revista. Minciencias toma el cuartil vigente en el año de publicación.</p>
       </div>
       <div class="card">
-        <h3>¿Cómo se eligen las revistas de cada proyecto?</h3>
-        <p>Cada proyecto se describe con <strong>temas de sector</strong> (agricultura, salud, energía…) y <strong>temas de tecnología</strong> (IoT, IA, visión artificial, ciberseguridad…), tomados de su área, su sector y su título. Cada revista se describe con sus categorías de SCImago y sus palabras clave de DOAJ.</p>
+        <h3>¿Cómo se eligen las revistas?</h3>
+        <p>Cada proyecto se describe con temas de <strong>sector</strong> y de <strong>tecnología</strong> (área, sector y título); cada revista, con sus categorías de SCImago y sus palabras clave de DOAJ.</p>
         <ul>
-          <li><span class="fit fit-fuerte">Encaje fuerte</span> la revista cubre el sector del proyecto <em>y</em> publica trabajos tecnológicos o de ingeniería.</li>
-          <li><span class="fit fit-tecnologia">Encaje por tecnología</span> revista de computación o ingeniería que acepta aplicaciones de cualquier sector.</li>
-          <li><span class="fit fit-sector">Encaje por sector</span> revista del sector sin señal tecnológica clara.</li>
+          <li><span class="fit fit-fuerte">Sector + tecnología</span> cubre el sector del proyecto y publica trabajos tecnológicos.</li>
+          <li><span class="fit fit-tecnologia">Tecnología</span> revista de computación o ingeniería que acepta aplicaciones de cualquier sector.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>¿Qué es la afinidad?</h3>
+        <p>Una estimación de 0 a 100 % de qué tan bien encaja el proyecto con la revista. <strong>No es una probabilidad de aceptación</strong>: ninguna fuente pública informa tasas de aceptación, y la decisión depende de la calidad del artículo y de la revisión por pares.</p>
+        <ul>
+          <li><strong>Encaje temático (40):</strong> temas de sector y de tecnología del proyecto que cubre la revista.</li>
+          <li><strong>Exigencia según el nivel (25):</strong> una Q1 es más exigente para un proyecto Intermedio que para uno Avanzado.</li>
+          <li><strong>Tiempo de publicación (15):</strong> menos semanas, más puntos.</li>
+          <li><strong>Idioma (10):</strong> acepta español (10), portugués (7) o inglés (5).</li>
+          <li><strong>Región (10):</strong> revista iberoamericana (10) u otra (5).</li>
         </ul>
       </div>
       <div class="card warning">
         <h3>Antes de enviar un artículo</h3>
         <ul>
-          <li>La sugerencia es <strong>automática</strong>: lea el alcance (<em>aims &amp; scope</em>) de la revista y revise artículos recientes.</li>
-          <li>Confirme en la página de la revista que <strong>no cobra</strong> nada; las políticas cambian.</li>
-          <li>Verifique el cuartil en SCImago y, si aplica, la categoría en <a href="https://scienti.minciencias.gov.co/publindex/" target="_blank" rel="noopener">Publindex</a>, buscando por ISSN.</li>
-          <li>Desconfíe de correos que ofrecen publicar rápido: entre siempre desde los enlaces de DOAJ o SCImago.</li>
+          <li>La sugerencia es automática: lea el alcance de la revista y artículos recientes.</li>
+          <li>Confirme en su sitio que no cobra nada; las políticas cambian.</li>
+          <li>Verifique el cuartil en SCImago y la categoría en <a href="https://scienti.minciencias.gov.co/publindex/" target="_blank" rel="noopener">Publindex</a> por ISSN.</li>
+          <li>Desconfíe de correos que ofrecen publicar rápido.</li>
         </ul>
       </div>
     </div>
@@ -127,29 +252,35 @@
   </section>
 </main>
 
+<aside id="compare-tray" class="tray" aria-label="Comparación de revistas" hidden>
+  <div class="wrap">
+    <div class="tray-head">
+      <h2 id="compare-title">Comparando revistas</h2>
+      <button type="button" id="compare-clear">Quitar todas</button>
+    </div>
+    <div class="tray-scroll"><div id="compare-grid" class="cmp" role="table" aria-labelledby="compare-title"></div></div>
+  </div>
+</aside>
+
 <footer class="site-footer">
   <div class="wrap">
-    <p>Datos: <a href="https://doaj.org/" target="_blank" rel="noopener">DOAJ</a> (Directory of Open Access Journals) y <a href="https://www.scimagojr.com/" target="_blank" rel="noopener">SCImago Journal &amp; Country Rank</a>. Banco de Proyectos IoT · UNIMAYOR, Popayán.</p>
+    <p>Datos: <a href="https://doaj.org/" target="_blank" rel="noopener">DOAJ</a> y <a href="https://www.scimagojr.com/" target="_blank" rel="noopener">SCImago Journal &amp; Country Rank</a>. Banco de Proyectos · UNIMAYOR, Popayán.</p>
   </div>
 </footer>
 
 <template id="journal-card">
   <article class="journal">
     <header class="journal-head">
-      <div class="journal-title-row">
-        <span class="q"></span>
-        <h3 class="journal-title"></h3>
-      </div>
-      <span class="fit"></span>
+      <div class="journal-title-row"><span class="q"></span><h3 class="journal-title"></h3></div>
     </header>
     <p class="journal-meta"></p>
     <dl class="journal-facts"></dl>
-    <div class="journal-why"></div>
     <div class="journal-cats"></div>
     <nav class="journal-links" aria-label="Enlaces de la revista"></nav>
   </article>
 </template>
 
+<script src="table.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
