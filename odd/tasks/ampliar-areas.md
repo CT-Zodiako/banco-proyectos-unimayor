@@ -14,19 +14,19 @@ using the same project format and UI as the existing 100 projects. Branch: feat/
 
 | ID | Task | Specs | Route | Commit |
 |---|---|---|---|---|
-| T1 | Data infrastructure: per-area modules, aggregated `projects` export, validator + `npm test` (RED first) | S1, S2 | inline | — |
-| T2 | Write 10 projects for "Desarrollo de Videojuegos" (proj_101–110) | S1, S2 | worker | — |
-| T3 | Write 10 projects for "Ciberseguridad" (proj_111–120) | S1, S2 | worker | — |
-| T4 | Write 10 projects for "Desarrollo de Software" (proj_121–130) | S1, S2 | worker | — |
-| T5 | Write 10 projects for "Arquitectura de Software" (proj_131–140) | S1, S2 | worker | — |
-| T6 | Write 10 projects for "Redes" (proj_141–150) | S1, S2 | worker | — |
-| T7 | Write 10 projects for "Medicina con AIoT" (proj_151–160) | S1, S2 | worker | — |
-| T8 | Write 10 projects for "Bioingeniería" (proj_161–170) | S1, S2 | worker | — |
-| T9 | Write 10 projects for "Inteligencia Artificial" (proj_171–180) | S1, S2 | worker | — |
-| T10 | Write 10 projects for "Sistemas Ciberfísicos" (proj_181–190) | S1, S2 | worker | — |
-| T11 | Write 10 projects for "Machine Learning" (proj_191–200) | S1, S2 | worker | — |
-| T12 | Write 10 projects for "Robótica" (proj_201–210) | S1, S2 | worker | — |
-| T13 | Verify: full validator, build, browser check (ego-lite) of list, filters and detail pages | S1, S2 | inline + verify | — |
+| T1 | Data infrastructure: per-area modules, aggregated `projects` export, validator + `npm test` (RED first) | S1, S2 | inline | a6d7a26 (RED observed: 11 areas "tiene 0 proyectos, mínimo 10") |
+| T2 | Write 10 projects for "Desarrollo de Videojuegos" (proj_101–110) | S1, S2 | worker | fd4ef78 |
+| T3 | Write 10 projects for "Ciberseguridad" (proj_111–120) | S1, S2 | worker | afcb817 |
+| T4 | Write 10 projects for "Desarrollo de Software" (proj_121–130) | S1, S2 | worker | 59c6dff |
+| T5 | Write 10 projects for "Arquitectura de Software" (proj_131–140) | S1, S2 | worker | 63a847d |
+| T6 | Write 10 projects for "Redes" (proj_141–150) | S1, S2 | worker | 319a2e0 |
+| T7 | Write 10 projects for "Medicina con AIoT" (proj_151–160) | S1, S2 | worker | 82f18b0 |
+| T8 | Write 10 projects for "Bioingeniería" (proj_161–170) | S1, S2 | worker | ec39364 |
+| T9 | Write 10 projects for "Inteligencia Artificial" (proj_171–180) | S1, S2 | worker | c7a9204 |
+| T10 | Write 10 projects for "Sistemas Ciberfísicos" (proj_181–190) | S1, S2 | worker | 4c257a6 |
+| T11 | Write 10 projects for "Machine Learning" (proj_191–200) | S1, S2 | worker | 4d774c4 |
+| T12 | Write 10 projects for "Robótica" (proj_201–210) | S1, S2 | worker | f02f7a6 |
+| T13 | Verify: full validator, build, browser check (ego-lite) of list, filters and detail pages | S1, S2 | inline | done (L11) |
 
 ## Log
 
@@ -55,5 +55,18 @@ using the same project format and UI as the existing 100 projects. Branch: feat/
   Ciberseguridad", which is semantically consistent.
 - L7 (follow-up, out of scope): regenerate apps/donde-publicar with the new projects and add theme rules for the new
   areas (videogames, software architecture…).
+- L9 (evidence): 11 parallel gentle-ai-worker runs, each restricted to its area module; every `check-area` printed
+  "<area>: 10 proyectos válidos". First full `npm test` failed only because the test validated derived projects
+  (my defect, fixed in 774c9c0); then 8/8 pass. 210 projects, levels 39/39/32, 185 distinct sectors, no voseo,
+  emojis compatible with ProjectCard.
+- L10 (delivery strategy): the branch is ~9,150 authored lines, almost all data. Slices: infrastructure (a6d7a26,
+  774c9c0, ~400 lines, reviewed as code) and one data-only commit per area (~800 lines each, reviewed as content,
+  each revertible on its own). A PR can be split by area family if the reviewer prefers smaller units.
+- L11 (evidence, ego-lite): clean `npm ci` + `vite build` OK; /proyectos lists 210; all 11 new area names present
+  in the area menu; filters: Robótica 10, Redes 10, Machine Learning 10, Bioingeniería 10, Ciberseguridad 24 and
+  AIoT 37 (substring match, L6); search "Nasa Yuwe" 2; /proyecto/proj_201 shows 6 hardware and 5 software rows,
+  objectives and the "¿Dónde publicar?" modal; new cards render like original ones (evidence
+  odd/evidence/ampliar-areas-*.png); no console errors. A first blank screenshot was a capture taken during the
+  framer-motion entry animation (DOM had 10 cards at opacity 1), not a defect.
 - L8 (design): user asked mid-task "muestrame un disenos nuevos para lo de proyectos" → design/explorar-proyectos/
   (01-catalogo-facetado, 02-explorar-por-familias, 03-lista-con-vista-previa); none chosen yet.
