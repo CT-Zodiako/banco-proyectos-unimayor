@@ -1,0 +1,3227 @@
+50 PROYECTOS PRÁCTICOS DE IoT  
+Ingeniería Informática - Noveno Semestre 
+  
+Información General 
+Esta colección contiene 20 proyectos prácticos diseñados específicamente para 
+estudiantes de noveno semestre de Ingeniería Informática, con énfasis en tecnologías 
+IoT (Internet de las Cosas). Los proyectos están distribuidos en cinco áreas 
+tecnológicas principales: 
+• SBC-IoT (Single Board Computer - Internet of Things): 4 proyectos 
+• AIoT (Inteligencia Artificial + IoT): 4 proyectos 
+• IoT Hacking y Ciberseguridad: 4 proyectos 
+• IoT con Big Data y Analítica: 4 proyectos 
+• IoT con Visión Artificial: 4 proyectos 
+Características de los Proyectos 
+• Duración: Un semestre académico completo 
+• Nivel: Intermedio-Avanzado 
+• Presupuesto: Bajo costo 
+• Software: Exclusivamente libre y de código abierto 
+• Hardware: ESP32, Raspberry Pi, Arduino, sensores económicos 
+  
+PROYECTOS DE SBC-IoT 
+Proyecto 1: Sistema de Monitoreo Agrícola Distribuido con MQTT 
+Sector Agricultura de precisión y agricultura 
+inteligente 
+Área Tecnológica SBC-IoT 
+Complejidad Intermedio 
+ 
+Los agricultores carecen de información en tiempo real sobre condiciones del suelo y 
+clima, lo que genera desperdicio de agua, bajo rendimiento de cultivos y pérdidas 
+económicas por decisiones basadas en intuición en lugar de datos precisos. 
+Objetivo General 
+Desarrollar un sistema de monitoreo agrícola distribuido basado en SBC-IoT que 
+permita la recolección, análisis y visualización de datos ambientales en tiempo real para 
+optimizar el uso de recursos y mejorar la productividad agrícola. 
+Objetivos Específicos 
+1. Implementar una red de sensores ESP32 que monitoreen humedad del suelo, 
+temperatura y luminosidad en múltiples puntos del cultivo. 
+2. Configurar un gateway MQTT en Raspberry Pi que centralice datos y permita 
+visualización en dashboards web mediante Grafana. 
+3. Desarrollar algoritmos de análisis de series temporales que generen alertas 
+predictivas sobre necesidades de riego y condiciones adversas. 
+ 
+Descripción 
+Red de sensores distribuidos en cultivo que monitorean humedad del suelo, 
+temperatura y luz, centralizando datos en Raspberry Pi que actúa como gateway MQTT 
+para visualización en dashboard web. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ (1 unidad - nodo central) 
+• ESP32 (3-4 unidades - nodos sensores) 
+• Sensores DHT22 (temperatura/humedad ambiente) 
+• Sensores de humedad de suelo capacitivos (4 unidades) 
+• Sensores LDR (luminosidad) 
+• Fuentes de alimentación 
+• Cableado y protoboards 
+Software y Tecnologías 
+• Sistema operativo: Raspberry Pi OS 
+• Broker MQTT: Mosquitto 
+• Node-RED para flujos de datos 
+• InfluxDB (base de datos de series temporales) 
+• Grafana para dashboards 
+• Python para scripts en Raspberry Pi 
+• Arduino IDE/PlatformIO para ESP32 
+Habilidades Desarrolladas 
+• Arquitecturas IoT distribuidas 
+• Protocolos de comunicación (MQTT) 
+• Integración SBC-microcontroladores 
+• Visualización de datos en tiempo real 
+• Gestión de bases de datos de series temporales 
+  
+Proyecto 2: Gateway IoT Multi-Protocolo para Edificio Inteligente 
+Sector Domótica e Inmótica (edificios 
+inteligentes) 
+Área Tecnológica SBC-IoT 
+Complejidad Avanzado 
+ 
+Los edificios inteligentes utilizan dispositivos de diferentes fabricantes con protocolos 
+incompatibles, generando silos de información, dificultad de gestión centralizada y 
+costos elevados de integración. 
+Objetivo General 
+Diseñar e implementar un gateway IoT multi-protocolo basado en Raspberry Pi que 
+unifique la gestión de sistemas de iluminación, climatización y control de accesos en 
+edificios inteligentes. 
+Objetivos Específicos 
+4. Integrar comunicación MQTT, HTTP y Modbus en un único gateway para 
+interoperabilidad entre dispositivos heterogéneos. 
+5. Desarrollar una interfaz web responsiva que permita monitoreo y control centralizado 
+de todos los subsistemas del edificio. 
+6. Implementar reglas de automatización basadas en eventos que optimicen el 
+consumo energético según ocupación y horarios. 
+ 
+Descripción 
+Raspberry Pi actuando como gateway que integra múltiples protocolos (MQTT, HTTP, 
+ModBus) para controlar iluminación, climatización y accesos en un edificio, con interfaz 
+web de administración. 
+Hardware Necesario 
+• Raspberry Pi 4 (1 unidad) 
+• ESP32 (3 unidades para diferentes zonas) 
+• Relés de 4 canales (2 unidades) 
+• Sensores PIR (movimiento - 4 unidades) 
+• DHT22 (3 unidades) 
+• LEDs y módulos de iluminación 
+• Sensor magnético de puertas (2 unidades) 
+Software y Tecnologías 
+• Node-RED como orquestador principal 
+• Mosquitto MQTT broker 
+• Node.js para servidor web 
+• SQLite para almacenamiento local 
+• React.js para interfaz web (opcional: HTML/CSS/JS vanilla) 
+• Python para automatizaciones 
+Habilidades Desarrolladas 
+• Integración de múltiples protocolos IoT 
+• Desarrollo de interfaces web responsivas 
+• Arquitectura de microservicios 
+• Automatización basada en reglas 
+• Gestión de dispositivos heterogéneos 
+  
+Proyecto 3: Sistema de Monitoreo Meteorológico Local con Predicción 
+Sector Meteorología y monitoreo ambiental 
+Área Tecnológica SBC-IoT 
+Complejidad Intermedio 
+ 
+Las predicciones meteorológicas generales no consideran microclimas locales, lo que 
+genera inexactitudes críticas para agricultura, eventos al aire libre y planificación de 
+actividades sensibles al clima. 
+Objetivo General 
+Construir una estación meteorológica inteligente que capture datos climáticos locales y 
+los correlacione con APIs meteorológicas públicas para generar predicciones híbridas 
+más precisas. 
+Objetivos Específicos 
+7. Implementar un sistema de sensores meteorológicos (temperatura, humedad, 
+presión, viento, lluvia) con registro continuo de datos. 
+8. Integrar datos locales con APIs de OpenWeatherMap para análisis comparativo y 
+calibración de modelos. 
+9. Desarrollar algoritmos de machine learning que mejoren la precisión de predicciones 
+considerando patrones históricos locales. 
+ 
+Descripción 
+Estación meteorológica completa que captura datos locales (temperatura, humedad, 
+presión, viento) y los compara con APIs meteorológicas públicas para generar 
+predicciones locales mejoradas. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ 
+• ESP32 (para sensores exteriores) 
+• DHT22 
+• Sensor BMP280 (presión atmosférica) 
+• Anemómetro (puede construirse con sensor Hall y imanes) 
+• Pluviómetro DIY 
+• GPS NEO-6M (geolocalización) 
+Software y Tecnologías 
+• Python para captura y procesamiento 
+• ThingSpeak para almacenamiento en la nube 
+• APIs públicas: OpenWeatherMap 
+• Pandas para análisis de datos 
+• Matplotlib para gráficos 
+• Cron para tareas programadas 
+Habilidades Desarrolladas 
+• Integración con APIs REST 
+• Procesamiento de datos meteorológicos 
+• Análisis comparativo de datos 
+• Calibración de sensores 
+• Visualización científica de datos 
+  
+Proyecto 4: Control de Invernadero Automatizado con Retroalimentación 
+Sector Agricultura de precisión y agricultura 
+inteligente 
+Área Tecnológica SBC-IoT 
+Complejidad Avanzado 
+ 
+El control manual de invernaderos genera desperdicio de recursos, condiciones 
+subóptimas para cultivos y requiere supervisión constante, limitando la escalabilidad y 
+rentabilidad de la producción agrícola protegida. 
+Objetivo General 
+Desarrollar un sistema de automatización integral para invernaderos que controle 
+dinámicamente riego, ventilación e iluminación mediante retroalimentación de sensores 
+ambientales y control remoto. 
+Objetivos Específicos 
+10. Implementar sensores de temperatura, humedad y humedad de suelo con 
+actuadores controlados vía Raspberry Pi y Arduino. 
+11. Desarrollar algoritmos de control PID que mantengan parámetros ambientales en 
+rangos óptimos de forma autónoma. 
+12. Crear una aplicación móvil con Blynk que permita monitoreo remoto y ajuste manual 
+de parámetros de cultivo. 
+ 
+Descripción 
+Sistema de control climático para invernadero que ajusta automáticamente riego, 
+ventilación e iluminación según parámetros ambientales, con control remoto vía 
+aplicación web. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Arduino Nano (2 unidades para control de actuadores) 
+• DHT22 (2 unidades) 
+• Sensores de humedad de suelo (4 unidades) 
+• Relés (6 canales) 
+• Electroválvulas para riego (2 unidades) 
+• Ventiladores DC 12V (2 unidades) 
+• Tiras LED para iluminación suplementaria 
+• LDR (sensor de luz) 
+Software y Tecnologías 
+• Python con GPIO para Raspberry Pi 
+• Blynk (versión gratuita) para interfaz móvil 
+• MQTT para comunicación 
+• Node-RED para lógica de control 
+• InfluxDB y Grafana para históricos 
+Habilidades Desarrolladas 
+• Sistemas de control realimentados 
+• Automatización agrícola 
+• Lógica de control PID básica 
+• Interfaces móviles IoT 
+• Gestión energética 
+  
+PROYECTOS DE AIoT (INTELIGENCIA ARTIFICIAL + IoT) 
+Proyecto 5: Clasificación Inteligente de Residuos con Visión Artificial 
+Sector Gestión medioambiental y 
+sostenibilidad 
+Área Tecnológica AIoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+La clasificación manual de residuos es ineficiente, costosa y propensa a errores 
+humanos, generando contaminación cruzada que reduce las tasas de reciclaje efectivo 
+y aumenta la contaminación ambiental. 
+Objetivo General 
+Diseñar un sistema de clasificación automática de residuos basado en visión artificial y 
+deep learning que identifique y separe materiales (plástico, vidrio, papel, orgánico) en 
+tiempo real. 
+Objetivos Específicos 
+13. Entrenar y optimizar un modelo MobileNet mediante transfer learning para 
+clasificación de residuos con precisión >85%. 
+14. Implementar un sistema mecatrónico con servomotores que dirija residuos a 
+contenedores específicos según clasificación. 
+15. Desarrollar interfaz de monitoreo que registre estadísticas de volumen y tipos de 
+residuos procesados diariamente. 
+ 
+Descripción 
+Sistema de clasificación automática de residuos (plástico, vidrio, papel, orgánico) 
+usando cámara y red neuronal en Raspberry Pi, con mecanismo de separación 
+automatizado. 
+Hardware Necesario 
+• Raspberry Pi 4 (4GB RAM mínimo) 
+• Cámara Raspberry Pi v2 o USB 
+• Servomotores (3 unidades para compuertas) 
+• Sensores ultrasónicos HC-SR04 (detección de objeto) 
+• Arduino Nano (control de servos) 
+• Iluminación LED para fotografía 
+• Estructura mecánica simple (cartón/madera) 
+Software y Tecnologías 
+• TensorFlow Lite para inferencia 
+• OpenCV para procesamiento de imágenes 
+• Python con picamera 
+• Modelo pre-entrenado MobileNet (transfer learning) 
+• MQTT para comunicación con Arduino 
+Habilidades Desarrolladas 
+• Implementación de redes neuronales en edge 
+• Transfer learning 
+• Visión por computadora aplicada 
+• Integración AI-hardware 
+• Optimización de modelos para dispositivos limitados 
+  
+Proyecto 6: Detector de Anomalías en Línea de Producción 
+Sector Automatización industrial (Industria 
+4.0) 
+Área Tecnológica AIoT 
+Complejidad Avanzado 
+ 
+Los defectos de fabricación detectados tardíamente generan costos por reproceso, 
+pérdida de materiales y afectación de calidad, mientras que inspecciones manuales son 
+lentas y subjetivas. 
+Objetivo General 
+Desarrollar un sistema de detección automática de anomalías en líneas de producción 
+industrial mediante análisis multimodal de sensores y algoritmos de machine learning no 
+supervisado. 
+Objetivos Específicos 
+16. Implementar sensores de vibración, sonido y temperatura en puntos críticos de la 
+línea de ensamblaje con ESP32. 
+17. Entrenar modelos de detección de anomalías (Isolation Forest, One-Class SVM) con 
+datos de operación normal y defectuosa. 
+18. Desarrollar sistema de alertas en tiempo real que notifique operarios y detenga 
+producción ante anomalías críticas. 
+ 
+Descripción 
+Sistema de detección de productos defectuosos en línea de ensamblaje usando 
+sensores (vibración, sonido, temperatura) y algoritmos de machine learning para 
+identificar patrones anómalos. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• ESP32 con sensor MPU6050 (acelerómetro/giroscopio) 
+• Módulo de micrófono MAX4466 
+• Sensor de temperatura DS18B20 
+• Arduino UNO para control de banda transportadora simulada 
+• Motor DC con encoder 
+• Buzzer y LEDs indicadores 
+Software y Tecnologías 
+• Python con scikit-learn 
+• Algoritmos: Isolation Forest, One-Class SVM 
+• Pandas y NumPy para procesamiento 
+• MQTT para comunicación 
+• Jupyter Notebook para entrenamiento 
+• Node-RED para alertas 
+Habilidades Desarrolladas 
+• Machine learning no supervisado 
+• Detección de anomalías 
+• Procesamiento de señales 
+• Mantenimiento predictivo 
+• Integración de múltiples sensores 
+  
+Proyecto 7: Sistema de Conteo y Clasificación de Personas en Espacios Públicos 
+Sector Ciudades inteligentes (Smart Cities) 
+Área Tecnológica AIoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+La gestión de aforos y análisis de flujos en espacios públicos carece de datos precisos 
+en tiempo real, generando aglomeraciones, riesgos de seguridad y dificultades en 
+planificación urbana. 
+Objetivo General 
+Implementar un sistema de conteo y clasificación de personas en espacios públicos 
+mediante visión artificial que genere métricas de ocupación respetando la privacidad de 
+los individuos. 
+Objetivos Específicos 
+19. Desarrollar algoritmo de detección de personas usando MobileNet-SSD optimizado 
+para ejecución en Raspberry Pi. 
+20. Implementar técnicas de anonimización que eviten identificación facial y cumplan 
+con regulaciones de privacidad. 
+21. Crear dashboard de visualización que muestre métricas de ocupación, flujos y 
+patrones temporales para gestión urbana. 
+ 
+Descripción 
+Contador inteligente que detecta y clasifica personas (adultos, niños) en espacios 
+públicos usando ESP32-CAM o Raspberry Pi, útil para gestión de aforos y análisis de 
+flujos urbanos. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ o Pi 4 
+• Cámara Raspberry Pi v2 (o ESP32-CAM como alternativa económica) 
+• Sensor PIR como trigger 
+• Almacenamiento: microSD de 32GB 
+• LED indicador de estado 
+Software y Tecnologías 
+• OpenCV con algoritmos de detección (HOG, Haar Cascades) 
+• TensorFlow Lite con MobileNet-SSD 
+• Python 
+• SQLite para conteos locales 
+• ThingSpeak para estadísticas en la nube 
+• MQTT para envío de eventos 
+Habilidades Desarrolladas 
+• Detección de objetos en tiempo real 
+• Optimización de procesamiento de video 
+• Preservación de privacidad (anonymización) 
+• Análisis estadístico de flujos 
+• Procesamiento edge computing 
+  
+Proyecto 8: Asistente de Monitoreo de Pacientes con Predicción de Deterioro 
+Sector Salud médica y hospitalaria 
+Área Tecnológica AIoT 
+Complejidad Avanzado 
+ 
+El deterioro de pacientes hospitalizados frecuentemente no se detecta a tiempo, 
+generando desenlaces adversos prevenibles por falta de monitoreo continuo y análisis 
+predictivo de signos vitales. 
+Objetivo General 
+Desarrollar un sistema de monitoreo continuo de signos vitales que utilice machine 
+learning para predecir deterioro clínico temprano y generar alertas preventivas al 
+personal médico. 
+Objetivos Específicos 
+22. Implementar sensores de frecuencia cardíaca, temperatura y movimiento en 
+dispositivo wearable basado en ESP32. 
+23. Entrenar modelos predictivos (Random Forest, Regresión Logística) con datasets 
+médicos de deterioro clínico. 
+24. Desarrollar sistema de alertas graduales que notifique al personal médico según 
+nivel de riesgo calculado. 
+ 
+Descripción 
+Sistema de monitoreo continuo de signos vitales (frecuencia cardíaca, temperatura, 
+movimiento) con algoritmo predictivo que alerta sobre posible deterioro del paciente 
+antes de que se vuelva crítico. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Sensor de pulso MAX30102 (oxímetro/frecuencia cardíaca) 
+• Sensor de temperatura MLX90614 (sin contacto) 
+• Acelerómetro MPU6050 (detección de caídas) 
+• ESP32 como dispositivo wearable 
+• Buzzer y LEDs para alertas 
+• Batería portátil 
+Software y Tecnologías 
+• Python con scikit-learn 
+• Algoritmos: Random Forest, Regresión Logística 
+• Pandas para manejo de datos 
+• MQTT para transmisión de vitales 
+• Node-RED para flujos de alertas 
+• Dashboard web con Chart.js 
+Habilidades Desarrolladas 
+• Machine learning supervisado 
+• Procesamiento de datos biomédicos 
+• Sistemas de alertas tempranas 
+• Manejo de datos sensibles 
+• Diseño de sistemas críticos 
+  
+PROYECTOS DE IoT HACKING Y CIBERSEGURIDAD 
+Proyecto 9: Laboratorio de Análisis de Vulnerabilidades en Redes IoT 
+Sector Control inteligente y sistemas 
+embebidos 
+Área Tecnológica IoT Hacking y Ciberseguridad 
+Complejidad Avanzado 
+ 
+Los dispositivos IoT presentan vulnerabilidades críticas de seguridad (credenciales 
+débiles, puertos abiertos, tráfico sin cifrar) que son explotadas por atacantes, pero los 
+desarrolladores carecen de entornos seguros para aprenderlas. 
+Objetivo General 
+Crear un laboratorio de ciberseguridad IoT que permita identificar, analizar y 
+documentar vulnerabilidades comunes en dispositivos conectados mediante técnicas de 
+ethical hacking. 
+Objetivos Específicos 
+25. Configurar entorno controlado con dispositivos IoT vulnerables intencionalmente 
+para análisis de seguridad. 
+26. Utilizar herramientas de pentesting (Nmap, Wireshark, Aircrack-ng) para identificar 
+vectores de ataque comunes. 
+27. Documentar vulnerabilidades encontradas y desarrollar guías de hardening para 
+asegurar dispositivos IoT. 
+ 
+Descripción 
+Entorno controlado para identificar vulnerabilidades comunes en dispositivos IoT 
+(credenciales débiles, puertos abiertos, tráfico sin cifrar) usando Raspberry Pi como 
+plataforma de pentesting. 
+Hardware Necesario 
+• Raspberry Pi 4 (atacante) 
+• Raspberry Pi 3 B+ (víctima - servidor IoT vulnerable) 
+• ESP32 (2-3 unidades - dispositivos IoT vulnerables) 
+• NodeMCU (dispositivo con configuración insegura) 
+• Switch de red o router 
+• Cables Ethernet 
+Software y Tecnologías 
+• Kali Linux ARM para Raspberry Pi 
+• Wireshark para análisis de tráfico 
+• Nmap para escaneo de puertos 
+• MQTT broker sin autenticación (intencional) 
+• Servidor web vulnerable (HTTP sin HTTPS) 
+• Aircrack-ng para análisis WiFi 
+• Python para scripts de explotación 
+Habilidades Desarrolladas 
+• Ethical hacking en IoT 
+• Análisis de protocolos de red 
+• Identificación de vulnerabilidades 
+• Hardening de dispositivos IoT 
+• Conciencia de seguridad 
+  
+Proyecto 10: Sistema de Detección de Intrusiones en Red IoT 
+Sector Ciudades inteligentes (Smart Cities) 
+Área Tecnológica IoT Hacking y Ciberseguridad 
+Complejidad Avanzado 
+ 
+Las redes IoT son vulnerables a ataques específicos (MITM, flood, escaneos) que los 
+IDS tradicionales no detectan efectivamente, dejando infraestructuras críticas expuestas 
+a compromisos de seguridad. 
+Objetivo General 
+Implementar un sistema de detección de intrusiones (IDS) especializado para redes IoT 
+que identifique patrones de ataque mediante análisis de tráfico en tiempo real. 
+Objetivos Específicos 
+28. Configurar Suricata/Snort en Raspberry Pi con reglas personalizadas para ataques 
+específicos de IoT. 
+29. Implementar análisis de tráfico con Zeek para identificar comportamientos anómalos 
+en protocolos IoT. 
+30. Desarrollar dashboard de seguridad que visualice eventos, alertas y métricas de 
+amenazas detectadas. 
+ 
+Descripción 
+IDS (Intrusion Detection System) basado en Raspberry Pi que monitorea tráfico de red 
+IoT, detecta patrones anómalos, escaneos de puertos y ataques comunes como MITM o 
+flood attacks. 
+Hardware Necesario 
+• Raspberry Pi 4 (4GB RAM) 
+• Adaptador WiFi USB adicional (modo monitor) 
+• Switch con port mirroring (o hub pasivo) 
+• ESP32 (3 unidades - dispositivos IoT legítimos) 
+• Arduino UNO (dispositivo atacante simulado) 
+• LEDs indicadores de alertas 
+Software y Tecnologías 
+• Suricata o Snort (IDS open source) 
+• Zeek (análisis de tráfico) 
+• Python para scripts personalizados 
+• Elasticsearch + Kibana para logs (opcional: Grafana) 
+• MQTT broker 
+• Reglas personalizadas Snort 
+Habilidades Desarrolladas 
+• Implementación de IDS 
+• Análisis forense de red 
+• Creación de reglas de detección 
+• Gestión de logs de seguridad 
+• Respuesta a incidentes 
+  
+Proyecto 11: Sistema de Autenticación Multi-Factor para Acceso IoT 
+Sector Domótica e Inmótica (edificios 
+inteligentes) 
+Área Tecnológica IoT Hacking y Ciberseguridad 
+Complejidad Avanzado 
+ 
+Los sistemas de acceso tradicionales con un solo factor son vulnerables a clonación de 
+tarjetas, robo de credenciales y accesos no autorizados, poniendo en riesgo la 
+seguridad de edificios y áreas restringidas. 
+Objetivo General 
+Diseñar un sistema de control de acceso multi-factor que combine RFID, PIN y 
+opcionalmente biometría facial con cifrado de comunicaciones para edificios 
+inteligentes. 
+Objetivos Específicos 
+31. Implementar autenticación de múltiples factores integrando RFID, teclado matricial y 
+cámara para reconocimiento facial. 
+32. Desarrollar sistema de cifrado end-to-end usando AES y TLS/SSL para todas las 
+comunicaciones del sistema. 
+33. Crear base de datos de auditoría que registre todos los intentos de acceso con 
+timestamps y evidencia fotográfica. 
+ 
+Descripción 
+Control de acceso a edificio inteligente con autenticación de múltiples factores (RFID + 
+PIN + biometría facial opcional), con cifrado end-to-end y logging de intentos de acceso. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Módulo RFID RC522 
+• Teclado matricial 4x4 
+• Cámara Raspberry Pi (para facial opcional) 
+• Relé para cerradura electrónica 
+• ESP32 (nodo de puerta) 
+• Display LCD 16x2 
+• Buzzer para alertas 
+Software y Tecnologías 
+• Python para lógica de autenticación 
+• OpenCV + Face Recognition (opcional) 
+• Cifrado AES para comunicaciones 
+• MQTT con TLS/SSL 
+• PostgreSQL para logs de acceso 
+• Hashing bcrypt para PINs 
+• Tokens JWT para sesiones 
+Habilidades Desarrolladas 
+• Implementación de MFA 
+• Criptografía aplicada 
+• Gestión segura de credenciales 
+• Auditoría de accesos 
+• Diseño de sistemas seguros 
+  
+Proyecto 12: Honeypot IoT para Detección de Amenazas 
+Sector Infraestructuras energéticas y redes 
+eléctricas inteligentes 
+Área Tecnológica IoT Hacking y Ciberseguridad 
+Complejidad Intermedio-Avanzado 
+ 
+Las organizaciones carecen de inteligencia sobre amenazas emergentes y técnicas de 
+ataque específicas contra infraestructuras IoT críticas, limitando su capacidad de 
+defensa proactiva. 
+Objetivo General 
+Implementar un honeypot IoT que simule dispositivos vulnerables para atraer atacantes, 
+registrar sus técnicas y generar inteligencia de amenazas para infraestructuras críticas. 
+Objetivos Específicos 
+34. Configurar múltiples servicios señuelo (SSH, Telnet, MQTT) con vulnerabilidades 
+conocidas intencionalmente. 
+35. Implementar sistema de logging exhaustivo que capture comandos, payloads y 
+comportamiento de atacantes. 
+36. Desarrollar análisis automatizado de logs que identifique patrones de ataque y 
+genere indicadores de compromiso (IoCs). 
+ 
+Descripción 
+Dispositivo señuelo que simula ser un medidor inteligente vulnerable para atraer 
+atacantes, registrar sus técnicas y generar inteligencia sobre amenazas emergentes en 
+infraestructuras críticas. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• ESP32 (honeypot de bajo nivel) 
+• Arduino UNO (simulador de medidor) 
+• Adaptador WiFi USB 
+• Almacenamiento USB adicional para logs 
+Software y Tecnologías 
+• Cowrie (honeypot SSH/Telnet) 
+• Dionaea (honeypot multi-protocolo) 
+• Python para servicios falsos personalizados 
+• MQTT broker abierto (intencional) 
+• Elasticsearch para almacenamiento de logs 
+• Fail2ban para análisis de patrones 
+• Scripts de notificación (Telegram API) 
+Habilidades Desarrolladas 
+• Implementación de honeypots 
+• Análisis de amenazas 
+• Threat intelligence 
+• Configuración de servicios señuelo 
+• Análisis de comportamiento de atacantes 
+  
+PROYECTOS DE IoT CON BIG DATA Y ANALÍTICA 
+Proyecto 13: Plataforma de Análisis Predictivo para Consumo Energético 
+Sector Infraestructuras energéticas y redes 
+eléctricas inteligentes 
+Área Tecnológica IoT con Big Data y Analítica 
+Complejidad Avanzado 
+ 
+El consumo energético ineficiente en edificios genera costos elevados y desperdicio, 
+mientras que la falta de predicción impide optimización proactiva y planificación de 
+demanda. 
+Objetivo General 
+Desarrollar una plataforma de análisis predictivo de consumo energético que utilice 
+series temporales y machine learning para optimizar el uso de energía en edificios. 
+Objetivos Específicos 
+37. Implementar red de sensores de corriente y voltaje que monitoreen consumo 
+eléctrico en circuitos críticos. 
+38. Desarrollar modelos de forecasting con Prophet que predigan consumo futuro 
+basado en patrones históricos. 
+39. Crear sistema de recomendaciones que sugiera acciones de optimización 
+energética según predicciones y costos. 
+ 
+Descripción 
+Sistema que recopila datos de múltiples sensores de consumo eléctrico en 
+edificio/campus, los almacena en base de datos de series temporales y genera 
+predicciones de consumo futuro para optimización energética. 
+Hardware Necesario 
+• Raspberry Pi 4 (servidor central) 
+• ESP32 (4-6 unidades - nodos de medición) 
+• Sensores de corriente ACS712 (6 unidades) 
+• Sensores de voltaje ZMPT101B (3 unidades) 
+• Relés para control de cargas (4 canales) 
+• Display OLED para visualización local 
+Software y Tecnologías 
+• InfluxDB (base de datos de series temporales) 
+• Grafana para dashboards 
+• Python con Prophet (forecasting de Facebook) 
+• Pandas y NumPy 
+• Apache Airflow para orquestación de tareas 
+• MQTT para recolección 
+• Jupyter Notebook para análisis 
+Habilidades Desarrolladas 
+• Forecasting con series temporales 
+• Big Data en edge computing 
+• ETL (Extract, Transform, Load) 
+• Análisis de patrones de consumo 
+• Optimización energética 
+  
+Proyecto 14: Sistema de Análisis de Tráfico Vehicular Urbano 
+Sector Ciudades inteligentes (Smart Cities) 
+Área Tecnológica IoT con Big Data y Analítica + Visión 
+Artificial 
+Complejidad Avanzado 
+ 
+La congestión vehicular urbana genera pérdidas económicas, contaminación y baja 
+calidad de vida, mientras que la gestión de tráfico carece de datos en tiempo real para 
+optimización dinámica. 
+Objetivo General 
+Implementar un sistema de análisis de tráfico vehicular urbano que capture datos de 
+flujo en intersecciones y utilice big data para optimizar sincronización semafórica. 
+Objetivos Específicos 
+40. Desplegar red de ESP32-CAM y sensores ultrasónicos en intersecciones críticas 
+para captura de datos vehiculares. 
+41. Desarrollar pipeline de procesamiento con Apache Spark para análisis de patrones 
+de congestión en tiempo real. 
+42. Crear algoritmos de optimización semafórica que ajusten tiempos según densidad 
+vehicular detectada. 
+ 
+Descripción 
+Red de sensores que capturan datos de flujo vehicular en intersecciones, los agregan y 
+analizan para identificar patrones de congestión, optimizar semáforos y generar reportes 
+de movilidad urbana. 
+Hardware Necesario 
+• Raspberry Pi 4 (nodo central de procesamiento) 
+• ESP32-CAM (3-4 unidades en intersecciones) 
+• Sensores ultrasónicos HC-SR04 (conteo vehicular) 
+• Arduino Nano (2 unidades - control de sensores) 
+• Almacenamiento: SSD USB o microSD de alta capacidad 
+Software y Tecnologías 
+• OpenCV para procesamiento de video 
+• MongoDB para almacenamiento de datos 
+• Apache Spark (versión standalone) para procesamiento 
+• Python con PySpark 
+• Pandas para agregaciones 
+• Matplotlib/Seaborn para visualizaciones 
+• Node-RED para ingesta de datos 
+Habilidades Desarrolladas 
+• Procesamiento distribuido de datos 
+• Computer vision aplicada 
+• Análisis espacial y temporal 
+• Visualización de datos urbanos 
+• Big Data en IoT 
+  
+Proyecto 15: Plataforma de Monitoreo de Calidad del Aire con Analítica 
+Avanzada 
+Sector Gestión medioambiental y 
+sostenibilidad 
+Área Tecnológica IoT con Big Data y Analítica 
+Complejidad Intermedio-Avanzado 
+ 
+La contaminación atmosférica afecta la salud pública, pero el monitoreo limitado impide 
+identificar fuentes de emisión y zonas críticas para intervención efectiva. 
+Objetivo General 
+Desarrollar una plataforma de monitoreo de calidad del aire con análisis geoespacial 
+que identifique fuentes de contaminación y genere mapas de calor de polución 
+atmosférica. 
+Objetivos Específicos 
+43. Implementar red de estaciones de monitoreo con sensores de PM2.5, PM10, CO2 y 
+NO2 con GPS. 
+44. Desarrollar análisis geoespacial con clustering (K-means) para identificar zonas de 
+alta contaminación. 
+45. Crear mapas interactivos de calidad del aire que visualicen tendencias temporales y 
+alertas de salud pública. 
+ 
+Descripción 
+Red de estaciones de monitoreo de calidad del aire (PM2.5, PM10, CO2, NO2) 
+distribuidas en ciudad/campus que recopilan datos continuos, los analizan para 
+identificar fuentes de contaminación y generan mapas de calor. 
+Hardware Necesario 
+• Raspberry Pi 4 (servidor) 
+• ESP32 (5-6 nodos de sensores) 
+• Sensor PMS5003 (material particulado) 
+• Sensor MQ-135 (calidad del aire general) 
+• Sensor MH-Z19B (CO2) 
+• GPS NEO-6M (geolocalización de nodos) 
+• DHT22 (datos meteorológicos) 
+Software y Tecnologías 
+• PostgreSQL con PostGIS (datos geoespaciales) 
+• TimescaleDB (extensión para series temporales) 
+• Python con Pandas y GeoPandas 
+• Matplotlib y Folium (mapas interactivos) 
+• ThingSpeak para respaldo en nube 
+• MQTT broker 
+• Algoritmos de clustering (K-means) 
+Habilidades Desarrolladas 
+• Análisis geoespacial 
+• Visualización de mapas de calor 
+• Manejo de datos ambientales 
+• Clustering y segmentación 
+• Bases de datos geográficas 
+  
+Proyecto 16: Sistema de Análisis de Producción Farmacéutica en Tiempo Real 
+Sector Industria farmacéutica 
+Área Tecnológica IoT con Big Data y Analítica 
+Complejidad Avanzado 
+ 
+La industria farmacéutica requiere control riguroso de variables de proceso y 
+documentación exhaustiva para cumplimiento regulatorio, procesos actualmente 
+manuales y propensos a errores. 
+Objetivo General 
+Desarrollar una plataforma de monitoreo y análisis de procesos farmacéuticos que 
+implemente control estadístico de calidad y genere reportes de cumplimiento regulatorio 
+automáticamente. 
+Objetivos Específicos 
+46. Implementar sensores de temperatura, humedad, presión y vibración en equipos 
+críticos de manufactura farmacéutica. 
+47. Desarrollar algoritmos de Control Estadístico de Procesos (SPC) que detecten 
+desviaciones de especificaciones. 
+48. Automatizar generación de reportes de validación y batch records conforme a 
+normativas FDA/GMP. 
+ 
+Descripción 
+Plataforma que monitorea variables críticas en proceso de manufactura farmacéutica 
+(temperatura, humedad, presión, vibración), almacena históricos y genera análisis de 
+tendencias para control de calidad y compliance regulatorio. 
+Hardware Necesario 
+• Raspberry Pi 4 (2 unidades - redundancia) 
+• ESP32 (4 unidades - diferentes puntos de proceso) 
+• DHT22 (temperatura/humedad) 
+• BMP280 (presión) 
+• MPU6050 (vibración de equipos) 
+• Sensores de flujo 
+• Display TFT para HMI local 
+Software y Tecnologías 
+• InfluxDB para almacenamiento 
+• Grafana con alertas configurables 
+• Python para cálculos estadísticos (SPC - Statistical Process Control) 
+• Pandas y SciPy 
+• MQTT con QoS 2 (garantía de entrega) 
+• Node-RED para workflows 
+• Generación de reportes PDF automáticos 
+Habilidades Desarrolladas 
+• Control estadístico de procesos 
+• Sistemas críticos de calidad 
+• Análisis de tendencias 
+• Generación de reportes regulatorios 
+• Alta disponibilidad de datos 
+  
+PROYECTOS DE IoT CON VISIÓN ARTIFICIAL 
+Proyecto 17: Sistema de Monitoreo de Crecimiento de Cultivos 
+Sector Agricultura de precisión y agricultura 
+inteligente 
+Área Tecnológica IoT con Visión Artificial + AIoT 
+Complejidad Avanzado 
+ 
+La detección tardía de enfermedades y plagas en cultivos genera pérdidas 
+significativas, mientras que inspecciones manuales son intensivas en tiempo y requieren 
+expertise especializado. 
+Objetivo General 
+Implementar un sistema de monitoreo de cultivos basado en visión artificial que detecte 
+fases de crecimiento, enfermedades y plagas mediante análisis automatizado de 
+imágenes. 
+Objetivos Específicos 
+49. Desarrollar sistema de captura time-lapse con iluminación controlada y 
+almacenamiento de imágenes periódicas. 
+50. Entrenar modelos de clasificación de enfermedades vegetales usando transfer 
+learning con dataset PlantVillage. 
+51. Implementar sistema de alertas tempranas que notifique agricultores ante detección 
+de patologías en cultivos. 
+ 
+Descripción 
+Cámara time-lapse inteligente que captura imágenes periódicas de cultivos, detecta 
+fases de crecimiento, identifica plagas o enfermedades mediante análisis de color y 
+textura, y genera alertas tempranas. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Cámara Raspberry Pi HQ o v2 
+• Iluminación LED controlada (espectro completo) 
+• DHT22 (contexto ambiental) 
+• Relé para control de iluminación 
+• Panel solar pequeño + batería (opcional para campo) 
+• Carcasa impermeable 
+Software y Tecnologías 
+• OpenCV para procesamiento 
+• Python con PIL/Pillow 
+• Scikit-image para análisis de texturas 
+• TensorFlow Lite (modelo de clasificación de enfermedades) 
+• MQTT para alertas 
+• FFmpeg para generar videos time-lapse 
+• ThingSpeak para almacenar métricas 
+Habilidades Desarrolladas 
+• Análisis de imágenes agrícolas 
+• Detección de patrones visuales 
+• Transfer learning aplicado 
+• Sistemas autónomos de campo 
+• Procesamiento de imágenes en lote 
+  
+Proyecto 18: Control de Ocupación de Estacionamiento con Visión 
+Sector Parqueaderos y estacionamientos 
+inteligentes 
+Área Tecnológica IoT con Visión Artificial 
+Complejidad Intermedio 
+ 
+Los conductores pierden tiempo buscando espacios de estacionamiento disponibles, 
+generando congestión, frustración y emisiones innecesarias en áreas urbanas. 
+Objetivo General 
+Desarrollar un sistema de gestión de estacionamientos que detecte espacios 
+ocupados/libres mediante visión artificial y proporcione información en tiempo real a 
+usuarios. 
+Objetivos Específicos 
+52. Implementar algoritmos de detección de objetos estáticos con background 
+subtraction para identificación de vehículos. 
+53. Desarrollar API REST que proporcione disponibilidad en tiempo real para integración 
+con apps móviles. 
+54. Crear dashboard de estadísticas de uso que analice patrones de ocupación para 
+optimización tarifaria. 
+ 
+Descripción 
+Sistema de visión que detecta espacios de estacionamiento ocupados/libres mediante 
+análisis de imágenes, actualiza en tiempo real disponibilidad en app/pantalla y genera 
+estadísticas de uso. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Cámara Raspberry Pi Wide Angle o USB 
+• ESP32 con display OLED (señalización de espacios) 
+• LEDs RGB (indicadores por espacio) 
+• Arduino Nano para control de LEDs 
+• Sensor ultrasónico HC-SR04 (validación) 
+Software y Tecnologías 
+• OpenCV con background subtraction 
+• Python 
+• Algoritmos de detección de contornos 
+• MQTT para comunicación 
+• Node-RED para lógica 
+• SQLite para históricos 
+• API REST con Flask para consultas 
+• Dashboard web simple (HTML/CSS/JS) 
+Habilidades Desarrolladas 
+• Detección de objetos estáticos 
+• Segmentación de imágenes 
+• Sistemas de notificación en tiempo real 
+• Desarrollo de APIs REST 
+• Integración hardware-software 
+  
+Proyecto 19: Monitor de Uso de EPP en Zona Industrial 
+Sector Automatización industrial (Industria 
+4.0) 
+Área Tecnológica IoT con Visión Artificial + AIoT 
+Complejidad Avanzado 
+ 
+El incumplimiento de normas de seguridad industrial por no uso de EPP causa 
+accidentes laborales graves, pero la supervisión manual es inconsistente e insuficiente. 
+Objetivo General 
+Implementar un sistema de vigilancia inteligente que verifique automáticamente el uso 
+correcto de equipo de protección personal en zonas industriales de alto riesgo. 
+Objetivos Específicos 
+55. Entrenar modelo YOLO para detección de EPP (cascos, gafas, guantes, chalecos) 
+con dataset industrial. 
+56. Desarrollar sistema de alertas graduales que notifique a supervisores ante detección 
+de incumplimientos. 
+57. Generar reportes estadísticos de cumplimiento de seguridad por área, turno y 
+trabajador para auditorías. 
+ 
+Descripción 
+Sistema de vigilancia que verifica uso correcto de equipo de protección personal (casco, 
+gafas, guantes) en zonas industriales, genera alertas de incumplimiento y registra 
+estadísticas de seguridad. 
+Hardware Necesario 
+• Raspberry Pi 4 (4GB RAM mínimo) 
+• Cámara Raspberry Pi v2 o USB HD 
+• Sensor PIR para activación 
+• Buzzer para alertas sonoras 
+• Display LCD para mensajes 
+• ESP32 (módulo de alertas remotas) 
+• Luces LED indicadoras 
+Software y Tecnologías 
+• TensorFlow Lite 
+• Modelo YOLO (versión lite) o MobileNet-SSD 
+• OpenCV 
+• Python 
+• Dataset pre-entrenado: COCO o personalizado 
+• MQTT para alertas 
+• SQLite para registro de eventos 
+• Grafana para dashboard de seguridad 
+Habilidades Desarrolladas 
+• Object detection en tiempo real 
+• Implementación de YOLO/SSD 
+• Sistemas de seguridad industrial 
+• Fine-tuning de modelos 
+• Procesamiento de video en streaming 
+  
+Proyecto 20: Sistema de Lectura Automática de Medidores 
+Sector Infraestructuras energéticas y redes 
+eléctricas inteligentes 
+Área Tecnológica IoT con Visión Artificial + AIoT 
+Complejidad Avanzado 
+ 
+La lectura manual de medidores es costosa, propensa a errores de transcripción y 
+requiere acceso físico, limitando frecuencia de facturación y detección de fugas o 
+consumos anormales. 
+Objetivo General 
+Desarrollar un sistema de lectura automática de medidores analógicos mediante OCR y 
+visión artificial que digitalice lecturas para facturación y detección de anomalías. 
+Objetivos Específicos 
+58. Implementar pre-procesamiento de imágenes (binarización, corrección perspectiva) 
+para optimizar reconocimiento OCR. 
+59. Desarrollar algoritmo de validación que compare lecturas consecutivas y detecte 
+inconsistencias o errores de OCR. 
+60. Crear sistema de alertas de consumo anormal que identifique posibles fugas o 
+fraudes mediante análisis de patrones. 
+ 
+Descripción 
+Lector automático de medidores analógicos (agua, gas, electricidad) usando OCR y 
+visión artificial, que captura lecturas periódicamente, las digitaliza y envía a plataforma 
+central para facturación y detección de anomalías. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Cámara Raspberry Pi con lente macro o ajustable 
+• Iluminación LED (para lectura nocturna) 
+• ESP32 (nodo de comunicación) 
+• Sensor de proximidad (activación al acercarse) 
+• Carcasa protectora 
+• Batería de respaldo 
+Software y Tecnologías 
+• OpenCV para pre-procesamiento 
+• Tesseract OCR 
+• Python con pytesseract 
+• PIL/Pillow para manipulación de imágenes 
+• Algoritmos de detección de dígitos (template matching) 
+• MQTT para transmisión de lecturas 
+• PostgreSQL para almacenamiento 
+• Grafana para visualización de consumos 
+Habilidades Desarrolladas 
+• OCR aplicado 
+• Pre-procesamiento de imágenes 
+• Reconocimiento de patrones numéricos 
+• Digitalización de sistemas legacy 
+• Validación y corrección de errores de lectura 
+  
+NOTAS FINALES 
+Consideraciones Importantes 
+• Todos los proyectos utilizan exclusivamente software libre y de código abierto 
+• El hardware recomendado está optimizado para bajo costo y disponibilidad 
+• Los proyectos pueden adaptarse según disponibilidad de componentes locales 
+• Se recomienda formar equipos de 2-3 estudiantes por proyecto 
+• Cada proyecto debe incluir documentación técnica completa 
+• Los estudiantes deben considerar aspectos de seguridad en todos los proyectos 
+• Es importante realizar pruebas exhaustivas antes de implementación final 
+Evaluación Sugerida 
+Se sugiere evaluar los proyectos considerando: 
+• Funcionalidad del sistema (40%) 
+• Calidad del código y documentación (25%) 
+• Innovación y creatividad en la solución (15%) 
+• Presentación y demostración final (20%) 
+Recursos Adicionales 
+Para tutoriales, códigos de ejemplo y recursos adicionales, se recomienda consultar: 
+• Documentación oficial de Raspberry Pi Foundation 
+• Comunidades de Arduino y ESP32 
+• Repositorios GitHub con proyectos IoT open source 
+• Foros especializados como Stack Overflow y Reddit (r/IoT) 
+• Cursos gratuitos en plataformas como Coursera y edX 
+  
+PROYECTOS DE NEUROLOGÍA Y NEUROTECNOLOGÍA 
+Proyecto 21: Prototipo SBC-IoT para Detección Temprana de Parkinson 
+Sector Salud médica y hospitalaria - 
+Neurología 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Avanzado 
+ 
+El diagnóstico de Parkinson ocurre en etapas avanzadas cuando síntomas son 
+evidentes, perdiendo ventana crítica para tratamiento temprano que ralentice la 
+progresión de la enfermedad. 
+Objetivo General 
+Desarrollar un dispositivo wearable que detecte tempranamente signos de Parkinson y 
+trastornos motores mediante análisis de movimiento y actividad muscular con machine 
+learning. 
+Objetivos Específicos 
+61. Implementar sensores de aceleración (MPU6050) y EMG (MyoWare) en wearable 
+ergonómico para muñeca/mano. 
+62. Desarrollar algoritmos de clasificación (SVM, Random Forest) que distingan temblor 
+de reposo, acción y postural. 
+63. Crear aplicación médica que genere reportes cuantitativos de severidad de síntomas 
+para seguimiento clínico. 
+ 
+Descripción 
+Sistema de detección temprana de Parkinson y temblores neuromotores mediante 
+análisis de vibración y patrones motores. Detecta temblores involuntarios, rigidez y 
+alteraciones en el movimiento usando sensores de aceleración y actividad muscular. 
+Objetivo 
+Detectar temblores involuntarios, rigidez y alteraciones en el movimiento mediante 
+análisis de vibración y patrones motores en tiempo real. 
+Condiciones Neurológicas Detectables 
+• Enfermedad de Parkinson 
+• Temblor esencial 
+• Trastornos motores iniciales 
+• Discinesias 
+Hardware Necesario 
+• Raspberry Pi 4 (nodo central de procesamiento) 
+• ESP32 (dispositivo wearable) 
+• Acelerómetro + giroscopio MPU6050 o MPU9250 
+• Sensor EMG MyoWare (actividad muscular) 
+• Módulo WiFi/LoRa para monitoreo remoto 
+• Batería LiPo 3.7V para wearable 
+• Carcasa ergonómica para muñeca/mano 
+• LEDs indicadores de estado 
+Software y Tecnologías 
+• Python con scikit-learn para ML 
+• Algoritmos: SVM, Random Forest 
+• ThingsBoard o Node-RED para plataforma IoT 
+• InfluxDB para series temporales 
+• Scipy para análisis de señales 
+• MQTT para transmisión de datos 
+• Grafana para visualización médica 
+• TensorFlow Lite para clasificación en edge 
+Variables Monitoreadas 
+• Frecuencia y amplitud del temblor (Hz) 
+• Micro-movimientos involuntarios 
+• Activación muscular anormal (EMG) 
+• Patrones de rigidez muscular 
+• Bradiquinesia (lentitud de movimiento) 
+• Asimetría en movimientos 
+Habilidades Desarrolladas 
+• Procesamiento de señales biomédicas 
+• Machine Learning aplicado a salud 
+• Diseño de dispositivos wearables 
+• Análisis de patrones de movimiento 
+• Clasificación de estados neuromotores 
+• Desarrollo de sistemas de alerta médica 
+  
+Proyecto 22: Sistema IoT para Detección de Deterioro Cognitivo Leve y 
+Alzheimer 
+Sector Salud médica y hospitalaria - 
+Neurología 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Avanzado 
+ 
+El deterioro cognitivo leve progresa a demencia sin detección temprana por falta de 
+evaluaciones frecuentes, mientras que pruebas cognitivas formales son costosas y se 
+realizan raramente. 
+Objetivo General 
+Implementar un sistema de monitoreo no invasivo que detecte cambios en patrones de 
+comportamiento y rutinas diarias indicativos de deterioro cognitivo temprano. 
+Objetivos Específicos 
+64. Desplegar red de sensores PIR, magnéticos y temporales que capturen rutinas de 
+actividad sin cámaras. 
+65. Desarrollar algoritmos de detección de anomalías que identifiquen desviaciones de 
+patrones de comportamiento establecidos. 
+66. Crear dashboard para familiares/cuidadores con alertas de cambios significativos en 
+comportamiento del paciente. 
+ 
+Descripción 
+Sistema de monitoreo no invasivo que detecta cambios en comportamiento, memoria y 
+patrones de rutina mediante análisis de actividad diaria y patrones conductuales, 
+orientado a detección temprana de deterioro cognitivo. 
+Objetivo 
+Identificar cambios sutiles en rutinas diarias, comportamiento y patrones de actividad 
+que puedan indicar deterioro cognitivo en etapas tempranas. 
+Condiciones Neurológicas Detectables 
+• Alzheimer en etapa temprana 
+• Deterioro Cognitivo Leve (DCL) 
+• Demencia vascular inicial 
+• Desorientación temporal y espacial 
+Hardware Necesario 
+• Raspberry Pi 4 (hub central) 
+• Sensores PIR de movimiento (4-6 unidades) 
+• Sensores magnéticos de apertura de puertas (3-4 unidades) 
+• Módulo RTC (Real Time Clock) 
+• Micrófono MEMS (análisis de patrones de habla) 
+• ESP32 (nodos distribuidos en hogar) 
+• Pulsera wearable opcional (acelerómetro + pulso) 
+• Display OLED para recordatorios 
+Software y Tecnologías 
+• Python con Pandas para análisis de patrones 
+• Algoritmo Isolation Forest (detección de anomalías) 
+• MQTT para comunicación entre sensores 
+• PostgreSQL para almacenamiento de rutinas 
+• Librería schedule para análisis temporal 
+• Node-RED para lógica de eventos 
+• API de notificaciones (Telegram/WhatsApp) 
+• Dashboard web con React o Vue.js 
+Variables Monitoreadas 
+• Patrones de rutina diaria 
+• Cambios en horarios de actividades 
+• Períodos de inactividad prolongada 
+• Desorientación temporal 
+• Frecuencia de uso de espacios del hogar 
+• Patrones de sueño 
+• Olvidos recurrentes (puertas abiertas, luces encendidas) 
+Habilidades Desarrolladas 
+• Análisis de patrones conductuales 
+• Detección de anomalías temporales 
+• Diseño de sistemas no invasivos 
+• Procesamiento de datos de hábitos 
+• Machine learning para salud mental 
+• Interfaces de cuidado asistido 
+  
+Proyecto 23: Monitor IoT de Estrés Neurológico, Ansiedad y TDAH 
+Sector Salud médica y hospitalaria - 
+Neurología 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Avanzado 
+ 
+Los trastornos de atención y ansiedad se diagnostican subjetivamente mediante 
+cuestionarios, careciendo de métricas objetivas fisiológicas para diagnóstico preciso y 
+seguimiento de tratamiento. 
+Objetivo General 
+Desarrollar un sistema de monitoreo neurofisiológico que cuantifique objetivamente 
+niveles de estrés, ansiedad y atención mediante análisis de señales biológicas. 
+Objetivos Específicos 
+67. Implementar sensores de respuesta galvánica, variabilidad cardíaca y 
+opcionalmente EEG en dispositivo wearable. 
+68. Desarrollar algoritmos de clasificación de estados mentales (atención, distracción, 
+estrés, calma) con redes neuronales. 
+69. Crear aplicación de biofeedback que entrene usuarios a autorregular estados de 
+atención y ansiedad. 
+ 
+Descripción 
+Sistema de monitoreo neurofisiológico que identifica alteraciones relacionadas con 
+atención, estrés y ansiedad mediante sensores de respuesta galvánica, variabilidad 
+cardíaca y opcionalmente señales EEG básicas. 
+Objetivo 
+Identificar alteraciones neurofisiológicas relacionadas con atención, estrés crónico y 
+estados de ansiedad para intervención temprana. 
+Condiciones Neurológicas Detectables 
+• Trastorno por Déficit de Atención e Hiperactividad (TDAH) 
+• Estrés crónico 
+• Trastornos de ansiedad generalizada 
+• Estados de hiperactivación neurológica 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Sensor GSR (Galvanic Skin Response) 
+• Pulsioxímetro MAX30102 (frecuencia cardíaca y SpO2) 
+• ESP32 como módulo wearable 
+• EEG básico OpenBCI o Muse (opcional) 
+• Sensor de temperatura corporal 
+• Electrodos reutilizables 
+• Batería recargable 
+• Carcasa wearable tipo pulsera 
+Software y Tecnologías 
+• Python con SciPy para procesamiento de señales 
+• TensorFlow Lite para clasificación de estados 
+• Redes neuronales ligeras (LSTM) 
+• HeartPy para análisis HRV 
+• MQTT para transmisión continua 
+• InfluxDB para series temporales 
+• Grafana para visualización de estados 
+• API REST con Flask 
+Variables Monitoreadas 
+• Variabilidad de Frecuencia Cardíaca (HRV) 
+• Respuesta galvánica de la piel (GSR) 
+• Frecuencia cardíaca en reposo y actividad 
+• Saturación de oxígeno (SpO2) 
+• Ondas cerebrales (Alpha, Beta, Theta - si usa EEG) 
+• Cambios de atención sostenida 
+• Patrones de activación simpática 
+Habilidades Desarrolladas 
+• Procesamiento de señales fisiológicas 
+• Análisis de variabilidad cardíaca 
+• Clasificación de estados mentales 
+• Deep learning para biosseñales 
+• Diseño de wearables médicos 
+• Sistemas de biofeedback 
+  
+Proyecto 24: Sistema de Detección y Alerta de Crisis Epilépticas 
+Sector Salud médica y hospitalaria - 
+Neurología 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Avanzado 
+ 
+Las crisis epilépticas pueden causar lesiones graves o muerte si el paciente está solo, 
+pero familiares/cuidadores no reciben alertas inmediatas para proporcionar asistencia 
+urgente. 
+Objetivo General 
+Desarrollar un sistema wearable de detección de crisis epilépticas que genere alertas 
+automáticas con geolocalización a contactos de emergencia en tiempo real. 
+Objetivos Específicos 
+70. Implementar detección de movimientos convulsivos y cambios fisiológicos mediante 
+acelerómetro y pulsioxímetro. 
+71. Desarrollar algoritmo de clasificación que diferencie crisis epilépticas de 
+movimientos normales con alta especificidad. 
+72. Crear sistema multi-canal de alertas (SMS, WhatsApp, llamadas) con ubicación GPS 
+para respuesta de emergencia. 
+ 
+Descripción 
+Sistema wearable de detección temprana de crisis epilépticas mediante análisis de 
+movimientos anormales, cambios fisiológicos y patrones previos a una crisis, con 
+sistema de alerta automática a contactos de emergencia. 
+Objetivo 
+Detectar movimientos anormales, convulsiones y cambios fisiológicos que preceden o 
+acompañan una crisis epiléptica, generando alertas inmediatas. 
+Condiciones Neurológicas Detectables 
+• Epilepsia (diversos tipos de crisis) 
+• Convulsiones tónico-clónicas 
+• Crisis parciales complejas 
+• Auras pre-ictales 
+Hardware Necesario 
+• Raspberry Pi 4 (estación base) 
+• ESP32 (wearable principal) 
+• Acelerómetro + giroscopio MPU6050 
+• Pulsioxímetro MAX30102 
+• Sensor de temperatura MLX90614 
+• Módulo GSM SIM800L (alertas SMS) 
+• GPS NEO-6M (localización de emergencia) 
+• Buzzer de alta potencia 
+• Vibrador motor 
+• Batería LiPo con autonomía extendida 
+Software y Tecnologías 
+• Python con scikit-learn 
+• Algoritmos de detección de anomalías 
+• Random Forest para clasificación de crisis 
+• MQTT con QoS 2 (entrega garantizada) 
+• Twilio API para SMS 
+• WhatsApp Business API 
+• Node-RED para lógica de alertas 
+• Geolocalización con Google Maps API 
+• SQLite para registro de eventos 
+Variables Monitoreadas 
+• Movimientos convulsivos (aceleración anormal) 
+• Caídas súbitas 
+• Ritmo cardíaco extremo (taquicardia/bradicardia) 
+• Cambios bruscos de temperatura corporal 
+• Rigidez muscular 
+• Patrones de movimiento pre-ictal 
+• Duración de la crisis 
+Sistema de Alertas 
+El sistema genera alertas multi-canal: 
+• SMS automático a contactos de emergencia 
+• Notificación WhatsApp con ubicación GPS 
+• Llamada automática (opcional con módulo adicional) 
+• Alerta sonora y vibratoria en el dispositivo 
+• Dashboard web en tiempo real para cuidadores 
+• Registro histórico de eventos para médicos 
+Habilidades Desarrolladas 
+• Desarrollo de sistemas críticos de salud 
+• Detección de eventos neurológicos 
+• Integración de alertas multi-canal 
+• Procesamiento en tiempo real 
+• Sistemas de emergencia IoT 
+• Geolocalización y tracking 
+• Diseño de wearables de alta disponibilidad 
+  
+PROYECTOS DE NEUROCIENCIA E INTERFACES CEREBRO-COMPUTADORA 
+Proyecto 25: Interfaz Cerebro-Computadora (BCI) con EEG para Control IoT 
+Sector Neurociencia - Interfaces cerebro-
+computadora 
+Área Tecnológica AIoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+Las personas con discapacidad motora severa carecen de métodos de control 
+ambiental, limitando su autonomía e independencia en actividades cotidianas del hogar. 
+Objetivo General 
+Implementar una interfaz cerebro-computadora basada en EEG que permita a usuarios 
+con movilidad reducida controlar dispositivos IoT mediante actividad cerebral voluntaria. 
+Objetivos Específicos 
+73. Configurar sistema de captura EEG con OpenBCI y entrenar clasificadores de 
+estados mentales (concentración, relajación, comandos). 
+74. Desarrollar protocolo de entrenamiento de usuarios para generar señales cerebrales 
+distinguibles y controlables. 
+75. Integrar BCI con dispositivos domóticos mediante MQTT para control de luces, 
+puertas, electrodomésticos. 
+ 
+Descripción 
+Sistema de interfaz cerebro-computadora que permite controlar dispositivos IoT 
+mediante señales EEG, detectando estados mentales (concentración, relajación) y 
+comandos mentales simples para activar relés, luces o actuadores. 
+Objetivo 
+Crear una interfaz no invasiva que permita a usuarios controlar dispositivos del hogar u 
+otros sistemas IoT mediante actividad cerebral, útil para personas con movilidad 
+reducida. 
+Aplicaciones Neurocientíficas 
+• Control de domótica para personas con discapacidad motora 
+• Neurofeedback para entrenamiento cognitivo 
+• Comunicación aumentativa alternativa 
+• Terapia de rehabilitación neurológica 
+Hardware Necesario 
+• Raspberry Pi 4 (procesamiento central) 
+• OpenBCI Cyton (8 canales EEG) o alternativa económica 
+• Electrodos secos reutilizables (4-8 unidades) 
+• ESP32 (actuadores IoT) 
+• Relés de 4 canales 
+• Arduino Nano para control de dispositivos 
+• LEDs RGB para feedback visual 
+• Display OLED para estados 
+• Módulo Bluetooth para comunicación inalámbrica 
+Software y Tecnologías 
+• Python con MNE-Python (análisis EEG) 
+• PyOpenBCI para captura de señales 
+• SciPy para filtrado de señales 
+• TensorFlow para clasificación de estados 
+• LSTM para reconocimiento de patrones 
+• MQTT para comandos IoT 
+• Node-RED para automatización 
+• Pygame para interfaz de entrenamiento 
+• WebSockets para control en tiempo real 
+Señales EEG Analizadas 
+• Ondas Alpha (8-13 Hz) - relajación 
+• Ondas Beta (13-30 Hz) - concentración activa 
+• Ondas Theta (4-8 Hz) - meditación 
+• Potenciales P300 (respuesta a estímulos) 
+• Motor Imagery (imaginación de movimiento) 
+• SSVEP (respuesta a estímulos visuales) 
+Habilidades Desarrolladas 
+• Procesamiento de señales EEG 
+• Machine learning para BCI 
+• Diseño de interfaces cerebro-computadora 
+• Filtrado digital de señales biológicas 
+• Clasificación de estados mentales 
+• Integración neurotecnología-IoT 
+• Desarrollo de sistemas de asistencia 
+  
+Proyecto 26: Sistema de Neurofeedback para Mejora de Atención y 
+Concentración 
+Sector Neurociencia - Entrenamiento 
+cognitivo 
+Área Tecnológica AIoT + SBC-IoT 
+Complejidad Avanzado 
+ 
+Los tratamientos de TDAH y problemas de concentración dependen principalmente de 
+medicación, careciendo de alternativas no farmacológicas basadas en evidencia para 
+autorregulación cerebral. 
+Objetivo General 
+Desarrollar una plataforma de neurofeedback que entrene a usuarios a autorregular 
+actividad cerebral para mejorar concentración, reducir ansiedad y optimizar rendimiento 
+cognitivo. 
+Objetivos Específicos 
+76. Implementar captura de ondas cerebrales (Alpha, Beta, Theta) con EEG económico 
+y análisis espectral en tiempo real. 
+77. Desarrollar protocolos de entrenamiento personalizados según baseline de cada 
+usuario y objetivos terapéuticos. 
+78. Crear interfaz gamificada de entrenamiento que proporcione feedback visual/auditivo 
+inmediato de estados cerebrales. 
+ 
+Descripción 
+Plataforma de neurofeedback que analiza ondas cerebrales en tiempo real y 
+proporciona retroalimentación visual/auditiva para entrenar estados de concentración, 
+atención sostenida y relajación consciente. 
+Objetivo 
+Desarrollar capacidades de autorregulación cerebral mediante entrenamiento con 
+neurofeedback, mejorando concentración, reduciendo estrés y optimizando rendimiento 
+cognitivo. 
+Aplicaciones Neurocientíficas 
+• Tratamiento complementario de TDAH 
+• Reducción de ansiedad y estrés 
+• Mejora de concentración en estudiantes 
+• Entrenamiento de atletas de alto rendimiento 
+• Terapia de relajación 
+• Optimización de estados de flow 
+Hardware Necesario 
+• Raspberry Pi 4 
+• EEG económico: NeuroSky MindWave o Muse 2 
+• Alternativamente: OpenBCI con 4-8 canales 
+• Auriculares o parlantes para feedback auditivo 
+• Monitor HDMI para feedback visual 
+• Electrodos secos 
+• Arduino UNO para actuadores opcionales 
+• LEDs RGB progresivos 
+• Pulsioxímetro MAX30102 (datos complementarios) 
+Software y Tecnologías 
+• Python con MNE para EEG 
+• OpenVibe (plataforma neurofeedback open source) 
+• Pygame para interfaces de entrenamiento 
+• NumPy y SciPy para DSP 
+• PyAudio para feedback sonoro 
+• Matplotlib para visualización en vivo 
+• SQLite para progreso histórico 
+• Algoritmos de umbral dinámico 
+• Generación de reportes PDF 
+Protocolos de Entrenamiento 
+• Entrenamiento Alpha (relajación consciente) 
+• Entrenamiento Beta (concentración sostenida) 
+• Reducción Theta/Alpha ratio (control de TDAH) 
+• Coherencia inter-hemisférica 
+• SMR training (ritmo sensoriomotor) 
+• Protocolos personalizados según baseline 
+Habilidades Desarrolladas 
+• Diseño de protocolos de neurofeedback 
+• Análisis espectral de EEG 
+• Desarrollo de interfaces de entrenamiento 
+• Gamificación de neuroterapia 
+• Procesamiento en tiempo real 
+• Evaluación de progreso cognitivo 
+• Sistemas de biofeedback multimodal 
+  
+Proyecto 27: Detector de Fatiga Mental y Somnolencia con EEG 
+Sector Neurociencia - Seguridad y transporte 
+Área Tecnológica AIoT + SBC-IoT 
+Complejidad Avanzado 
+ 
+La fatiga es causa importante de accidentes de tránsito y laborales, pero no existen 
+sistemas confiables de detección temprana que permitan intervención preventiva antes 
+del incidente. 
+Objetivo General 
+Implementar un sistema de detección de fatiga mental y somnolencia mediante análisis 
+multimodal (EEG, video) que genere alertas progresivas para prevención de accidentes. 
+Objetivos Específicos 
+79. Desarrollar algoritmo de detección de fatiga basado en aumento de ondas Theta y 
+reducción de Alpha en EEG. 
+80. Implementar análisis de video para detección de frecuencia de parpadeo, PERCLOS 
+y micro-sueños con OpenCV. 
+81. Crear sistema de alertas graduales (visual, sonora, háptica) proporcional al nivel de 
+fatiga detectado. 
+ 
+Descripción 
+Sistema de detección de fatiga mental y somnolencia mediante análisis de señales 
+EEG, frecuencia de parpadeo y micro-sueños, diseñado para prevenir accidentes en 
+conductores o trabajadores en tareas críticas. 
+Objetivo 
+Identificar estados de fatiga mental, somnolencia y micro-sueños en tiempo real para 
+generar alertas preventivas en entornos de alto riesgo (conducción, operación de 
+maquinaria). 
+Aplicaciones Neurocientíficas 
+• Prevención de accidentes de tránsito 
+• Seguridad en operadores de maquinaria pesada 
+• Control de fatiga en pilotos y conductores profesionales 
+• Monitoreo de trabajadores en turnos nocturnos 
+• Sistemas de asistencia vehicular 
+Hardware Necesario 
+• Raspberry Pi 4 
+• EEG portátil: OpenBCI o alternativa económica 
+• Electrodos frontales (Fp1, Fp2) y occipitales 
+• ESP32-CAM (detección de parpadeo ocular) 
+• Sensor de movimiento MPU6050 (cabeceos) 
+• Buzzer de alta potencia 
+• Vibrador motor (alerta háptica) 
+• LEDs de advertencia 
+• Módulo Bluetooth 
+• Batería portable 
+Software y Tecnologías 
+• Python con MNE-Python 
+• OpenCV para detección de parpadeo 
+• Dlib para facial landmarks 
+• SciPy para análisis de frecuencias 
+• Machine Learning: SVM, Random Forest 
+• Análisis de Eye Aspect Ratio (EAR) 
+• PERCLOS (Percentage of Eye Closure) 
+• MQTT para alertas 
+• TensorFlow Lite para clasificación 
+Indicadores de Fatiga Monitoreados 
+• Aumento de ondas Theta (4-8 Hz) 
+• Disminución de ondas Alpha posteriores 
+• Slow eye movements 
+• Frecuencia de parpadeo reducida 
+• Micro-sueños (bursts de ondas lentas) 
+• Cabeceos y movimientos de cabeza 
+• Tiempo de reacción enlentecido 
+• Variabilidad de frecuencia cardíaca reducida 
+Sistema de Alertas Multi-nivel 
+• Nivel 1 (Fatiga Leve): Alerta visual en dashboard 
+• Nivel 2 (Fatiga Moderada): Sonido de advertencia + vibración 
+• Nivel 3 (Fatiga Severa): Alarma fuerte + recomendación de pausa 
+• Nivel 4 (Micro-sueño): Alerta máxima + notificación a supervisor 
+Habilidades Desarrolladas 
+• Detección de estados de vigilancia 
+• Análisis multimodal (EEG + visión) 
+• Computer vision para detección facial 
+• Sistemas de alerta progresiva 
+• Machine learning para clasificación de fatiga 
+• Integración de biosensores 
+• Diseño de sistemas de seguridad crítica 
+  
+Proyecto 28: Plataforma de Neurociencia Cognitiva para Análisis de Memoria y 
+Aprendizaje 
+Sector Neurociencia - Investigación cognitiva 
+Área Tecnológica AIoT + SBC-IoT 
+Complejidad Avanzado 
+ 
+La investigación en neurociencia cognitiva requiere equipamiento costoso y software 
+propietario, limitando el acceso de investigadores y estudiantes a experimentación 
+neurocientífica. 
+Objetivo General 
+Desarrollar una plataforma open-source de neurociencia cognitiva que permita 
+investigar procesos de memoria y aprendizaje mediante paradigmas experimentales con 
+EEG. 
+Objetivos Específicos 
+82. Implementar paradigmas experimentales clásicos (N-back, Oddball, Stroop) usando 
+PsychoPy con sincronización EEG. 
+83. Desarrollar pipeline de análisis de Event-Related Potentials (ERPs) con detección de 
+P300, N400 y otros componentes. 
+84. Crear base de datos de experimentos que facilite replicación y comparación de 
+resultados entre investigadores. 
+ 
+Descripción 
+Sistema experimental de neurociencia cognitiva que analiza correlatos neuronales de 
+memoria de trabajo, consolidación de memoria y procesos de aprendizaje mediante 
+paradigmas experimentales con EEG y análisis de rendimiento conductual. 
+Objetivo 
+Crear una plataforma experimental para investigar procesos cognitivos (memoria, 
+atención, aprendizaje) mediante la correlación de señales cerebrales con desempeño 
+en tareas cognitivas. 
+Aplicaciones Neurocientíficas 
+• Investigación en neurociencia cognitiva 
+• Estudio de procesos de memoria 
+• Evaluación de capacidad de aprendizaje 
+• Detección de deterioro cognitivo temprano 
+• Optimización de métodos de enseñanza 
+• Desarrollo de terapias cognitivas 
+Hardware Necesario 
+• Raspberry Pi 4 (8GB RAM recomendado) 
+• OpenBCI Cyton 8 canales 
+• Electrodos de gorro EEG (sistema 10-20) 
+• Monitor táctil HDMI 7" 
+• Teclado y mouse USB 
+• Parlantes para estímulos auditivos 
+• Cámara web (registro de expresiones - opcional) 
+• Arduino Nano (registro de tiempos de reacción) 
+• Pulsador de respuesta ergonómico 
+Software y Tecnologías 
+• Python con MNE-Python 
+• PsychoPy (paradigmas experimentales) 
+• NumPy y Pandas para análisis 
+• SciPy para estadística 
+• Matplotlib y Seaborn para visualización 
+• Jupyter Notebook para análisis exploratorio 
+• SQLite para almacenar datos experimentales 
+• R para análisis estadístico avanzado (opcional) 
+• Librerías de Event-Related Potentials (ERPs) 
+Paradigmas Experimentales Implementables 
+• N-back task (memoria de trabajo) 
+• Oddball paradigm (P300, atención) 
+• Stroop task (control inhibitorio) 
+• Memory encoding/retrieval tasks 
+• Continuous Performance Task (CPT) 
+• Go/No-Go (funciones ejecutivas) 
+• Serial Reaction Time Task (aprendizaje implícito) 
+Marcadores Neuronales Analizados 
+• P300 (procesamiento de información) 
+• N400 (procesamiento semántico) 
+• N170 (reconocimiento facial) 
+• Error-Related Negativity (ERN) 
+• Lateralized Readiness Potential (LRP) 
+• Potenciales relacionados a memoria 
+• Sincronización/desincronización en bandas de frecuencia 
+Habilidades Desarrolladas 
+• Diseño experimental en neurociencia 
+• Análisis de Event-Related Potentials (ERPs) 
+• Programación de paradigmas cognitivos 
+• Estadística aplicada a neurociencia 
+• Interpretación de correlatos neuronales 
+• Métodos de investigación científica 
+• Procesamiento avanzado de señales EEG 
+• Visualización de datos neurocientíficos 
+  
+RESUMEN DE PROYECTOS AÑADIDOS 
+Se han agregado 8 proyectos adicionales especializados en neurología y neurociencia, 
+elevando el total a 28 proyectos de IoT: 
+Proyectos de Neurología (21-24) 
+• Proyecto 21: Detección Temprana de Parkinson 
+• Proyecto 22: Detección de Deterioro Cognitivo y Alzheimer 
+• Proyecto 23: Monitor de Estrés Neurológico, Ansiedad y TDAH 
+• Proyecto 24: Detección y Alerta de Crisis Epilépticas 
+Proyectos de Neurociencia (25-28) 
+• Proyecto 25: Interfaz Cerebro-Computadora (BCI) con EEG 
+• Proyecto 26: Sistema de Neurofeedback 
+• Proyecto 27: Detector de Fatiga Mental y Somnolencia 
+• Proyecto 28: Plataforma de Neurociencia Cognitiva 
+ 
+Estos proyectos representan aplicaciones de vanguardia en la 
+intersección de IoT, inteligencia artificial y neurociencia, con 
+alto potencial de impacto en salud, investigación y calidad de 
+vida. 
+  
+  
+PROYECTOS DE ACUICULTURA Y PISCICULTURA INTELIGENTE 
+Proyecto 29: Sistema de Monitoreo de Calidad de Agua en Estanques Acuícolas 
+Sector Acuicultura y piscicultura inteligente 
+Área Tecnológica SBC-IoT + IoT con Analítica 
+Complejidad Intermedio 
+ 
+La mortalidad de peces por condiciones inadecuadas de agua (bajo oxígeno, pH 
+incorrecto, temperatura extrema) genera pérdidas económicas significativas en 
+piscicultura por monitoreo insuficiente. 
+Objetivo General 
+Desarrollar un sistema IoT de monitoreo y control de calidad del agua en estanques 
+acuícolas que mantenga parámetros óptimos automáticamente. 
+Objetivos Específicos 
+85. Implementar sensores de pH, temperatura, oxígeno disuelto y turbidez con 
+transmisión inalámbrica a estación central. 
+86. Desarrollar algoritmos de control que activen aireadores automáticamente cuando 
+oxígeno disuelto caiga bajo umbral crítico. 
+87. Crear sistema de alertas que notifique acuicultores ante condiciones adversas con 
+registros históricos para análisis. 
+ 
+Descripción 
+Sistema de monitoreo continuo de parámetros críticos de calidad del agua en estanques 
+de piscicultura (pH, temperatura, oxígeno disuelto, turbidez) con alertas automáticas y 
+control de aireadores para optimizar condiciones de cría. 
+Objetivo 
+Mantener parámetros óptimos de calidad del agua en tiempo real, prevenir mortalidad 
+de peces por condiciones adversas y optimizar producción acuícola mediante 
+automatización. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ (controlador central) 
+• ESP32 (nodo sensor sumergible) 
+• Sensor de pH (módulo analógico) 
+• Sensor de temperatura DS18B20 (waterproof) 
+• Sensor de oxígeno disuelto (electroquímico o óptico económico) 
+• Sensor de turbidez analógico 
+• Sensor ultrasónico JSN-SR04T (nivel de agua) 
+• Relés de 4 canales (control de aireadores) 
+• Bomba de aire/aireador 12V 
+• Panel solar 10W + batería (alimentación autónoma) 
+• Carcasa impermeable IP67 
+Software y Tecnologías 
+• Python con GPIO 
+• InfluxDB para series temporales 
+• Grafana para dashboards 
+• MQTT para comunicación 
+• Node-RED para automatización 
+• Algoritmos de umbral dinámico 
+• Telegram Bot API para alertas 
+• SQLite para logs locales 
+Variables Monitoreadas 
+• pH del agua (6.5-9.0 rango crítico) 
+• Temperatura (°C) 
+• Oxígeno disuelto (mg/L) 
+• Turbidez (NTU) 
+• Nivel de agua 
+• Tiempo de operación de aireadores 
+• Tendencias temporales de calidad 
+Habilidades Desarrolladas 
+• Monitoreo de parámetros acuáticos 
+• Calibración de sensores químicos 
+• Sistemas de control automatizado 
+• Energía renovable en IoT 
+• Análisis de series temporales ambientales 
+• Diseño de sistemas impermeables 
+  
+Proyecto 30: Alimentador Automático Inteligente para Peces con Visión por 
+Computadora 
+Sector Acuicultura y piscicultura inteligente 
+Área Tecnológica AIoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+La sobrealimentación contamina agua y aumenta costos, mientras que la 
+subalimentación reduce crecimiento, pero dosificación manual carece de precisión 
+basada en comportamiento real de peces. 
+Objetivo General 
+Implementar un sistema de alimentación inteligente que utilice visión artificial para 
+optimizar dosificación de alimento según presencia, cantidad y comportamiento de 
+peces. 
+Objetivos Específicos 
+88. Desarrollar algoritmo de detección y conteo de peces en superficie usando OpenCV 
+y YOLO para estimación de biomasa. 
+89. Implementar análisis de comportamiento alimentario que detecte si peces consumen 
+activamente o rechazan alimento. 
+90. Crear sistema de dosificación adaptativo que ajuste cantidad dispensada según 
+actividad de alimentación observada. 
+ 
+Descripción 
+Sistema de alimentación automatizado que utiliza visión por computadora para contar 
+peces, analizar comportamiento alimentario y dispensar cantidad óptima de alimento, 
+evitando desperdicio y contaminación del agua. 
+Objetivo 
+Optimizar alimentación mediante visión artificial que detecta presencia, cantidad y 
+comportamiento de peces, ajustando dosis de alimento y reduciendo costos operativos. 
+Hardware Necesario 
+• Raspberry Pi 4 (procesamiento de imagen) 
+• ESP32-CAM (cámara sumergible con iluminación LED) 
+• Arduino Nano (control de dispensador) 
+• Servomotor MG996R (apertura de tolva) 
+• Motor paso a paso 28BYJ-48 (dosificación) 
+• Sensor de carga HX711 con celda (peso de alimento) 
+• LEDs blancos de alta potencia (iluminación subacuática) 
+• Relé para control de iluminación 
+• RTC DS3231 (horarios de alimentación) 
+• Buzzer (confirmación de dispensado) 
+• Carcasa hermética 
+Software y Tecnologías 
+• OpenCV para detección de peces 
+• TensorFlow Lite (clasificación de especies) 
+• Python con picamera 
+• Background subtraction para conteo 
+• YOLO tiny (object detection) 
+• MQTT para coordinación 
+• Node-RED para automatización 
+• SQLite para historial de alimentación 
+• Pandas para análisis de consumo 
+Funcionalidades Inteligentes 
+• Conteo automático de peces en superficie 
+• Detección de actividad alimentaria 
+• Ajuste de dosis según comportamiento 
+• Identificación de especies (si multiespecie) 
+• Detección de alimento no consumido 
+• Horarios adaptativos según clima 
+• Registro fotográfico de crecimiento 
+• Estimación de biomasa por visión 
+Habilidades Desarrolladas 
+• Computer vision subacuática 
+• Object detection y tracking 
+• Automatización de procesos acuícolas 
+• Optimización de recursos alimenticios 
+• Sistemas mecatrónicos 
+• Integración hardware-software en ambientes hostiles 
+  
+PROYECTOS DE EDUCACIÓN INTELIGENTE Y E-LEARNING 
+Proyecto 31: Aula Inteligente con Análisis de Atención y Participación 
+Estudiantil 
+Sector Educación inteligente y e-learning 
+Área Tecnológica AIoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+Los docentes carecen de datos objetivos sobre niveles de atención y comprensión de 
+estudiantes durante clases, basando ajustes pedagógicos en percepciones subjetivas e 
+incompletas. 
+Objetivo General 
+Desarrollar un sistema de análisis de aulas inteligentes que proporcione métricas 
+objetivas de atención, participación y engagement estudiantil para mejora de 
+metodologías de enseñanza. 
+Objetivos Específicos 
+91. Implementar análisis de expresiones faciales con FER para detectar confusión, 
+aburrimiento, interés en estudiantes. 
+92. Desarrollar sistema de tracking de atención visual que determine si estudiantes 
+miran hacia pizarra/docente. 
+93. Crear dashboards para docentes con métricas de engagement por sesión, 
+identificación de momentos de baja atención. 
+ 
+Descripción 
+Sistema IoT para aulas que analiza niveles de atención, participación y engagement de 
+estudiantes mediante sensores ambientales, análisis de expresiones faciales y métricas 
+de interacción, generando reportes para docentes. 
+Objetivo 
+Proporcionar a docentes datos objetivos sobre atención y participación estudiantil para 
+mejorar metodologías de enseñanza y detectar estudiantes que requieren apoyo 
+adicional. 
+Hardware Necesario 
+• Raspberry Pi 4 (procesamiento central) 
+• ESP32-CAM (2-3 unidades para cobertura de aula) 
+• Sensores de ruido (MAX4466) 
+• Sensor de CO2 MH-Z19B (calidad del aire) 
+• Sensores PIR (detección de movimiento) 
+• Arduino Nano (botones de participación) 
+• Pulsadores inalámbricos RF 433MHz (respuestas estudiantes) 
+• Display OLED para métricas en vivo 
+• LEDs indicadores de niveles 
+Software y Tecnologías 
+• OpenCV con Dlib (detección facial) 
+• FER (Facial Expression Recognition) 
+• TensorFlow para análisis de engagement 
+• Python con análisis de audio 
+• MQTT para datos en tiempo real 
+• PostgreSQL para datos históricos 
+• Grafana para dashboards de docentes 
+• Power BI / Metabase para reportes 
+• Algoritmos de clustering (agrupación de estudiantes) 
+Métricas Analizadas 
+• Nivel de atención visual (hacia pizarra/docente) 
+• Expresiones faciales (confusión, aburrimiento, interés) 
+• Frecuencia de participación verbal 
+• Tiempo de respuesta a preguntas 
+• Nivel de ruido (conversaciones) 
+• Movimiento en asientos (inquietud) 
+• Calidad del aire (afecta concentración) 
+• Zonas calientes de interacción 
+Habilidades Desarrolladas 
+• Computer vision en ambientes educativos 
+• Análisis de expresiones faciales 
+• Learning analytics 
+• Sistemas multimodales de sensado 
+• Visualización de datos educativos 
+• Privacidad y anonimización de datos 
+• Diseño centrado en educadores 
+  
+Proyecto 32: Sistema de Asistencia y Control de Acceso Inteligente para 
+Instituciones 
+Sector Educación inteligente y e-learning 
+Área Tecnológica SBC-IoT + IoT con Visión Artificial 
+Complejidad Intermedio 
+ 
+El control de asistencia manual consume tiempo administrativo valioso, genera errores 
+de registro y retrasa comunicación con familias sobre ausentismo estudiantil. 
+Objetivo General 
+Implementar un sistema de control de asistencia automatizado que utilice 
+reconocimiento facial o RFID para registro automático con notificaciones en tiempo real. 
+Objetivos Específicos 
+94. Desarrollar sistema de reconocimiento facial con Face Recognition library que 
+identifique estudiantes en puntos de acceso. 
+95. Implementar alternativa RFID para redundancia y casos donde reconocimiento facial 
+falle o sea rechazado. 
+96. Crear sistema de notificaciones automáticas vía SMS/WhatsApp que alerte padres 
+inmediatamente tras registro de entrada/salida. 
+ 
+Descripción 
+Plataforma de control de asistencia automatizada mediante reconocimiento facial o 
+RFID, registro de horarios, generación de reportes y alertas a padres/tutores, integrada 
+con sistema de gestión académica. 
+Objetivo 
+Automatizar completamente el proceso de asistencia, reducir tiempo administrativo, 
+generar métricas de ausentismo y facilitar comunicación con familias. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ (por cada punto de acceso) 
+• ESP32-CAM o Raspberry Pi Camera v2 
+• Módulo RFID RC522 (alternativa o complemento) 
+• Tarjetas RFID para estudiantes 
+• Display LCD 16x2 o 20x4 
+• LEDs RGB (verde: acceso, rojo: denegado) 
+• Buzzer para feedback sonoro 
+• Botón de emergencia 
+• Relé para cerradura electrónica (opcional) 
+Software y Tecnologías 
+• OpenCV + Face Recognition library 
+• Dlib para facial landmarks 
+• Python con SQLite/PostgreSQL 
+• API REST con Flask 
+• Frontend web con React o Vue.js 
+• Twilio API para SMS a padres 
+• MQTT para sincronización 
+• Reportes con Pandas y Matplotlib 
+• Integración con Google Sheets (opcional) 
+Funcionalidades del Sistema 
+• Registro de entrada y salida automatizado 
+• Reconocimiento facial multi-usuario 
+• RFID como método alternativo 
+• Notificación inmediata a padres (SMS/WhatsApp) 
+• Dashboard web para administradores 
+• Reportes de ausentismo por período 
+• Alertas de llegadas tardías 
+• Exportación a Excel/PDF 
+• Integración con sistema académico existente 
+• Modo foto para identificación manual 
+Habilidades Desarrolladas 
+• Reconocimiento facial aplicado 
+• Desarrollo de sistemas administrativos 
+• Integración con APIs de comunicación 
+• Diseño de bases de datos educativas 
+• Desarrollo full-stack 
+• Generación de reportes automáticos 
+  
+PROYECTOS DE GANADERÍA INTELIGENTE Y SALUD ANIMAL 
+Proyecto 33: Monitor de Salud Animal con Collar IoT para Ganadería 
+Sector Ganadería inteligente y salud animal 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Intermedio-Avanzado 
+ 
+Las enfermedades en ganado se detectan tardíamente cuando síntomas son evidentes, 
+generando pérdidas económicas por mortalidad, costos veterinarios y pérdida de 
+productividad. 
+Objetivo General 
+Desarrollar un collar inteligente para ganado bovino que monitoree continuamente 
+salud, comportamiento y ubicación para detección temprana de problemas y 
+optimización reproductiva. 
+Objetivos Específicos 
+97. Implementar sensores de temperatura, acelerómetro y GPS en collar resistente con 
+comunicación LoRa de largo alcance. 
+98. Desarrollar algoritmos de detección de celo (hiperactividad) y enfermedad (fiebre, 
+reducción de rumia) con machine learning. 
+99. Crear plataforma de gestión ganadera que registre historiales individuales y genere 
+alertas veterinarias automáticas. 
+ 
+Descripción 
+Collar inteligente para ganado bovino que monitorea temperatura corporal, actividad, 
+rumia y ubicación GPS, detectando tempranamente enfermedades, celos y 
+comportamientos anormales mediante machine learning. 
+Objetivo 
+Detección temprana de enfermedades, optimización de reproducción mediante 
+detección de celos, prevención de pérdidas y mejora del bienestar animal con monitoreo 
+continuo. 
+Hardware Necesario 
+• ESP32 (módulo principal del collar) 
+• Acelerómetro MPU6050 (actividad y rumia) 
+• Sensor de temperatura MLX90614 (sin contacto corporal) 
+• GPS NEO-6M (geolocalización) 
+• Módulo LoRa SX1278 (comunicación larga distancia) 
+• Batería LiPo 3.7V 5000mAh 
+• Panel solar flexible 5V (recarga) 
+• Carcasa resistente a golpes e impermeable 
+• Raspberry Pi 3 B+ (estación base) 
+• Antena LoRa para mayor alcance 
+Software y Tecnologías 
+• Python con scikit-learn 
+• Algoritmos: Isolation Forest, Random Forest 
+• LoRaWAN protocol stack 
+• InfluxDB para series temporales 
+• Grafana para monitoreo 
+• Node-RED para alertas 
+• Análisis de patrones de rumia 
+• Algoritmo de detección de celos 
+• Geofencing con alertas 
+Variables Monitoreadas 
+• Temperatura corporal (fiebre = enfermedad) 
+• Nivel de actividad diaria 
+• Tiempo de rumia (indicador de salud) 
+• Patrón de movimiento (celos = hiperactividad) 
+• Ubicación GPS y trayectorias 
+• Tiempo en pie vs acostado 
+• Comportamiento de alimentación 
+• Detección de caídas o inmovilidad 
+Alertas Generadas 
+• Fiebre detectada (posible infección) 
+• Reducción abrupta de rumia (problemas digestivos) 
+• Hiperactividad sostenida (detección de celo) 
+• Inmovilidad prolongada (animal caído o enfermo) 
+• Salida de geo-cerca (robo o escape) 
+• Cambios bruscos en patrones (anomalías) 
+Habilidades Desarrolladas 
+• IoT para aplicaciones pecuarias 
+• Comunicación LoRa de largo alcance 
+• Machine learning para salud animal 
+• Diseño de wearables resistentes 
+• Energía solar en dispositivos IoT 
+• Análisis de comportamiento animal 
+• Sistemas de geolocalización 
+  
+Proyecto 34: Sistema de Ordeño Inteligente con Monitoreo de Calidad de Leche 
+Sector Ganadería inteligente y salud animal 
+Área Tecnológica SBC-IoT + IoT con Analítica 
+Complejidad Avanzado 
+ 
+La mastitis es la enfermedad más costosa en lecherías, afectando calidad de leche y 
+producción, pero su detección clínica es tardía cuando infección ya está avanzada. 
+Objetivo General 
+Desarrollar un sistema de ordeño inteligente que monitoree producción individual, 
+detecte mastitis tempranamente mediante conductividad eléctrica y registre calidad de 
+leche. 
+Objetivos Específicos 
+100. Implementar sensores de flujo, conductividad y temperatura que monitoreen 
+cada ordeño con identificación RFID de animales. 
+101. Desarrollar algoritmo de detección de mastitis basado en aumento de 
+conductividad eléctrica en leche infectada. 
+102. Crear reportes de producción individual que identifiquen animales de bajo 
+rendimiento y tendencias de calidad láctea. 
+ 
+Descripción 
+Sistema automatizado que monitorea producción de leche por animal, detecta mastitis 
+mediante análisis de conductividad eléctrica, registra temperatura y genera reportes de 
+producción y calidad. 
+Objetivo 
+Optimizar producción lechera, detectar tempranamente mastitis (principal enfermedad 
+en lecherías), llevar registro individual de producción y mejorar calidad del producto. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ 
+• ESP32 (por cada punto de ordeño) 
+• Sensor de flujo YF-S201 (medición de volumen) 
+• Sensor de conductividad eléctrica (TDS/EC) 
+• Sensor de temperatura DS18B20 waterproof 
+• Módulo RFID RC522 (identificación de vacas) 
+• Tags RFID para collares 
+• Display LCD 20x4 con I2C 
+• Relés para automatización de válvulas 
+• Celdas de carga (peso opcional) 
+• Electroválvulas 12V 
+Software y Tecnologías 
+• Python con GPIO 
+• PostgreSQL para registro de producción 
+• Grafana para dashboards de producción 
+• MQTT para datos en tiempo real 
+• Node-RED para automatización 
+• Algoritmos de detección de anomalías 
+• Pandas para análisis de tendencias 
+• Reportes automáticos en PDF 
+• API REST para app móvil 
+Parámetros de Calidad Monitoreados 
+• Volumen de leche por ordeño (litros) 
+• Conductividad eléctrica (detección de mastitis) 
+• Temperatura de la leche 
+• Tiempo de ordeño por animal 
+• Producción total diaria/semanal/mensual 
+• Comparativa entre animales 
+• Tendencias de producción individual 
+• Detección de cuartos afectados 
+Habilidades Desarrolladas 
+• Automatización de procesos agroindustriales 
+• Sensores de calidad de alimentos 
+• Identificación RFID en ganadería 
+• Análisis de producción agropecuaria 
+• Sistemas de control de calidad 
+• Trazabilidad en cadena láctea 
+  
+PROYECTOS DE LOGÍSTICA INTELIGENTE Y CADENA DE FRÍO 
+Proyecto 35: Sistema de Monitoreo de Cadena de Frío para Transporte de 
+Alimentos 
+Sector Logística inteligente y cadena de frío 
+Área Tecnológica SBC-IoT + IoT con Analítica 
+Complejidad Intermedio 
+ 
+La ruptura de cadena de frío en transporte de alimentos perecederos genera pérdidas 
+económicas y riesgos de salud pública, pero falta evidencia documentada de 
+cumplimiento. 
+Objetivo General 
+Implementar un sistema de monitoreo de cadena de frío en vehículos de transporte que 
+garantice integridad de productos perecederos con trazabilidad completa. 
+Objetivos Específicos 
+103. Desplegar sensores de temperatura/humedad con GPS en vehículos 
+refrigerados con transmisión GSM en tiempo real. 
+104. Desarrollar sistema de alertas que notifique inmediatamente ante excursiones de 
+temperatura fuera de rango permitido. 
+105. Automatizar generación de certificados de temperatura con gráficos de ruta y 
+evidencia de cumplimiento normativo. 
+ 
+Descripción 
+Sistema de monitoreo continuo de temperatura y humedad en vehículos de transporte 
+refrigerado, con GPS, alertas en tiempo real y generación de reportes de cumplimiento 
+para cadena de frío. 
+Objetivo 
+Garantizar integridad de productos perecederos durante transporte, generar evidencia 
+de cumplimiento de normativas de cadena de frío y prevenir pérdidas por ruptura de 
+temperatura. 
+Hardware Necesario 
+• ESP32 (módulo principal del vehículo) 
+• Sensores DHT22 (3 unidades en diferentes puntos) 
+• GPS NEO-6M 
+• Módulo GSM SIM800L (transmisión remota) 
+• Acelerómetro (detección de golpes) 
+• Sensor de puerta (apertura de caja) 
+• Display OLED para conductor 
+• Batería backup con sensor de corte de energía 
+• Buzzer de alerta 
+• Raspberry Pi 3 B+ (centro de control en bodega) 
+• SD card para logs offline 
+Software y Tecnologías 
+• Python con MQTT 
+• InfluxDB para datos de rutas 
+• Grafana para visualización 
+• API REST para consultas 
+• Geolocalización en tiempo real 
+• ThingSpeak o similar 
+• Generación automática de certificados 
+• Alertas por SMS/Email 
+• Mapas interactivos con Folium 
+Datos Registrados 
+• Temperatura cada punto de la caja (-18°C a +8°C) 
+• Humedad relativa 
+• Ubicación GPS con timestamp 
+• Eventos de apertura de puertas 
+• Duración de aperturas 
+• Cortes de energía del refrigerador 
+• Excursiones de temperatura (fuera de rango) 
+• Golpes o vibraciones anormales 
+• Velocidad del vehículo 
+Habilidades Desarrolladas 
+• Monitoreo de cadena de frío 
+• Telemetría vehicular 
+• Cumplimiento de normativas alimentarias 
+• Sistemas de trazabilidad 
+• Comunicación GSM/GPRS 
+• Generación de certificados de temperatura 
+  
+Proyecto 36: Sistema de Inventario Inteligente con RFID y Visión Artificial 
+Sector Logística inteligente y cadena de 
+suministro 
+Área Tecnológica SBC-IoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+La gestión manual de inventarios genera errores de conteo, pérdidas por falta de 
+trazabilidad y procesos lentos de recepción/despacho que afectan eficiencia logística. 
+Objetivo General 
+Desarrollar una plataforma de gestión de inventarios que integre tecnología RFID y 
+visión artificial para automatización completa de control de stock. 
+Objetivos Específicos 
+106. Implementar lectores RFID en puntos de entrada/salida con tags en productos 
+para rastreo automatizado de movimientos. 
+107. Desarrollar sistema de visión artificial que verifique condición de productos y 
+detecte daños o mal ubicación. 
+108. Crear integración con sistemas ERP mediante API REST para sincronización 
+automática de inventarios. 
+ 
+Descripción 
+Plataforma de gestión de inventario que combina lectores RFID para rastreo de 
+productos y visión artificial para verificación visual, conteo automatizado y detección de 
+productos dañados o mal ubicados. 
+Objetivo 
+Automatizar gestión de inventarios, reducir errores humanos, acelerar procesos de 
+recepción/despacho y mantener trazabilidad completa de productos en almacén. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Módulo RFID RC522 o PN532 (lectura NFC) 
+• Antena RFID de largo alcance (opcional) 
+• Tags RFID pasivos (por producto) 
+• ESP32-CAM (múltiples puntos del almacén) 
+• Raspberry Pi Camera v2 
+• Arduino Nano (control de barriers/puertas) 
+• Servomotores (puertas automáticas) 
+• LEDs indicadores de estado 
+• Scanner de código de barras USB (complemento) 
+• Display táctil 7" para interfaz 
+Software y Tecnologías 
+• Python con nfcpy o SPI-Py 
+• OpenCV para inspección visual 
+• TensorFlow Lite para clasificación 
+• OCR con Tesseract (lectura de etiquetas) 
+• PostgreSQL para base de datos 
+• API REST con FastAPI 
+• Frontend con React.js 
+• MQTT para sincronización 
+• ZBar para códigos de barras 
+• Sistema de notificaciones push 
+Funcionalidades del Sistema 
+• Lectura masiva de tags RFID (entrada/salida) 
+• Verificación visual de productos 
+• Conteo automatizado con visión artificial 
+• Detección de productos dañados 
+• Localización en tiempo real de items 
+• Alertas de stock bajo 
+• Auditorías automáticas de inventario 
+• Integración con ERP/WMS 
+• Reportes de rotación de productos 
+• Trazabilidad de lote completa 
+Habilidades Desarrolladas 
+• Tecnología RFID aplicada 
+• Sistemas de gestión de almacenes 
+• Computer vision para logística 
+• Desarrollo de sistemas ERP 
+• Automatización de procesos logísticos 
+• Integración de múltiples tecnologías 
+  
+PROYECTOS DE APICULTURA INTELIGENTE Y CONSERVACIÓN 
+Proyecto 37: Colmena Inteligente con Monitoreo de Salud y Producción 
+Sector Apicultura inteligente y biodiversidad 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Intermedio-Avanzado 
+ 
+Los apicultores pierden colmenas por enjambrazón, enfermedades (varroa) y hambre 
+por falta de monitoreo frecuente, mientras que inspecciones físicas estresan abejas. 
+Objetivo General 
+Implementar un sistema de monitoreo no invasivo de colmenas que detecte 
+enjambrazón, enfermedades y optimice manejo apícola mediante análisis de múltiples 
+variables. 
+Objetivos Específicos 
+109. Instalar sensores de peso, temperatura, humedad y micrófonos en colmenas con 
+energía solar autónoma. 
+110. Desarrollar algoritmo de análisis espectral de zumbido que detecte cambios 
+indicativos de enjambrazón o varroa. 
+111. Crear aplicación para apicultores con alertas predictivas de enjambrazón y 
+determinación de momento óptimo de cosecha. 
+ 
+Descripción 
+Sistema de monitoreo no invasivo de colmenas que registra temperatura interna, 
+humedad, peso, sonido de abejas y actividad de entrada/salida, detectando 
+enjambrazón, enfermedades y optimizando cosecha de miel. 
+Objetivo 
+Mejorar salud y productividad de colmenas mediante monitoreo continuo, detección 
+temprana de problemas (varroa, enjambrazón, hambre) y optimización de 
+intervenciones del apicultor. 
+Hardware Necesario 
+• ESP32 (por colmena) 
+• DHT22 (temperatura y humedad interna) 
+• Celda de carga HX711 (peso total de colmena) 
+• Micrófono electret (análisis de sonido) 
+• Sensor de entrada/salida (barrera infrarroja) 
+• Sensor de temperatura externa DS18B20 
+• Panel solar 5W 
+• Batería LiPo 3.7V 3000mAh 
+• Carcasa impermeable 
+• Raspberry Pi 3 B+ (estación base apiario) 
+• Módulo LoRa (si apiario remoto) 
+Software y Tecnologías 
+• Python con análisis de audio (Librosa) 
+• FFT para análisis espectral del zumbido 
+• Machine Learning para detección de anomalías 
+• InfluxDB para series temporales 
+• Grafana para dashboards 
+• MQTT o LoRaWAN 
+• Node-RED para alertas 
+• Algoritmo de detección de enjambrazón 
+• Análisis de patrones estacionales 
+Variables Monitoreadas 
+• Temperatura interna (32-35°C óptimo) 
+• Humedad interna (50-60% óptimo) 
+• Peso total (producción de miel) 
+• Frecuencia de zumbido (indicador de salud) 
+• Actividad de entrada/salida 
+• Temperatura externa y correlaciones 
+• Tendencia de ganancia de peso 
+• Patrones diarios y estacionales 
+Detecciones Automatizadas 
+• Enjambrazón inminente (cambio en zumbido y actividad) 
+• Presencia de varroa (cambios en frecuencia de zumbido) 
+• Pérdida de reina (alteración de sonido) 
+• Hambre (pérdida rápida de peso) 
+• Momento óptimo de cosecha 
+• Problemas de ventilación 
+• Pillaje de otras colmenas 
+Habilidades Desarrolladas 
+• Análisis de señales de audio 
+• Monitoreo de ecosistemas 
+• Sensores de peso de precisión 
+• Machine learning para apicultura 
+• IoT en ambientes naturales 
+• Energía autónoma con paneles solares 
+• Conservación de polinizadores 
+  
+Proyecto 38: Monitor de Biodiversidad con Identificación de Especies por Audio 
+Sector Biodiversidad y conservación 
+ambiental 
+Área Tecnológica AIoT + SBC-IoT 
+Complejidad Avanzado 
+ 
+El monitoreo de biodiversidad mediante métodos tradicionales (transectos, capturas) es 
+intensivo en tiempo, invasivo y limitado espacialmente, generando datos insuficientes 
+para conservación. 
+Objetivo General 
+Desarrollar una plataforma de monitoreo acústico de biodiversidad que identifique 
+automáticamente especies de fauna silvestre mediante deep learning. 
+Objetivos Específicos 
+112. Implementar estaciones de grabación autónomas con energía solar que 
+capturen audio ambiental 24/7. 
+113. Entrenar modelos de clasificación de especies (BirdNET, AudioSet) con bases 
+de datos de vocalizaciones de referencia. 
+114. Generar índices de biodiversidad (ADI, BIO) y mapas de presencia de especies 
+para apoyo a conservación. 
+ 
+Descripción 
+Sistema de monitoreo acústico de biodiversidad que captura, analiza y clasifica sonidos 
+de fauna silvestre (aves, anfibios, mamíferos) usando machine learning para generar 
+índices de biodiversidad y detectar especies en peligro. 
+Objetivo 
+Monitoreo no invasivo de biodiversidad en ecosistemas naturales, identificación 
+automática de especies por vocalización, generación de métricas de salud ecosistémica 
+y apoyo a investigación biológica. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ o 4 
+• Micrófono omnidireccional de alta calidad 
+• Tarjeta de sonido USB 
+• ESP32 con I2S microphone (INMP441) 
+• RTC DS3231 (timestamps precisos) 
+• SD card de alta capacidad (128GB+) 
+• Panel solar 10W 
+• Batería LiPo 3.7V 10000mAh 
+• Carcasa impermeable IP67 
+• Sensor de temperatura y humedad 
+• Módulo 4G (transmisión remota opcional) 
+Software y Tecnologías 
+• Python con Librosa (análisis de audio) 
+• TensorFlow para clasificación de especies 
+• AudioSet pre-trained models 
+• BirdNET (red neuronal para aves) 
+• Raven Lite (análisis de espectrogramas) 
+• Pandas para análisis temporal 
+• MQTT para transmisión 
+• PostgreSQL con PostGIS 
+• Xeno-canto database integration 
+• Mapas de biodiversidad con Folium 
+Especies Detectables 
+• Aves (cantos y llamadas) 
+• Anfibios (ranas y sapos) 
+• Mamíferos (primates, felinos, murciélagos) 
+• Insectos (grillos, cigarras) 
+• Detección de actividad humana (motosierras, disparos) 
+Métricas Generadas 
+• Índice de diversidad acústica (ADI) 
+• Índice de complejidad bioacústica (BIO) 
+• Riqueza de especies detectadas 
+• Frecuencia de aparición por especie 
+• Patrones temporales de actividad 
+• Comparativas entre estaciones 
+• Mapas de presencia espacial 
+• Alertas de especies amenazadas 
+Habilidades Desarrolladas 
+• Bioacústica y análisis de audio 
+• Deep learning para clasificación de especies 
+• Ecología cuantitativa 
+• Monitoreo de fauna silvestre 
+• Procesamiento de grandes volúmenes de audio 
+• Sistemas autónomos de campo 
+• Contribución a ciencia ciudadana 
+  
+PROYECTOS DE MINERÍA Y SEGURIDAD INDUSTRIAL 
+Proyecto 39: Sistema de Detección de Gases Peligrosos en Minería y Túneles 
+Sector Minería y seguridad industrial 
+Área Tecnológica SBC-IoT + IoT con Analítica 
+Complejidad Avanzado 
+ 
+Los accidentes en minería subterránea por acumulación de gases tóxicos o explosivos 
+(metano, monóxido de carbono) causan muertes evitables por falta de monitoreo 
+continuo. 
+Objetivo General 
+Implementar un sistema de detección de gases peligrosos en ambientes mineros que 
+active automáticamente ventilación y protocolos de evacuación ante niveles críticos. 
+Objetivos Específicos 
+115. Desplegar red distribuida de sensores de CO, CO2, CH4, H2S en túneles con 
+transmisión inalámbrica redundante. 
+116. Desarrollar sistema de respuesta automatizada que active ventiladores y 
+alarmas según niveles de gases detectados. 
+117. Crear protocolos de evacuación escalonados que guíen trabajadores a salidas 
+seguras mediante señalización automática. 
+ 
+Descripción 
+Red de sensores distribuidos en minas o túneles que monitorea continuamente gases 
+tóxicos (CO, CO2, CH4, H2S), temperatura y humedad, generando alertas tempranas y 
+activando sistemas de ventilación automática. 
+Objetivo 
+Prevenir accidentes por acumulación de gases tóxicos o explosivos, garantizar 
+seguridad de trabajadores, cumplir normativas de seguridad minera y automatizar 
+respuesta ante emergencias. 
+Hardware Necesario 
+• Raspberry Pi 3 B+ (controlador maestro) 
+• ESP32 (nodos sensores distribuidos - 10+ unidades) 
+• Sensor MQ-7 (monóxido de carbono) 
+• Sensor MQ-4 (metano) 
+• Sensor MQ-135 (calidad del aire general) 
+• Sensor MH-Z19B (CO2) 
+• DHT22 (temperatura y humedad) 
+• Buzzer de alta potencia 
+• Luces estroboscópicas de emergencia 
+• Relés para control de ventiladores industriales 
+• Batería de respaldo UPS 
+• Cableado resistente a ambientes hostiles 
+Software y Tecnologías 
+• Python con GPIO 
+• InfluxDB para datos críticos 
+• Grafana con alertas 
+• MQTT con QoS 2 
+• Node-RED para automatización 
+• Algoritmos de detección de tendencias 
+• Sistema de alarmas escalonadas 
+• Registro de eventos en SQLite 
+• Dashboard web de seguridad 
+• Integración con sistemas SCADA 
+Gases Monitoreados y Niveles Críticos 
+• Monóxido de carbono (CO): >50 ppm alerta, >100 ppm peligro 
+• Metano (CH4): >1% alerta, >5% explosivo 
+• Dióxido de carbono (CO2): >5000 ppm alerta 
+• Sulfuro de hidrógeno (H2S): >10 ppm alerta 
+• Oxígeno (O2): <19.5% deficiencia 
+• Temperatura: >40°C alerta de incendio 
+Sistema de Respuesta Automatizada 
+• Nivel 1: Alerta visual en dashboard 
+• Nivel 2: Activación de ventiladores 
+• Nivel 3: Alarmas sonoras y visuales 
+• Nivel 4: Evacuación automática 
+• Envío de SMS a equipo de seguridad 
+• Activación de protocolos de emergencia 
+• Cierre automático de zonas afectadas 
+• Notificación a autoridades mineras 
+Habilidades Desarrolladas 
+• Sistemas de seguridad crítica 
+• Calibración de sensores de gases 
+• Automatización industrial 
+• Protocolos de emergencia 
+• Cumplimiento normativo en minería 
+• Diseño de sistemas redundantes 
+• Integración con SCADA 
+  
+Proyecto 40: Detector de Fatiga de Materiales con Análisis de Vibraciones 
+Sector Minería y seguridad industrial - 
+Mantenimiento predictivo 
+Área Tecnológica AIoT + SBC-IoT 
+Complejidad Avanzado 
+ 
+Las fallas catastróficas en maquinaria industrial generan paradas no planificadas 
+costosas y riesgos de seguridad, mientras que mantenimiento preventivo tradicional es 
+ineficiente. 
+Objetivo General 
+Desarrollar un sistema de mantenimiento predictivo basado en análisis de vibraciones 
+que detecte patrones anormales indicativos de fallos mecánicos inminentes. 
+Objetivos Específicos 
+118. Implementar acelerómetros de alta precisión en puntos críticos de maquinaria 
+con adquisición continua de datos. 
+119. Desarrollar análisis FFT para identificar frecuencias características de fallos 
+(desbalanceo, desalineación, rodamientos). 
+120. Entrenar modelos de clasificación de fallos con machine learning para 
+diagnóstico automatizado y priorización de intervenciones. 
+ 
+Descripción 
+Sistema de monitoreo de vibraciones en maquinaria pesada, estructuras metálicas y 
+equipos críticos que detecta patrones anormales indicativos de fatiga de material, 
+grietas o fallos inminentes mediante análisis FFT y machine learning. 
+Objetivo 
+Implementar mantenimiento predictivo basado en condición, prevenir fallas 
+catastróficas, reducir tiempos muertos y extender vida útil de equipos mediante 
+detección temprana de anomalías. 
+Hardware Necesario 
+• Raspberry Pi 4 
+• ESP32 (múltiples puntos de monitoreo) 
+• Acelerómetro de alta precisión ADXL345 
+• Giroscopio MPU6050 
+• Sensor de vibración piezoléctrico 
+• Sensor de temperatura PT100 (puntos calientes) 
+• Micrófono para análisis acústico 
+• Tacómetro óptico (RPM de motores) 
+• Arduino Nano (adquisición de datos local) 
+• SD card para logs 
+Software y Tecnologías 
+• Python con SciPy (análisis FFT) 
+• NumPy para procesamiento de señales 
+• Machine Learning: Isolation Forest, SVM 
+• TensorFlow para clasificación de fallos 
+• Librosa para análisis acústico 
+• Matplotlib para espectrogramas 
+• InfluxDB para históricos 
+• Grafana con umbrales dinámicos 
+• Algoritmos de detección de envolvente 
+• Análisis de orden de armónicos 
+Tipos de Fallos Detectables 
+• Desbalanceo en rotores 
+• Desalineación de ejes 
+• Rodamientos deteriorados 
+• Grietas en estructuras 
+• Aflojamiento de pernos 
+• Cavitación en bombas 
+• Bandas y correas desgastadas 
+• Engranajes dañados 
+• Resonancia estructural 
+Análisis Realizados 
+• FFT (Fast Fourier Transform) para frecuencias 
+• Análisis de envolvente para rodamientos 
+• Espectrograma temporal 
+• RMS (Root Mean Square) de vibración 
+• Kurtosis para detección de impactos 
+• Análisis de órdenes 
+• Comparación con baseline 
+• Tendencias de degradación 
+Habilidades Desarrolladas 
+• Análisis de vibraciones mecánicas 
+• Mantenimiento predictivo 
+• Procesamiento digital de señales (DSP) 
+• Machine learning para diagnóstico 
+• Análisis espectral FFT 
+• Detección de patrones de fallo 
+• Instrumentación industrial 
+  
+RESUMEN COMPLETO DEL DOCUMENTO 
+El documento ahora contiene un total de 40 proyectos prácticos de IoT distribuidos en 
+10 áreas tecnológicas y 15 sectores de aplicación diferentes: 
+Distribución por Áreas Tecnológicas 
+• SBC-IoT: 12 proyectos 
+• AIoT (Inteligencia Artificial + IoT): 12 proyectos 
+• IoT Hacking y Ciberseguridad: 4 proyectos 
+• IoT con Big Data y Analítica: 6 proyectos 
+• IoT con Visión Artificial: 6 proyectos 
+Nuevos Sectores Incorporados 
+• Acuicultura y piscicultura inteligente (2 proyectos) 
+• Educación inteligente y e-learning (2 proyectos) 
+• Ganadería inteligente y salud animal (2 proyectos) 
+• Logística inteligente y cadena de frío (2 proyectos) 
+• Apicultura y biodiversidad (2 proyectos) 
+• Minería y seguridad industrial (2 proyectos) 
+Índice Temático de Proyectos 
+Proyectos 1-20: Base Original 
+SBC-IoT (1-4), AIoT (5-8), Ciberseguridad (9-12), Big Data (13-16), Visión Artificial (17-
+20) 
+Proyectos 21-28: Neurología y Neurociencia 
+Parkinson, Alzheimer, TDAH, Epilepsia, BCI, Neurofeedback, Fatiga mental, 
+Neurociencia cognitiva 
+Proyectos 29-40: Nuevos Sectores 
+• 29-30: Acuicultura (calidad de agua, alimentación inteligente) 
+• 31-32: Educación (aula inteligente, control de asistencia) 
+• 33-34: Ganadería (collar IoT, ordeño inteligente) 
+• 35-36: Logística (cadena de frío, inventario RFID) 
+• 37-38: Biodiversidad (colmena inteligente, monitoreo acústico) 
+• 39-40: Minería (detección de gases, análisis de vibraciones) 
+ 
+Todos los proyectos están diseñados con hardware económico 
+(Arduino, ESP32, Raspberry Pi), sensores accesibles y software 
+100% libre y de código abierto, garantizando viabilidad técnica y 
+económica para estudiantes de noveno semestre. 
+Resumen Breve 
+Red distribuida de sensores agrícolas conectados mediante MQTT que centralizan 
+datos en Raspberry Pi para toma de decisiones en tiempo real. 
+Problemática 
+Resumen Breve 
+Gateway centralizado que integra múltiples protocolos IoT para gestionar iluminación, 
+climatización y accesos en edificios de forma unificada. 
+Problemática 
+Resumen Breve 
+Estación meteorológica local que combina sensores físicos con datos de APIs públicas 
+para generar predicciones meteorológicas personalizadas. 
+Problemática 
+Resumen Breve 
+Sistema de control climático automatizado para invernaderos que ajusta riego, 
+ventilación e iluminación según parámetros ambientales medidos. 
+Problemática 
+Resumen Breve 
+Sistema automatizado que clasifica residuos en tiempo real usando visión artificial y 
+redes neuronales ejecutadas en Raspberry Pi. 
+Problemática 
+Resumen Breve 
+Detector de productos defectuosos en líneas de producción mediante análisis de 
+vibraciones, sonido y temperatura con machine learning. 
+Problemática 
+Resumen Breve 
+Contador inteligente de personas en espacios públicos usando detección por visión 
+artificial con preservación de privacidad. 
+Problemática 
+Resumen Breve 
+Monitor continuo de signos vitales con predicción de deterioro de salud usando machine 
+learning supervisado. 
+Problemática 
+Resumen Breve 
+Laboratorio controlado de pentesting para identificar vulnerabilidades comunes en 
+dispositivos IoT mediante herramientas de seguridad. 
+Problemática 
+Resumen Breve 
+Sistema de detección de intrusiones especializado para redes IoT que identifica 
+patrones de ataque mediante análisis de tráfico. 
+Problemática 
+Resumen Breve 
+Control de acceso con múltiples factores de autenticación (RFID, PIN, facial) y cifrado 
+end-to-end de comunicaciones. 
+Problemática 
+Resumen Breve 
+Dispositivo señuelo que simula ser vulnerable para atraer atacantes y generar 
+inteligencia sobre técnicas de ataque emergentes. 
+Problemática 
+Resumen Breve 
+Plataforma que predice consumo energético futuro mediante análisis de series 
+temporales y machine learning para optimización. 
+Problemática 
+Resumen Breve 
+Red de sensores vehiculares que analiza flujos de tráfico para identificar congestión y 
+optimizar semáforos. 
+Problemática 
+Resumen Breve 
+Red distribuida de estaciones que monitorean contaminación atmosférica y generan 
+mapas de calor de calidad del aire. 
+Problemática 
+Resumen Breve 
+Sistema de control de procesos farmacéuticos con análisis estadístico de calidad y 
+generación automática de reportes regulatorios. 
+Problemática 
+Resumen Breve 
+Cámara time-lapse inteligente que detecta fases de crecimiento y enfermedades de 
+cultivos mediante análisis de imágenes. 
+Problemática 
+Resumen Breve 
+Sistema de detección de espacios libres en estacionamientos mediante procesamiento 
+de video con actualización en tiempo real. 
+Problemática 
+Resumen Breve 
+Vigilancia automatizada que verifica uso correcto de equipo de protección personal 
+mediante detección de objetos en tiempo real. 
+Problemática 
+Resumen Breve 
+Lector automático de medidores analógicos usando OCR y visión artificial para 
+digitalización de lecturas de servicios públicos. 
+Problemática 
+Resumen Breve 
+Wearable que detecta temblores, rigidez y alteraciones motoras mediante acelerometría 
+y EMG para diagnóstico temprano de Parkinson. 
+Problemática 
+Resumen Breve 
+Sistema de monitoreo de rutinas diarias que detecta cambios conductuales indicativos 
+de deterioro cognitivo mediante sensores ambientales. 
+Problemática 
+Resumen Breve 
+Monitor neurofisiológico que mide estrés, ansiedad y atención mediante GSR, HRV y 
+opcionalmente EEG para detección de TDAH. 
+Problemática 
+Resumen Breve 
+Wearable de detección de crisis epilépticas con alertas automáticas a contactos de 
+emergencia y geolocalización. 
+Problemática 
+Resumen Breve 
+Interfaz cerebro-computadora que permite controlar dispositivos IoT mediante señales 
+EEG para personas con movilidad reducida. 
+Problemática 
+Resumen Breve 
+Plataforma de entrenamiento cognitivo con neurofeedback que mejora concentración 
+mediante retroalimentación en tiempo real de ondas cerebrales. 
+Problemática 
+Resumen Breve 
+Detector multimodal de fatiga mediante EEG y análisis de parpadeo ocular para 
+prevención de accidentes vehiculares e industriales. 
+Problemática 
+Resumen Breve 
+Plataforma experimental de neurociencia que correlaciona actividad cerebral con 
+desempeño en tareas cognitivas de memoria y aprendizaje. 
+Problemática 
+Resumen Breve 
+Sistema de monitoreo continuo de parámetros acuáticos con control automatizado de 
+aireadores para optimización de condiciones de cría. 
+Problemática 
+Resumen Breve 
+Alimentador automatizado con visión artificial que ajusta cantidad de alimento según 
+conteo y comportamiento de peces observado. 
+Problemática 
+Resumen Breve 
+Sistema multimodal que analiza atención, participación y expresiones faciales de 
+estudiantes para retroalimentación a docentes. 
+Problemática 
+Resumen Breve 
+Control de asistencia automatizado mediante reconocimiento facial o RFID con 
+notificaciones automáticas a padres/tutores. 
+Problemática 
+Resumen Breve 
+Collar wearable para ganado que monitorea salud, ubicación y actividad para detección 
+temprana de enfermedades y celos. 
+Problemática 
+Resumen Breve 
+Sistema de ordeño automatizado con monitoreo de calidad de leche y detección 
+temprana de mastitis por conductividad eléctrica. 
+Problemática 
+Resumen Breve 
+Monitor de temperatura y GPS en vehículos refrigerados con generación automática de 
+certificados de cumplimiento de cadena de frío. 
+Problemática 
+Resumen Breve 
+Sistema de inventario que combina RFID para rastreo y visión artificial para verificación 
+visual de productos en almacén. 
+Problemática 
+Resumen Breve 
+Monitor no invasivo de colmenas que registra peso, temperatura, sonido y actividad 
+para detección de enjambrazón y enfermedades. 
+Problemática 
+Resumen Breve 
+Sistema acústico de monitoreo de biodiversidad que identifica especies de fauna 
+mediante análisis de vocalizaciones con machine learning. 
+Problemática 
+Resumen Breve 
+Red de sensores de gases tóxicos en minas con activación automática de ventilación y 
+protocolos de evacuación ante niveles críticos. 
+Problemática 
+Resumen Breve 
+Monitor de vibraciones en maquinaria pesada que detecta fallos mecánicos mediante 
+análisis FFT y machine learning para mantenimiento predictivo. 
+Problemática 
+  
+PROYECTOS DE TURISMO Y HOTELERÍA INTELIGENTE 
+Proyecto 41: Sistema de Gestión Inteligente de Habitaciones de Hotel 
+Sector Turismo y hotelería inteligente 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Intermedio-Avanzado 
+ 
+Resumen Breve 
+Sistema IoT integral para hoteles que automatiza climatización, iluminación y 
+entretenimiento según preferencias de huéspedes, optimiza limpieza y mantenimiento 
+mediante sensores de ocupación, y mejora experiencia del cliente. 
+Problemática 
+Los hoteles enfrentan altos costos energéticos por climatización e iluminación de 
+habitaciones vacías, ineficiencias en programación de limpieza, y dificultades para 
+personalizar experiencia del huésped, afectando rentabilidad y satisfacción del cliente. 
+Objetivo General 
+Desarrollar un sistema de gestión inteligente de habitaciones hoteleras que automatice 
+servicios, optimice consumo energético y personalice la experiencia del huésped 
+mediante IoT y análisis de preferencias. 
+Objetivos Específicos 
+121. Implementar sensores de ocupación, temperatura y calidad del aire con control 
+automatizado de HVAC e iluminación por habitación. 
+122. Desarrollar sistema de perfiles de huéspedes que recuerde y aplique 
+automáticamente preferencias de temperatura, iluminación y entretenimiento. 
+123. Crear dashboard de gestión hotelera que optimice programación de limpieza y 
+mantenimiento según ocupación real detectada. 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 (servidor central del hotel) 
+• ESP32 (por habitación - 20-50 unidades) 
+• Sensores PIR de ocupación 
+• DHT22 (temperatura y humedad) 
+• Sensores de calidad del aire MQ-135 
+• Relés de 4 canales (control HVAC e iluminación) 
+• Módulo RFID RC522 (cerraduras inteligentes) 
+• Display táctil 7" (panel de control en habitación) 
+• Arduino Nano (control de actuadores) 
+• Controlador IR para TV/AC 
+Software y Tecnologías 
+• Node-RED para automatización hotelera 
+• MQTT para comunicación entre habitaciones 
+• PostgreSQL para perfiles de huéspedes 
+• Python con Flask para API REST 
+• Dashboard web con Vue.js 
+• Sistema de reservas (integración) 
+• Machine learning para predicción de preferencias 
+• Grafana para métricas de ocupación y energía 
+Funcionalidades Clave 
+• Check-in automático con apertura de habitación vía smartphone 
+• Ajuste automático de temperatura al detectar llegada del huésped 
+• Apagado de sistemas al detectar habitación vacía (ahorro energético) 
+• Alertas de limpieza basadas en tiempo real de ocupación 
+• Integración con control de voz (Alexa/Google Assistant) 
+• Reportes de consumo energético por habitación 
+• Sistema de peticiones del huésped vía app móvil 
+Habilidades Desarrolladas 
+• Automatización de servicios hoteleros 
+• Sistemas de gestión energética 
+• Desarrollo de perfiles de usuario 
+• Integración con sistemas de reservas 
+• Domótica a escala comercial 
+• Optimización de operaciones hoteleras 
+  
+Proyecto 42: Guía Turística Inteligente con Realidad Aumentada y 
+Geolocalización 
+Sector Turismo y hotelería inteligente 
+Área Tecnológica SBC-IoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+Resumen Breve 
+Sistema de guía turística interactiva que utiliza beacons Bluetooth, GPS y realidad 
+aumentada para proporcionar información contextual de sitios históricos, rutas 
+personalizadas y estadísticas de flujo turístico en tiempo real. 
+Problemática 
+Los turistas carecen de información contextual enriquecida en sitios históricos, las 
+audioguías tradicionales son costosas y genéricas, y los gestores turísticos no tienen 
+datos en tiempo real sobre flujos y preferencias de visitantes. 
+Objetivo General 
+Desarrollar una plataforma de guía turística inteligente que proporcione información 
+contextual mediante geolocalización, genere rutas personalizadas y analice patrones de 
+visitantes para optimización de sitios turísticos. 
+Objetivos Específicos 
+124. Implementar red de beacons BLE en puntos de interés turístico que transmitan 
+información contextual a aplicación móvil. 
+125. Desarrollar algoritmo de rutas turísticas personalizadas según intereses, tiempo 
+disponible y condición física del visitante. 
+126. Crear sistema de análisis de flujos turísticos que genere mapas de calor y 
+métricas de puntos de mayor interés. 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 (servidor central) 
+• ESP32 con BLE (beacons - 20-30 unidades) 
+• GPS NEO-6M (wearable para tracking) 
+• Panel solar pequeño (energía para beacons remotos) 
+• Baterías LiPo 3.7V 
+• Carcasas impermeables para exteriores 
+• Smartphone del usuario (app móvil) 
+Software y Tecnologías 
+• Aplicación móvil con React Native 
+• ARCore/ARKit para realidad aumentada 
+• Algoritmos de ruteo (Dijkstra, A*) 
+• PostgreSQL con PostGIS (datos geográficos) 
+• Python con Flask para backend 
+• Sistema de recomendaciones con ML 
+• Mapas con Mapbox/Google Maps API 
+• Análisis de heatmaps con Folium 
+Habilidades Desarrolladas 
+• Desarrollo de aplicaciones móviles 
+• Tecnología beacon BLE 
+• Realidad aumentada aplicada 
+• Algoritmos de optimización de rutas 
+• Análisis geoespacial 
+• Sistemas de recomendación 
+  
+PROYECTOS DE DEPORTES Y FITNESS INTELIGENTE 
+Proyecto 43: Monitor de Rendimiento Deportivo con Análisis Biomecánico 
+Sector Deportes y fitness inteligente 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Avanzado 
+ 
+Resumen Breve 
+Sistema wearable que analiza biomecánica de movimientos deportivos (carrera, 
+ciclismo, natación) mediante sensores IMU, genera métricas de rendimiento y detecta 
+patrones de movimiento que predispongan a lesiones. 
+Problemática 
+Los deportistas amateur carecen de retroalimentación objetiva sobre técnica y 
+biomecánica, entrenando con patrones incorrectos que limitan rendimiento y aumentan 
+riesgo de lesiones por sobrecarga o mala técnica. 
+Objetivo General 
+Desarrollar un sistema de monitoreo deportivo que analice biomecánica de 
+movimientos, genere métricas de rendimiento y detecte patrones de riesgo de lesión 
+mediante sensores inerciales y machine learning. 
+Objetivos Específicos 
+127. Implementar sensores IMU (acelerómetro, giroscopio, magnetómetro) en 
+wearable que capture cinemática de movimientos deportivos. 
+128. Desarrollar algoritmos de análisis biomecánico que calculen cadencia, simetría, 
+impacto y eficiencia de movimiento. 
+129. Entrenar modelos de clasificación que identifiquen patrones de movimiento 
+asociados a alto riesgo de lesión. 
+ 
+Hardware Necesario 
+• ESP32 (procesador principal wearable) 
+• MPU9250 (acelerómetro + giroscopio + magnetómetro) 
+• Sensor de frecuencia cardíaca MAX30102 
+• GPS NEO-6M (velocidad y distancia) 
+• Batería LiPo 3.7V 2000mAh 
+• Módulo Bluetooth BLE 
+• Carcasa deportiva resistente al agua 
+• Raspberry Pi 4 (análisis offline) 
+• Bandas elásticas para fijación 
+Software y Tecnologías 
+• Python con SciPy para análisis de señales 
+• Filtros Kalman para fusión sensorial 
+• TensorFlow para clasificación de movimientos 
+• Aplicación móvil con Flutter 
+• Algoritmos de detección de ciclos (pasos, pedaladas) 
+• Cálculo de ángulos articulares 
+• Visualización 3D de movimientos 
+• SQLite para registro de entrenamientos 
+Métricas Analizadas 
+• Cadencia (pasos/min, pedaladas/min) 
+• Tiempo de contacto con el suelo 
+• Oscilación vertical (bouncing) 
+• Simetría bilateral (izquierda-derecha) 
+• Eficiencia de zancada/brazada 
+• Zonas de frecuencia cardíaca 
+• Potencia estimada 
+• Riesgo de lesión por sobrepronación 
+Habilidades Desarrolladas 
+• Análisis biomecánico deportivo 
+• Fusión de sensores IMU 
+• Machine learning para detección de patrones 
+• Desarrollo de wearables deportivos 
+• Procesamiento de señales inerciales 
+• Prevención de lesiones deportivas 
+  
+Proyecto 44: Sistema Inteligente de Gestión de Gimnasios con Control de Aforo 
+Sector Deportes y fitness inteligente 
+Área Tecnológica SBC-IoT + IoT con Visión Artificial 
+Complejidad Intermedio 
+ 
+Resumen Breve 
+Plataforma de gestión para gimnasios que controla aforo en tiempo real mediante visión 
+artificial, gestiona turnos de equipos compartidos, monitorea uso de máquinas y genera 
+métricas de ocupación para optimización operativa. 
+Problemática 
+Los gimnasios enfrentan problemas de sobrecupo en horas pico, tiempos de espera 
+para usar equipos, falta de higienización entre usuarios y dificultades para planificar 
+mantenimiento por desconocimiento de patrones de uso real. 
+Objetivo General 
+Desarrollar un sistema de gestión inteligente de gimnasios que controle aforo, optimice 
+uso de equipos y genere métricas operativas mediante sensores de ocupación y visión 
+artificial. 
+Objetivos Específicos 
+130. Implementar sistema de conteo de personas con ESP32-CAM en entradas que 
+monitoree aforo en tiempo real y controle acceso. 
+131. Desarrollar sensores de ocupación en máquinas de ejercicio que registren 
+tiempos de uso y generen turnos automáticos. 
+132. Crear dashboard de gestión que visualice métricas de ocupación, uso de 
+equipos y programe mantenimiento predictivo. 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 (servidor central) 
+• ESP32-CAM (2-3 unidades en entradas) 
+• Sensores de presión FSR (en máquinas) 
+• Sensores PIR (zonas del gimnasio) 
+• Display LED para aforo actual 
+• RFID RC522 (control de acceso miembros) 
+• Arduino Nano (nodos de sensores) 
+• Buzzer para notificaciones 
+• Relé para control de torniquete 
+Software y Tecnologías 
+• OpenCV para conteo de personas 
+• Python con Flask para backend 
+• PostgreSQL para base de datos 
+• Dashboard web con React 
+• MQTT para comunicación sensores 
+• Sistema de reservas de turnos 
+• Notificaciones push 
+• Generación de reportes con Pandas 
+Habilidades Desarrolladas 
+• Control de aforo automatizado 
+• Sistemas de gestión deportiva 
+• Optimización de recursos compartidos 
+• Computer vision para conteo 
+• Desarrollo de aplicaciones web 
+• Análisis de métricas operativas 
+  
+PROYECTOS DE TRANSPORTE Y MOVILIDAD URBANA INTELIGENTE 
+Proyecto 45: Sistema de Bicicletas Compartidas con Estaciones Inteligentes 
+Sector Transporte y movilidad urbana 
+inteligente 
+Área Tecnológica SBC-IoT + IoT con Analítica 
+Complejidad Intermedio-Avanzado 
+ 
+Resumen Breve 
+Plataforma de bicicletas compartidas con estaciones inteligentes que gestionan 
+préstamo/devolución automático, rastrean ubicación de bicicletas, detectan 
+mantenimiento necesario y optimizan redistribución entre estaciones mediante análisis 
+predictivo. 
+Problemática 
+Los sistemas de bicicletas compartidas enfrentan desbalances de distribución 
+(estaciones vacías/llenas), vandalismo, falta de mantenimiento oportuno y dificultades 
+para rastrear bicicletas, afectando disponibilidad y experiencia del usuario. 
+Objetivo General 
+Desarrollar un sistema de gestión de bicicletas compartidas que automatice 
+préstamo/devolución, rastree ubicación en tiempo real y optimice redistribución 
+mediante análisis predictivo de demanda. 
+Objetivos Específicos 
+133. Implementar cerraduras inteligentes IoT en bicicletas con GPS y sensores de 
+movimiento para rastreo y detección de uso no autorizado. 
+134. Desarrollar estaciones de anclaje con sensores de disponibilidad y sistema de 
+autenticación RFID/NFC para usuarios. 
+135. Crear algoritmo predictivo que anticipe demanda por estación y horario para 
+optimizar redistribución de bicicletas. 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 (por estación - 5-10 unidades) 
+• ESP32 con GPS (por bicicleta) 
+• Cerradura electrónica solenoide 
+• Sensor magnético de anclaje 
+• Acelerómetro MPU6050 (detección de caídas) 
+• RFID RC522 en estaciones 
+• Panel solar 20W por estación 
+• Batería 12V para respaldo 
+• Display LCD para información 
+Software y Tecnologías 
+• Python con Django para backend 
+• PostgreSQL con PostGIS 
+• Aplicación móvil con React Native 
+• Algoritmos de predicción de demanda (LSTM) 
+• Mapas en tiempo real con Mapbox 
+• Sistema de pagos (integración) 
+• Node-RED para gestión de estaciones 
+• Dashboard con Grafana 
+Funcionalidades del Sistema 
+• Desbloqueo de bicicletas vía app móvil o tarjeta RFID 
+• Rastreo GPS en tiempo real de todas las bicicletas 
+• Detección de uso no autorizado (sin desbloqueo) 
+• Alertas de mantenimiento (kilometraje, caídas) 
+• Mapa de disponibilidad en estaciones 
+• Predicción de demanda por franja horaria 
+• Rutas sugeridas para redistribución 
+• Sistema de reportes de daños por usuarios 
+Habilidades Desarrolladas 
+• Sistemas de movilidad compartida 
+• Optimización logística 
+• Forecasting de demanda 
+• Desarrollo de apps móviles 
+• Gestión de flotas IoT 
+• Análisis geoespacial 
+  
+Proyecto 46: Monitor de Condiciones de Vías con Detección de Baches y 
+Deterioro 
+Sector Transporte y movilidad urbana 
+inteligente 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Intermedio 
+ 
+Resumen Breve 
+Sistema vehicular que detecta baches, grietas y deterioro del pavimento mediante 
+acelerómetros y GPS, genera mapas de condición de vías y prioriza mantenimiento vial 
+basado en severidad de daños detectados. 
+Problemática 
+El deterioro de vías urbanas causa daños vehiculares, accidentes y molestias, pero 
+municipalidades carecen de datos precisos sobre ubicación y severidad de baches para 
+priorizar reparaciones de forma eficiente. 
+Objetivo General 
+Desarrollar un sistema de monitoreo de condiciones de vías urbanas que detecte 
+automáticamente baches y deterioro mediante sensores vehiculares, generando mapas 
+para priorización de mantenimiento. 
+Objetivos Específicos 
+136. Implementar sensores de vibración (acelerómetros) y GPS en vehículos que 
+detecten anomalías del pavimento durante conducción normal. 
+137. Desarrollar algoritmo de clasificación de severidad de baches usando machine 
+learning con datos de aceleración vertical. 
+138. Crear plataforma de mapeo colaborativo que agregue datos de múltiples 
+vehículos y genere mapas de prioridad de reparación. 
+ 
+Hardware Necesario 
+• ESP32 (dispositivo vehicular) 
+• Acelerómetro ADXL345 (alta sensibilidad) 
+• GPS NEO-6M 
+• Módulo GSM SIM800L (transmisión datos) 
+• SD card para logs offline 
+• Batería portable o conector 12V 
+• Carcasa para tablero del vehículo 
+• Raspberry Pi 4 (servidor central) 
+Software y Tecnologías 
+• Python con SciPy (análisis de vibraciones) 
+• Machine learning: Random Forest, SVM 
+• PostgreSQL con PostGIS 
+• Mapas con Leaflet/Mapbox 
+• Node-RED para ingesta de datos 
+• Algoritmos de clustering (DBSCAN) 
+• Dashboard web para municipalidades 
+• API REST para apps de reporte ciudadano 
+Habilidades Desarrolladas 
+• Detección de anomalías viales 
+• Crowdsourcing de datos urbanos 
+• Análisis de vibraciones vehiculares 
+• Machine learning para clasificación 
+• Sistemas de información geográfica 
+• Priorización de mantenimiento vial 
+  
+PROYECTOS DE RETAIL Y COMERCIO INTELIGENTE 
+Proyecto 47: Análisis de Comportamiento de Clientes en Tiendas con Mapas de 
+Calor 
+Sector Retail y comercio inteligente 
+Área Tecnológica SBC-IoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+Resumen Breve 
+Sistema de análisis de comportamiento en punto de venta que rastrea movimientos de 
+clientes mediante visión artificial, genera mapas de calor de zonas más visitadas, mide 
+tiempos de permanencia y optimiza disposición de productos. 
+Problemática 
+Los comerciantes desconocen patrones reales de comportamiento de clientes en tienda 
+(zonas visitadas, productos observados, rutas), basando decisiones de merchandising 
+en intuición en lugar de datos objetivos. 
+Objetivo General 
+Desarrollar un sistema de análisis de comportamiento de clientes en retail que genere 
+mapas de calor, analice rutas y mida interacción con productos mediante visión artificial 
+y sensores de proximidad. 
+Objetivos Específicos 
+139. Implementar red de cámaras ESP32-CAM y sensores de proximidad que 
+rastreen movimientos de clientes preservando privacidad. 
+140. Desarrollar algoritmos de tracking multi-persona que generen trayectorias 
+anónimas y tiempos de permanencia por zona. 
+141. Crear visualizaciones de mapas de calor y análisis de conversión (personas que 
+miran vs compran) para optimización de layout. 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 (procesamiento central) 
+• ESP32-CAM (6-10 unidades según tamaño tienda) 
+• Sensores ultrasónicos HC-SR04 (estanterías) 
+• Sensores de peso HX711 (productos tomados) 
+• Beacons BLE (análisis de proximidad) 
+• Arduino Nano (control de sensores) 
+• Display para métricas en tiempo real 
+Software y Tecnologías 
+• OpenCV para detección y tracking 
+• YOLO para detección de personas 
+• Algoritmos de tracking (SORT, DeepSORT) 
+• Python con análisis espacial 
+• PostgreSQL para datos históricos 
+• Generación de heatmaps con Seaborn 
+• Dashboard con D3.js para visualizaciones 
+• Algoritmos de funnel analysis 
+Métricas Analizadas 
+• Mapas de calor de zonas más visitadas 
+• Rutas típicas de clientes 
+• Tiempo de permanencia por zona 
+• Tasa de conversión por producto 
+• Productos más observados vs comprados 
+• Puntos de congestión 
+• Horarios de mayor afluencia 
+• Análisis A/B de disposiciones de productos 
+Habilidades Desarrolladas 
+• Computer vision para retail 
+• Multi-object tracking 
+• Análisis de comportamiento del consumidor 
+• Visualización de datos espaciales 
+• Optimización de merchandising 
+• Preservación de privacidad en análisis 
+  
+Proyecto 48: Caja Automática con Reconocimiento de Productos por Visión 
+Artificial 
+Sector Retail y comercio inteligente 
+Área Tecnológica AIoT + IoT con Visión Artificial 
+Complejidad Avanzado 
+ 
+Resumen Breve 
+Sistema de checkout automatizado que identifica productos mediante visión artificial, 
+calcula total de compra sin escaneo manual, detecta intentos de fraude y acelera 
+proceso de pago en tiendas de conveniencia. 
+Problemática 
+Las filas en cajas de supermercados generan frustración y pérdida de ventas, el 
+escaneo manual es lento y propenso a errores, y los sistemas de auto-checkout 
+tradicionales requieren escaneo individual de productos. 
+Objetivo General 
+Desarrollar un sistema de caja automática basado en visión artificial que identifique 
+productos automáticamente, calcule totales sin escaneo manual y reduzca tiempos de 
+checkout significativamente. 
+Objetivos Específicos 
+142. Entrenar modelo de deep learning que identifique productos comunes de tienda 
+con precisión >95% usando dataset personalizado. 
+143. Implementar sistema de peso que valide correspondencia entre productos 
+detectados visualmente y peso total. 
+144. Desarrollar detección de anomalías que identifique intentos de fraude (productos 
+ocultos, sustitución) con alertas al personal. 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 (4GB RAM mínimo) 
+• Cámara Raspberry Pi v2 o USB HD 
+• Iluminación LED controlada 
+• Celda de carga 20kg con HX711 
+• Display táctil 7" (interfaz usuario) 
+• Lector RFID/NFC (pagos sin contacto) 
+• Arduino Nano (control báscula) 
+• Impresora térmica de tickets 
+• Buzzer para confirmaciones 
+Software y Tecnologías 
+• TensorFlow Lite con MobileNet 
+• OpenCV para pre-procesamiento 
+• Python con picamera 
+• Dataset personalizado de productos 
+• Transfer learning 
+• SQLite para catálogo de productos 
+• Sistema de pagos (integración) 
+• Dashboard administrativo web 
+• Algoritmos de detección de fraude 
+Habilidades Desarrolladas 
+• Object recognition en retail 
+• Transfer learning aplicado 
+• Sistemas de punto de venta 
+• Detección de fraude por IA 
+• Integración de sistemas de pago 
+• Computer vision para comercio 
+  
+PROYECTOS DE AGRICULTURA VERTICAL Y URBANA 
+Proyecto 49: Sistema Hidropónico Inteligente con Control Automatizado de 
+Nutrientes 
+Sector Agricultura vertical y urbana 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Avanzado 
+ 
+Resumen Breve 
+Sistema automatizado para cultivos hidropónicos que monitorea y controla pH, 
+conductividad eléctrica (EC), temperatura de solución nutritiva, oxigenación y dosifica 
+fertilizantes automáticamente para optimizar crecimiento de plantas. 
+Problemática 
+La hidroponía requiere control preciso y constante de parámetros químicos de solución 
+nutritiva, proceso manual tedioso y propenso a errores que afecta rendimiento de 
+cultivos y puede causar pérdidas totales por desbalances nutricionales. 
+Objetivo General 
+Desarrollar un sistema de control automatizado para cultivos hidropónicos que 
+mantenga parámetros óptimos de solución nutritiva mediante monitoreo continuo y 
+dosificación automática de correctores. 
+Objetivos Específicos 
+145. Implementar sensores de pH, EC, temperatura y nivel de solución con bombas 
+dosificadoras peristálticas para ajustes automáticos. 
+146. Desarrollar algoritmos de control PID que mantengan pH y EC en rangos 
+óptimos específicos por tipo de cultivo. 
+147. Crear recetas de cultivo personalizables que ajusten parámetros según fase de 
+crecimiento (vegetativa, floración, fructificación). 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 
+• Arduino Mega (control de actuadores) 
+• Sensor de pH analógico 
+• Sensor de EC/TDS 
+• Sensor de temperatura DS18B20 waterproof 
+• Sensor de nivel ultrasónico 
+• Bombas peristálticas (4 unidades) 
+• Bomba de aire para oxigenación 
+• Relés de 8 canales 
+• Electroválvulas 
+• Display LCD 20x4 
+Software y Tecnologías 
+• Python con GPIO 
+• Algoritmos de control PID 
+• Node-RED para automatización 
+• InfluxDB para series temporales 
+• Grafana para monitoreo 
+• MQTT para comunicación 
+• Librería de recetas de cultivo 
+• Alertas por Telegram 
+• Calibración automática de sensores 
+Parámetros Controlados 
+• pH de solución (5.5-6.5 según cultivo) 
+• Conductividad eléctrica (1.0-3.0 mS/cm) 
+• Temperatura de solución (18-22°C) 
+• Nivel de solución nutritiva 
+• Oxígeno disuelto (indirecto) 
+• Dosificación de pH+ y pH- 
+• Dosificación de fertilizantes A y B 
+• Recirculación de solución 
+Habilidades Desarrolladas 
+• Hidroponía automatizada 
+• Control PID aplicado 
+• Química de soluciones nutritivas 
+• Calibración de sensores químicos 
+• Sistemas de dosificación automática 
+• Agricultura de precisión 
+  
+Proyecto 50: Granja Vertical Inteligente con Iluminación LED Optimizada 
+Sector Agricultura vertical y urbana 
+Área Tecnológica SBC-IoT + AIoT 
+Complejidad Avanzado 
+ 
+Resumen Breve 
+Sistema de agricultura vertical que controla iluminación LED multiespectral, clima, riego 
+y CO2 según fase de crecimiento, optimiza consumo energético con machine learning y 
+maximiza rendimiento por metro cuadrado en espacios urbanos. 
+Problemática 
+La agricultura urbana enfrenta limitaciones de espacio y altos costos energéticos por 
+iluminación artificial, requiriendo optimización precisa de espectro lumínico, intensidad y 
+fotoperiodo para maximizar rendimiento con mínimo consumo. 
+Objetivo General 
+Desarrollar un sistema integral de granja vertical que optimice iluminación LED, clima y 
+nutrición para maximizar rendimiento de cultivos en espacios urbanos reducidos con 
+eficiencia energética. 
+Objetivos Específicos 
+148. Implementar control de iluminación LED RGB+UV ajustable por espectro, 
+intensidad y fotoperiodo según necesidades del cultivo. 
+149. Desarrollar algoritmo de optimización que ajuste parámetros ambientales usando 
+reinforcement learning basado en tasa de crecimiento. 
+150. Integrar control de clima (temperatura, humedad, CO2), riego y nutrición en 
+sistema centralizado con múltiples niveles. 
+ 
+Hardware Necesario 
+• Raspberry Pi 4 (controlador maestro) 
+• Arduino Mega (por nivel de cultivo) 
+• Tiras LED RGB ajustables (espectro completo) 
+• LEDs UV-A (floración) 
+• LEDs IR (fotomorfogénesis) 
+• Drivers PWM para LEDs 
+• DHT22 (por nivel) 
+• Sensor de CO2 MH-Z19B 
+• Cámara Raspberry Pi (crecimiento) 
+• Bombas peristálticas 
+• Ventiladores DC 
+• Humidificador ultrasónico 
+Software y Tecnologías 
+• Python con TensorFlow 
+• Reinforcement learning (Q-learning) 
+• Computer vision para análisis de crecimiento 
+• Control PWM de iluminación 
+• Node-RED para orquestación 
+• InfluxDB y Grafana 
+• Recetas lumínicas por cultivo 
+• Optimización energética 
+• Análisis de imágenes time-lapse 
+Habilidades Desarrolladas 
+• Agricultura vertical 
+• Fotobiología de plantas 
+• Reinforcement learning aplicado 
+• Optimización multiobjetivo 
+• Eficiencia energética 
+• Sistemas de producción urbana 
+  
+RESUMEN ACTUALIZADO - 50 PROYECTOS DE IoT 
+El documento completo ahora contiene 50 proyectos prácticos de IoT distribuidos en 
+múltiples áreas tecnológicas y sectores de aplicación: 
+Nuevos Proyectos Agregados (41-50) 
+• Proyectos 41-42: Turismo y Hotelería Inteligente 
+• Proyectos 43-44: Deportes y Fitness Inteligente 
+• Proyectos 45-46: Transporte y Movilidad Urbana 
+• Proyectos 47-48: Retail y Comercio Inteligente 
+• Proyectos 49-50: Agricultura Vertical y Urbana 
+Distribución Total por Áreas 
+• SBC-IoT: 18 proyectos 
+• AIoT: 16 proyectos 
+• IoT con Visión Artificial: 10 proyectos 
+• IoT con Big Data y Analítica: 8 proyectos 
+• IoT Hacking y Ciberseguridad: 4 proyectos 
+Total de Sectores Cubiertos 
+20 sectores diferentes de aplicación industrial, comercial, agrícola, urbana, salud, 
+educación, deportes, turismo y más. 
+ 
+Todos los 50 proyectos incluyen: Resumen breve, Problemática, 
+Objetivo general, 3 objetivos específicos, Hardware detallado, 
+Software y tecnologías, y Habilidades desarrolladas. 

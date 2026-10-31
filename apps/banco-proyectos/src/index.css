@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --blue-primary: #00428A;
+  --yellow-accent: #FFC107;
+}
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .metric-card {
+    @apply p-6 rounded-xl border border-gray-100 bg-white hover:shadow-lg transition-all duration-300;
+  }
+  
+  .project-card {
+    @apply bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-institutional-blue transition-all duration-300;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2 bg-institutional-blue text-white rounded-lg hover:bg-blue-800 transition-colors font-medium;
+  }
+
+  .badge {
+    @apply px-2 py-1 rounded-full text-xs font-semibold;
+  }
+}
+
+/* Custom transitions */
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
