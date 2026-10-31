@@ -1,8 +1,8 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
     ChevronLeft, Clock, DollarSign, Cpu, Layers,
-    Target, GraduationCap, CheckCircle, ListChecks,
+    Target, ListChecks,
     ExternalLink, Globe, BookOpen
 } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
@@ -223,14 +223,14 @@ const ProjectDetail = () => {
                                 if (obj.includes("Objetivo General")) {
                                     const text = obj.replace(/🎯?\s*Objetivo General:?\s*/i, "").trim();
                                     return (
-                                        <React.Fragment key={i}>
+                                        <Fragment key={i}>
                                             <li className="text-sm font-bold text-gray-900 mt-4 first:mt-0">
                                                 🎯 Objetivo general
                                             </li>
                                             <li className="text-sm text-gray-600 leading-relaxed ml-4">
                                                 • {text}
                                             </li>
-                                        </React.Fragment>
+                                        </Fragment>
                                     );
                                 }
 

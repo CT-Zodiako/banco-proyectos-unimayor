@@ -8,7 +8,7 @@
     "dev": "vite",
     "prebuild": "node scripts/sync-donde-publicar.mjs",
     "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext js,jsx,mjs,cjs --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "node --test \"tests/*.test.mjs\"",
     "check:area": "node scripts/check-area.mjs",

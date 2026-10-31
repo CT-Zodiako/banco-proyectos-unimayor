@@ -21,7 +21,7 @@ npm run deploy     # vite build + firebase deploy (project reserva-de-laboratori
 ```
 
 Projects are stored in `src/data/mockProjects.js` (original 100) and `src/data/projects/<area>.js` (new areas);
-`npm test` validates them. The journal finder is served by this app at `/donde-publicar/` (copied from
+`npm test` validates them and `npm run lint` checks the code (ESLint, config in `.eslintrc.cjs`). The journal finder is served by this app at `/donde-publicar/` (copied from
 `apps/donde-publicar/site` before `dev`/`build`). Deploying requires a Google account with access to the Firebase
 project `reserva-de-laboratorio-26ae0`.
 

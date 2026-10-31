@@ -1,13 +1,13 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Users, Globe, Award } from 'lucide-react';
+import { BookOpen, Users, Award } from 'lucide-react';
 import MetricsSection from '../components/MetricsSection';
 import { useProjects } from '../hooks/useProjects';
 
 const Home = () => {
     const { projects } = useProjects();
 
-    const metrics = React.useMemo(() => {
+    const metrics = useMemo(() => {
         if (!projects || projects.length === 0) {
             return { total: 0, found: 0, areas: 0, sectors: 0 };
         }

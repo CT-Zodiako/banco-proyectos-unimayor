@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Plus, X, SlidersHorizontal } from 'lucide-react';
 import CatalogFilters from '../components/CatalogFilters';
@@ -40,8 +40,9 @@ const ProjectsPage = () => {
     const resultsRef = useRef(null);
 
     const query = params.get('q') ?? '';
-    const selectedAreas = params.getAll('area');
-    const selectedLevels = params.getAll('nivel');
+    // params only changes identity when the URL changes, so these stay stable between renders.
+    const selectedAreas = useMemo(() => params.getAll('area'), [params]);
+    const selectedLevels = useMemo(() => params.getAll('nivel'), [params]);
     const sector = params.get('sector') ?? '';
     const sort = SORTS.some((s) => s.value === params.get('orden')) ? params.get('orden') : 'recientes';
 
@@ -60,16 +61,16 @@ const ProjectsPage = () => {
     });
     const clearAll = () => setParams(new URLSearchParams(sort === 'recientes' ? {} : { orden: sort }), { replace: true });
 
-    const allProjects = loading || !projects ? [] : projects;
+    const allProjects = useMemo(() => (loading || !projects ? [] : projects), [loading, projects]);
     // Area counts reflect the other active filters, so they tell how many results each checkbox would add.
     const withoutAreaFilter = useMemo(
         () => filterProjects(allProjects, { query, levels: selectedLevels, sector }),
-        [allProjects, query, selectedLevels.join('|'), sector],
+        [allProjects, query, selectedLevels, sector],
     );
     const facets = useMemo(() => buildAreaFacets(withoutAreaFilter), [withoutAreaFilter]);
     const filtered = useMemo(
         () => sortProjects(filterProjects(withoutAreaFilter, { areas: selectedAreas }), sort),
-        [withoutAreaFilter, selectedAreas.join('|'), sort],
+        [withoutAreaFilter, selectedAreas, sort],
     );
     const { items, page, pages } = paginate(filtered, params.get('pagina'), PAGE_SIZE);
 

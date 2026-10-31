@@ -1,11 +1,6 @@
-import React from 'react';
-import { Plus } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const Navbar = () => {
-    const location = useLocation();
-    const isProjectsPage = location.pathname === '/proyectos';
 
     return (
         <nav className="bg-institutional-blue text-white shadow-md sticky top-0 z-50">

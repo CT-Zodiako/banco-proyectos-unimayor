@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
@@ -8,7 +7,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import logo from './assets/logo.png';
-import { Github, Mail, Globe, MapPin } from 'lucide-react';
+import { Mail, Globe, MapPin } from 'lucide-react';
 
 const Footer = () => (
     <footer className="bg-institutional-dark text-white pt-16 pb-8">

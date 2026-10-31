@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X, ExternalLink, Globe, Search, Settings, Plus, Edit2, Trash2, RotateCcw, Check, Power, AlertCircle, Bookmark } from 'lucide-react';
 import { usePublishingPlatforms } from '../hooks/usePublishingPlatforms';
 
