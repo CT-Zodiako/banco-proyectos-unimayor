@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Dónde publicar este proyecto? · Banco de Proyectos IoT · UNIMAYOR</title>
+<meta name="description" content="Revistas indexadas en SCImago (Q1–Q4), sin APC y de lectura gratuita (DOAJ) para cada proyecto del Banco de Proyectos IoT de UNIMAYOR.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-row">
+    <div>
+      <p class="eyebrow">Institución Universitaria Colegio Mayor del Cauca · Laboratorio de Física y Sistemas Embebidos</p>
+      <h1>¿Dónde publicar este proyecto?</h1>
+      <p class="lead">Revistas científicas <strong>indexadas</strong>, <strong>sin costo para publicar</strong> y <strong>de lectura gratuita</strong>, sugeridas para cada uno de los 100 proyectos del banco.</p>
+    </div>
+    <a class="back-link" href="https://reserva-de-laboratorio-26ae0.web.app/proyectos">← Volver al banco de proyectos</a>
+  </div>
+  <div class="wrap criteria" aria-label="Criterios de selección">
+    <div class="criterion"><span class="criterion-icon" aria-hidden="true">📊</span><div><strong>Indexada con cuartil</strong><span>Q1 a Q4 en SCImago (SJR)</span></div></div>
+    <div class="criterion"><span class="criterion-icon" aria-hidden="true">💸</span><div><strong>Sin APC ni otros cobros</strong><span>Verificado en DOAJ</span></div></div>
+    <div class="criterion"><span class="criterion-icon" aria-hidden="true">🔓</span><div><strong>Lectura gratuita</strong><span>Acceso abierto diamante</span></div></div>
+    <div class="criterion"><span class="criterion-icon" aria-hidden="true">🇨🇴</span><div><strong>Categoría Publindex</strong><span>Homologación Q1=A1 · Q2=A2 · Q3=B · Q4=C</span></div></div>
+  </div>
+  <nav class="wrap tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" id="tab-projects" aria-controls="view-projects" aria-selected="true" data-view="projects">Por proyecto</button>
+    <button role="tab" id="tab-catalog" aria-controls="view-catalog" aria-selected="false" data-view="catalog">Catálogo completo</button>
+    <button role="tab" id="tab-help" aria-controls="view-help" aria-selected="false" data-view="help">Cómo leer esta página</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- Per-project view -->
+  <section id="view-projects" role="tabpanel" aria-labelledby="tab-projects" class="view">
+    <div class="layout">
+      <aside class="sidebar" aria-label="Lista de proyectos">
+        <label class="field">
+          <span>Buscar proyecto</span>
+          <input id="project-search" type="search" placeholder="Ej.: EEG, invernadero, DDoS…" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>Área tecnológica</span>
+          <select id="project-area"><option value="">Todas las áreas</option></select>
+        </label>
+        <p id="project-count" class="muted small" aria-live="polite"></p>
+        <ul id="project-list" class="project-list"></ul>
+      </aside>
+
+      <article id="project-detail" class="detail" aria-live="polite">
+        <div class="empty-state">
+          <p class="empty-icon" aria-hidden="true">🔎</p>
+          <h2>Elija un proyecto</h2>
+          <p>Seleccione un proyecto de la lista para ver las revistas donde podría publicarse.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Full catalog view -->
+  <section id="view-catalog" role="tabpanel" aria-labelledby="tab-catalog" class="view" hidden>
+    <div class="catalog-head">
+      <h2>Catálogo de revistas diamante con cuartil</h2>
+      <p class="muted">Todas las revistas de DOAJ sin APC ni otros cobros que tienen cuartil en SCImago (se excluyen las de humanidades).</p>
+    </div>
+    <div class="filters" id="catalog-filters">
+      <label class="field grow"><span>Buscar revista, tema o país</span><input id="catalog-search" type="search" placeholder="Ej.: sensors, agronomy, Colombia…" autocomplete="off"></label>
+      <fieldset class="chips" aria-label="Cuartil"><legend>Cuartil</legend>
+        <label><input type="checkbox" name="catalog-q" value="Q1" checked> Q1</label>
+        <label><input type="checkbox" name="catalog-q" value="Q2" checked> Q2</label>
+        <label><input type="checkbox" name="catalog-q" value="Q3" checked> Q3</label>
+        <label><input type="checkbox" name="catalog-q" value="Q4" checked> Q4</label>
+      </fieldset>
+      <label class="toggle"><input type="checkbox" id="catalog-spanish"> Acepta artículos en español</label>
+    </div>
+    <p id="catalog-count" class="muted small" aria-live="polite">Cargando catálogo…</p>
+    <div id="catalog-results" class="journal-list"></div>
+    <button id="catalog-more" class="btn-secondary more" hidden>Ver más revistas</button>
+  </section>
+
+  <!-- Help view -->
+  <section id="view-help" role="tabpanel" aria-labelledby="tab-help" class="view help" hidden>
+    <h2>Cómo leer esta página</h2>
+    <div class="help-grid">
+      <div class="card">
+        <h3>¿Qué revistas aparecen?</h3>
+        <p>Solo revistas que cumplen las tres condiciones a la vez:</p>
+        <ol>
+          <li><strong>Indexadas:</strong> tienen cuartil (Q1, Q2, Q3 o Q4) en <a href="https://www.scimagojr.com/" target="_blank" rel="noopener">SCImago Journal Rank</a>.</li>
+          <li><strong>Sin costo para publicar:</strong> <a href="https://doaj.org/" target="_blank" rel="noopener">DOAJ</a> indica que no cobran APC ni otros cargos (envío, páginas, color).</li>
+          <li><strong>Lectura gratuita:</strong> están en DOAJ, es decir, publican en acceso abierto. Combinado con lo anterior, es <em>acceso abierto diamante</em>.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Cuartil y categoría Publindex</h3>
+        <table class="mini-table">
+          <thead><tr><th>Cuartil SCImago</th><th>Homologación Publindex</th></tr></thead>
+          <tbody>
+            <tr><td><span class="q q1">Q1</span></td><td>A1</td></tr>
+            <tr><td><span class="q q2">Q2</span></td><td>A2</td></tr>
+            <tr><td><span class="q q3">Q3</span></td><td>B</td></tr>
+            <tr><td><span class="q q4">Q4</span></td><td>C</td></tr>
+          </tbody>
+        </table>
+        <p class="small muted">Se muestra el <strong>mejor cuartil</strong> de la revista. Minciencias toma el cuartil vigente en el año de publicación del artículo.</p>
+      </div>
+      <div class="card">
+        <h3>¿Cómo se eligen las revistas de cada proyecto?</h3>
+        <p>Cada proyecto se describe con <strong>temas de sector</strong> (agricultura, salud, energía…) y <strong>temas de tecnología</strong> (IoT, IA, visión artificial, ciberseguridad…), tomados de su área, su sector y su título. Cada revista se describe con sus categorías de SCImago y sus palabras clave de DOAJ.</p>
+        <ul>
+          <li><span class="fit fit-fuerte">Encaje fuerte</span> la revista cubre el sector del proyecto <em>y</em> publica trabajos tecnológicos o de ingeniería.</li>
+          <li><span class="fit fit-tecnologia">Encaje por tecnología</span> revista de computación o ingeniería que acepta aplicaciones de cualquier sector.</li>
+          <li><span class="fit fit-sector">Encaje por sector</span> revista del sector sin señal tecnológica clara.</li>
+        </ul>
+      </div>
+      <div class="card warning">
+        <h3>Antes de enviar un artículo</h3>
+        <ul>
+          <li>La sugerencia es <strong>automática</strong>: lea el alcance (<em>aims &amp; scope</em>) de la revista y revise artículos recientes.</li>
+          <li>Confirme en la página de la revista que <strong>no cobra</strong> nada; las políticas cambian.</li>
+          <li>Verifique el cuartil en SCImago y, si aplica, la categoría en <a href="https://scienti.minciencias.gov.co/publindex/" target="_blank" rel="noopener">Publindex</a>, buscando por ISSN.</li>
+          <li>Desconfíe de correos que ofrecen publicar rápido: entre siempre desde los enlaces de DOAJ o SCImago.</li>
+        </ul>
+      </div>
+    </div>
+    <p id="data-sources" class="small muted"></p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Datos: <a href="https://doaj.org/" target="_blank" rel="noopener">DOAJ</a> (Directory of Open Access Journals) y <a href="https://www.scimagojr.com/" target="_blank" rel="noopener">SCImago Journal &amp; Country Rank</a>. Banco de Proyectos IoT · UNIMAYOR, Popayán.</p>
+  </div>
+</footer>
+
+<template id="journal-card">
+  <article class="journal">
+    <header class="journal-head">
+      <div class="journal-title-row">
+        <span class="q"></span>
+        <h3 class="journal-title"></h3>
+      </div>
+      <span class="fit"></span>
+    </header>
+    <p class="journal-meta"></p>
+    <dl class="journal-facts"></dl>
+    <div class="journal-why"></div>
+    <div class="journal-cats"></div>
+    <nav class="journal-links" aria-label="Enlaces de la revista"></nav>
+  </article>
+</template>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
