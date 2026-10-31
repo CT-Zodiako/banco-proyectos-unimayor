@@ -63,6 +63,20 @@ THEMES = {
                            "production engineering"], TECH_AREAS),
     "computacion_general": _theme("Computación e ingeniería general", ["Computer Science (miscellaneous)",
                                                                        "Engineering (miscellaneous)", "Software"], [], []),
+    "software": _theme("Ingeniería de software", ["Software"],
+                       ["software engineering", "software architecture", "ingeniería de software", "devops",
+                        "microservic", "software development", "desarrollo de software"], TECH_AREAS),
+    "videojuegos": _theme("Videojuegos y gamificación", ["Human-Computer Interaction",
+                                                          "Computer Graphics and Computer-Aided Design", "Media Technology"],
+                          [r"\bvideo ?games?\b", "serious game", "gamification", "game-based", "videojuego",
+                           "gamificación", "juegos serios", r"\bgame design\b"], TECH_AREAS + ["Social Sciences"]),
+    "robotica": _theme("Robótica", [],
+                       [r"\brobot", "robótic", "mechatronic", "mecatrón", "autonomous vehicle", "manipulator"],
+                       TECH_AREAS),
+    "bioingenieria": _theme("Bioingeniería", ["Biomedical Engineering", "Bioengineering"],
+                            ["biomedical engineering", "bioengineering", "ingeniería biomédica", "bioingenier",
+                             "prosthe", "prótesis", "biomechanic", "rehabilitation engineering"],
+                            TECH_AREAS + HEALTH_AREAS),
     # Signal that a domain journal publishes technology/engineering work: an Engineering or Computer
     # Science SCImago area, or a specific applied-technology keyword (generic words such as
     # "technology" or "monitoring" are deliberately excluded).
@@ -89,9 +103,9 @@ THEMES = {
     "ambiente": _theme("Ambiente y sostenibilidad", ["Environmental Science (miscellaneous)", "Environmental Engineering",
                                                      "Pollution", "Waste Management and Disposal", "Atmospheric Science",
                                                      "Global and Planetary Change", "Environmental Chemistry",
-                                                     "Management, Monitoring, Policy and Law"],
+                                                     "Management, Monitoring, Policy and Law", "Computers in Earth Sciences"],
                        ["environmental", "pollution", "waste", "air quality", "meteorolog", "ambiental",
-                        "circular economy"], ["Environmental Science", "Earth and Planetary Sciences", "Energy",
+                        "circular economy", "remote sensing", "teledetección"], ["Environmental Science", "Earth and Planetary Sciences", "Energy",
                                               "Engineering"]),
     "agua": _theme("Recursos hídricos", ["Water Science and Technology"],
                    ["water resources", "hydrolog", "recursos hídricos"], ["Environmental Science", "Engineering",
@@ -162,7 +176,8 @@ THEMES = {
 APPLIED_AREAS = {"Engineering", "Computer Science"}
 
 TECH_THEMES = {"iot_redes", "electronica", "ia", "vision", "seguridad", "datos", "salud_digital",
-               "industria40", "computacion_general", "tecnologia_aplicada"}
+               "industria40", "computacion_general", "tecnologia_aplicada", "software", "videojuegos", "robotica",
+               "bioingenieria"}
 
 # Categories that mark a journal as humanities-led (excluded: they do not publish engineering work).
 HUMANITIES_CATEGORIES = {
@@ -186,6 +201,17 @@ AREA_RULES = [
     ("médico", ["salud_digital", "iot_redes"]),
     ("aeroespacial", ["iot_redes", "electronica"]),
     ("industrial 4.0", ["industria40", "iot_redes"]),
+    # Areas added to the bank after the original 100 IoT projects.
+    ("videojuegos", ["videojuegos", "software"]),
+    ("desarrollo de software", ["software"]),
+    ("arquitectura de software", ["software"]),
+    ("redes", ["iot_redes"]),
+    ("medicina con aiot", ["salud_digital", "ia"]),
+    ("bioingenier", ["bioingenieria", "salud_digital"]),
+    ("inteligencia artificial", ["ia"]),
+    ("machine learning", ["ia", "datos"]),
+    ("ciberfísic", ["electronica", "industria40", "iot_redes"]),
+    ("robótica", ["robotica", "electronica"]),
 ]
 
 # Project title keywords -> technology themes (the area does not always name every technique used).
@@ -199,6 +225,10 @@ TITLE_RULES = [
 ]
 
 SECTOR_RULES = [
+    # Sectors used by the areas added after the original 100 projects.
+    ("medio ambiente", ["ambiente"]), ("agro", ["agricultura"]), ("agua potable", ["agua"]),
+    ("distribución de agua", ["agua"]), ("territorial", ["ciudades"]), ("finanzas", ["negocios"]),
+    ("seguridad laboral", ["seguridad_industrial"]), ("discapacidad", ["rehabilitacion"]),
     ("agricultura", ["agricultura"]), ("agrícola", ["agricultura"]), ("plagas", ["agricultura"]),
     ("acuicultura", ["acuicultura"]), ("piscicultura", ["acuicultura"]),
     ("ganadería", ["ganaderia"]), ("animal", ["ganaderia"]),
@@ -377,10 +407,27 @@ def build_journals(doaj_journals, scimago_index):
     return journals
 
 
+TEACHING_WORDS = ("formación", "enseñanza", "docencia", "aprendizaje", "educativ", "pedagog")
+
+
+def _domain_sector(sector):
+    """Sector text used for domain themes.
+
+    "Educación superior - <sub>" names the university as a setting; it is an education topic only when the
+    sub-sector is about teaching. "Industria creativa" (games, media) is not manufacturing.
+    """
+    text = sector.lower().replace("industria creativa", "creativa")
+    prefix = "educación superior - "
+    if text.startswith(prefix):
+        sub = text[len(prefix):]
+        return sub + (" educación" if any(w in sub for w in TEACHING_WORDS) else "")
+    return text
+
+
 def project_themes(project):
     """Return (technology themes, domain themes) for a project."""
     area = project.get("area", "").lower()
-    sector = project.get("sector", "").lower()
+    sector = _domain_sector(project.get("sector", ""))
     title = project.get("title", "").lower()
     tech = {"computacion_general", "tecnologia_aplicada"}
     for needle, themes in AREA_RULES:

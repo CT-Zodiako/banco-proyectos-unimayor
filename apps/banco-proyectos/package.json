@@ -4,12 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/sync-donde-publicar.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/sync-donde-publicar.mjs",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "node --test \"tests/*.test.mjs\"",
     "check:area": "node scripts/check-area.mjs",
+    "export:projects": "node scripts/export-projects.mjs ../donde-publicar/data/projects.json",
     "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {

@@ -16,6 +16,9 @@ __pycache__/
 # Local backups (e.g. the empty Git repository the project bank came with)
 .backup/
 
+# banco-proyectos: copy of the journal finder made by scripts/sync-donde-publicar.mjs
+apps/banco-proyectos/public/donde-publicar/
+
 # banco-proyectos: temporary DOCX extraction folders
 apps/banco-proyectos/temp_docx_extract*/
 

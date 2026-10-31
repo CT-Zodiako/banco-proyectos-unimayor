@@ -19,12 +19,14 @@ instructions, DOAJ and SCImago.
 | `pipeline/donde_publicar.py` | Loading, filtering, joining and matching logic |
 | `pipeline/build.py` | Command that generates `site/data.js` and `site/catalog.js` |
 | `tests/` | Unit and end-to-end tests (stdlib `unittest`) |
-| `data/raw/` | Input data: project bundle, DOAJ CSV, SCImago CSV (not published) |
+| `data/projects.json` | Projects exported from `apps/banco-proyectos` (`npm run export:projects`) |
+| `data/raw/` | DOAJ CSV and SCImago CSV (not versioned) |
 | `odd/tasks/donde-publicar.md` | Feature specification and decision log |
 
 ## Regenerate the data
 
-1. **Projects**: extracted from the app bundle into `data/raw/projects-bundle.json`.
+1. **Projects**: exported from the project bank in this repository (all areas):
+   `cd ../banco-proyectos && npm run export:projects` writes `data/projects.json`.
 2. **DOAJ**: `curl -L -o data/raw/doaj/journals.csv https://doaj.org/csv`
 3. **SCImago**: SCImago blocks automated downloads. Open
    <https://www.scimagojr.com/journalrank.php>, click **Download data** and save the file as
@@ -62,16 +64,18 @@ python3 -I -m http.server 8765 --bind 127.0.0.1 --directory site
 
 The page also works when `site/index.html` is opened directly from disk.
 
-## Link it from the project bank
+## How the project bank uses it
 
-Deploy the contents of `site/` (for example under `/donde-publicar/` in Firebase Hosting) and point the
-"¿Dónde publicar este proyecto?" button to:
+`apps/banco-proyectos` serves this page under `/donde-publicar/`: its `predev`/`prebuild` scripts run
+`scripts/sync-donde-publicar.mjs`, which copies `site/` into `public/donde-publicar/` (not versioned). The
+"¿Dónde publicar este proyecto?" buttons link to:
 
 ```
-https://<your-host>/donde-publicar/?p=<project id>     e.g. ?p=proj_001
+/donde-publicar/index.html?p=<project id>     e.g. ?p=proj_199
 ```
 
-Keep the trailing slash in `/donde-publicar/`: the page loads `styles.css`, `data.js` and `app.js` with
-relative paths, so `/donde-publicar?p=...` (no slash) would look for them one level up.
+The explicit `index.html` works with both the Vite dev server and Firebase Hosting. When a project is selected,
+the header link goes back to `/proyecto/<id>`. Unknown or missing ids open the page with the project list.
 
-Unknown or missing ids open the page with the project list.
+After changing projects in the bank, regenerate: `npm run export:projects` (in `apps/banco-proyectos`), then
+`python3 -E -m pipeline.build` here.

@@ -146,6 +146,64 @@ class ThemeTests(unittest.TestCase):
         self.assertIn("vision", tech)
         self.assertIn("industria40", tech)
 
+    def test_new_bank_areas_map_to_technology_themes(self):
+        expected = {
+            "Desarrollo de Videojuegos": {"videojuegos", "software"},
+            "Desarrollo de Software": {"software"},
+            "Arquitectura de Software": {"software"},
+            "Redes": {"iot_redes"},
+            "Medicina con AIoT": {"salud_digital", "ia"},
+            "Bioingeniería": {"bioingenieria"},
+            "Inteligencia Artificial": {"ia"},
+            "Machine Learning": {"ia", "datos"},
+            "Sistemas Ciberfísicos": {"electronica", "industria40"},
+            "Robótica": {"robotica", "electronica"},
+            "Ciberseguridad": {"seguridad"},
+        }
+        for area, themes in expected.items():
+            tech, _ = dp.project_themes({"area": area, "sector": "Educación superior", "title": "Proyecto"})
+            self.assertTrue(themes <= set(tech), f"{area}: {tech}")
+
+    def test_university_setting_is_not_an_education_topic(self):
+        _, setting = dp.project_themes({"area": "Robótica", "sector": "Educación superior - Gestión de laboratorios"})
+        self.assertNotIn("educacion", setting)
+        _, teaching = dp.project_themes({"area": "Redes", "sector": "Educación superior - Formación en redes"})
+        self.assertIn("educacion", teaching)
+        _, plain = dp.project_themes({"area": "AIoT", "sector": "Educación inteligente y e-learning"})
+        self.assertIn("educacion", plain)
+
+    def test_new_bank_sectors_map_to_domains(self):
+        expected = {
+            "Medio ambiente - Ordenamiento territorial": {"ambiente", "ciudades"},
+            "Agro - Caficultura": {"agricultura"},
+            "Agroindustria - Poscosecha de café": {"agricultura"},
+            "Servicios públicos - Agua potable rural": {"agua"},
+            "Gobierno - Planeación territorial": {"ciudades"},
+            "Finanzas - Economía solidaria": {"negocios"},
+            "Seguridad laboral - Manipulación remota de sustancias peligrosas": {"seguridad_industrial"},
+            "Inclusión - Discapacidad motora severa": {"rehabilitacion"},
+        }
+        for sector, themes in expected.items():
+            _, domain = dp.project_themes({"area": "Machine Learning", "sector": sector})
+            self.assertTrue(themes <= set(domain), f"{sector}: {domain}")
+
+    def test_remote_sensing_journals_are_environmental(self):
+        self.assertIn("ambiente", dp.journal_themes(["Computers in Earth Sciences"], ["Earth and Planetary Sciences"], ""))
+
+    def test_creative_industry_is_not_industry_4_0(self):
+        _, domain = dp.project_themes({"area": "Desarrollo de Videojuegos", "sector": "Industria creativa - Estudios de videojuego"})
+        self.assertNotIn("industria40", domain)
+        _, factory = dp.project_themes({"area": "AIoT", "sector": "Industria - Control de calidad y empaque"})
+        self.assertIn("industria40", factory)
+
+    def test_new_technology_themes_recognize_journals(self):
+        cs = ["Computer Science"]
+        self.assertIn("videojuegos", dp.journal_themes(["Human-Computer Interaction"], cs, ""))
+        self.assertIn("videojuegos", dp.journal_themes([], cs, "serious games, gamification"))
+        self.assertIn("software", dp.journal_themes([], cs, "software engineering"))
+        self.assertIn("robotica", dp.journal_themes([], ["Engineering"], "mobile robots"))
+        self.assertIn("bioingenieria", dp.journal_themes(["Biomedical Engineering"], ["Engineering"], ""))
+
     def test_short_terms_match_whole_words_only(self):
         cs = ["Computer Science"]
         self.assertIn("iot_redes", dp.journal_themes([], cs, "Journal of IoT systems"))
@@ -217,6 +275,15 @@ class MatchTests(unittest.TestCase):
         project = {"id": "proj_y", "area": "SBC-IoT", "sector": "Agricultura de precisión"}
         journal = self.journal("GeneralEng", ["Engineering (miscellaneous)"], ["Engineering"])
         self.assertEqual(dp.match_project(project, [journal]), [])
+
+
+class ProjectSourceTests(unittest.TestCase):
+    def test_bank_export_projects_are_normalized_like_bundle_projects(self):
+        raw = {"id": "proj_201", "titulo": "🦾 Proyecto 201: Brazo Robótico", "descripcion": "Problema: A.\n\nDescripción: B.",
+               "area": "Robótica", "sector": "Industria - Automatización", "nivel": "Avanzado",
+               "objetivos": ["🎯 Objetivo General: Clasificar piezas"], "habilidades": ["ROS 2"]}
+        project = dp.normalize_project(raw)
+        self.assertEqual((project["number"], project["title"], project["area"]), (201, "Brazo Robótico", "Robótica"))
 
 
 class ProjectTests(unittest.TestCase):

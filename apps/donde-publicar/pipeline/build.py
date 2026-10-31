@@ -20,7 +20,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--projects", default=ROOT / "data/raw/projects-bundle.json", type=pathlib.Path)
+    parser.add_argument("--projects", default=ROOT / "data/projects.json", type=pathlib.Path)
     parser.add_argument("--doaj", default=ROOT / "data/raw/doaj/journals.csv", type=pathlib.Path)
     parser.add_argument("--scimago", default=ROOT / "data/raw/scimago/scimagojr.csv", type=pathlib.Path)
     parser.add_argument("--out", default=ROOT / "site/data.js", type=pathlib.Path)

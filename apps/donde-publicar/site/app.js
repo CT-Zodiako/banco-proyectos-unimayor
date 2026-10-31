@@ -327,6 +327,10 @@
     if (window.matchMedia("(max-width: 900px)").matches) detail.scrollIntoView({ behavior: "smooth", block: "start" });
     else if (detail.getBoundingClientRect().top < 0) detail.scrollIntoView({ block: "start" });
     document.title = `${projectsById.get(id).title} · ¿Dónde publicar?`;
+    // Served by the project bank: go back to the selected project's page.
+    const back = $("#back-link");
+    back.href = `/proyecto/${encodeURIComponent(id)}`;
+    back.textContent = "← Volver al proyecto";
   }
 
   /* ---------- Catalog ---------- */

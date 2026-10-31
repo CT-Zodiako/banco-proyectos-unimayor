@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
     ChevronLeft, Clock, DollarSign, Cpu, Layers,
@@ -6,12 +6,11 @@ import {
     ExternalLink, Globe, BookOpen
 } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
-import PublishingModal from '../components/PublishingModal';
+import { wherePublishUrl } from '../lib/links';
 
 const ProjectDetail = () => {
     const { id } = useParams();
     const { projects, loading } = useProjects();
-    const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
     const project = projects?.find(p => p.id === id);
 
@@ -36,13 +35,13 @@ const ProjectDetail = () => {
                     Volver a la lista
                 </Link>
 
-                <button
-                    onClick={() => setIsPublishModalOpen(true)}
+                <a
+                    href={wherePublishUrl(project.id)}
                     className="bg-institutional-yellow hover:bg-yellow-400 text-institutional-blue px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2 border border-yellow-300 transform hover:-translate-y-0.5"
                 >
-                    <BookOpen size={18} />
+                    <BookOpen size={18} aria-hidden="true" />
                     ¿Dónde publicar este proyecto?
-                </button>
+                </a>
             </div>
 
             <div className="space-y-4">
@@ -275,13 +274,13 @@ const ProjectDetail = () => {
                         </ul>
 
                         <div className="pt-2">
-                            <button
-                                onClick={() => setIsPublishModalOpen(true)}
+                            <a
+                                href={wherePublishUrl(project.id)}
                                 className="w-full py-2.5 px-4 bg-institutional-yellow hover:bg-yellow-400 text-institutional-blue rounded-xl font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2"
                             >
-                                <BookOpen size={16} />
+                                <BookOpen size={16} aria-hidden="true" />
                                 ¿Dónde publicar este proyecto?
-                            </button>
+                            </a>
                         </div>
                     </section>
 
@@ -301,12 +300,6 @@ const ProjectDetail = () => {
                 </div>
             </div>
 
-            {/* Publishing Modal */}
-            <PublishingModal
-                isOpen={isPublishModalOpen}
-                onClose={() => setIsPublishModalOpen(false)}
-                project={project}
-            />
         </div>
     );
 };

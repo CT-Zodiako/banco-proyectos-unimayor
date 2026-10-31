@@ -13,6 +13,9 @@ Lives in /Users/zodiako/DEV/publicaciones (static HTML + JSON); the app button l
 - S3. "sin apc" and "que el lector la pueda leer de forma gratuit" — classified with "https://doaj.org/"
   ("clasifica si es sin apc si es libre, entre otras"); information extracted from DOAJ.
 - S4. "envia toda esta inforacion a una pagina que sea usable y entendible".
+- S6. "cuando seleciono un proyecot esta […] el boton de donde publicar quier que ese boton ahora funcione redirgiendo y
+  selecioando dodne o puedo publciar con loque hicmos en elrpoyecto de donde-publicar la idea es que seleciono voy a la
+  otra pagina y me entrega el rsutlado de segun mi proyecot donde puedo publciar" — for every project of the bank.
 - S5. Placement decided by the user: "Página independiente aquí (recomendado)" — static page in this
   folder, deep-linkable per project (?p=proj_001) so the existing button can link to it.
 
@@ -26,6 +29,9 @@ Lives in /Users/zodiako/DEV/publicaciones (static HTML + JSON); the app button l
 | T4 | Match each project to journals by subject categories + keywords, ranked (tests first) | S1 | inline | done: 60 matches per project; RED/GREEN per rule (L6, L8) |
 | T5 | Build usable page (project list, per-project journals, filters, deep link) | S4, S5 | inline | done: site/index.html, styles.css, app.js |
 | T6 | Verify end to end in the browser and document regeneration/linking in README | S1–S5 | inline | done: ego-lite checks (L9); 24 unit/e2e tests pass; README |
+| T7 | Read all bank projects from the repo (export script) instead of the scraped bundle; themes for the 11 new areas (tests first) | S1, S6 | inline | done (L16), uncommitted |
+| T8 | Serve the page inside banco-proyectos at /donde-publicar/ (sync step) and point both buttons there with ?p=<id> | S6 | inline | done (L16), uncommitted |
+| T9 | Verify: every project gets journals; click from project detail lands on its results (ego-lite) | S6 | inline | done (L17) |
 
 Note: folder is not a Git repository, so no work-unit commits are recorded.
 
@@ -63,6 +69,20 @@ Note: folder is not a Git repository, so no work-unit commits are recorded.
   raw DOAJ (APC No, other fees No) and SCImago (best quartile); no XSS path in app.js. Advisories fixed:
   duplicate SCImago source ids deduplicated (RED→GREEN test, catalog 2,700 unique), UI copy switched to
   neutral formal Spanish, README notes the trailing slash for the deep link. 25 tests pass.
+- L14 (user, verbatim): S6 text above, with a screenshot of the yellow "¿Dónde publicar este proyecto?" button on a
+  project detail page.
+- L15 (decision): the journal finder is served by the bank app itself under /donde-publicar/ (copied from
+  apps/donde-publicar/site by a predev/prebuild sync, not committed twice), linked as
+  /donde-publicar/index.html?p=<id> (explicit index.html works with both Vite dev and Firebase Hosting). The button
+  navigates instead of opening the old platform-links modal. Project source: the bank's own data, exported to JSON.
+- L16 (evidence): donde-publicar tests 32/32 (RED observed for new-area themes, university-setting rule, creative
+  industry, new sectors, remote sensing); banco tests 20/20 (links RED→GREEN). Differential check against the committed
+  pipeline: 0 of the original 100 projects changed themes. 210 projects, ≥29 journals each. Old projects-bundle.json
+  removed (source is now data/projects.json from `npm run export:projects`).
+- L17 (evidence, ego-lite on Vite dev): both buttons on /proyecto/proj_199 link to
+  /donde-publicar/index.html?p=proj_199; landing shows that project with 60 journals (Urban Informatics, Journal of
+  Spatial Information Science…); "← Volver al proyecto" returns to /proyecto/proj_199; catalog card link lands on its
+  project; production build contains donde-publicar/; no console errors.
 - L12 (user, verbatim): "primero vmaos a unir el proyecot en el mismo repositorio los dos proyecotsp orque vna a
   funcion igual ya uqe mas adelante tendremso un buscador de eventos"; clarified: "vamos a guarda el que busca
   las revistas el de los proyecot y futuramente el de los eventos".
