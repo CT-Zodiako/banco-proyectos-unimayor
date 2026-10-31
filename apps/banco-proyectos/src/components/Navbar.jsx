@@ -1,4 +1,5 @@
 import logo from '../assets/logo.png';
+import { EVENTS_URL } from '../lib/links';
 
 const Navbar = () => {
 
@@ -17,7 +18,7 @@ const Navbar = () => {
                     </div>
 
                     <div className="hidden md:flex items-center gap-6">
-                        {/* El botón se movió a ProjectsPage */}
+                        <a href={EVENTS_URL} className="font-semibold hover:text-institutional-yellow transition-colors">Eventos académicos</a>
                     </div>
                 </div>
             </div>

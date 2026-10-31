@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/sync-donde-publicar.mjs",
+    "predev": "node scripts/sync-donde-publicar.mjs && node scripts/sync-eventos.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/sync-donde-publicar.mjs",
+    "prebuild": "node scripts/sync-donde-publicar.mjs && node scripts/sync-eventos.mjs",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx,mjs,cjs --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",

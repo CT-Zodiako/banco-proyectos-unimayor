@@ -4,6 +4,7 @@ COPY apps/banco-proyectos/package*.json ./
 RUN npm ci
 COPY apps/banco-proyectos/ ./
 COPY apps/donde-publicar/site/ /app/apps/donde-publicar/site/
+COPY apps/eventos/site/ /app/apps/eventos/site/
 RUN npm run build
 
 FROM nginx:alpine

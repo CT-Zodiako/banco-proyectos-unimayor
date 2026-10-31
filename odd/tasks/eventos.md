@@ -24,9 +24,9 @@ Lives in apps/eventos (Python pipeline + static HTML/JS), same pattern as apps/d
 
 | ID | Task | Specs | Route | Commit |
 |---|---|---|---|---|
-| T1 | Pipeline: parse WikiCFP call pages, ccf-deadlines JSON, Devpost JSON and data/manual-events.json into one event schema; topic tagging to bank areas; dedupe; build command writes site/data.js (tests first) | S1–S4 | worker | — |
-| T2 | Page: list with filters (type, topic, online/in person, Colombia, search), sort by deadline/date, hides expired events client-side; pure filter logic tested with node --test | S1, S4 | worker | — |
-| T3 | Integration: sync into banco public/eventos, nginx location, Dockerfile copy, navbar link, READMEs | S5 | inline | — |
+| T1 | Pipeline: parse WikiCFP call pages, ccf-deadlines JSON, Devpost JSON and data/manual-events.json into one event schema; topic tagging to bank areas; dedupe; build command writes site/data.js (tests first) | S1–S4 | worker | 0a01bcd |
+| T2 | Page: list with filters (type, topic, online/in person, Colombia, search), sort by deadline/date, hides expired events client-side; pure filter logic tested with node --test | S1, S4 | worker | f1d5ef3 |
+| T3 | Integration: sync into banco public/eventos, nginx location, Dockerfile copy, navbar link, READMEs | S5 | inline | (this commit) |
 | T4 | Verify: run the pipeline against live sources, browser check, docker image serves /eventos/ | S1–S5 | inline | — |
 
 ### Event schema (contract between T1 and T2)
@@ -65,3 +65,16 @@ Each event:
   an Event/When/Where/Deadline table (one request per topic); ccfddl allconf.json has 383 conferences with timelines and
   subs AI, CG, CT, DB, DS, HI, MX, NW, SC, SE; Devpost returns 9 per page (meta.total_count 46 open). Local Python
   3.14 urllib fails TLS verification (no CA bundle); donde-publicar templates.py already falls back to curl.
+- L7. T1 (worker): 35 Python tests; live build 2026-10-31 wikicfp=316 ccfddl=97 devpost=47 manual=2 (462 events,
+  9 merged). Decisions: WikiCFP rows with When "N/A" skipped (journals/special issues); deadline = earliest still
+  open, else latest (so closed calls expire); WikiCFP deadline after the event end ignored as a typo; up to 5 pages per
+  topic, stopping where WikiCFP wraps to past calls; online-only places get location null; dedupe priority manual >
+  ccfddl > wikicfp > devpost. Manual seed: CICI 2027 (verified) and EIEI ACOFI 2027 (dates verified, deadline and city
+  not published → null, country Colombia).
+- L8. Parent fix (RED then GREEN): ccfddl `DS` is computer architecture/systems (ASPLOS, OSDI), not Big Data; it now
+  keeps only keyword topics like CG/CT/HI/MX. Offline rebuild: ccfddl=88, 453 events.
+- L9. T2 (worker): 20 node tests. A cfp with null deadline expires by its end (fallback start). sample-data.js is
+  dev-only: loaded only when data.js is missing, never copied to the bank (scripts/sync-eventos.mjs excludes it).
+- L10. Slice boundary: T1 (0a01bcd, ~1,600 lines incl. fixtures and generated data.js) and T2 (f1d5ef3, ~750 lines)
+  exceed the ~400-line slice because each is one new self-contained app part; delivery stays push to master (S5), no PR.
+

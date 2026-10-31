@@ -10,6 +10,9 @@ Events come from public sources plus a hand-curated file for local Colombian eve
 tags them with the bank's topic areas, removes duplicates and expired events, and writes `site/data.js`. The page
 hides expired events by itself, so a file that is a few weeks old still shows only open events.
 
+The project bank serves it at `/eventos/index.html` (its `predev`/`prebuild` copy `site/` into
+`apps/banco-proyectos/public/eventos/`, without `sample-data.js`) and links to it from the navbar and footer.
+
 ## Layout
 
 | Path | Purpose |

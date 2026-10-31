@@ -7,7 +7,7 @@ Institución Universitaria Colegio Mayor del Cauca.
 |---|---|---|---|
 | Project bank | [`apps/banco-proyectos`](apps/banco-proyectos) | Catalog of the 100 IoT projects, filters by area and sector, project detail | React 18, Vite 5, Tailwind 3, React Router, deployed on Railway |
 | Where to publish | [`apps/donde-publicar`](apps/donde-publicar) | Indexed (SCImago Q1–Q4), no-APC, free-to-read journals (DOAJ) for each project | Python 3 data pipeline + static HTML/JS |
-| Event finder | `apps/eventos` (planned) | Academic events search | — |
+| Event finder | [`apps/eventos`](apps/eventos) | Calls for papers and events to attend (WikiCFP, ccf-deadlines, Devpost and a manual file of local events) | Python 3 data pipeline + static HTML/JS |
 
 Each app is independent: it has its own dependencies, build and deploy.
 
@@ -21,8 +21,8 @@ npm run build      # production build (dist/)
 ```
 
 Projects are stored in `src/data/mockProjects.js` (original 100) and `src/data/projects/<area>.js` (new areas);
-`npm test` validates them and `npm run lint` checks the code (ESLint, config in `.eslintrc.cjs`). The journal finder is served by this app at `/donde-publicar/` (copied from
-`apps/donde-publicar/site` before `dev`/`build`). Deployment: see Railway deployment below.
+`npm test` validates them and `npm run lint` checks the code (ESLint, config in `.eslintrc.cjs`). The journal finder and the event finder are served by this app at `/donde-publicar/` and `/eventos/` (copied from
+`apps/donde-publicar/site` and `apps/eventos/site` before `dev`/`build`). Deployment: see Railway deployment below.
 
 ## Railway deployment
 
@@ -30,9 +30,9 @@ The private GitHub repository `CT-Zodiako/banco-proyectos-unimayor` is connected
 Railway project and service `banco-proyectos-unimayor` (production, branch `master`).
 Pushes to `master` trigger a deployment using the root `Dockerfile`.
 
-The multi-stage image builds the project bank and copies the journal finder, then
+The multi-stage image builds the project bank and copies the journal finder and the event finder, then
 serves the static output with Nginx. `PORT` defaults to `8080`; SPA deep links fall
-back to `index.html`, while missing journal finder files return 404.
+back to `index.html`, while missing files under `/donde-publicar/` and `/eventos/` return 404.
 
 ```bash
 docker build -t publicaciones .
@@ -40,7 +40,8 @@ docker run --rm -p 8080:8080 publicaciones
 ```
 
 Public URL: https://banco-proyectos-unimayor-production.up.railway.app
-No Python pipeline runs at deploy time: regenerate and commit journal data before deploying updates.
+No Python pipeline runs at deploy time: regenerate and commit journal and event data before deploying updates
+(events expire quickly; see [`apps/eventos/README.md`](apps/eventos/README.md#refresh-before-pushing)).
 
 ## Where to publish
 
@@ -53,6 +54,20 @@ python3 -E -m pipeline.build
 ```
 
 The DOAJ and SCImago downloads in `apps/donde-publicar/data/raw/` are not versioned (large third-party files).
+
+## Event finder
+
+See [`apps/eventos/README.md`](apps/eventos/README.md). Run its commands from that folder:
+
+```bash
+cd apps/eventos
+python3 -I -m unittest discover -s tests -t .
+node --test "tests/*.test.cjs"
+python3 -E -m pipeline.build      # downloads the sources (about 4-5 minutes) and writes site/data.js
+```
+
+Local Colombian events go in `apps/eventos/data/manual-events.json`. Downloads are cached in
+`apps/eventos/data/raw/` (not versioned).
 
 ## Repository notes
 

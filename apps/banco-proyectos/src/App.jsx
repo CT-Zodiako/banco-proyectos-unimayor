@@ -7,6 +7,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import logo from './assets/logo.png';
+import { EVENTS_URL } from './lib/links';
 import { Mail, Globe, MapPin } from 'lucide-react';
 
 const Footer = () => (
@@ -27,6 +28,7 @@ const Footer = () => (
                 <ul className="space-y-2 text-sm text-gray-400">
                     <li><Link to="/" className="hover:text-institutional-yellow transition-colors">Inicio</Link></li>
                     <li><Link to="/proyectos" className="hover:text-institutional-yellow transition-colors">Catálogo de Proyectos</Link></li>
+                    <li><a href={EVENTS_URL} className="hover:text-institutional-yellow transition-colors">Eventos Académicos</a></li>
                     <li><Link to="/acerca" className="hover:text-institutional-yellow transition-colors">Sobre el Banco</Link></li>
                     <li><Link to="/contacto" className="hover:text-institutional-yellow transition-colors">Contacto</Link></li>
                 </ul>
