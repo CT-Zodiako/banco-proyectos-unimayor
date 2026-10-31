@@ -7,12 +7,16 @@ import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetail from './pages/ProjectDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import logo from './assets/logo.png';
 import { Github, Mail, Globe, MapPin } from 'lucide-react';
 
 const Footer = () => (
     <footer className="bg-institutional-dark text-white pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="space-y-4">
+                <div className="bg-white rounded-xl p-2 inline-block">
+                    <img src={logo} alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" className="h-24 w-auto" />
+                </div>
                 <h3 className="text-xl font-bold text-gray-200">UNIMAYOR</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">
                     Comprometidos con la excelencia académica y el desarrollo tecnológico del departamento del Cauca.
