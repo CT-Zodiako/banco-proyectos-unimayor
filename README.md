@@ -57,4 +57,5 @@ The DOAJ and SCImago downloads in `apps/donde-publicar/data/raw/` are not versio
 ## Repository notes
 
 - `odd/` holds feature specifications and decision logs.
+- `sources/` holds the original documents and extraction outputs of the project bank (not used by the apps).
 - `.backup/` (ignored) keeps the empty Git repository the project bank came with (no commits, no remote).
