@@ -5,11 +5,20 @@ import { mockProjects } from '../src/data/mockProjects.js';
 import { NEW_AREAS, MIN_PROJECTS_PER_NEW_AREA } from '../src/data/projects/areas.js';
 import { validateArea, validateProject, duplicates, titleKey } from '../scripts/projects-validation.mjs';
 
-const byArea = (name) => newAreaProjects.filter((p) => p.area === name);
+// Validate the authored modules, not the derived `newAreaProjects` (which add hardware/software lists).
+const authored = await Promise.all(NEW_AREAS.map(async (area) => ({
+    area,
+    projects: (await import(`../src/data/projects/${area.module}`)).default,
+})));
 
 test('every new area has at least the minimum number of valid projects', () => {
-    const errors = NEW_AREAS.flatMap((area) => validateArea(byArea(area.name), area, MIN_PROJECTS_PER_NEW_AREA));
+    const errors = authored.flatMap(({ area, projects }) => validateArea(projects, area, MIN_PROJECTS_PER_NEW_AREA));
     assert.deepEqual(errors, []);
+});
+
+test('each area module only contains projects of its own area', () => {
+    const misplaced = authored.flatMap(({ area, projects }) => projects.filter((p) => p.area !== area.name).map((p) => `${area.module}: ${p.id}`));
+    assert.deepEqual(misplaced, []);
 });
 
 test('every new-area project belongs to a declared area', () => {
