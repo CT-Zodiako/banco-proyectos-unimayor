@@ -23,6 +23,8 @@ def main(argv=None):
     parser.add_argument("--projects", default=ROOT / "data/projects.json", type=pathlib.Path)
     parser.add_argument("--doaj", default=ROOT / "data/raw/doaj/journals.csv", type=pathlib.Path)
     parser.add_argument("--scimago", default=ROOT / "data/raw/scimago/scimagojr.csv", type=pathlib.Path)
+    parser.add_argument("--templates", default=ROOT / "data/templates.json", type=pathlib.Path,
+                        help="optional output of pipeline.templates; missing means no templates")
     parser.add_argument("--out", default=ROOT / "site/data.js", type=pathlib.Path)
     parser.add_argument("--catalog-out", default=ROOT / "site/catalog.js", type=pathlib.Path)
     args = parser.parse_args(argv)
@@ -39,6 +41,11 @@ def main(argv=None):
     with args.scimago.open(encoding="utf-8-sig", newline="") as handle:
         scimago = dp.load_scimago(handle)
     journals = dp.build_journals(doaj, scimago)
+    templates = {}
+    if args.templates.is_file():
+        templates = json.loads(args.templates.read_text(encoding="utf-8")).get("journals", {})
+    for journal in journals:
+        journal["templates"] = templates.get(journal["id"], [])
 
     used = set()
     for project in projects:
@@ -47,7 +54,7 @@ def main(argv=None):
         project["matches"] = dp.match_project(project, journals)
         used.update(m["journal_id"] for m in project["matches"])
 
-    keep = ("id", "title", "issns", "url", "doaj_url", "author_instructions_url", "scimago_url", "publisher",
+    keep = ("id", "title", "issns", "url", "doaj_url", "author_instructions_url", "aims_scope_url", "templates", "scimago_url", "publisher",
             "country", "languages", "license", "review", "weeks_to_publication", "quartile", "sjr", "h_index",
             "categories", "publindex", "themes")
     def slim(journal):

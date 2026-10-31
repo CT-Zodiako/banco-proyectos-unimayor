@@ -307,6 +307,7 @@ def load_doaj(handle):
             "url": row.get("Journal URL", "").strip(),
             "doaj_url": row.get("URL in DOAJ", "").strip(),
             "author_instructions_url": row.get("URL for journal's instructions for authors", "").strip(),
+            "aims_scope_url": row.get("URL for journal's aims & scope", "").strip(),
             "publisher": row.get("Publisher", "").strip(),
             "country": row.get("Country of publisher", "").strip(),
             "languages": _split_list(row.get("Languages in which the journal accepts manuscripts")),

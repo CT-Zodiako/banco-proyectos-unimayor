@@ -13,7 +13,7 @@ DOAJ_HEADER = [
     "Journal EISSN (online version)", "Keywords", "Languages in which the journal accepts manuscripts",
     "Publisher", "Country of publisher", "Journal license", "Review process",
     "Average number of weeks between article submission and publication", "APC", "APC amount",
-    "Has other fees", "Subjects", "URL for journal's instructions for authors",
+    "Has other fees", "Subjects", "URL for journal's instructions for authors", "URL for journal's aims & scope",
 ]
 
 
@@ -75,6 +75,16 @@ class DoajTests(unittest.TestCase):
         self.assertEqual(journal["keywords"], ["internet of things", "sensors"])
         self.assertEqual(journal["subjects"], ["Technology: Electronics", "Science: Computer science"])
         self.assertEqual(journal["weeks_to_publication"], 12)
+
+
+class FormatLinkTests(unittest.TestCase):
+    def test_keeps_author_instructions_and_aims_and_scope_urls(self):
+        rows = [{"Journal title": "Free J", "Journal ISSN (print version)": "1111-1111", "APC": "No", "Has other fees": "No",
+                 "URL for journal's instructions for authors": "https://j.example/authors",
+                 "URL for journal's aims & scope": "https://j.example/scope"}]
+        journal = dp.load_doaj(doaj_csv(rows))[0]
+        self.assertEqual(journal["author_instructions_url"], "https://j.example/authors")
+        self.assertEqual(journal["aims_scope_url"], "https://j.example/scope")
 
 
 class ScimagoTests(unittest.TestCase):
@@ -354,6 +364,7 @@ class BuildCliTests(unittest.TestCase):
         self.assertIn("projects=1 doaj_free=1 diamond_ranked=1 journals_used=1 catalog=1", stdout.getvalue())
         data = self.read_js("data.js", "DONDE_PUBLICAR")
         self.assertEqual([j["title"] for j in data["journals"]], ["Agro Engineering"])
+        self.assertIn("aims_scope_url", data["journals"][0])
         self.assertEqual(data["journals"][0]["publindex"], "A2")
         match = data["projects"][0]["matches"][0]
         self.assertEqual((match["journal_id"], match["fit"]), ("7", "fuerte"))
