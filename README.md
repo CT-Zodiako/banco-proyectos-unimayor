@@ -25,6 +25,24 @@ Projects are stored in `src/data/mockProjects.js` (original 100) and `src/data/p
 `apps/donde-publicar/site` before `dev`/`build`). Deploying requires a Google account with access to the Firebase
 project `reserva-de-laboratorio-26ae0`.
 
+## Railway deployment
+
+The private GitHub repository `CT-Zodiako/banco-proyectos-unimayor` is connected to the
+Railway project and service `banco-proyectos-unimayor` (production, branch `master`).
+Pushes to `master` trigger a deployment using the root `Dockerfile`.
+
+The multi-stage image builds the project bank and copies the journal finder, then
+serves the static output with Nginx. `PORT` defaults to `8080`; SPA deep links fall
+back to `index.html`, while missing journal finder files return 404.
+
+```bash
+docker build -t publicaciones .
+docker run --rm -p 8080:8080 publicaciones
+```
+
+Public URL: https://banco-proyectos-unimayor-production.up.railway.app
+No Python pipeline runs at deploy time: regenerate and commit journal data before deploying updates.
+
 ## Where to publish
 
 See [`apps/donde-publicar/README.md`](apps/donde-publicar/README.md). Run its commands from that folder:
