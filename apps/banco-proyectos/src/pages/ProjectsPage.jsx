@@ -229,7 +229,7 @@ const ProjectsPage = () => {
 
                         <form className="p-6 space-y-6" onSubmit={(e) => {
                             e.preventDefault();
-                            alert("¡Proyecto enviado con éxito! (Simulación: los datos se guardarán cuando el sistema de Firebase esté activo)");
+                            alert("El envío de propuestas está en implementación. Por ahora tu proyecto no se guarda.");
                             setIsModalOpen(false);
                         }}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

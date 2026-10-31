@@ -1,7 +1,7 @@
 # ¿Dónde publicar este proyecto? — journal finder for the UNIMAYOR IoT project bank
 
 Static page that suggests, for each of the 100 projects of the
-[Banco de Proyectos IoT](https://reserva-de-laboratorio-26ae0.web.app/proyectos), journals that are:
+[Banco de Proyectos IoT](https://banco-proyectos-unimayor-production.up.railway.app/proyectos), journals that are:
 
 1. **Indexed** — have a best quartile (Q1–Q4) in [SCImago](https://www.scimagojr.com/).
 2. **Free to publish** — [DOAJ](https://doaj.org/) lists no APC *and* no other fees.
@@ -86,7 +86,7 @@ The page also works when `site/index.html` is opened directly from disk.
 /donde-publicar/index.html?p=<project id>     e.g. ?p=proj_199
 ```
 
-The explicit `index.html` works with both the Vite dev server and Firebase Hosting. When a project is selected,
+The explicit `index.html` works with both the Vite dev server and the Nginx image (no SPA rewrite needed). When a project is selected,
 the header link goes back to `/proyecto/<id>`. Unknown or missing ids open the page with the project list.
 
 ## Downloadable templates

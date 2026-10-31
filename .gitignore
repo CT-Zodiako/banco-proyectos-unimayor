@@ -5,7 +5,6 @@
 # Dependencies, builds and caches
 node_modules/
 dist/
-.firebase/
 __pycache__/
 *.log
 
