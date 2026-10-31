@@ -1,0 +1,9 @@
+{
+  "title": "Explorar Proyectos",
+  "brief": "New designs for the project catalog of the UNIMAYOR IoT project bank, ready for 210 projects in 21 areas (100 current + 11 new areas with 10 projects each) and 80+ sectors; links each project to the journal finder.",
+  "artboards": [
+    { "file": "01-catalogo-facetado.html", "title": "Catálogo facetado", "tradeoff": "Fast, precise filtering with counts per area family and level; denser screen that suits teachers and researchers more than first-time students", "width": 1440, "height": 1100 },
+    { "file": "02-explorar-por-familias.html", "title": "Explorar por familias de áreas", "tradeoff": "Best discovery and clearly showcases the 11 new areas and student profiles; adds one click before reaching the project list", "width": 1440, "height": 1500 },
+    { "file": "03-lista-con-vista-previa.html", "title": "Lista con vista previa", "tradeoff": "Compare projects quickly without leaving the list, with objectives, stack and journals visible; needs a separate mobile layout and shows fewer projects at a glance", "width": 1440, "height": 1100 }
+  ]
+}

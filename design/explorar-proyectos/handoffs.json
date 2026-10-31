@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "chosen": "01-catalogo-facetado.html",
+  "handoffs": {
+    "01-catalogo-facetado.html": {
+      "status": "implemented",
+      "queued": false,
+      "sentAt": "2026-10-31T05:33:31.584Z",
+      "startedAt": "2026-10-31T05:33:36.176Z",
+      "implementedAt": "2026-10-31T05:39:05.812Z",
+      "note": "Now running from the repo with the Vite dev server.",
+      "previewUrl": "http://127.0.0.1:5173/proyectos"
+    }
+  }
+}

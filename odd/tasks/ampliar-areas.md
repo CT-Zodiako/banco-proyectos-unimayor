@@ -70,3 +70,12 @@ using the same project format and UI as the existing 100 projects. Branch: feat/
   framer-motion entry animation (DOM had 10 cards at opacity 1), not a defect.
 - L8 (design): user asked mid-task "muestrame un disenos nuevos para lo de proyectos" → design/explorar-proyectos/
   (01-catalogo-facetado, 02-explorar-por-familias, 03-lista-con-vista-previa); none chosen yet.
+- L12 (user, canvas comment 3peqx9j0 on 01-catalogo-facetado, verbatim): "este diseno me gusta pero ten encuentra
+  que den tren este logo" → the institutional crest (apps/banco-proyectos/src/assets/logo.png) is embedded in the
+  navbar and in a new footer of 01-catalogo-facetado. 01 is the preferred direction; not handed off yet.
+- L13 (handoff): 01-catalogo-facetado chosen and implemented (02 and 03 are alternatives) in ProjectsPage,
+  new CatalogFilters and redesigned ProjectCard; logic in src/lib/catalog.js (18 node tests). Area filter is now
+  exact-tag multi-select (supersedes L6 for the new page). Deviations: no quartile bar nor "Más revistas Q1–Q2"
+  sort (journal data lives in apps/donde-publicar); the card's "Dónde publicar" opens the modal via ?publicar=1.
+  Added mobile "Filtros" toggle; crest added to the app footer. Verified with ego-lite (filters, chips, URL state,
+  pagination, sort, search, sector suggestions, deep link, mobile, sticky sidebar; no console errors).
