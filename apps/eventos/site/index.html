@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buscador de eventos académicos · Banco de Proyectos · UNIMAYOR</title>
+<meta name="description" content="Congresos con convocatoria para presentar proyectos y eventos para asistir (talleres, charlas, ferias y hackatones) para el Banco de Proyectos de UNIMAYOR.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="/proyectos">
+      <span class="logo-tile"><img src="logo.jpg" alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" width="46" height="43"></span>
+      <span><b>Institución Universitaria Colegio Mayor del Cauca</b><small>Laboratorio de Física y Sistemas Embebidos</small></span>
+    </a>
+    <a class="nav-link" href="/proyectos">Catálogo de Proyectos</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <div>
+      <p class="kicker">Banco de Proyectos</p>
+      <h1>Buscador de eventos académicos</h1>
+      <p class="subtitle">Encuentre <strong>congresos con convocatoria</strong> para presentar su proyecto y <strong>eventos para asistir</strong>: talleres, charlas, ferias y hackatones.</p>
+    </div>
+    <a class="back" href="/proyectos">← Volver al banco de proyectos</a>
+  </div>
+
+  <section class="filters-box" role="search" aria-label="Filtros de eventos">
+    <div class="filters-row">
+      <div class="seg" role="group" aria-label="Tipo de evento" id="kind-group">
+        <button type="button" data-value="all" aria-pressed="true">Todos</button>
+        <button type="button" data-value="cfp" aria-pressed="false">Convocatorias (presentar)</button>
+        <button type="button" data-value="attend" aria-pressed="false">Para asistir</button>
+      </div>
+      <label class="sr-only" for="search">Buscar por nombre o lugar</label>
+      <input id="search" type="search" placeholder="Buscar por nombre, ciudad o país…" autocomplete="off">
+    </div>
+    <div class="filters-row">
+      <label class="field" for="modality">Modalidad
+        <select id="modality">
+          <option value="all">Todas</option>
+          <option value="online">En línea</option>
+          <option value="presencial">Presencial</option>
+        </select>
+      </label>
+      <label class="chk"><input type="checkbox" id="colombia"> Solo Colombia</label>
+      <label class="field" for="sort">Ordenar
+        <select id="sort">
+          <option value="deadline">Cierre más próximo</option>
+          <option value="start">Fecha del evento</option>
+          <option value="title">Nombre (A–Z)</option>
+        </select>
+      </label>
+    </div>
+    <fieldset class="topics">
+      <legend>Temas</legend>
+      <div class="pills" id="topic-pills"></div>
+    </fieldset>
+  </section>
+
+  <div class="results-head">
+    <span class="count" id="count" aria-live="polite"></span>
+    <button type="button" class="link-btn" id="clear-top" hidden>Limpiar filtros</button>
+  </div>
+
+  <section aria-label="Eventos encontrados">
+    <div id="results" class="event-list"></div>
+    <div id="empty" class="no-results" hidden>
+      <p>Ningún evento vigente cumple estos filtros.</p>
+      <button type="button" class="btn-secondary" id="clear-empty">Limpiar filtros</button>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p id="data-info"></p>
+    <p>Las fechas se obtienen automáticamente y pueden cambiar: confírmelas siempre en el sitio oficial de cada evento. Banco de Proyectos · UNIMAYOR, Popayán.</p>
+  </div>
+</footer>
+
+<script src="filters.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
