@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { mockProjects } from '../data/mockProjects';
+import { projects as allProjects } from '../data/projects/index.js';
 
 export const useProjects = () => {
-    const [projects, setProjects] = useState(mockProjects);
+    const [projects, setProjects] = useState(allProjects);
     const [loading, setLoading] = useState(false); // Change to true for real firebase
     const [error, setError] = useState(null);
 
