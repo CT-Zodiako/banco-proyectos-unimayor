@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "chosen": "04-afinidad-y-filtros.html",
+  "handoffs": {
+    "02-tabla-comparativa.html": {
+      "status": "implemented",
+      "queued": true,
+      "sentAt": "2026-10-31T06:07:51.342Z",
+      "startedAt": "2026-10-31T06:10:21.827Z",
+      "implementedAt": "2026-10-31T06:51:12.202Z",
+      "feature": "odd/tasks/donde-publicar.md",
+      "note": "Formato column now offers \"⬇ Plantilla Word/LaTeX\" downloads for the 75 journals with a detected template (pipeline.templates). Artboard updated.",
+      "previewUrl": "http://127.0.0.1:5173/donde-publicar/index.html?p=proj_161"
+    },
+    "04-afinidad-y-filtros.html": {
+      "status": "implemented",
+      "queued": false,
+      "sentAt": "2026-10-31T06:51:39.334Z",
+      "startedAt": "2026-10-31T06:52:17.799Z",
+      "implementedAt": "2026-10-31T06:57:32.972Z",
+      "feature": "odd/tasks/donde-publicar.md",
+      "note": "Default \"Lista\" view with affinity ring + breakdown, toolbar and custom filters side panel with presets (built-in + user, localStorage). Table (02) kept as \"Tabla\" view. Not implemented: \"Ocultar revistas que descarté\" (no discard action).",
+      "previewUrl": "http://127.0.0.1:5173/donde-publicar/index.html?p=proj_161"
+    }
+  }
+}

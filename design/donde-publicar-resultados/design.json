@@ -1,0 +1,35 @@
+{
+  "title": "Dónde publicar · resultados por proyecto",
+  "brief": "Redesign the journal finder page reached from a project's \"¿Dónde publicar este proyecto?\" button, now served inside the project bank: show the selected project and its indexed, no-APC, free-to-read journals in the bank's visual identity, and make it easy to separate strong matches from noise.",
+  "feature": "odd/tasks/donde-publicar.md",
+  "artboards": [
+    {
+      "file": "01-resultados-por-encaje.html",
+      "title": "Resultados por encaje",
+      "tradeoff": "Familiar and clear: strong matches first, technology journals collapsed, quartile filter built into the summary and a \"No me sirve\" action to hide noise; still a long list to scroll",
+      "width": 1440,
+      "height": 1300
+    },
+    {
+      "file": "02-tabla-comparativa.html",
+      "title": "Tabla comparativa",
+      "tradeoff": "Fastest way to sort and compare journals side by side (estimated affinity, quartile, SJR, weeks, review, license); dense, best for teachers and research groups, weak on mobile",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "03-ruta-por-perfil.html",
+      "title": "Ruta guiada por perfil",
+      "tradeoff": "Best for students: picks 3 journals for the author's profile and adds a submission checklist; hides most of the 60 options behind a link",
+      "width": 1440,
+      "height": 1350
+    },
+    {
+      "file": "04-afinidad-y-filtros.html",
+      "title": "Afinidad estimada y filtros personalizados",
+      "tradeoff": "Ranks journals by an explained 0–100 % fit score (topic, quartile vs project level, language, speed, region) and adds a custom filters panel with many variables and saved presets; the score is a heuristic, not an acceptance probability, and the panel adds density",
+      "width": 1440,
+      "height": 1250
+    }
+  ]
+}
