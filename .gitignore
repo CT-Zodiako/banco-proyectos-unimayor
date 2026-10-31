@@ -24,3 +24,8 @@ apps/banco-proyectos/temp_docx_extract*/
 # donde-publicar: large third-party downloads (regenerate as described in its README)
 apps/donde-publicar/data/raw/doaj/
 apps/donde-publicar/data/raw/scimago/
+
+# eventos: cached downloads of the public sources (regenerate with python3 -E -m pipeline.build)
+apps/eventos/data/raw/
+# banco-proyectos: copy of the event finder made by scripts/sync-eventos.mjs
+apps/banco-proyectos/public/eventos/

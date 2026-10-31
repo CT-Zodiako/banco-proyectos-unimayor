@@ -1,0 +1,51 @@
+[
+  {"title": "AAAI", "description": "AAAI Conference on Artificial Intelligence", "sub": "AI",
+   "rank": {"ccf": "A"}, "dblp": "aaai", "conference_key": "aaai",
+   "confs": [
+     {"year": 2026, "id": "aaai26", "link": "https://aaai.org/conference/aaai/aaai-26/",
+      "timeline": [{"deadline": "2025-08-01 23:59:59"}], "timezone": "UTC-12", "date": "January 20-27, 2026",
+      "place": "Singapore", "opening": "2026-01-20 08:00:00", "opening_is_derived": true},
+     {"year": 2027, "id": "aaai27", "link": "https://aaai.org/conference/aaai/aaai-27/",
+      "timeline": [{"abstract_deadline": "2026-07-25 23:59:59", "deadline": "2026-08-01 23:59:59", "comment": "Regular"},
+                   {"deadline": "2026-11-10 23:59:59", "comment": "Fast track"}],
+      "timezone": "UTC-12", "date": "February 16-23, 2027", "place": "Montréal, Québec, Canada",
+      "opening": "2027-02-16 08:00:00", "opening_is_derived": true}
+   ]},
+  {"title": "ICSE", "description": "International Conference on Software Engineering", "sub": "SE",
+   "rank": {"ccf": "A"}, "dblp": "icse", "conference_key": "icse",
+   "confs": [
+     {"year": 2027, "id": "icse27", "link": "https://conf.researchr.org/home/icse-2027",
+      "timeline": [{"deadline": "2026-07-18 23:59:59"}], "timezone": "AoE", "date": "April 25-May 01, 2027",
+      "place": "Dublin, Ireland", "opening": "2027-04-25 08:00:00", "opening_is_derived": true}
+   ]},
+  {"title": "CHI", "description": "ACM Conference on Human Factors in Computing Systems", "sub": "HI",
+   "rank": {"ccf": "A"}, "dblp": "chi", "conference_key": "chi",
+   "confs": [
+     {"year": 2027, "id": "chi27", "link": "https://chi2027.acm.org/",
+      "timeline": [{"deadline": "2026-12-01 23:59:59"}], "timezone": "AoE", "date": "May 10-14, 2027",
+      "place": "Pittsburgh, USA", "opening": "2027-05-10 08:00:00", "opening_is_derived": true}
+   ]},
+  {"title": "IEEE CoG", "description": "IEEE Conference on Games", "sub": "CG",
+   "rank": {"ccf": "C"}, "dblp": "cig", "conference_key": "cog",
+   "confs": [
+     {"year": 2027, "id": "cog27", "link": "https://cog2027.org/",
+      "timeline": [{"deadline": "TBD"}], "timezone": "AoE", "date": "TBD",
+      "place": "TBD", "opening": "2027-08-17 08:00:00", "opening_is_derived": true}
+   ]},
+  {"title": "SenSys", "description": "ACM Conference on Embedded Networked Sensor Systems", "sub": "NW",
+   "rank": {"ccf": "B"}, "dblp": "sensys", "conference_key": "sensys",
+   "confs": [
+     {"year": 2027, "id": "sensys27", "link": "https://sensys.acm.org/2027/",
+      "timeline": [{"deadline": "2026-10-31 23:59:59"}], "timezone": "AoE",
+      "date": "May 9-14 (in-person) and 6-7 (virtual), 2027", "place": "Macau SAR, China / Online",
+      "opening": "2027-05-09 08:00:00", "opening_is_derived": true}
+   ]},
+  {"title": "OSDI", "description": "USENIX Symposium on Operating Systems Design and Implementation", "sub": "DS",
+   "rank": {"ccf": "A"}, "dblp": "osdi", "conference_key": "osdi",
+   "confs": [
+     {"year": 2027, "id": "osdi27", "link": "https://www.usenix.org/conference/osdi27",
+      "timeline": [{"deadline": "2026-12-01 23:59:59"}, {"deadline": "2026-11-05 23:59:59"}], "timezone": "PT",
+      "date": "June 28 - July 2, 2027", "place": "Seattle, WA, USA",
+      "opening": "2027-06-28 08:00:00", "opening_is_derived": true}
+   ]}
+]

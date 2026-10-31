@@ -1,0 +1,18 @@
+{"hackathons": [
+  {"id": 31302, "title": "PayPal AI Hackathon", "displayed_location": {"icon": "globe", "location": "Online"},
+   "open_state": "open", "url": "https://paypalaihackathon.devpost.com/", "time_left_to_submission": "12 days left",
+   "submission_period_dates": "Oct 01 - Nov 12, 2026",
+   "themes": [{"id": 17, "name": "Low/No Code"}, {"id": 6, "name": "Machine Learning/AI"}, {"id": 25, "name": "Web"}],
+   "organization_name": "PayPal", "invite_only": false},
+  {"id": 40001, "title": "Automation Jam", "displayed_location": {"icon": "map-marker", "location": "Medellín, Colombia"},
+   "open_state": "open", "url": "https://automationjam.devpost.com/", "time_left_to_submission": "about 2 months left",
+   "submission_period_dates": "Dec 20, 2026 - Jan 05, 2027",
+   "themes": [{"id": 30, "name": "Robotic Process Automation"}, {"id": 21, "name": "Social Good"}],
+   "organization_name": "Example", "invite_only": false},
+  {"id": 40002, "title": "Health Hack", "displayed_location": {"icon": "globe", "location": "Online"},
+   "open_state": "open", "url": "https://healthhack.devpost.com/", "time_left_to_submission": "15 days left",
+   "submission_period_dates": "Nov 01 - 15, 2026",
+   "themes": [{"id": 9, "name": "Health"}, {"id": 12, "name": "IoT"}, {"id": 4, "name": "Cybersecurity"},
+              {"id": 8, "name": "Gaming"}],
+   "organization_name": "Example", "invite_only": false}
+], "meta": {"total_count": 3, "per_page": 9, "fuzzy": false}}
