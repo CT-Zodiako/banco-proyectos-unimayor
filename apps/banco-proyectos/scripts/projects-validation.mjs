@@ -40,7 +40,9 @@ export function validateProject(project, area) {
 
     const number = idNumber(project.id);
     if (number === null) fail('id debe tener la forma proj_NNN');
-    else if (number < area.firstId || number > area.lastId) fail(`id fuera del rango del área (${area.firstId}-${area.lastId})`);
+    else if (area.ids) {
+        if (!area.ids.includes(number)) fail(`id fuera de los ids del área (${area.ids.join(', ')})`);
+    } else if (number < area.firstId || number > area.lastId) fail(`id fuera del rango del área (${area.firstId}-${area.lastId})`);
 
     const title = TITLE_RE.exec(project.titulo);
     if (!title) fail('titulo debe ser "<emoji> Proyecto N: <título>"');

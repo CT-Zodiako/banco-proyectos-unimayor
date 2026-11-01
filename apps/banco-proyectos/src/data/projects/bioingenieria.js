@@ -1,182 +1,6 @@
 // Projects for this area. Each entry follows the schema checked by scripts/projects-validation.mjs.
 export default [
     {
-        "id": "proj_161",
-        "titulo": "🦾 Proyecto 161: Prótesis Mioeléctrica de Mano Impresa en 3D con Control por Patrones EMG",
-        "descripcion": "Problema: Las personas con amputación transradial en el Cauca, muchas de ellas víctimas de accidentes laborales agrícolas o del conflicto armado, acceden casi siempre a prótesis estéticas o mecánicas de gancho, porque una prótesis mioeléctrica comercial supera con creces su capacidad económica, lo que limita su autonomía en tareas cotidianas como sujetar utensilios o herramientas.\n\nDescripción: Prótesis de mano impresa en 3D con dedos accionados por servomotores y tendones, controlada por dos canales de electromiografía de superficie colocados en el antebrazo residual. Un microcontrolador extrae características de la señal EMG en tiempo real y un clasificador ligero distingue entre al menos cuatro gestos de agarre, permitiendo evaluar la tasa de acierto y la latencia del control con usuarios voluntarios.",
-        "area": "Bioingeniería",
-        "sector": "Salud - Rehabilitación y prótesis",
-        "nivel": "Intermedio-Avanzado",
-        "duracion": "Un semestre",
-        "presupuesto": "Bajo costo",
-        "habilidades": [
-            "Adquisición y acondicionamiento de señales EMG de superficie",
-            "Extracción de características en el dominio del tiempo",
-            "Clasificación de gestos con aprendizaje automático embebido",
-            "Diseño mecánico e impresión 3D de mecanismos subactuados",
-            "Control de servomotores con microcontroladores"
-        ],
-        "objetivos": [
-            "🎯 Objetivo General: Desarrollar una prótesis de mano mioeléctrica de bajo costo, impresa en 3D, capaz de ejecutar distintos tipos de agarre a partir de la actividad muscular del antebrazo residual.",
-            "📌 Objetivos Específicos:",
-            "• Adquirir dos canales de EMG de superficie con una relación señal a ruido superior a 20 dB y una frecuencia de muestreo de al menos 1 kHz.",
-            "• Clasificar como mínimo cuatro gestos de agarre con una exactitud superior al 85 % y una latencia de decisión inferior a 300 ms.",
-            "• Evaluar la funcionalidad de la prótesis con al menos cinco voluntarios mediante una prueba estandarizada de manipulación de objetos."
-        ],
-        "pasos": [
-            "Análisis de requisitos",
-            "Diseño de la solución",
-            "Implementación y pruebas",
-            "Validación y sustentación"
-        ],
-        "aplicaciones": [
-            "Salud - Rehabilitación y prótesis"
-        ],
-        "referencias": [],
-        "hardware_tabla": [
-            {
-                "componente": "ESP32-S3",
-                "categoria": "Microcontrolador",
-                "funcion": "Adquiere las señales EMG, ejecuta el clasificador y controla los actuadores."
-            },
-            {
-                "componente": "Sensores EMG MyoWare 2.0 (2 unidades)",
-                "categoria": "Sensor Biomédico",
-                "funcion": "Amplifican y rectifican la actividad eléctrica de los músculos del antebrazo."
-            },
-            {
-                "componente": "Electrodos de superficie Ag/AgCl desechables",
-                "categoria": "Sensor Biomédico",
-                "funcion": "Establecen el contacto eléctrico entre la piel y la etapa de adquisición."
-            },
-            {
-                "componente": "Servomotores MG90S (5 unidades)",
-                "categoria": "Actuador",
-                "funcion": "Tiran de los tendones de nailon que flexionan cada dedo."
-            },
-            {
-                "componente": "Mano y socket impresos en PLA y TPU",
-                "categoria": "Estructura / Componente Mecánico",
-                "funcion": "Conforman la estructura antropomórfica y el acople al muñón."
-            },
-            {
-                "componente": "Batería LiPo 7.4 V con regulador DC-DC",
-                "categoria": "Fuente de Alimentación / Energía",
-                "funcion": "Alimenta de forma aislada la electrónica de adquisición y los servomotores."
-            }
-        ],
-        "software_tabla": [
-            {
-                "herramienta": "Arduino IDE / ESP-IDF",
-                "tipo": "Entorno de Desarrollo Embebido",
-                "descripcion": "Programación del firmware de adquisición y control."
-            },
-            {
-                "herramienta": "Python con SciPy y scikit-learn",
-                "tipo": "Procesamiento de Señales / Machine Learning",
-                "descripcion": "Filtrado, extracción de características y entrenamiento del clasificador."
-            },
-            {
-                "herramienta": "TensorFlow Lite for Microcontrollers",
-                "tipo": "Inferencia Embebida",
-                "descripcion": "Ejecución del modelo de clasificación de gestos en el microcontrolador."
-            },
-            {
-                "herramienta": "Fusion 360 / Ultimaker Cura",
-                "tipo": "Diseño CAD / Fabricación",
-                "descripcion": "Modelado de la mano y preparación de las piezas para impresión 3D."
-            }
-        ]
-    },
-    {
-        "id": "proj_162",
-        "titulo": "🦺 Proyecto 162: Exoesqueleto Pasivo de Soporte Lumbar para Recolectores de Café",
-        "descripcion": "Problema: Los recolectores de café del Cauca permanecen durante jornadas largas en posturas de flexión de tronco en terrenos de alta pendiente y cargan costales de hasta 40 kg, lo que genera una alta prevalencia de dolor lumbar, incapacidades y abandono temprano de la labor en una actividad que ya enfrenta escasez de mano de obra.\n\nDescripción: Exoesqueleto pasivo de espalda fabricado con perfiles de aluminio, piezas impresas en 3D y elementos elásticos que almacenan energía durante la flexión del tronco y la devuelven en la extensión. El prototipo incorpora electromiografía e unidades inerciales para cuantificar la reducción de la actividad de los músculos erectores espinales durante tareas simuladas de recolección y carga.",
-        "area": "Bioingeniería",
-        "sector": "Agricultura - Salud ocupacional",
-        "nivel": "Intermedio",
-        "duracion": "Un semestre",
-        "presupuesto": "Bajo costo",
-        "habilidades": [
-            "Biomecánica de la columna y ergonomía ocupacional",
-            "Diseño de mecanismos elásticos de almacenamiento de energía",
-            "Instrumentación con EMG y sensores inerciales",
-            "Análisis estadístico de ensayos con sujetos",
-            "Fabricación digital e impresión 3D"
-        ],
-        "objetivos": [
-            "🎯 Objetivo General: Diseñar y evaluar un exoesqueleto pasivo de soporte lumbar que reduzca la carga muscular de los recolectores de café durante las tareas de flexión y levantamiento.",
-            "📌 Objetivos Específicos:",
-            "• Dimensionar los elementos elásticos para que aporten un momento de apoyo de al menos 15 N·m a 60° de flexión de tronco.",
-            "• Medir con EMG la actividad de los erectores espinales con y sin exoesqueleto en un protocolo de levantamiento con al menos ocho voluntarios.",
-            "• Demostrar una reducción mínima del 20 % en la amplitud EMG normalizada sin restringir más de 10° el rango de movimiento del tronco."
-        ],
-        "pasos": [
-            "Análisis de requisitos",
-            "Diseño de la solución",
-            "Implementación y pruebas",
-            "Validación y sustentación"
-        ],
-        "aplicaciones": [
-            "Agricultura - Salud ocupacional"
-        ],
-        "referencias": [],
-        "hardware_tabla": [
-            {
-                "componente": "Perfiles de aluminio y bisagras con rodamientos",
-                "categoria": "Estructura / Componente Mecánico",
-                "funcion": "Forman el armazón que transmite el momento entre tronco y muslos."
-            },
-            {
-                "componente": "Bandas elásticas de látex y resortes de torsión",
-                "categoria": "Componente Mecánico",
-                "funcion": "Almacenan y devuelven energía durante la flexión y extensión del tronco."
-            },
-            {
-                "componente": "Arnés acolchado y piezas de acople impresas en PETG",
-                "categoria": "Estructura / Componente Mecánico",
-                "funcion": "Fijan el exoesqueleto al cuerpo del usuario de forma cómoda."
-            },
-            {
-                "componente": "Sensores EMG MyoWare 2.0",
-                "categoria": "Sensor Biomédico",
-                "funcion": "Registran la actividad de los músculos erectores espinales."
-            },
-            {
-                "componente": "IMU MPU-6050 (2 unidades)",
-                "categoria": "Sensor Inercial",
-                "funcion": "Miden los ángulos de flexión del tronco y la cadera."
-            },
-            {
-                "componente": "ESP32 con módulo microSD",
-                "categoria": "Microcontrolador",
-                "funcion": "Sincroniza y almacena las señales EMG e inerciales durante los ensayos."
-            }
-        ],
-        "software_tabla": [
-            {
-                "herramienta": "OpenSim",
-                "tipo": "Simulación Biomecánica",
-                "descripcion": "Estimación de momentos lumbares para dimensionar los elementos elásticos."
-            },
-            {
-                "herramienta": "FreeCAD",
-                "tipo": "Diseño CAD",
-                "descripcion": "Modelado paramétrico del armazón y las piezas de acople."
-            },
-            {
-                "herramienta": "Arduino IDE",
-                "tipo": "Entorno de Desarrollo Embebido",
-                "descripcion": "Firmware de adquisición sincronizada de EMG e IMU."
-            },
-            {
-                "herramienta": "Python con pandas y SciPy",
-                "tipo": "Análisis de Datos",
-                "descripcion": "Normalización EMG y pruebas estadísticas pareadas entre condiciones."
-            }
-        ]
-    },
-    {
         "id": "proj_163",
         "titulo": "⚡ Proyecto 163: Analizador de Bioimpedancia Multifrecuencia para Estimación de Composición Corporal",
         "descripcion": "Problema: Los programas de nutrición y control de enfermedades crónicas en centros de salud de primer nivel del Cauca estiman la composición corporal solo con peso y talla, porque los analizadores de bioimpedancia clínicos son costosos; así se pierde información sobre masa grasa, masa libre de grasa y estado de hidratación que orienta el tratamiento de pacientes con obesidad, desnutrición o enfermedad renal.\n\nDescripción: Analizador tetrapolar de bioimpedancia que inyecta una corriente alterna segura en un rango de 5 kHz a 200 kHz y mide magnitud y fase de la impedancia del cuerpo. El sistema se calibra con redes RC de referencia, ajusta el modelo de Cole para separar agua intra y extracelular y compara sus estimaciones con un equipo comercial de referencia.",
@@ -265,89 +89,6 @@ export default [
         ]
     },
     {
-        "id": "proj_164",
-        "titulo": "🫁 Proyecto 164: Espirómetro Digital de Bajo Costo con Neumotacógrafo Impreso en 3D",
-        "descripcion": "Problema: La enfermedad pulmonar obstructiva crónica es frecuente en zonas rurales del Cauca por la exposición prolongada al humo de leña en las cocinas, pero la mayoría de puestos de salud no cuentan con espirómetro, por lo que el diagnóstico llega tarde y los pacientes pierden función pulmonar que ya no se recupera.\n\nDescripción: Espirómetro portátil basado en un neumotacógrafo de tipo Venturi impreso en 3D y un sensor de presión diferencial digital, que calcula la curva flujo-volumen y los índices FEV1, FVC y FEV1/FVC. Los resultados se presentan en una aplicación web y el equipo se valida con una jeringa de calibración de 3 litros siguiendo los criterios de la ATS/ERS.",
-        "area": "Bioingeniería",
-        "sector": "Salud - Atención primaria rural",
-        "nivel": "Intermedio",
-        "duracion": "Un semestre",
-        "presupuesto": "Bajo costo",
-        "habilidades": [
-            "Mecánica de fluidos aplicada a la medición de flujo",
-            "Fisiología respiratoria y pruebas de función pulmonar",
-            "Integración numérica y procesamiento de señales",
-            "Calibración de instrumentos biomédicos",
-            "Desarrollo de interfaces web para resultados clínicos"
-        ],
-        "objetivos": [
-            "🎯 Objetivo General: Desarrollar un espirómetro digital portátil de bajo costo que permita realizar pruebas de función pulmonar en puestos de salud rurales.",
-            "📌 Objetivos Específicos:",
-            "• Caracterizar el neumotacógrafo impreso en 3D para obtener una relación presión-flujo con error inferior al 3 % entre 0 y 12 L/s.",
-            "• Verificar la medición de volumen con una jeringa de 3 L logrando el error máximo de ±3 % exigido por la norma ATS/ERS 2019.",
-            "• Comparar FEV1 y FVC con un espirómetro clínico en al menos 15 voluntarios, reportando el coeficiente de correlación intraclase."
-        ],
-        "pasos": [
-            "Análisis de requisitos",
-            "Diseño de la solución",
-            "Implementación y pruebas",
-            "Validación y sustentación"
-        ],
-        "aplicaciones": [
-            "Salud - Atención primaria rural"
-        ],
-        "referencias": [],
-        "hardware_tabla": [
-            {
-                "componente": "Sensor de presión diferencial Sensirion SDP810",
-                "categoria": "Sensor de Presión",
-                "funcion": "Mide la caída de presión en el Venturi para calcular el flujo respiratorio."
-            },
-            {
-                "componente": "ESP32",
-                "categoria": "Microcontrolador",
-                "funcion": "Muestrea la señal de presión, integra el volumen y publica los resultados por Wi-Fi."
-            },
-            {
-                "componente": "Neumotacógrafo Venturi impreso en PETG",
-                "categoria": "Estructura / Componente Mecánico",
-                "funcion": "Genera la diferencia de presión proporcional al flujo de aire."
-            },
-            {
-                "componente": "Boquillas desechables con filtro antibacterial",
-                "categoria": "Consumible Médico",
-                "funcion": "Garantizan la higiene entre pacientes."
-            },
-            {
-                "componente": "Jeringa de calibración de 3 litros",
-                "categoria": "Instrumento de Referencia",
-                "funcion": "Permite verificar la exactitud volumétrica del espirómetro."
-            }
-        ],
-        "software_tabla": [
-            {
-                "herramienta": "Arduino IDE",
-                "tipo": "Entorno de Desarrollo Embebido",
-                "descripcion": "Firmware de muestreo, integración y servidor web embebido."
-            },
-            {
-                "herramienta": "Chart.js",
-                "tipo": "Visualización / Dashboard",
-                "descripcion": "Gráficas de las curvas flujo-volumen y volumen-tiempo."
-            },
-            {
-                "herramienta": "OpenFOAM",
-                "tipo": "Simulación CFD",
-                "descripcion": "Análisis del flujo en el Venturi para optimizar su geometría."
-            },
-            {
-                "herramienta": "Python con NumPy y pandas",
-                "tipo": "Análisis de Datos",
-                "descripcion": "Calibración y análisis estadístico frente al equipo de referencia."
-            }
-        ]
-    },
-    {
         "id": "proj_165",
         "titulo": "🫀 Proyecto 165: Tarjeta Abierta de Adquisición de Biopotenciales ECG, EMG y EOG para Docencia e Investigación",
         "descripcion": "Problema: Los cursos de instrumentación biomédica y los semilleros de investigación de la región dependen de módulos didácticos importados que cuestan millones de pesos, tienen esquemas cerrados y canales limitados, lo que restringe las prácticas de laboratorio y obliga a los estudiantes a trabajar con datos públicos en lugar de registrar sus propias señales.\n\nDescripción: Tarjeta de hardware abierto de cuatro canales basada en el front-end analógico ADS1299, con aislamiento galvánico, alimentación por batería y filtros configurables para registrar ECG, EMG y EOG. Se acompaña de una aplicación de escritorio para visualización y exportación de datos, y se caracteriza con un generador de señales fisiológicas y mediciones de ruido referido a la entrada y rechazo de modo común.",
@@ -432,89 +173,6 @@ export default [
                 "herramienta": "Lab Streaming Layer (LSL)",
                 "tipo": "Protocolo de Comunicación",
                 "descripcion": "Sincronización de los datos con otras herramientas de investigación."
-            }
-        ]
-    },
-    {
-        "id": "proj_166",
-        "titulo": "🦶 Proyecto 166: Plataforma de Fuerza de Bajo Costo para Evaluación del Equilibrio y Riesgo de Caída en Adultos Mayores",
-        "descripcion": "Problema: Los servicios de fisioterapia y los centros de bienestar del adulto mayor en Popayán evalúan el equilibrio con pruebas clínicas observacionales que dependen del criterio del evaluador, mientras que las plataformas de fuerza comerciales cuestan decenas de millones de pesos; por ello no se detectan a tiempo los déficits posturales que anteceden a caídas y fracturas de cadera.\n\nDescripción: Plataforma de fuerza con cuatro celdas de carga en las esquinas que calcula el centro de presiones del usuario y extrae parámetros posturográficos como área de la elipse de confianza, velocidad media y desplazamiento anteroposterior y mediolateral. Se valida con cargas conocidas y se aplica en un estudio piloto que correlaciona sus métricas con la prueba clínica Timed Up and Go.",
-        "area": "Bioingeniería",
-        "sector": "Salud - Fisioterapia y geriatría",
-        "nivel": "Intermedio-Avanzado",
-        "duracion": "Un semestre",
-        "presupuesto": "Bajo costo",
-        "habilidades": [
-            "Biomecánica del control postural",
-            "Instrumentación con galgas extensiométricas y celdas de carga",
-            "Calibración estática y análisis de incertidumbre",
-            "Procesamiento de señales posturográficas",
-            "Diseño de estudios piloto con sujetos"
-        ],
-        "objetivos": [
-            "🎯 Objetivo General: Desarrollar y validar una plataforma de fuerza de bajo costo que cuantifique el equilibrio estático de adultos mayores como apoyo a la valoración del riesgo de caída.",
-            "📌 Objetivos Específicos:",
-            "• Estimar la posición del centro de presiones con un error inferior a 5 mm frente a cargas puntuales ubicadas en posiciones conocidas.",
-            "• Calcular automáticamente al menos cinco parámetros posturográficos en pruebas de 30 segundos con ojos abiertos y ojos cerrados.",
-            "• Correlacionar las métricas obtenidas con la prueba Timed Up and Go en un grupo piloto de al menos 15 adultos mayores."
-        ],
-        "pasos": [
-            "Análisis de requisitos",
-            "Diseño de la solución",
-            "Implementación y pruebas",
-            "Validación y sustentación"
-        ],
-        "aplicaciones": [
-            "Salud - Fisioterapia y geriatría"
-        ],
-        "referencias": [],
-        "hardware_tabla": [
-            {
-                "componente": "Celdas de carga de 50 kg tipo viga (4 unidades)",
-                "categoria": "Sensor de Fuerza",
-                "funcion": "Miden la fuerza vertical en cada esquina de la plataforma."
-            },
-            {
-                "componente": "Convertidores HX711 (4 unidades)",
-                "categoria": "Convertidor Analógico-Digital",
-                "funcion": "Amplifican y digitalizan la salida de cada celda de carga."
-            },
-            {
-                "componente": "ESP32",
-                "categoria": "Microcontrolador",
-                "funcion": "Sincroniza las lecturas y calcula el centro de presiones en tiempo real."
-            },
-            {
-                "componente": "Placas de MDF de 18 mm y marco de acero",
-                "categoria": "Estructura / Componente Mecánico",
-                "funcion": "Forman una superficie rígida y estable sobre las celdas de carga."
-            },
-            {
-                "componente": "Juego de pesas calibradas",
-                "categoria": "Instrumento de Referencia",
-                "funcion": "Permite la calibración estática y la verificación de la plataforma."
-            }
-        ],
-        "software_tabla": [
-            {
-                "herramienta": "PlatformIO",
-                "tipo": "Entorno de Desarrollo Embebido",
-                "descripcion": "Firmware de adquisición sincronizada de las cuatro celdas."
-            },
-            {
-                "herramienta": "Python con NumPy y SciPy",
-                "tipo": "Procesamiento de Señales",
-                "descripcion": "Filtrado del centro de presiones y cálculo de parámetros posturográficos."
-            },
-            {
-                "herramienta": "Streamlit",
-                "tipo": "Visualización / Dashboard",
-                "descripcion": "Interfaz para el fisioterapeuta con estatocinesigrama y reporte."
-            },
-            {
-                "herramienta": "R o JASP",
-                "tipo": "Análisis Estadístico",
-                "descripcion": "Correlaciones y análisis del estudio piloto."
             }
         ]
     },
@@ -695,27 +353,27 @@ export default [
         ]
     },
     {
-        "id": "proj_169",
-        "titulo": "👀 Proyecto 169: Comunicador Aumentativo Controlado por Movimientos Oculares mediante Electrooculografía",
-        "descripcion": "Problema: Las personas con esclerosis lateral amiotrófica, lesión medular alta o parálisis cerebral severa pierden la capacidad de hablar y de usar las manos, y los sistemas de seguimiento ocular comerciales son demasiado costosos para las familias del Cauca, lo que las deja aisladas y dependientes de tableros de comunicación en papel.\n\nDescripción: Sistema de comunicación aumentativa que registra la electrooculografía horizontal y vertical con electrodos de superficie, detecta movimientos sacádicos y parpadeos voluntarios y los traduce en la selección de letras y frases en un teclado virtual con síntesis de voz en español. Se mide la tasa de escritura y la tasa de error con usuarios voluntarios.",
+        "id": "proj_211",
+        "titulo": "👣 Proyecto 211: Plantillas Instrumentadas de Presión Plantar con Registro Local para el Análisis Biomecánico de la Marcha",
+        "descripcion": "Problema: Los programas de fisioterapia y podología de Popayán evalúan la marcha de forma visual o con huellas en papel, porque las plataformas de presión y los sistemas de baropodometría comerciales cuestan decenas de millones de pesos; así es difícil cuantificar la distribución de cargas, la simetría entre ambos pies y la evolución de un paciente durante su tratamiento.\n\nDescripción: Par de plantillas impresas en 3D con ocho sensores de fuerza resistivos por pie y una unidad inercial en el talón, conectadas a un microcontrolador Teensy que guarda las señales en una tarjeta microSD a 100 Hz. Un programa en Python calcula el centro de presión, las fases de apoyo y balanceo, los tiempos de contacto y los índices de simetría, y genera un informe para el profesional. Las plantillas se calibran con pesas patrón y se comparan con una plataforma de fuerza o una balanza digital de referencia. Las pruebas con voluntarios requieren consentimiento informado; se trata de un prototipo de apoyo, no de un dispositivo médico certificado.",
         "area": "Bioingeniería",
-        "sector": "Inclusión - Discapacidad motora severa",
+        "sector": "Salud - Fisioterapia y biomecánica",
         "nivel": "Intermedio-Avanzado",
         "duracion": "Un semestre",
         "presupuesto": "Bajo costo",
         "habilidades": [
-            "Adquisición y filtrado de señales EOG",
-            "Detección de eventos en señales fisiológicas",
-            "Diseño de interfaces humano-computador accesibles",
-            "Síntesis de voz y tecnologías de apoyo",
-            "Evaluación de usabilidad con usuarios"
+            "Biomecánica de la marcha humana",
+            "Acondicionamiento de sensores de fuerza resistivos",
+            "Programación de microcontroladores y registro en tarjeta SD",
+            "Procesamiento de señales en Python",
+            "Calibración y análisis de incertidumbre"
         ],
         "objetivos": [
-            "🎯 Objetivo General: Desarrollar un comunicador aumentativo de bajo costo controlado por movimientos oculares para personas con discapacidad motora severa.",
+            "🎯 Objetivo General: Desarrollar y validar un par de plantillas instrumentadas de bajo costo para medir la distribución de presión plantar y los parámetros temporales de la marcha.",
             "📌 Objetivos Específicos:",
-            "• Detectar movimientos oculares en cuatro direcciones y el parpadeo voluntario con una exactitud superior al 90 %.",
-            "• Implementar un teclado virtual con predicción de palabras en español que alcance al menos cinco caracteres por minuto.",
-            "• Evaluar la tasa de escritura, la tasa de error y la carga de trabajo percibida con el cuestionario NASA-TLX en al menos ocho voluntarios."
+            "• Calibrar cada sensor con pesas patrón entre 0 y 50 kg y obtener un error de fuerza total inferior al 10 % frente a una balanza digital de referencia.",
+            "• Detectar los eventos de contacto inicial y despegue con un error menor de 20 ms respecto a video de alta velocidad grabado con un teléfono celular.",
+            "• Registrar la marcha de al menos 15 voluntarios sanos con consentimiento informado y calcular índices de simetría y trayectoria del centro de presión."
         ],
         "pasos": [
             "Análisis de requisitos",
@@ -724,144 +382,497 @@ export default [
             "Validación y sustentación"
         ],
         "aplicaciones": [
-            "Inclusión - Discapacidad motora severa"
+            "Salud - Fisioterapia y biomecánica"
         ],
         "referencias": [],
         "hardware_tabla": [
             {
-                "componente": "Módulos AD8232 configurados para EOG (2 unidades)",
-                "categoria": "Acondicionamiento de Señal",
-                "funcion": "Amplifican los potenciales oculares horizontal y vertical."
+                "componente": "Sensores de fuerza resistivos FSR402 (ocho por plantilla)",
+                "categoria": "Sensor de Fuerza",
+                "funcion": "Miden la presión bajo el talón, el mediopié, las cabezas metatarsianas y el hallux."
             },
             {
-                "componente": "ESP32",
+                "componente": "Teensy 4.0",
                 "categoria": "Microcontrolador",
-                "funcion": "Digitaliza las señales EOG y las envía al computador por Bluetooth."
+                "funcion": "Muestrea los sensores a 100 Hz y escribe los registros en la tarjeta de memoria."
             },
             {
-                "componente": "Electrodos Ag/AgCl pediátricos",
-                "categoria": "Sensor Biomédico",
-                "funcion": "Se ubican alrededor de los ojos para captar la señal EOG."
+                "componente": "Unidad inercial MPU-6050",
+                "categoria": "Sensor Inercial",
+                "funcion": "Complementa la detección de eventos de la marcha con aceleración y velocidad angular del pie."
             },
             {
-                "componente": "Tableta o computador portátil",
-                "categoria": "Interfaz de Usuario",
-                "funcion": "Presenta el teclado virtual y reproduce la voz sintetizada."
+                "componente": "Módulo lector de tarjetas microSD",
+                "categoria": "Almacenamiento",
+                "funcion": "Guarda los registros de cada sesión para su análisis posterior en el computador."
             },
             {
-                "componente": "Batería LiPo con módulo de carga",
-                "categoria": "Fuente de Alimentación / Energía",
-                "funcion": "Alimenta la etapa de adquisición aislada de la red eléctrica."
+                "componente": "Divisores de tensión con amplificador MCP6004 y batería LiPo con cargador TP4056",
+                "categoria": "Acondicionamiento de Señal",
+                "funcion": "Linealizan la respuesta de los sensores y alimentan el sistema de forma portátil."
+            },
+            {
+                "componente": "Plantillas de TPU impresas en 3D",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Alojan los sensores en posiciones anatómicas repetibles para cada talla de calzado."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Arduino IDE con Teensyduino",
+                "tipo": "Firmware Embebido",
+                "descripcion": "Adquisición sincronizada de los sensores y escritura en la tarjeta microSD."
+            },
+            {
+                "herramienta": "Python con NumPy, SciPy y Matplotlib",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Detección de eventos de la marcha, centro de presión, índices de simetría e informe gráfico."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño paramétrico de las plantillas por talla y de la carcasa de la electrónica."
+            },
+            {
+                "herramienta": "Kinovea",
+                "tipo": "Análisis de Video",
+                "descripcion": "Marcado de eventos de la marcha en video para validar la detección automática."
+            }
+        ]
+    },
+    {
+        "id": "proj_212",
+        "titulo": "🧫 Proyecto 212: Fantomas de Tejido Blando en Hidrogel para Entrenamiento en Ecografía y Punción Guiada",
+        "descripcion": "Problema: Los estudiantes de medicina, enfermería y tecnología en radiología del Cauca practican la ecografía y las punciones guiadas casi exclusivamente con pacientes, porque los simuladores comerciales importados son costosos y se deterioran con el uso; esto limita las horas de entrenamiento y aumenta el riesgo en los primeros procedimientos reales.\n\nDescripción: Desarrollo de fantomas de tejido blando a base de agar, gelatina y alcohol polivinílico con inclusiones que simulan vasos, quistes y masas sólidas. Se ajustan la velocidad del sonido, la atenuación y la ecogenicidad variando la concentración de los componentes y de partículas dispersoras como grafito o celulosa, y se fabrican moldes impresos en 3D para obtener geometrías repetibles. Las propiedades acústicas se miden con un montaje de transmisión ultrasónica y los fantomas se evalúan con un ecógrafo del área de salud.",
+        "area": "Bioingeniería",
+        "sector": "Educación en salud - Simulación clínica",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Física del ultrasonido y propiedades acústicas de tejidos",
+            "Formulación y preparación de hidrogeles",
+            "Diseño de moldes e impresión 3D",
+            "Medición experimental de velocidad del sonido y atenuación",
+            "Diseño de experimentos y análisis estadístico"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Diseñar y caracterizar fantomas de tejido blando de bajo costo que reproduzcan las propiedades acústicas de los tejidos para el entrenamiento en ecografía y punción guiada.",
+            "📌 Objetivos Específicos:",
+            "• Obtener formulaciones con velocidad del sonido entre 1 500 y 1 600 m/s y atenuación entre 0,3 y 0,7 dB/cm/MHz medidas por transmisión ultrasónica.",
+            "• Fabricar tres modelos con inclusiones vasculares, quísticas y sólidas a partir de moldes impresos en 3D, que soporten al menos 50 punciones sin perder su utilidad.",
+            "• Evaluar el realismo de los fantomas con al menos diez docentes y estudiantes del área de salud mediante una encuesta con escala de Likert."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Educación en salud - Simulación clínica"
+        ],
+        "referencias": [
+            "Culjat, M. O., Goldenberg, D., Tewari, P., & Singh, R. S. (2010). A review of tissue substitutes for ultrasound imaging. Ultrasound in Medicine & Biology, 36(6), 861–873."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Agar, gelatina sin sabor, alcohol polivinílico, glicerina y polvo de grafito",
+                "categoria": "Material",
+                "funcion": "Forman la matriz del fantoma y ajustan su velocidad del sonido, atenuación y ecogenicidad."
+            },
+            {
+                "componente": "Moldes impresos en 3D en PETG",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Definen la geometría del fantoma y la posición de las inclusiones."
+            },
+            {
+                "componente": "Par de transductores ultrasónicos de 1 MHz con generador de pulsos",
+                "categoria": "Instrumento de Medición",
+                "funcion": "Miden el tiempo de vuelo y la amplitud transmitida a través de las muestras."
+            },
+            {
+                "componente": "Osciloscopio digital del laboratorio",
+                "categoria": "Instrumento de Medición",
+                "funcion": "Registra las señales ultrasónicas para calcular velocidad del sonido y atenuación."
+            },
+            {
+                "componente": "Ecógrafo del programa de salud",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Permite evaluar la apariencia de los fantomas en imágenes clínicas."
+            },
+            {
+                "componente": "Balanza de precisión, plancha de calentamiento y termómetro digital",
+                "categoria": "Equipo de Laboratorio",
+                "funcion": "Garantizan la preparación repetible de las formulaciones."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño de los moldes y de los soportes de las inclusiones."
+            },
+            {
+                "herramienta": "GNU Octave",
+                "tipo": "Procesamiento de Señales",
+                "descripcion": "Cálculo del tiempo de vuelo, la velocidad del sonido y la atenuación espectral."
+            },
+            {
+                "herramienta": "ImageJ (Fiji)",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Medición del contraste y la ecogenicidad en las imágenes de ecografía."
+            },
+            {
+                "herramienta": "Cura",
+                "tipo": "Fabricación",
+                "descripcion": "Preparación de la impresión 3D de los moldes."
+            }
+        ]
+    },
+    {
+        "id": "proj_213",
+        "titulo": "🩻 Proyecto 213: Biomodelos Anatómicos Impresos en 3D a partir de Tomografía Computarizada para Planificación Quirúrgica Ortopédica",
+        "descripcion": "Problema: En los hospitales de Popayán la planificación de cirugías de fracturas complejas de pelvis, tibia o columna se hace sobre imágenes de tomografía en pantalla, lo que dificulta comprender la geometría tridimensional de la lesión, elegir y premoldear placas de osteosíntesis y explicar el procedimiento al paciente; los biomodelos comerciales son costosos y llegan tarde.\n\nDescripción: Flujo de trabajo abierto que segmenta estructuras óseas a partir de estudios de tomografía anonimizados en formato DICOM, genera mallas corregidas y las imprime en 3D a escala real. El proyecto mide la exactitud dimensional del biomodelo frente a la imagen original, documenta el tiempo y el costo del proceso y evalúa su utilidad percibida con cirujanos y residentes. Solo se usan estudios anonimizados con aval del comité de ética de la institución; el biomodelo es un apoyo de planificación y docencia, no un dispositivo médico certificado.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Cirugía ortopédica",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Imágenes médicas y formato DICOM",
+            "Segmentación de imágenes por umbral y crecimiento de regiones",
+            "Procesamiento y reparación de mallas 3D",
+            "Impresión 3D y control dimensional",
+            "Protección de datos personales en salud"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Implementar un flujo de trabajo abierto y de bajo costo para producir biomodelos óseos impresos en 3D a partir de tomografía computarizada como apoyo a la planificación quirúrgica.",
+            "📌 Objetivos Específicos:",
+            "• Documentar un protocolo reproducible de anonimización, segmentación, reparación de malla e impresión con tiempos y costos por caso.",
+            "• Obtener biomodelos con una desviación media inferior a 1 mm frente a la superficie segmentada, medida con calibrador y comparación de mallas.",
+            "• Evaluar la utilidad percibida de al menos cinco biomodelos con cirujanos y residentes de ortopedia mediante un cuestionario estructurado."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Cirugía ortopédica"
+        ],
+        "referencias": [
+            "Fedorov, A., Beichel, R., Kalpathy-Cramer, J., et al. (2012). 3D Slicer as an image computing platform for the Quantitative Imaging Network. Magnetic Resonance Imaging, 30(9), 1323–1341."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Computador con tarjeta gráfica dedicada",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Ejecuta la segmentación y el procesamiento de mallas de alta resolución."
+            },
+            {
+                "componente": "Impresora 3D FDM del laboratorio",
+                "categoria": "Equipo de Fabricación",
+                "funcion": "Fabrica los biomodelos óseos a escala real."
+            },
+            {
+                "componente": "Filamentos PLA y material de soporte soluble PVA",
+                "categoria": "Material",
+                "funcion": "Permiten reproducir cavidades y fragmentos óseos con soportes removibles."
+            },
+            {
+                "componente": "Calibrador digital de 0,01 mm",
+                "categoria": "Instrumento de Medición",
+                "funcion": "Mide distancias anatómicas de referencia en los biomodelos impresos."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "3D Slicer",
+                "tipo": "Procesamiento de Imágenes Médicas",
+                "descripcion": "Anonimización, segmentación de hueso y exportación de mallas STL."
+            },
+            {
+                "herramienta": "Meshmixer",
+                "tipo": "Modelado 3D",
+                "descripcion": "Reparación, suavizado y separación de fragmentos de las mallas."
+            },
+            {
+                "herramienta": "MeshLab",
+                "tipo": "Análisis de Mallas",
+                "descripcion": "Comparación de distancias entre la malla segmentada y el biomodelo digitalizado."
+            },
+            {
+                "herramienta": "PrusaSlicer",
+                "tipo": "Fabricación",
+                "descripcion": "Preparación de la impresión con soportes solubles y orientación óptima."
+            }
+        ]
+    },
+    {
+        "id": "proj_214",
+        "titulo": "🧪 Proyecto 214: Plataforma Microfluídica de Bajo Costo con Bombas de Jeringa Impresas en 3D para Pruebas Colorimétricas",
+        "descripcion": "Problema: Los laboratorios de docencia e investigación de la región no cuentan con equipos para trabajar en microfluídica, porque los chips de vidrio o PDMS fabricados en sala limpia y las bombas de jeringa comerciales son costosos; esto impide que estudiantes e investigadores exploren dispositivos de laboratorio en un chip para análisis químicos y biológicos con volúmenes mínimos de muestra.\n\nDescripción: Plataforma compuesta por chips microfluídicos fabricados por corte láser de láminas de PMMA y cinta adhesiva de doble faz, bombas de jeringa impresas en 3D con motores paso a paso controladas por Arduino y una cámara con iluminación LED para medir el color de las reacciones. Se caracteriza la exactitud del caudal por gravimetría, se verifica el régimen laminar y se demuestra una prueba colorimétrica de glucosa o de pH con curvas de calibración analizadas en Python.",
+        "area": "Bioingeniería",
+        "sector": "Investigación - Laboratorio en un chip",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Mecánica de fluidos a microescala",
+            "Fabricación de chips por corte láser y laminado",
+            "Control de motores paso a paso",
+            "Colorimetría y procesamiento de imágenes",
+            "Diseño mecánico e impresión 3D"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir una plataforma microfluídica abierta y de bajo costo para el desarrollo de pruebas colorimétricas en laboratorio en un chip.",
+            "📌 Objetivos Específicos:",
+            "• Fabricar chips con canales de 300 a 500 µm de ancho sin fugas a caudales de hasta 100 µL/min.",
+            "• Lograr una exactitud de caudal de ±5 % entre 5 y 100 µL/min en las bombas de jeringa, medida por gravimetría.",
+            "• Obtener una curva de calibración colorimétrica con coeficiente de determinación superior a 0,95 en una prueba de glucosa o de pH."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Investigación - Laboratorio en un chip"
+        ],
+        "referencias": [
+            "Whitesides, G. M. (2006). The origins and the future of microfluidics. Nature, 442(7101), 368–373."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Láminas de PMMA y cinta adhesiva de doble faz de grado laboratorio",
+                "categoria": "Material",
+                "funcion": "Forman las capas del chip con los canales microfluídicos."
+            },
+            {
+                "componente": "Cortadora láser de CO2 del laboratorio",
+                "categoria": "Equipo de Fabricación",
+                "funcion": "Corta los canales y las cámaras de reacción en las láminas."
+            },
+            {
+                "componente": "Arduino Uno con CNC Shield y drivers A4988",
+                "categoria": "Microcontrolador",
+                "funcion": "Controla de forma independiente dos bombas de jeringa."
+            },
+            {
+                "componente": "Motores paso a paso NEMA 17 con husillo y cuerpo impreso en 3D",
+                "categoria": "Actuador",
+                "funcion": "Desplazan el émbolo de las jeringas para generar caudales controlados."
+            },
+            {
+                "componente": "Cámara USB con anillo de LED blancos y cámara oscura impresa",
+                "categoria": "Sensor Óptico",
+                "funcion": "Captura imágenes con iluminación constante para la medición colorimétrica."
+            },
+            {
+                "componente": "Balanza analítica del laboratorio",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Verifica el caudal entregado por las bombas mediante gravimetría."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Inkscape",
+                "tipo": "Diseño Vectorial",
+                "descripcion": "Dibujo de las capas del chip para el corte láser."
+            },
+            {
+                "herramienta": "Arduino IDE",
+                "tipo": "Firmware Embebido",
+                "descripcion": "Control de caudal y volumen de las bombas por comandos seriales."
+            },
+            {
+                "herramienta": "Python con OpenCV y SciPy",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Extracción de color en las cámaras de reacción y ajuste de curvas de calibración."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño de las bombas de jeringa y de la cámara oscura."
+            }
+        ]
+    },
+    {
+        "id": "proj_215",
+        "titulo": "🧬 Proyecto 215: Máquina de Ensayos de Tracción y Compresión de Bajo Costo para la Caracterización de Biomateriales y Andamios Impresos en 3D",
+        "descripcion": "Problema: Los grupos de investigación en biomateriales de la región envían sus muestras de andamios porosos, hidrogeles y polímeros biodegradables a laboratorios externos para ensayos mecánicos, porque las máquinas universales comerciales son costosas y sus rangos de fuerza son demasiado altos para materiales blandos; esto retrasa los proyectos y limita el número de ensayos.\n\nDescripción: Máquina de ensayos de mesa con husillo de bolas, motor paso a paso y celda de carga intercambiable, controlada por un STM32 que adquiere fuerza y desplazamiento y los envía por USB a una aplicación de escritorio. Se implementan ensayos de tracción y compresión a velocidad constante, se calculan módulo elástico, resistencia y deformación a la falla, y se validan los resultados con materiales de referencia y probetas de PLA y PCL impresas en 3D con distintas porosidades.",
+        "area": "Bioingeniería",
+        "sector": "Investigación - Biomateriales",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Mecánica de materiales y ensayos normalizados",
+            "Diseño de máquinas y transmisiones de husillo",
+            "Acondicionamiento de celdas de carga",
+            "Control de posición y velocidad de motores",
+            "Análisis de curvas esfuerzo-deformación"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Diseñar y validar una máquina de ensayos de tracción y compresión de bajo costo para caracterizar biomateriales blandos y andamios impresos en 3D.",
+            "📌 Objetivos Específicos:",
+            "• Medir fuerzas de 0,1 a 500 N con un error inferior al 1 % de la escala, verificado con pesas patrón.",
+            "• Controlar la velocidad del travesaño entre 0,5 y 50 mm/min con un error menor del 2 % medido con un comparador de carátula.",
+            "• Comparar el módulo elástico de probetas de PLA y PCL con distintas porosidades frente a los valores obtenidos en un laboratorio externo o reportados en la literatura."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Investigación - Biomateriales"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "STM32F411 (placa Black Pill)",
+                "categoria": "Microcontrolador",
+                "funcion": "Controla el motor, adquiere fuerza y desplazamiento y transmite los datos por USB."
+            },
+            {
+                "componente": "Celdas de carga de 5 kg y 50 kg con convertidor HX711",
+                "categoria": "Sensor de Fuerza",
+                "funcion": "Miden la fuerza aplicada en rangos adecuados para materiales blandos y rígidos."
+            },
+            {
+                "componente": "Motor paso a paso NEMA 23 con driver TB6600 y husillo de bolas",
+                "categoria": "Actuador",
+                "funcion": "Desplaza el travesaño a velocidad constante con alta rigidez."
+            },
+            {
+                "componente": "Perfiles de aluminio, guías lineales y mordazas mecanizadas",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Forman el marco de carga y sujetan las probetas."
+            },
+            {
+                "componente": "Encoder óptico lineal y finales de carrera",
+                "categoria": "Sensor de Posición",
+                "funcion": "Miden el desplazamiento del travesaño y protegen los límites del recorrido."
+            },
+            {
+                "componente": "Pesas patrón y comparador de carátula",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Permiten calibrar la fuerza y verificar el desplazamiento."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "STM32CubeIDE",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Firmware de control de velocidad, adquisición y comunicación USB."
+            },
+            {
+                "herramienta": "Python con PyQt y pandas",
+                "tipo": "Aplicación de Escritorio",
+                "descripcion": "Configuración del ensayo, gráfica en tiempo real y exportación de resultados."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del marco de carga, las mordazas y las probetas."
+            },
+            {
+                "herramienta": "GNU Octave",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Cálculo de módulo elástico, resistencia y deformación a la falla."
+            }
+        ]
+    },
+    {
+        "id": "proj_216",
+        "titulo": "🦵 Proyecto 216: Dispositivo de Movimiento Pasivo Continuo para Rehabilitación de Rodilla con Control Local de Rango y Velocidad",
+        "descripcion": "Problema: Después de una reconstrucción de ligamento cruzado o de una artroplastia de rodilla, muchos pacientes de Popayán y de municipios del Cauca no acceden a equipos de movimiento pasivo continuo porque su alquiler es costoso y hay pocas unidades en las clínicas, lo que favorece la rigidez articular y prolonga la recuperación.\n\nDescripción: Dispositivo de movimiento pasivo continuo para rodilla con estructura de aluminio y piezas impresas en 3D, accionado por un motor con reductor y controlado por un Arduino Mega. El fisioterapeuta programa en una pantalla táctil local el rango de flexión, la velocidad y la duración de la sesión; el equipo mide el ángulo con un encoder, detecta resistencia anormal mediante la corriente del motor, se detiene con un pulsador de emergencia y guarda cada sesión en una tarjeta microSD. La validación se hace primero con una pierna mecánica instrumentada y después con voluntarios sanos con consentimiento informado; se trata de un prototipo de apoyo, no de un dispositivo médico certificado.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Rehabilitación física",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Biomecánica de la articulación de la rodilla",
+            "Diseño de mecanismos y cálculo de pares",
+            "Control de motores en lazo cerrado",
+            "Diseño de funciones de seguridad en equipos de rehabilitación",
+            "Diseño de interfaces para profesionales de la salud"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un prototipo de dispositivo de movimiento pasivo continuo de bajo costo para la rehabilitación de rodilla con control local de rango, velocidad y duración.",
+            "📌 Objetivos Específicos:",
+            "• Ofrecer un rango de flexión programable de 0° a 110° con un error de posición inferior a 3° medido con goniómetro.",
+            "• Detener el movimiento en menos de 200 ms ante el pulsador de emergencia o ante un par resistente superior al umbral configurado.",
+            "• Evaluar la comodidad y la usabilidad con al menos cinco fisioterapeutas y diez voluntarios sanos mediante la escala SUS y un cuestionario de comodidad."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Rehabilitación física"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Arduino Mega 2560",
+                "categoria": "Microcontrolador",
+                "funcion": "Ejecuta el control de posición y velocidad, las funciones de seguridad y la interfaz."
+            },
+            {
+                "componente": "Motor DC de 24 V con reductor sinfín-corona y driver BTS7960",
+                "categoria": "Actuador",
+                "funcion": "Mueve el carro de la pierna con par suficiente y bloqueo mecánico ante falta de energía."
+            },
+            {
+                "componente": "Encoder rotativo incremental y sensor de corriente ACS712",
+                "categoria": "Sensor de Posición",
+                "funcion": "Miden el ángulo de la rodilla y detectan resistencia anormal al movimiento."
+            },
+            {
+                "componente": "Pantalla táctil Nextion de 3,5 pulgadas y pulsador de emergencia",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Permiten programar la sesión y detener el equipo de forma inmediata."
+            },
+            {
+                "componente": "Módulo lector de tarjetas microSD",
+                "categoria": "Almacenamiento",
+                "funcion": "Registra el ángulo, la velocidad y los eventos de cada sesión."
+            },
+            {
+                "componente": "Perfiles de aluminio, rieles lineales y soportes acolchados impresos en 3D",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Forman el bastidor ajustable a la longitud del muslo y de la pierna."
             }
         ],
         "software_tabla": [
             {
                 "herramienta": "Arduino IDE",
-                "tipo": "Entorno de Desarrollo Embebido",
-                "descripcion": "Firmware de muestreo y transmisión por Bluetooth Low Energy."
+                "tipo": "Firmware Embebido",
+                "descripcion": "Control PID de posición, rampas de velocidad y lógica de seguridad."
             },
             {
-                "herramienta": "Python con SciPy",
-                "tipo": "Procesamiento de Señales",
-                "descripcion": "Filtrado, corrección de deriva y detección de sacadas y parpadeos."
+                "herramienta": "Nextion Editor",
+                "tipo": "Diseño de Interfaz Gráfica",
+                "descripcion": "Pantallas de programación de la sesión y de estado del equipo."
             },
             {
-                "herramienta": "Kivy",
-                "tipo": "Framework de Interfaz Gráfica",
-                "descripcion": "Teclado virtual accesible con barrido y predicción de palabras."
+                "herramienta": "OpenSim",
+                "tipo": "Simulación Biomecánica",
+                "descripcion": "Estimación de los pares articulares y de la cinemática de la rodilla durante el movimiento."
             },
             {
-                "herramienta": "eSpeak NG / Piper TTS",
-                "tipo": "Síntesis de Voz",
-                "descripcion": "Conversión del texto escrito a voz en español."
-            }
-        ]
-    },
-    {
-        "id": "proj_170",
-        "titulo": "👂 Proyecto 170: Audiómetro Portátil de Tamizaje Auditivo para Escuelas Rurales",
-        "descripcion": "Problema: En las escuelas rurales del Cauca la pérdida auditiva infantil suele pasar inadvertida y se confunde con desatención o bajo rendimiento académico, porque los tamizajes auditivos requieren audiómetros y cabinas que solo existen en las ciudades, de modo que los niños pierden años de aprendizaje antes de recibir un diagnóstico.\n\nDescripción: Audiómetro portátil de tonos puros que genera estímulos de 500 Hz a 8 kHz con nivel calibrado, presenta un procedimiento automatizado de tamizaje con respuesta por pulsador y monitorea el ruido ambiente para indicar si la prueba es válida. El equipo se calibra con un sonómetro y un acoplador artificial y se compara con un audiómetro clínico.",
-        "area": "Bioingeniería",
-        "sector": "Educación básica - Salud escolar",
-        "nivel": "Intermedio",
-        "duracion": "Un semestre",
-        "presupuesto": "Bajo costo",
-        "habilidades": [
-            "Acústica y psicoacústica básica",
-            "Generación de audio digital y conversión DAC",
-            "Calibración acústica con sonómetro",
-            "Procedimientos de audiometría de tamizaje",
-            "Diseño de dispositivos para trabajo de campo"
-        ],
-        "objetivos": [
-            "🎯 Objetivo General: Desarrollar un audiómetro portátil de bajo costo para el tamizaje auditivo de niños en escuelas rurales.",
-            "📌 Objetivos Específicos:",
-            "• Generar tonos puros en seis frecuencias entre 500 Hz y 8 kHz con un error de nivel inferior a ±3 dB tras la calibración con sonómetro.",
-            "• Implementar un procedimiento de tamizaje automatizado que finalice en menos de cinco minutos por niño y registre el ruido ambiente durante la prueba.",
-            "• Comparar los resultados con un audiómetro clínico en al menos 30 niños o adultos voluntarios, calculando sensibilidad y especificidad."
-        ],
-        "pasos": [
-            "Análisis de requisitos",
-            "Diseño de la solución",
-            "Implementación y pruebas",
-            "Validación y sustentación"
-        ],
-        "aplicaciones": [
-            "Educación básica - Salud escolar"
-        ],
-        "referencias": [],
-        "hardware_tabla": [
-            {
-                "componente": "ESP32",
-                "categoria": "Microcontrolador",
-                "funcion": "Genera los tonos, ejecuta el protocolo de tamizaje y almacena los resultados."
-            },
-            {
-                "componente": "DAC I2S PCM5102A",
-                "categoria": "Convertidor Digital-Analógico",
-                "funcion": "Produce los tonos puros con baja distorsión."
-            },
-            {
-                "componente": "Audífonos supraaurales con almohadillas de atenuación",
-                "categoria": "Transductor Acústico",
-                "funcion": "Presentan los estímulos a cada oído y reducen el ruido externo."
-            },
-            {
-                "componente": "Micrófono MEMS INMP441",
-                "categoria": "Sensor Acústico",
-                "funcion": "Monitorea el nivel de ruido ambiente durante la prueba."
-            },
-            {
-                "componente": "Pulsador de respuesta y pantalla OLED",
-                "categoria": "Interfaz de Usuario / Iluminación",
-                "funcion": "Permiten la respuesta del niño y la guía del evaluador."
-            },
-            {
-                "componente": "Sonómetro clase 2 y acoplador artificial impreso en 3D",
-                "categoria": "Instrumento de Referencia",
-                "funcion": "Permiten calibrar el nivel de presión sonora de los audífonos."
-            }
-        ],
-        "software_tabla": [
-            {
-                "herramienta": "ESP-IDF",
-                "tipo": "Entorno de Desarrollo Embebido",
-                "descripcion": "Firmware de generación de audio por I2S y lógica del tamizaje."
-            },
-            {
-                "herramienta": "Audacity",
-                "tipo": "Análisis de Audio",
-                "descripcion": "Verificación espectral y de distorsión de los tonos generados."
-            },
-            {
-                "herramienta": "SQLite",
-                "tipo": "Base de Datos",
-                "descripcion": "Registro local de los resultados de tamizaje por estudiante."
-            },
-            {
-                "herramienta": "Python con pandas y scikit-learn",
-                "tipo": "Análisis de Datos",
-                "descripcion": "Cálculo de sensibilidad, especificidad y curvas ROC frente al audiómetro clínico."
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del bastidor ajustable y de los soportes de la pierna."
             }
         ]
     }

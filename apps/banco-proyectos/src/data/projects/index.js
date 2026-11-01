@@ -10,6 +10,9 @@ import inteligenciaArtificial from './inteligencia-artificial.js';
 import sistemasCiberfisicos from './sistemas-ciberfisicos.js';
 import machineLearning from './machine-learning.js';
 import robotica from './robotica.js';
+import neurocienciaAiot from './neurociencia-aiot.js';
+import aiotDiscapacidadEnfermedad from './aiot-discapacidad-enfermedad.js';
+import iotMedicoSaludDigital from './iot-medico-salud-digital.js';
 
 // The UI reads `hardware`/`software` as display strings; new projects only declare the tables.
 export const withDerivedLists = (project) => ({
@@ -30,6 +33,9 @@ export const newAreaProjects = [
     ...sistemasCiberfisicos,
     ...machineLearning,
     ...robotica,
+    ...neurocienciaAiot,
+    ...aiotDiscapacidadEnfermedad,
+    ...iotMedicoSaludDigital,
 ].map(withDerivedLists);
 
 export const projects = [...mockProjects, ...newAreaProjects];

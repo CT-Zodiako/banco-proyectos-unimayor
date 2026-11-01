@@ -29,6 +29,18 @@ test('projects of the new areas are flagged as new', () => {
     assert.equal(isNewProject(sample[2]), false);
 });
 
+test('a project is new by its number (101 and up), also after moving to an original area', () => {
+    assert.equal(isNewProject(p('proj_161', 'IoT Médico y Salud Digital')), true);
+    assert.equal(isNewProject(p('proj_100', 'IoT Médico y Salud Digital')), false);
+    assert.equal(isNewProject(p('proj_101', 'Desarrollo de Videojuegos')), true);
+});
+
+test('the neuroscience and disability areas belong to the health family', () => {
+    const health = AREA_FAMILIES.find((f) => f.name === 'Salud y bioingeniería').areas;
+    assert.ok(health.includes('Neurociencia con AIoT'));
+    assert.ok(health.includes('AIoT para Discapacidad y Enfermedad'));
+});
+
 test('every area tag of the bank belongs to one family', () => {
     const known = AREA_FAMILIES.flatMap((f) => f.areas);
     assert.equal(new Set(known).size, known.length);

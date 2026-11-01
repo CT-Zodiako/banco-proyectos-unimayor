@@ -8,7 +8,11 @@ export const AREA_FAMILIES = [
         areas: ['SBC-IoT', 'AIoT', 'IoT con Visión Artificial', 'Visión Artificial', 'IoT con Big Data y Analítica',
             'IoT con Analítica', 'IoT Industrial 4.0 y Manufactura Inteligente', 'IoT Aeroespacial y Aeronáutico'],
     },
-    { name: 'Salud y bioingeniería', areas: ['IoT Médico y Salud Digital', 'Medicina con AIoT', 'Bioingeniería'] },
+    {
+        name: 'Salud y bioingeniería',
+        areas: ['IoT Médico y Salud Digital', 'Medicina con AIoT', 'Bioingeniería', 'Neurociencia con AIoT',
+            'AIoT para Discapacidad y Enfermedad'],
+    },
     { name: 'Seguridad y redes', areas: ['IoT Hacking y Ciberseguridad', 'Ciberseguridad', 'Redes'] },
     { name: 'Software y videojuegos', areas: ['Desarrollo de Software', 'Arquitectura de Software', 'Desarrollo de Videojuegos'] },
     { name: 'IA y datos', areas: ['Inteligencia Artificial', 'Machine Learning'] },
@@ -18,17 +22,18 @@ const OTHER_FAMILY = 'Otras áreas';
 
 export const LEVELS = ['Intermedio', 'Intermedio-Avanzado', 'Avanzado'];
 
-const NEW_AREA_NAMES = new Set(NEW_AREAS.map((a) => a.name));
-
 export const normalizeText = (text) =>
     String(text ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
 export const areaTags = (project) =>
     String(project.area ?? '').split('+').map((tag) => tag.trim()).filter(Boolean);
 
-export const isNewProject = (project) => areaTags(project).some((tag) => NEW_AREA_NAMES.has(tag));
+const NEW_AREA_NAMES = new Set(NEW_AREAS.map((a) => a.name));
 
 const projectNumber = (project) => Number(String(project.id).replace(/\D/g, '')) || 0;
+
+// Projects 101 and up were added after the original 100 (some later moved to an original area, e.g. proj_161).
+export const isNewProject = (project) => projectNumber(project) > 100;
 
 /** Families with unique project counts and, inside each, area tags with their project counts. Empty ones are omitted. */
 export function buildAreaFacets(projects) {
