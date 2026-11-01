@@ -208,8 +208,96 @@
     return { total: Object.values(parts).reduce((a, b) => a + b, 0), parts };
   }
 
+  /* ---------- Assessment: the affinity explained in words, with recommendations ----------
+     Uses only what the data knows (themes, quartile vs project level, time, language, region, template, review);
+     it never claims an acceptance chance. */
+  const PUBLINDEX = { Q1: "A1", Q2: "A2", Q3: "B", Q4: "C" };
+  const LEVEL_OK = 15; // level points from which the quartile is reachable for the project's level
+  const WEEKS_OK = 16;
+
+  function assessment(project, match, journal, labels = {}) {
+    const label = (key) => labels[key] || key;
+    const list = (keysList) => keysList.map(label).join(", ");
+    const themes = new Set(match.themes || []);
+    const domain = (project.themes && project.themes.domain) || [];
+    const tech = ((project.themes && project.themes.tech) || []).filter((t) => !GENERIC_TECH.has(t));
+    const level = project.level || "Intermedio-Avanzado";
+    const q = journal.quartile;
+    const weeks = journal.weeks_to_publication;
+    const languages = journal.languages || [];
+    const templates = journal.templates || [];
+    const meets = [];
+    const misses = [];
+    const tips = [];
+    const meet = (key, text) => meets.push({ key, text });
+    const miss = (key, text) => misses.push({ key, text });
+
+    meet("access", "Publicación gratuita y lectura libre (acceso abierto diamante, verificado en DOAJ)");
+    meet("indexed", `Indexada en SCImago (${q}), homologable a Publindex ${PUBLINDEX[q]}`);
+
+    const sharedDomain = domain.filter((t) => themes.has(t));
+    const sharedTech = tech.filter((t) => themes.has(t));
+    if (domain.length) {
+      if (sharedDomain.length) meet("sector", `Su alcance cubre el sector del proyecto: ${list(sharedDomain)}`);
+      else miss("sector", `Su alcance no cubre el sector del proyecto (${list(domain)})`);
+    }
+    if (tech.length) {
+      if (sharedTech.length) meet("tech", `Cubre tecnologías del proyecto: ${list(sharedTech)}`);
+      else if (themes.has("tecnologia_aplicada")) {
+        miss("tech", `Solo cubre tecnología aplicada en general, no las tecnologías del proyecto (${list(tech)})`);
+      } else miss("tech", `No cubre las tecnologías del proyecto (${list(tech)})`);
+    }
+    const domainOk = !domain.length || sharedDomain.length > 0;
+    const techOk = !tech.length || sharedTech.length > 0;
+    if (!sharedDomain.length && !sharedTech.length) {
+      tips.push("Lea el alcance de la revista antes de enviar: el encaje temático es bajo.");
+    } else if (!domainOk) {
+      tips.push(`Presente el trabajo por su aporte tecnológico (${list(sharedTech)}): es lo que la revista cubre, no el sector ${list(domain)}.`);
+    } else if (!techOk) {
+      tips.push(`Presente el trabajo como una aplicación en ${list(sharedDomain)} y explique la tecnología para lectores no especialistas.`);
+    }
+
+    const levelPoints = (LEVEL_POINTS[level] || LEVEL_POINTS["Intermedio-Avanzado"])[q] ?? 0;
+    if (levelPoints >= LEVEL_OK) meet("level", `Un ${q} es una exigencia alcanzable para un proyecto de nivel ${level}`);
+    else {
+      miss("level", `Un ${q} es muy exigente para un proyecto de nivel ${level}`);
+      tips.push(`Para un ${q} prepare resultados experimentales sólidos, comparación con el estado del arte y validación con datos reales; si el proyecto aún es un prototipo, empiece por una revista Q3 o Q4.`);
+    }
+
+    let timeTip = null;
+    if (weeks === null || weeks === undefined) {
+      miss("time", "No informa el tiempo de publicación");
+      timeTip = "Consulte en el sitio de la revista el tiempo medio de revisión antes de enviar.";
+    } else if (weeks <= WEEKS_OK) meet("time", `Publica en ${weeks} semanas`);
+    else {
+      miss("time", `Tarda ${weeks} semanas en publicar`);
+      timeTip = `Envíe con anticipación: si necesita la publicación para un requisito de grado, prefiera revistas de ${WEEKS_OK} semanas o menos.`;
+    }
+
+    if (languages.includes("Spanish")) meet("language", "Acepta artículos en español");
+    else if (languages.includes("English")) {
+      miss("language", "No acepta español: el artículo debe escribirse en inglés");
+      tips.push("Redacte el artículo en inglés y pida una revisión del idioma antes de enviarlo.");
+    } else {
+      miss("language", "No acepta español ni inglés");
+      tips.push("Confirme en el sitio de la revista los idiomas que acepta.");
+    }
+    if (timeTip) tips.push(timeTip);
+
+    if (IBEROAMERICA.has(journal.country)) meet("region", `Revista iberoamericana (${journal.country})`);
+    if (templates.length) {
+      meet("template", "Ofrece plantilla descargable");
+      tips.push("Use la plantilla de la revista desde el primer borrador.");
+    } else tips.push("No hay plantilla descargable: siga el formato de las instrucciones para autores.");
+    if (/double|doble/i.test(journal.review || "")) {
+      tips.push("Retire nombres, afiliaciones y agradecimientos del manuscrito: la revisión es doble ciego.");
+    }
+    tips.push("Revise el alcance y las instrucciones para autores antes de enviar.");
+    return { meets, misses, tips };
+  }
+
   const api = { QUARTILE_RANK, MAX_COMPARE, AFFINITY_MAX, ADVANCED_DEFAULTS, PRESETS, normalize, filterRows, sortRows,
-    toggleCompare, compareBest, affinity, affinityLevel, reviewTypes, countAdvanced, applyPreset, makePreset };
+    toggleCompare, compareBest, affinity, affinityLevel, reviewTypes, countAdvanced, applyPreset, makePreset, assessment };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.DPTable = api;
 })(this);

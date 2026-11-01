@@ -196,3 +196,75 @@ test('the comparison marks the highest affinity when scores are given', () => {
     assert.deepEqual(best.affinity, ['y']);
     assert.deepEqual(T.compareBest([j('x', 'Q2'), j('y', 'Q3')]).affinity, []);
 });
+
+// ---------- Assessment: what the journal meets, misses, and what to do ----------
+const LABELS = { salud: 'Salud y medicina', salud_digital: 'Salud digital', ia: 'Inteligencia artificial',
+    electronica: 'Electrónica y control', bioingenieria: 'Bioingeniería', tecnologia_aplicada: 'Tecnología aplicada' };
+const texts = (list) => list.map((x) => x.text);
+const keys = (list) => list.map((x) => x.key);
+
+test('assessment lists what a well-fitting journal meets', () => {
+    const journal = j('cuba', 'Q3', { languages: ['Spanish', 'English'], weeks_to_publication: 10, country: 'Cuba',
+        review: 'Double anonymous peer review', templates: [{ url: 'https://x/t.docx' }] });
+    const a = T.assessment(prosthesis, { fit: 'fuerte', themes: ['salud', 'salud_digital'] }, journal, LABELS);
+    assert.deepEqual(texts(a.meets), [
+        'Publicación gratuita y lectura libre (acceso abierto diamante, verificado en DOAJ)',
+        'Indexada en SCImago (Q3), homologable a Publindex B',
+        'Su alcance cubre el sector del proyecto: Salud y medicina',
+        'Cubre tecnologías del proyecto: Salud digital',
+        'Un Q3 es una exigencia alcanzable para un proyecto de nivel Intermedio-Avanzado',
+        'Publica en 10 semanas',
+        'Acepta artículos en español',
+        'Revista iberoamericana (Cuba)',
+        'Ofrece plantilla descargable',
+    ]);
+    assert.deepEqual(a.misses, []);
+    assert.deepEqual(a.tips, [
+        'Use la plantilla de la revista desde el primer borrador.',
+        'Retire nombres, afiliaciones y agradecimientos del manuscrito: la revisión es doble ciego.',
+        'Revise el alcance y las instrucciones para autores antes de enviar.',
+    ]);
+});
+
+test('assessment explains what a demanding, English-only, slow journal misses and recommends', () => {
+    const journal = j('q1', 'Q1', { languages: ['English'], weeks_to_publication: 30, country: 'Germany' });
+    const a = T.assessment(prosthesis, { fit: 'tecnologia', themes: ['electronica'] }, journal, LABELS);
+    assert.deepEqual(keys(a.meets), ['access', 'indexed', 'tech']);
+    assert.deepEqual(texts(a.misses), [
+        'Su alcance no cubre el sector del proyecto (Salud y medicina)',
+        'Un Q1 es muy exigente para un proyecto de nivel Intermedio-Avanzado',
+        'Tarda 30 semanas en publicar',
+        'No acepta español: el artículo debe escribirse en inglés',
+    ]);
+    assert.deepEqual(a.tips, [
+        'Presente el trabajo por su aporte tecnológico (Electrónica y control): es lo que la revista cubre, no el sector Salud y medicina.',
+        'Para un Q1 prepare resultados experimentales sólidos, comparación con el estado del arte y validación con datos reales; si el proyecto aún es un prototipo, empiece por una revista Q3 o Q4.',
+        'Redacte el artículo en inglés y pida una revisión del idioma antes de enviarlo.',
+        'Envíe con anticipación: si necesita la publicación para un requisito de grado, prefiera revistas de 16 semanas o menos.',
+        'No hay plantilla descargable: siga el formato de las instrucciones para autores.',
+        'Revise el alcance y las instrucciones para autores antes de enviar.',
+    ]);
+});
+
+test('assessment boundaries: level 15 points, 16 weeks, unknown time, applied technology only, sector only', () => {
+    const advanced = project('Avanzado', ['salud'], ['ia']);
+    const q1 = T.assessment(advanced, { fit: 'fuerte', themes: ['salud', 'ia'] }, j('a', 'Q1', { weeks_to_publication: 16 }), LABELS);
+    assert.ok(keys(q1.meets).includes('level'));
+    assert.ok(keys(q1.meets).includes('time'));
+    const unknown = T.assessment(advanced, { fit: 'fuerte', themes: ['salud'] }, j('b', 'Q2'), LABELS);
+    assert.deepEqual(texts(unknown.misses), [
+        'No cubre las tecnologías del proyecto (Inteligencia artificial)',
+        'No informa el tiempo de publicación',
+        'No acepta español: el artículo debe escribirse en inglés',
+    ]);
+    assert.equal(unknown.tips[0], 'Presente el trabajo como una aplicación en Salud y medicina y explique la tecnología para lectores no especialistas.');
+    assert.ok(unknown.tips.includes('Consulte en el sitio de la revista el tiempo medio de revisión antes de enviar.'));
+    const applied = T.assessment(advanced, { fit: 'tecnologia', themes: ['tecnologia_aplicada'] }, j('c', 'Q4'), LABELS);
+    assert.ok(texts(applied.misses).includes('Solo cubre tecnología aplicada en general, no las tecnologías del proyecto (Inteligencia artificial)'));
+    assert.equal(applied.tips[0], 'Lea el alcance de la revista antes de enviar: el encaje temático es bajo.');
+});
+
+test('assessment falls back to theme keys without labels', () => {
+    const a = T.assessment(project('Intermedio', [], ['ia']), { fit: 'tecnologia', themes: ['ia'] }, j('k', 'Q4'));
+    assert.ok(texts(a.meets).includes('Cubre tecnologías del proyecto: ia'));
+});

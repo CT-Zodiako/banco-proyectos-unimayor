@@ -107,6 +107,16 @@ details.why summary::-webkit-details-marker { display: none; }
 .bars i { height: 8px; border-radius: 9999px; background: var(--g100); overflow: hidden; display: block; }
 .bars i span { display: block; height: 100%; background: var(--blue); }
 .bars em { font-style: normal; font-size: 12px; color: var(--g500); text-align: right; font-variant-numeric: tabular-nums; }
+.assess-count { font-weight: 400; color: var(--g500); }
+.assess { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; margin-top: 12px; }
+.assess h4 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--g600); }
+.assess ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; color: var(--g700, #374151); }
+.assess li { display: flex; gap: 6px; line-height: 1.4; }
+.assess .mark { flex: none; width: 14px; font-weight: 700; }
+.assess .meets .mark { color: #15803D; }
+.assess .misses .mark { color: #B91C1C; }
+.assess .tip-list .mark { color: var(--blue); }
+.assess .tips { grid-column: 1 / -1; background: var(--g50, #F9FAFB); border-radius: 10px; padding: 8px 10px; }
 .acts { display: flex; flex-direction: column; gap: 6px; align-items: stretch; min-width: 190px; }
 .btn { text-decoration: none; text-align: center; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--g200); color: var(--g700); background: #fff; white-space: nowrap; }
 .btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
@@ -244,6 +254,7 @@ table#journals-table { width: 100%; border-collapse: collapse; font-size: 13.5px
   .result { grid-template-columns: 72px minmax(0, 1fr); }
   .acts { grid-column: 1 / -1; min-width: 0; }
   .bars { grid-template-columns: 1fr 64px 44px; }
+  .assess { grid-template-columns: 1fr; }
   .project-card { flex-wrap: wrap; } .project-card .back { margin-left: 0; }
   .wrap { padding: 0 16px; }
   .brand b { font-size: 15px; } .brand small { display: none; }

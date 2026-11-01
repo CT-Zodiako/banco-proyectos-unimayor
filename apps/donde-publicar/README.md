@@ -10,7 +10,9 @@ Static page that suggests, for each of the 100 projects of the
 For each project the page shows two views with the same filters and sort:
 
 - **Lista** (default, design 04): journals ranked by an estimated affinity (0–100 %) shown as a ring, with a
-  "¿Por qué X %?" breakdown, template download, author instructions, scope and links.
+  "¿Por qué X %?" breakdown that also lists, in words, what the journal meets ("Cumple") and misses ("No cumple")
+  for the project and gives recommendations (`assessment` in `site/table.js`), template download, author instructions,
+  scope and links.
 - **Tabla** (design 02): sortable comparison table and a side-by-side comparison of up to 3 journals.
 
 "⚙ Filtros personalizados" opens a side panel that crosses minimum affinity, quartile/Publindex, maximum weeks,

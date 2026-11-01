@@ -150,7 +150,8 @@
     return project.matches
       .map((match) => ({ match, journal: journalsById.get(match.journal_id) }))
       .filter((row) => row.journal)
-      .map((row) => ({ ...row, affinity: T.affinity(project, row.match, row.journal) }));
+      .map((row) => ({ ...row, affinity: T.affinity(project, row.match, row.journal),
+        assessment: T.assessment(project, row.match, row.journal, DATA.themes) }));
   }
 
   function visibleRows() {
@@ -184,7 +185,21 @@
     return bars;
   }
 
-  function resultRow({ journal, affinity }, open) {
+  // What the journal meets and misses for the project, in words, plus recommendations.
+  function assessmentBlock(assessment) {
+    const items = (list, className, mark) => el("ul", { className }, list.map((item) =>
+      el("li", {}, [el("span", { className: "mark", text: mark, attrs: { "aria-hidden": "true" } }), document.createTextNode(item.text || item)])));
+    const block = el("div", { className: "assess" }, [
+      el("div", {}, [el("h4", { text: `Cumple (${assessment.meets.length})` }), items(assessment.meets, "meets", "✓")]),
+    ]);
+    if (assessment.misses.length) {
+      block.append(el("div", {}, [el("h4", { text: `No cumple (${assessment.misses.length})` }), items(assessment.misses, "misses", "✗")]));
+    }
+    block.append(el("div", { className: "tips" }, [el("h4", { text: "Recomendaciones" }), items(assessment.tips, "tip-list", "→")]));
+    return block;
+  }
+
+  function resultRow({ journal, affinity, assessment }, open) {
     const level = T.affinityLevel(affinity.total);
     const ring = el("div", { className: `ring aff-${level}`, attrs: { style: `--v:${affinity.total}`, role: "img",
       "aria-label": `Afinidad estimada ${affinity.total} %` } }, [
@@ -199,8 +214,12 @@
       journal.weeks_to_publication ? `${journal.weeks_to_publication} semanas` : null,
       reviewLabel(journal.review), journal.license].filter(Boolean).join(" · ");
     const why = el("details", { className: "why", attrs: { open } }, [
-      el("summary", { text: `¿Por qué ${affinity.total} %?` }),
+      el("summary", {}, [
+        document.createTextNode(`¿Por qué ${affinity.total} %?`),
+        el("span", { className: "assess-count", text: ` · cumple ${assessment.meets.length} · no cumple ${assessment.misses.length}` }),
+      ]),
       affinityBreakdown(affinity),
+      assessmentBlock(assessment),
     ]);
 
     const templates = templateLinks(journal);
