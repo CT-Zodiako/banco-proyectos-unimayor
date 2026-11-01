@@ -1,4 +1,5 @@
-import { useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
+import { saveCatalogSearch } from '../lib/links';
 import { useSearchParams } from 'react-router-dom';
 import { Plus, X, SlidersHorizontal } from 'lucide-react';
 import CatalogFilters from '../components/CatalogFilters';
@@ -38,6 +39,9 @@ const ProjectsPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [filtersOpen, setFiltersOpen] = useState(false);
     const resultsRef = useRef(null);
+
+    // Remember the filters so the project detail can link back to this exact view.
+    useEffect(() => { saveCatalogSearch(params.toString() ? `?${params.toString()}` : ''); }, [params]);
 
     const query = params.get('q') ?? '';
     // params only changes identity when the URL changes, so these stay stable between renders.

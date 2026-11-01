@@ -6,7 +6,7 @@ import {
     ExternalLink, Globe, BookOpen, CalendarDays
 } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
-import { wherePublishUrl, eventsForProjectUrl } from '../lib/links';
+import { wherePublishUrl, eventsForProjectUrl, savedCatalogUrl } from '../lib/links';
 
 const ProjectDetail = () => {
     const { id } = useParams();
@@ -22,7 +22,7 @@ const ProjectDetail = () => {
         return (
             <div className="py-20 text-center">
                 <h2 className="text-2xl font-bold">Proyecto no encontrado</h2>
-                <Link to="/proyectos" className="text-institutional-blue mt-4 inline-block">Volver al catálogo</Link>
+                <Link to={savedCatalogUrl()} className="text-institutional-blue mt-4 inline-block">Volver al catálogo</Link>
             </div>
         );
     }
@@ -30,7 +30,7 @@ const ProjectDetail = () => {
     return (
         <div className="py-8 px-4 max-w-5xl mx-auto space-y-8 pb-20">
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <Link to="/proyectos" className="flex items-center gap-2 text-gray-500 hover:text-institutional-blue transition-colors font-medium">
+                <Link to={savedCatalogUrl()} className="flex items-center gap-2 text-gray-500 hover:text-institutional-blue transition-colors font-medium">
                     <ChevronLeft size={20} />
                     Volver a la lista
                 </Link>
