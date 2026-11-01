@@ -1,5 +1,7 @@
 """Build site/data.js from WikiCFP, ccf-deadlines, Devpost and data/manual-events.json.
 
+Also adds the bank project profiles (topics, keywords) from ../donde-publicar/data/projects.json.
+
 Downloads are saved under data/raw/ (not versioned); --offline rebuilds from those saved files.
 
 Usage (from apps/eventos):
@@ -14,6 +16,7 @@ import pathlib
 import sys
 
 from pipeline import eventos as ev
+from pipeline import projects as pr
 from pipeline import sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -23,6 +26,8 @@ PUBLIC_SOURCES = ("wikicfp", "ccfddl", "devpost")
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--manual", default=ROOT / "data/manual-events.json", type=pathlib.Path)
+    parser.add_argument("--projects", default=ROOT.parent / "donde-publicar/data/projects.json",
+                        type=pathlib.Path, help="bank projects export (npm run export:projects)")
     parser.add_argument("--raw", default=ROOT / "data/raw", type=pathlib.Path, help="download cache")
     parser.add_argument("--out", default=ROOT / "site/data.js", type=pathlib.Path)
     parser.add_argument("--offline", action="store_true", help="read data/raw/ instead of downloading")
@@ -45,6 +50,18 @@ def main(argv=None):
     except ev.ManualEventsError as error:
         print(f"error: {args.manual}: {error}", file=sys.stderr)
         return 1
+    if args.projects.is_file():
+        try:
+            projects = pr.project_profiles(json.loads(args.projects.read_text(encoding="utf-8")))
+        except json.JSONDecodeError as error:
+            print(f"error: {args.projects}: invalid JSON ({error})", file=sys.stderr)
+            return 1
+        except pr.ProjectsError as error:
+            print(f"error: {args.projects}: {error}", file=sys.stderr)
+            return 1
+    else:
+        print(f"warning: missing projects file {args.projects}; writing projects: []", file=sys.stderr)
+        projects = []
 
     loaders = {
         "wikicfp": lambda: sources.load_wikicfp(args.raw, args.offline, args.wikicfp_pages, today, args.timeout),
@@ -67,8 +84,9 @@ def main(argv=None):
     for event in events:
         counts[event["source"]] += 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(ev.render_data_js(ev.build_payload(events, counts, today)), encoding="utf-8")
-    print(" ".join(f"{name}={count}" for name, count in counts.items()) + f" events={len(events)} out={args.out}")
+    args.out.write_text(ev.render_data_js(ev.build_payload(events, counts, today, projects)), encoding="utf-8")
+    print(" ".join(f"{name}={count}" for name, count in counts.items())
+          + f" events={len(events)} projects={len(projects)} out={args.out}")
     return 0
 
 

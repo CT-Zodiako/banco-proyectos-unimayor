@@ -1,0 +1,87 @@
+[
+  {
+    "id": "proj_112",
+    "titulo": "🛡️ Proyecto 112: Centro de Operaciones de Seguridad (SOC) de Bajo Costo con Wazuh para Pymes del Cauca",
+    "area": "Ciberseguridad",
+    "sector": "Comercio - Pequeñas y medianas empresas",
+    "nivel": "Intermedio-Avanzado",
+    "hardware": [
+      "Mini PC o servidor con 16 GB de RAM y disco SSD de 512 GB (Servidor | Ejecuta el gestor de Wazuh, el indexador y el tablero.)",
+      "Equipos de escritorio de prueba (Windows y Linux) (Estación de Trabajo | Simulan los puestos de trabajo de la pyme con agentes instalados.)",
+      "Switch administrable con puerto espejo (Red | Copia el tráfico de red hacia el sensor de detección.)"
+    ],
+    "software": [
+      "Wazuh: SIEM / XDR - Recolección de registros, reglas de detección y respuesta activa.",
+      "Suricata: Sistema de Detección de Intrusiones de Red - Análisis del tráfico copiado desde el switch.",
+      "Atomic Red Team: Emulación de Adversarios - Ejecución de técnicas ATT&CK para validar las reglas.",
+      "Telegram Bot API: Notificaciones - Envío de alertas críticas al responsable de la empresa."
+    ]
+  },
+  {
+    "id": "proj_001",
+    "titulo": "🌾 Proyecto 1: Sistema de Monitoreo Agrícola Distribuido con MQTT",
+    "area": "SBC-IoT",
+    "sector": "Agricultura de precisión y agricultura inteligente",
+    "nivel": "Intermedio",
+    "hardware": [
+      "Raspberry Pi 3 B+ (Computadora de Placa Reducida (SBC) | Nodo central (1 unidad))",
+      "ESP32 (Microcontrolador | 3-4 unidades; nodos sensores)",
+      "Sensores DHT22 (Sensor Ambiental | Temperatura/humedad ambiente)",
+      "Sensores de humedad de suelo capacitivos (Sensor Ambiental | Mide variables ambientales relevantes para el sistema (4 unidades).)",
+      "Sensores LDR (Sensor Ambiental | Luminosidad)",
+      "Fuentes de alimentación (Fuente de Alimentación / Energía | Suministra energía eléctrica a los componentes del sistema.)",
+      "Cableado y protoboards (Componente Electrónico / Accesorio | Complementa el circuito electrónico del prototipo.)"
+    ],
+    "software": [
+      "Raspberry Pi OS: Sistema Operativo - Sistema operativo",
+      "Mosquitto: Broker / Middleware de Mensajería - Broker MQTT",
+      "Node-RED: Automatización / Orquestación - Para flujos de datos",
+      "InfluxDB: Base de Datos - Base de datos de series temporales",
+      "Grafana: Visualización / Dashboard - Para dashboards",
+      "Python: Lenguaje de Programación - Para scripts en Raspberry Pi",
+      "Arduino IDE/PlatformIO: IDE / Entorno de Desarrollo - Para ESP32"
+    ]
+  },
+  {
+    "id": "proj_151",
+    "titulo": "🫀 Proyecto 151: Clasificador de Arritmias Cardíacas en ECG de Una Derivación con TinyML sobre ESP32-S3",
+    "area": "Medicina con AIoT",
+    "sector": "Medicina - Cardiología",
+    "nivel": "Intermedio-Avanzado",
+    "hardware": [
+      "ESP32-S3 con 8 MB de PSRAM (Microcontrolador | Ejecuta el filtrado de la señal y la inferencia del modelo de clasificación de latidos.)",
+      "Módulo de ECG AD8232 con electrodos desechables (Sensor Biomédico | Adquiere la señal electrocardiográfica de una derivación.)",
+      "Pantalla OLED SSD1306 (Interfaz de Usuario / Iluminación | Muestra la frecuencia cardíaca y los eventos detectados.)",
+      "Batería LiPo con módulo de carga TP4056 (Fuente de Alimentación / Energía | Alimenta el dispositivo y aísla al paciente de la red eléctrica.)",
+      "Computador de desarrollo (Equipo de Cómputo | Entrena y cuantiza el modelo antes de desplegarlo en el microcontrolador.)"
+    ],
+    "software": [
+      "TensorFlow / Keras: Framework de Aprendizaje Automático - Entrenamiento del clasificador convolucional de latidos.",
+      "TensorFlow Lite for Microcontrollers: Motor de Inferencia Embebida - Ejecución del modelo cuantizado en el ESP32-S3.",
+      "WFDB para Python: Librería de Procesamiento de Señales - Lectura de los registros y anotaciones de la base MIT-BIH de PhysioNet.",
+      "ESP-IDF: Entorno de Desarrollo Embebido - Programación del firmware de adquisición e inferencia.",
+      "Grafana: Visualización / Dashboard - Tablero de eventos sincronizados para revisión médica."
+    ]
+  },
+  {
+    "id": "proj_103",
+    "titulo": "🧲 Proyecto 103: Videojuego de Física con Experimentos Reales como Mecánica de Juego para Educación Media",
+    "area": "Desarrollo de Videojuegos",
+    "sector": "Educación media - Ciencias naturales",
+    "nivel": "Intermedio",
+    "hardware": [
+      "Arduino Uno (Microcontrolador | Adquiere las medidas de los experimentos y las envía al juego.)",
+      "Sensor ultrasónico HC-SR04 (Sensor de Distancia | Mide la posición del carrito sobre el plano inclinado.)",
+      "Fotocompuertas con sensor infrarrojo (Sensor Óptico | Miden tiempos de paso y periodos del péndulo.)",
+      "Acelerómetro MPU6050 (Sensor de Movimiento | Registra la oscilación del sistema masa-resorte.)",
+      "Montajes de madera y piezas impresas en 3D (Estructura / Componente Mecánico | Soporte de los experimentos físicos.)",
+      "Computador portátil (Equipo de Cómputo | Ejecuta el videojuego y recibe los datos por USB.)"
+    ],
+    "software": [
+      "Unity: Motor de Videojuegos - Desarrollo de los niveles y la interfaz del juego.",
+      "Arduino IDE: Entorno de Desarrollo Embebido - Firmware de adquisición de datos.",
+      "System.IO.Ports (C#): Biblioteca de Comunicación - Lectura de datos seriales desde Unity.",
+      "Tracker Video Analysis: Herramienta de Análisis Físico - Validación de las medidas mediante videoanálisis."
+    ]
+  }
+]

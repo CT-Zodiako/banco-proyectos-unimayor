@@ -508,9 +508,9 @@ def sort_events(events):
     return sorted(events, key=key)
 
 
-def build_payload(events, sources, today):
+def build_payload(events, sources, today, projects=()):
     return {"generated": today.isoformat(), "sources": dict(sources), "topics": list(TOPICS),
-            "events": sort_events(events)}
+            "events": sort_events(events), "projects": list(projects)}
 
 
 def render_data_js(payload):

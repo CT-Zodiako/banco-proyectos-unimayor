@@ -20,6 +20,7 @@ The project bank serves it at `/eventos/index.html` (its `predev`/`prebuild` cop
 | `site/` | The page (`index.html`, `app.js`, `filters.js`, `styles.css`) and the generated `data.js` |
 | `pipeline/eventos.py` | Pure logic: source parsers, topic tagging, manual file validation, dedupe, expiry, output |
 | `pipeline/sources.py` | Downloads (urllib, curl fallback on TLS errors) and the `data/raw/` cache |
+| `pipeline/projects.py` | Project profiles (topics, keywords) for the project → events cross |
 | `pipeline/build.py` | Command that generates `site/data.js` |
 | `data/manual-events.json` | Hand-curated events (Colombian congresses, talks, fairs) |
 | `data/raw/` | Saved downloads used by `--offline` (not versioned) |
@@ -94,13 +95,15 @@ python3 -E -m pipeline.build --offline        # rebuild from the downloads saved
 python3 -I -m unittest discover -s tests -t . # tests
 ```
 
-Options: `--manual`, `--raw`, `--out` override paths; `--wikicfp-pages N` (default 5), `--timeout SECONDS`
+Options: `--manual`, `--projects`, `--raw`, `--out` override paths; `--wikicfp-pages N` (default 5), `--timeout SECONDS`
 (default 30), `--today YYYY-MM-DD` (expiry date, for tests).
 
-The build prints one line, e.g. `wikicfp=316 ccfddl=97 devpost=47 manual=2 events=462 out=…/site/data.js`.
+The build prints one line, e.g. `wikicfp=316 ccfddl=88 devpost=47 manual=2 events=453 projects=210 out=…/site/data.js`.
 When a source fails, the build prints `warning: <source> failed: …`, reports 0 for it and writes the file with
 the others. It exits with code 1 without writing `site/data.js` when every public source fails, or when the
-manual file is missing or invalid (`error: data/manual-events.json: entry 1: "kind" must be "cfp" or "attend"`).
+manual file is missing or invalid (`error: data/manual-events.json: entry 1: "kind" must be "cfp" or "attend"`),
+or when the projects file is invalid (`error: …/projects.json: entry 0: "titulo" is required`). A missing projects
+file only prints `warning: missing projects file …; writing projects: []` and the events are still written.
 
 Python 3 standard library only. When Python cannot verify a TLS certificate (python.org builds on macOS ship
 without a CA bundle), the download is retried with `curl`, which uses the system certificate store.
@@ -146,12 +149,72 @@ Any other field, an unknown topic or an invalid date stops the build with an err
 (counted from 0). Expired entries are left out of `data.js` automatically; delete them from the file when you
 see them.
 
+## Affinity on the page
+
+With `?p=<project id>` (the bank's "¿A qué eventos ir?" button), `site/filters.js` (`affinity`, `rankForProject`)
+shows only events sharing at least one topic with the project, ranked by an estimated affinity from 0 to 100:
+shared topics 60 (shared / project topics), keyword hits in the event title or name 20 (whole words, 10 each),
+Colombia or online 10, time to prepare 10 (cfp deadline ≥ 21 days 10, 7–20 days 5, < 7 days 0, no deadline 5;
+attend 10). Each card explains its score ("¿Por qué X %?"). It is computed in the browser, so it follows expiry;
+it is not an acceptance probability. The other filters still apply on top, and an unknown id shows the full list.
+
+## Project profiles (project → events)
+
+The project bank links each project to `/eventos/?p=<project id>`, which ranks events by estimated affinity with
+that project (contract: "Project cross" in `odd/tasks/eventos.md`). The build reads the bank projects from
+`../donde-publicar/data/projects.json` (option `--projects`; refresh it with `npm run export:projects` in
+`apps/banco-proyectos`) and writes `window.EVENTOS.projects`, sorted by project number:
+
+```json
+{"id": "proj_001", "title": "Sistema de Monitoreo Agrícola Distribuido con MQTT", "emoji": "🌾",
+ "area": "SBC-IoT", "level": "Intermedio", "topics": ["IoT"],
+ "keywords": ["mqtt", "agriculture", "precision agriculture", "esp32", "raspberry pi", "sensors", "arduino",
+              "time series"]}
+```
+
+Rules (`pipeline/projects.py`; all matching is on lower case, accent-free text):
+
+- **Title and emoji**: `"🌾 Proyecto 1: Título"` gives emoji `🌾` and title `Título`. The first token is the emoji
+  when it has at most 4 characters and no letters or digits; otherwise the emoji is 🚀. The text after
+  "Proyecto N:" is the title when present.
+- **Topics** (same list and order as events; every project gets at least one, a test checks the real file):
+  - From the area: IoT (SBC-IoT, AIoT, IoT …), Ciberseguridad (Hacking, Ciberseguridad), Redes, Inteligencia
+    Artificial (AIoT, Inteligencia Artificial), Machine Learning (Machine Learning, Visión Artificial, Analítica),
+    Robótica, Sistemas Ciberfísicos (Ciberfísicos, Industrial 4.0, Aeroespacial), Desarrollo de Software
+    (Desarrollo/Arquitectura de Software), Videojuegos, Salud y Bioingeniería (Médico, Medicina, Bioingeniería,
+    Salud), Big Data (Big Data, Analítica).
+  - Plus signals in the title and sector, e.g. MQTT or sensors → IoT, "ataques"/"criptografía"/"SOC" →
+    Ciberseguridad, "clasificador"/"TinyML"/"predictivo" → Machine Learning, "gemelo digital"/"embebido" → Sistemas
+    Ciberfísicos, a health sector or "ECG"/"pacientes" → Salud y Bioingeniería. Plain "seguridad" (patient or
+    flight safety) and plain "redes" (power grids) are not signals.
+- **Keywords** (up to 12, de-duplicated, in this order): technologies in the title, domain words in the title,
+  domain words in the sector, technologies in hardware names (text before " (") and in software names (text
+  before ":"). Only terms from two fixed tables are used, so generic words (sistema, proyecto, datos,
+  desarrollo) never appear. Stringified Python lists in the export are read as lists.
+  - Technologies (`TECH_KEYWORDS`): mqtt (also Mosquitto), lora, esp32, arduino, raspberry pi, sensors, ros, slam,
+    lidar, drones, fpga, wifi, 5g, computer vision (visión artificial, OpenCV), object detection (YOLO), tinyml
+    (TensorFlow Lite), deep learning, machine translation (traductor), digital twin (gemelo digital), blockchain
+    (cadena de bloques), time series (series temporales, InfluxDB), siem (SOC, Wazuh), intrusion detection
+    (Suricata), cryptography, unity, godot, virtual reality, cloud computing (nube), and more.
+  - Domain words, written in English because most events are in English (`DOMAIN_KEYWORDS`): agrícola/agricultura
+    → agriculture, agricultura de precisión → precision agriculture, café → coffee, ganadería → livestock,
+    salud/médico/hospital → health, bioingeniería → biomedical, neurociencia → neuroscience, rehabilitación →
+    rehabilitation, ciudades inteligentes/urbano → smart city, domótica → smart home, redes eléctricas
+    inteligentes → smart grid, energía → energy, educación/enseñanza → education, videojuego/juego → games,
+    gamificación → gamification, Industria 4.0 → industry 4.0, industria → industrial, transporte/movilidad →
+    transportation, logística → logistics, ambiental/sostenibilidad → environment, agua → water, aeroespacial →
+    aerospace, satelital → satellite, turismo → tourism, deporte → sports, minería → mining, finanzas → finance,
+    gobierno/ciudadano → e-government, discapacidad/inclusión → accessibility, patrimonio/museo → cultural
+    heritage, indígena → indigenous languages, comercio → commerce, pymes → smes, ciencia de datos → data science.
+- Keywords are meant to be matched as whole words in event titles and names (short terms such as `ros` or `5g`).
+
 ## Refresh before pushing
 
 Events are refreshed by hand, like `donde-publicar`. No scheduled job or new infrastructure:
 
 1. `cd apps/eventos`
-2. Update `data/manual-events.json` if there are new local events.
+2. Update `data/manual-events.json` if there are new local events. If the bank projects changed, run
+   `npm run export:projects` in `apps/banco-proyectos` first.
 3. `python3 -E -m pipeline.build` (needs network; about 4-5 minutes).
 4. `python3 -I -m unittest discover -s tests -t .`
 5. Open the page (see below) and check a few events.
