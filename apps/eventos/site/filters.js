@@ -6,7 +6,7 @@
 
   const KINDS = ["all", "cfp", "attend"];
   const MODALITIES = ["all", "online", "presencial"];
-  const SORTS = ["deadline", "start", "title"];
+  const SORTS = ["deadline", "start", "title", "affinity"];
   const DEFAULT_STATE = { kind: "all", topics: [], modality: "all", colombia: false, query: "", sort: "deadline" };
   const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -109,34 +109,108 @@
     return `${a.d}–${b.d} ${b.m} ${b.y}`;
   }
 
-  /** Filter state from a query string (kind, tema, modalidad, co, q, orden); invalid values fall back to defaults. */
+  /* ---------- Project → events cross (contract in odd/tasks/eventos.md, "Project cross") ---------- */
+
+  const AFFINITY_MAX = { topics: 60, keywords: 20, access: 10, time: 10 };
+  const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  /** True when the keyword appears in the text as a whole word or phrase, ignoring case and accents
+      ("vision" matches "Visión"; "ros" does not match "across"). */
+  function hasKeyword(text, keyword) {
+    const words = normalize(keyword).split(/[^a-z0-9]+/).filter(Boolean);
+    if (!words.length) return false;
+    const phrase = words.map(escapeRegExp).join("[^a-z0-9]+");
+    return new RegExp(`(^|[^a-z0-9])${phrase}($|[^a-z0-9])`).test(normalize(text));
+  }
+
+  /** Estimated affinity (0–100) of an event for a project — never an acceptance probability:
+      - topics: 60 × shared topics / project topics, rounded;
+      - keywords: 10 per project keyword found in the event title or name, at most 20;
+      - access: 10 when the event is in Colombia or online;
+      - time to prepare: events to attend 10; a cfp closing in ≥ 21 days 10, 7–20 days 5, < 7 days 0, and 5 when
+        it has no published deadline (unknown, so half the points). */
+  function affinity(event, project, today) {
+    const projectTopics = project.topics || [];
+    const eventTopics = event.topics || [];
+    const sharedTopics = projectTopics.filter((t) => eventTopics.includes(t));
+    const haystack = `${event.title || ""} ${event.name || ""}`;
+    const keywordHits = (project.keywords || []).filter((k) => hasKeyword(haystack, k));
+    let time = AFFINITY_MAX.time;
+    if (event.kind === "cfp") {
+      const days = daysLeft(event, today);
+      time = days === null ? 5 : days >= 21 ? 10 : days >= 7 ? 5 : 0;
+    }
+    const parts = {
+      topics: projectTopics.length ? Math.round((AFFINITY_MAX.topics * sharedTopics.length) / projectTopics.length) : 0,
+      keywords: Math.min(AFFINITY_MAX.keywords, 10 * keywordHits.length),
+      access: event.online || normalize(event.country) === "colombia" ? AFFINITY_MAX.access : 0,
+      time,
+    };
+    const total = parts.topics + parts.keywords + parts.access + parts.time;
+    return { total, parts, sharedTopics, keywordHits };
+  }
+
+  /** Color level of an affinity total, like donde-publicar: "high" ≥ 80, "mid" ≥ 60, "low" otherwise. */
+  function affinityLevel(total) {
+    return total >= 80 ? "high" : total >= 60 ? "mid" : "low";
+  }
+
+  /** [{event, affinity}] for the open events sharing at least one topic with the project, sorted by affinity
+      (highest first), then by closing date like the "deadline" sort (missing dates last). */
+  function rankForProject(events, project, today) {
+    const topics = project.topics || [];
+    const closing = SORT_VALUES.deadline;
+    return events
+      .filter((event) => !isExpired(event, today) && (event.topics || []).some((t) => topics.includes(t)))
+      .map((event, index) => ({ event, affinity: affinity(event, project, today), index, v: closing(event) }))
+      .sort((a, b) => {
+        if (a.affinity.total !== b.affinity.total) return b.affinity.total - a.affinity.total;
+        if (a.v !== b.v) {
+          if (a.v === null) return 1;
+          if (b.v === null) return -1;
+          return a.v < b.v ? -1 : 1;
+        }
+        return a.index - b.index;
+      })
+      .map(({ event, affinity: a }) => ({ event, affinity: a }));
+  }
+
+  /** Filter state from a query string (p, kind, tema, modalidad, co, q, orden); invalid values fall back to defaults.
+      "project" is only present when p is set; the "affinity" sort needs a project and is its default. */
   function parseQuery(search) {
     const params = new URLSearchParams(search);
     const pick = (value, allowed, fallback) => (allowed.includes(value) ? value : fallback);
-    return {
+    const project = (params.get("p") || "").trim();
+    const sorts = project ? SORTS : SORTS.filter((s) => s !== "affinity");
+    const state = {
       kind: pick(params.get("kind"), KINDS, DEFAULT_STATE.kind),
       topics: (params.get("tema") || "").split(",").map((t) => t.trim()).filter(Boolean),
       modality: pick(params.get("modalidad"), MODALITIES, DEFAULT_STATE.modality),
       colombia: params.get("co") === "1",
       query: params.get("q") || "",
-      sort: pick(params.get("orden"), SORTS, DEFAULT_STATE.sort),
+      sort: pick(params.get("orden"), sorts, project ? "affinity" : DEFAULT_STATE.sort),
     };
+    if (project) state.project = project;
+    return state;
   }
 
   /** Query string (without "?") holding only the values that differ from the defaults. */
   function stateToQuery(state) {
     const params = new URLSearchParams();
+    if (state.project) params.set("p", state.project);
     if (state.kind !== DEFAULT_STATE.kind) params.set("kind", state.kind);
     if (state.topics.length) params.set("tema", state.topics.join(","));
     if (state.modality !== DEFAULT_STATE.modality) params.set("modalidad", state.modality);
     if (state.colombia) params.set("co", "1");
     if (state.query) params.set("q", state.query);
-    if (state.sort !== DEFAULT_STATE.sort) params.set("orden", state.sort);
+    const defaultSort = state.project ? "affinity" : DEFAULT_STATE.sort;
+    if (state.sort !== defaultSort && (state.project || state.sort !== "affinity")) params.set("orden", state.sort);
     return params.toString();
   }
 
   const api = { DEFAULT_STATE, normalize, localIsoDate, closingDate, isExpired, daysLeft, filterEvents, sortEvents,
-    topicCounts, formatDate, formatRange, parseQuery, stateToQuery };
+    topicCounts, formatDate, formatRange, parseQuery, stateToQuery, AFFINITY_MAX, hasKeyword, affinity, affinityLevel,
+    rankForProject };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.EVFilters = api;
 })(this);

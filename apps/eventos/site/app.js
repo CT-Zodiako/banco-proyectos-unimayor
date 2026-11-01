@@ -1,6 +1,7 @@
 /* "Buscador de eventos académicos" — calls for papers and events to attend, with filters kept in the URL.
    Data: window.EVENTOS (data.js, written by the pipeline; sample-data.js is loaded instead when data.js is missing).
-   Logic: window.EVFilters (filters.js). */
+   Logic: window.EVFilters (filters.js). With ?p=<project id> the list holds only the events sharing a topic with that
+   project (window.EVENTOS.projects), ranked by estimated affinity, and the other filters apply on top. */
 (function () {
   "use strict";
 
@@ -8,6 +9,8 @@
   const SOURCE_LABELS = { wikicfp: "WikiCFP", ccfddl: "CCF Deadlines", devpost: "Devpost", manual: "UNIMAYOR" };
   const KIND_LABELS = { cfp: "Convocatoria", attend: "Para asistir" };
   const SOON_DAYS = 14;
+  const AFFINITY_LABELS = { topics: "Temas en común", keywords: "Palabras clave", access: "Acceso (Colombia o en línea)",
+    time: "Tiempo para preparar" };
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -48,6 +51,44 @@
     const knownTopics = DATA.topics || [];
     const state = F.parseQuery(window.location.search);
     state.topics = state.topics.filter((t) => knownTopics.includes(t));
+    const projectsById = new Map((DATA.projects || []).map((p) => [p.id, p]));
+    let project = null;
+    let ranked = [];
+    let affinityByEvent = new Map();
+
+    /* ---------- Project (?p=) ---------- */
+
+    function setProject(id) {
+      project = (id && projectsById.get(id)) || null;
+      ranked = project ? F.rankForProject(events, project, today) : [];
+      affinityByEvent = new Map(ranked.map((r) => [r.event, r.affinity]));
+      if (project) state.project = project.id;
+      else delete state.project;
+      if (!project && state.sort === "affinity") state.sort = F.DEFAULT_STATE.sort;
+      renderProject();
+    }
+
+    function renderProject() {
+      const option = $("#sort-affinity");
+      option.hidden = option.disabled = !project;
+      $("#project-card").hidden = !project;
+      if (!project) {
+        document.title = "Buscador de eventos académicos · Banco de Proyectos · UNIMAYOR";
+        return;
+      }
+      $("#project-emoji").textContent = project.emoji || "📁";
+      $("#project-kicker").textContent = ["Eventos para el proyecto", project.area, project.level].filter(Boolean).join(" · ");
+      $("#project-title").textContent = project.title;
+      $("#project-topics").replaceChildren(...(project.topics || []).map((t) => el("span", { className: "topic", text: t })));
+      $("#project-back").href = `/proyecto/${encodeURIComponent(project.id)}`;
+      document.title = `${project.title} · Eventos académicos`;
+    }
+
+    function showAllEvents() {
+      setProject(null);
+      update();
+      $("#search").focus();
+    }
 
     /* ---------- Controls ---------- */
 
@@ -61,7 +102,7 @@
 
     function renderTopics() {
       // Counts follow every other filter, so each pill tells how many results selecting it would add.
-      const counts = F.topicCounts(F.filterEvents(events, { ...state, topics: [], today }));
+      const counts = F.topicCounts(F.filterEvents(baseEvents(), { ...state, topics: [], today }));
       const pills = knownTopics.map((topic) => {
         const pressed = state.topics.includes(topic);
         const n = counts[topic] || 0;
@@ -92,7 +133,43 @@
       return value ? el("div", {}, [el("dt", { text: label }), el("dd", { text: value })]) : null;
     }
 
+    function affinityRing(affinity) {
+      const level = F.affinityLevel(affinity.total);
+      return el("div", { className: `ring aff-${level}`, attrs: { style: `--v:${affinity.total}`, role: "img",
+        "aria-label": `Afinidad estimada ${affinity.total} %` } }, [
+        el("div", {}, [el("span", {}, [el("b", { text: `${affinity.total}%` }), el("span", { text: "afinidad" })])]),
+      ]);
+    }
+
+    function affinityDetail(key, event, affinity) {
+      if (key === "topics") return affinity.sharedTopics.join(", ");
+      if (key === "keywords") return affinity.keywordHits.length ? affinity.keywordHits.join(", ") : "Ninguna en el nombre del evento";
+      if (key === "access") {
+        if (event.online) return "En línea";
+        return affinity.parts.access ? "En Colombia" : "Presencial fuera de Colombia";
+      }
+      if (event.kind !== "cfp") return "Evento para asistir";
+      const days = F.daysLeft(event, today);
+      if (days === null) return "Sin fecha de cierre publicada";
+      return days === 0 ? "Cierra hoy" : `Cierra en ${plural(days, "día", "días")}`;
+    }
+
+    function affinityBreakdown(event, affinity) {
+      const bars = el("div", { className: "bars" });
+      for (const [key, value] of Object.entries(affinity.parts)) {
+        const max = F.AFFINITY_MAX[key];
+        bars.append(
+          el("span", { text: AFFINITY_LABELS[key] }),
+          el("i", { attrs: { role: "img", "aria-label": `${value} de ${max}` } }, [el("span", { attrs: { style: `width:${Math.round((value / max) * 100)}%` } })]),
+          el("em", { text: `${value}/${max}` }),
+          el("small", { text: affinityDetail(key, event, affinity) }),
+        );
+      }
+      return el("details", { className: "why" }, [el("summary", { text: `¿Por qué ${affinity.total} %?` }), bars]);
+    }
+
     function card(event) {
+      const affinity = affinityByEvent.get(event);
       const isCfp = event.kind === "cfp";
       const badges = el("div", { className: "event-badges" }, [
         el("span", { className: `tag tag-${isCfp ? "cfp" : "attend"}`, text: KIND_LABELS[event.kind] || event.kind }),
@@ -113,30 +190,37 @@
         event.name && event.name !== event.title ? el("p", { className: "full-name", text: event.name }) : null,
         facts,
         topics,
+        affinity ? affinityBreakdown(event, affinity) : null,
       ]);
       const label = isCfp ? "Ver convocatoria" : "Ver evento";
       const side = el("div", { className: "event-side" }, [
         el("span", { className: "source", text: `Fuente: ${SOURCE_LABELS[event.source] || event.source}` }),
         link(event.url, label, "btn primary", `${label}: ${event.title} (se abre en una pestaña nueva)`),
       ]);
-      return el("article", { className: "event" }, [main, side]);
+      if (!affinity) return el("article", { className: "event" }, [main, side]);
+      return el("article", { className: "event with-affinity" }, [affinityRing(affinity), main, side]);
     }
 
     /* ---------- Render ---------- */
 
-    const isFiltered = () => F.stateToQuery({ ...state, sort: F.DEFAULT_STATE.sort }) !== "";
+    const isFiltered = () => F.stateToQuery({ ...state, project: null, sort: F.DEFAULT_STATE.sort }) !== "";
+    const baseEvents = () => (project ? ranked.map((r) => r.event) : events);
 
     function update() {
       const query = F.stateToQuery(state);
       window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
       syncControls();
       renderTopics();
-      const shown = F.sortEvents(F.filterEvents(events, { ...state, today }), state.sort);
+      // Ranked events are already in affinity order; filterEvents keeps the order it receives.
+      const filtered = F.filterEvents(baseEvents(), { ...state, today });
+      const shown = state.sort === "affinity" ? filtered : F.sortEvents(filtered, state.sort);
       $("#results").replaceChildren(...shown.map(card));
       $("#count").textContent = shown.length
-        ? `${plural(shown.length, "evento vigente", "eventos vigentes")}`
+        ? `${plural(shown.length, "evento vigente", "eventos vigentes")}${project ? " afines al proyecto" : ""}`
         : "Sin resultados";
-      $("#empty").hidden = shown.length > 0;
+      const noProjectEvents = Boolean(project) && ranked.length === 0;
+      $("#project-empty").hidden = !noProjectEvents;
+      $("#empty").hidden = shown.length > 0 || noProjectEvents;
       $("#clear-top").hidden = !isFiltered() || shown.length === 0;
     }
 
@@ -155,6 +239,8 @@
     $("#search").addEventListener("input", (e) => { state.query = e.target.value; update(); });
     $("#clear-top").addEventListener("click", clearFilters);
     $("#clear-empty").addEventListener("click", clearFilters);
+    $("#all-events").addEventListener("click", showAllEvents);
+    $("#all-events-empty").addEventListener("click", showAllEvents);
 
     /* ---------- Footer ---------- */
 
@@ -163,10 +249,15 @@
     $("#data-info").textContent = `Datos actualizados el ${DATA.generated ? F.formatDate(DATA.generated) : "—"}`
       + (sources ? ` · Eventos por fuente: ${sources}` : "") + ".";
     if (DATA.sample) {
-      $(".filters-box").before(el("p", { className: "notice", attrs: { role: "note" },
+      $("#project-card").before(el("p", { className: "notice", attrs: { role: "note" },
         text: "Se muestran datos de ejemplo: todavía no se han descargado los eventos reales." }));
     }
 
+    const requested = state.project;
+    setProject(requested);
+    if (requested && !project) {
+      $("#project-card").before(el("p", { className: "notice", attrs: { role: "status" }, text: "No se encontró el proyecto" }));
+    }
     update();
   }
 

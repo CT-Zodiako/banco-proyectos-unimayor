@@ -1,4 +1,4 @@
-/* Sample events for developing the page before the pipeline writes data.js (same schema as window.EVENTOS).
+/* Sample events and projects for developing the page before the pipeline writes data.js (same schema as window.EVENTOS).
    index.html only loads this file when data.js did not define window.EVENTOS. Events are illustrative. */
 window.EVENTOS = {
   generated: "2026-10-31",
@@ -46,5 +46,16 @@ window.EVENTOS = {
     { id: "manual-taller-ros", title: "Taller de ROS 2", name: "Taller práctico de robótica con ROS 2",
       kind: "attend", start: "2026-10-15", end: "2026-10-16", deadline: null, location: "Medellín, Colombia", country: "Colombia",
       online: false, url: "https://example.org/taller", source: "manual", topics: ["Robótica"] },
+  ],
+  // Bank projects for the ?p= cross (same shape as the "Project cross" contract in odd/tasks/eventos.md).
+  projects: [
+    { id: "proj_001", title: "Sistema de Monitoreo Agrícola Distribuido con MQTT", emoji: "🌾", area: "SBC-IoT",
+      level: "Intermedio", topics: ["IoT", "Sistemas Ciberfísicos"], keywords: ["mqtt", "agricultura", "raspberry pi", "esp32", "sensores"] },
+    { id: "proj_002", title: "Brazo robótico con visión artificial", emoji: "🦾", area: "Robótica",
+      level: "Avanzado", topics: ["Robótica", "Inteligencia Artificial"], keywords: ["ros", "robotics", "vision", "opencv"] },
+    { id: "proj_003", title: "Detección de intrusiones en redes IoT", emoji: "🛡️", area: "Ciberseguridad",
+      level: "Avanzado", topics: ["Ciberseguridad", "Redes", "IoT"], keywords: ["security", "iot", "intrusion", "seguridad"] },
+    { id: "proj_004", title: "Videojuego educativo de física", emoji: "🎮", area: "Desarrollo de Software",
+      level: "Básico", topics: ["Videojuegos", "Desarrollo de Software"], keywords: ["unity", "game", "jam", "educacion"] },
   ],
 };

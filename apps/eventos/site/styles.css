@@ -42,6 +42,18 @@ main.wrap { padding-top: 22px; padding-bottom: 40px; }
 .subtitle { margin: 0; max-width: 760px; color: var(--g600); font-size: 15px; }
 .back { font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; border: 1px solid var(--b100); border-radius: 8px; padding: 9px 14px; background: #fff; }
 
+/* Project card (?p=), same look as apps/donde-publicar */
+.project-card { background: #fff; border: 1px solid var(--g100); border-radius: 16px; box-shadow: var(--sh-sm); padding: 16px 20px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px 14px; align-items: center; margin-bottom: 14px; }
+.project-emoji { width: 52px; height: 52px; border-radius: 16px; background: var(--b50); display: grid; place-items: center; font-size: 26px; }
+.project-card h2 { margin: 2px 0 6px; font-size: 19px; line-height: 1.3; color: var(--g900); }
+.project-topics { display: flex; gap: 6px; flex-wrap: wrap; }
+.project-topics .topic { background: var(--b50); color: var(--b700); }
+.project-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.project-actions .btn-secondary { font-size: 13px; padding: 8px 14px; }
+.project-back { font-size: 13px; font-weight: 600; text-decoration: none; text-align: center; }
+.project-back:hover { text-decoration: underline; }
+.affinity-note { grid-column: 1 / -1; margin: 0; padding-top: 10px; border-top: 1px solid var(--g100); font-size: 13px; color: var(--g600); }
+
 /* Filters */
 .filters-box { background: #fff; border: 1px solid var(--g100); border-radius: 16px; padding: 14px 16px; box-shadow: var(--sh-sm); margin-bottom: 14px; display: grid; gap: 12px; }
 .filters-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -80,6 +92,20 @@ main.wrap { padding-top: 22px; padding-bottom: 40px; }
 .event-facts dd { margin: 0; }
 .event-topics { display: flex; gap: 6px; flex-wrap: wrap; }
 .topic { background: var(--g100); color: var(--g700); border-radius: 9999px; padding: 2px 9px; font-size: 12px; font-weight: 500; }
+.event.with-affinity { grid-template-columns: 84px minmax(0, 1fr) auto; }
+.ring { --v: 0; --c: var(--b700); width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--c) calc(var(--v) * 1%), var(--g100) 0); }
+.ring.aff-high { --c: var(--gr700); } .ring.aff-mid { --c: var(--b700); } .ring.aff-low { --c: var(--o600); }
+.ring div { width: 58px; height: 58px; border-radius: 50%; background: #fff; display: grid; place-items: center; text-align: center; line-height: 1; }
+.ring b { display: block; font-size: 18px; color: var(--g900); }
+.ring span { display: block; font-size: 9.5px; color: var(--g500); text-transform: uppercase; letter-spacing: .04em; margin-top: 3px; }
+details.why { margin-top: 8px; font-size: 13px; }
+details.why summary { cursor: pointer; color: var(--blue); font-weight: 600; list-style: none; display: inline-block; border-radius: 6px; }
+details.why summary::-webkit-details-marker { display: none; }
+.bars { display: grid; grid-template-columns: minmax(150px, 210px) minmax(80px, 1fr) 48px; gap: 4px 10px; align-items: center; margin-top: 8px; color: var(--g600); }
+.bars i { height: 8px; border-radius: 9999px; background: var(--g100); overflow: hidden; display: block; }
+.bars i span { display: block; height: 100%; background: var(--blue); }
+.bars em { font-style: normal; font-size: 12px; color: var(--g500); text-align: right; font-variant-numeric: tabular-nums; }
+.bars small { grid-column: 1 / -1; font-size: 12px; color: var(--g500); margin: -2px 0 4px; }
 .event-side { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; text-align: right; }
 .source { font-size: 12px; color: var(--g500); }
 .btn { text-decoration: none; text-align: center; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--blue); white-space: nowrap; }
@@ -108,7 +134,10 @@ main.wrap { padding-top: 22px; padding-bottom: 40px; }
   .nav-link { display: none; }
   .page-head { flex-direction: column; }
   .page-head h1 { font-size: 21px; }
-  .event { grid-template-columns: minmax(0, 1fr); }
+  .event, .event.with-affinity { grid-template-columns: minmax(0, 1fr); }
+  .project-card { grid-template-columns: auto minmax(0, 1fr); }
+  .project-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  .bars { grid-template-columns: minmax(0, 1fr) 64px 40px; }
   .event-side { flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
 }
 

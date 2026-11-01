@@ -28,6 +28,20 @@
     <a class="back" href="/proyectos">← Volver al banco de proyectos</a>
   </div>
 
+  <section class="project-card" id="project-card" aria-labelledby="project-title" hidden>
+    <div class="project-emoji" id="project-emoji" aria-hidden="true"></div>
+    <div class="project-info">
+      <p class="kicker" id="project-kicker"></p>
+      <h2 id="project-title"></h2>
+      <div class="project-topics" id="project-topics" aria-label="Temas del proyecto"></div>
+    </div>
+    <div class="project-actions">
+      <button type="button" class="btn-secondary" id="all-events">Ver todos los eventos</button>
+      <a class="project-back" id="project-back" href="/proyectos">← Volver al proyecto</a>
+    </div>
+    <p class="affinity-note">La afinidad es una estimación por temas y palabras clave, no una probabilidad de aceptación.</p>
+  </section>
+
   <section class="filters-box" role="search" aria-label="Filtros de eventos">
     <div class="filters-row">
       <div class="seg" role="group" aria-label="Tipo de evento" id="kind-group">
@@ -49,6 +63,7 @@
       <label class="chk"><input type="checkbox" id="colombia"> Solo Colombia</label>
       <label class="field" for="sort">Ordenar
         <select id="sort">
+          <option value="affinity" id="sort-affinity" hidden disabled>Afinidad</option>
           <option value="deadline">Cierre más próximo</option>
           <option value="start">Fecha del evento</option>
           <option value="title">Nombre (A–Z)</option>
@@ -71,6 +86,10 @@
     <div id="empty" class="no-results" hidden>
       <p>Ningún evento vigente cumple estos filtros.</p>
       <button type="button" class="btn-secondary" id="clear-empty">Limpiar filtros</button>
+    </div>
+    <div id="project-empty" class="no-results" hidden>
+      <p>Ningún evento vigente comparte temas con este proyecto.</p>
+      <button type="button" class="btn-secondary" id="all-events-empty">Ver todos los eventos</button>
     </div>
   </section>
 </main>
