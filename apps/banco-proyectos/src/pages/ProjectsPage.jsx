@@ -6,7 +6,7 @@ import ProjectCard from '../components/ProjectCard';
 import { useProjects } from '../hooks/useProjects';
 import { NEW_AREAS } from '../data/projects/areas';
 import {
-    areaTags, buildAreaFacets, filterProjects, sortProjects, paginate, topSectorGroups, SORTS,
+    areaTags, buildAreaFacets, filterProjects, sortProjects, paginate, topSectorGroups, SORTS, DEFAULT_SORT,
 } from '../lib/catalog';
 
 const PAGE_SIZE = 12;
@@ -44,7 +44,7 @@ const ProjectsPage = () => {
     const selectedAreas = useMemo(() => params.getAll('area'), [params]);
     const selectedLevels = useMemo(() => params.getAll('nivel'), [params]);
     const sector = params.get('sector') ?? '';
-    const sort = SORTS.some((s) => s.value === params.get('orden')) ? params.get('orden') : 'recientes';
+    const sort = SORTS.some((s) => s.value === params.get('orden')) ? params.get('orden') : DEFAULT_SORT;
 
     // Every filter change goes back to page 1; replace keeps typing out of the browser history.
     const update = (mutate, { keepPage = false } = {}) => {
@@ -59,7 +59,7 @@ const ProjectsPage = () => {
         next.delete(key);
         (values.includes(value) ? values.filter((v) => v !== value) : [...values, value]).forEach((v) => next.append(key, v));
     });
-    const clearAll = () => setParams(new URLSearchParams(sort === 'recientes' ? {} : { orden: sort }), { replace: true });
+    const clearAll = () => setParams(new URLSearchParams(sort === DEFAULT_SORT ? {} : { orden: sort }), { replace: true });
 
     const allProjects = useMemo(() => (loading || !projects ? [] : projects), [loading, projects]);
     // Area counts reflect the other active filters, so they tell how many results each checkbox would add.
@@ -155,7 +155,7 @@ const ProjectsPage = () => {
                             Ordenar
                             <select
                                 value={sort}
-                                onChange={(e) => setSingle('orden', e.target.value === 'recientes' ? '' : e.target.value)}
+                                onChange={(e) => setSingle('orden', e.target.value === DEFAULT_SORT ? '' : e.target.value)}
                                 className="px-3 py-2 rounded-xl border border-gray-200 bg-white text-sm text-gray-700"
                             >
                                 {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}

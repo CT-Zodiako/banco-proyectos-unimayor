@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+    DEFAULT_SORT,
+    SORTS,
     AREA_FAMILIES, areaTags, isNewProject, buildAreaFacets, filterProjects, sortProjects, paginate, topSectorGroups,
 } from '../src/lib/catalog.js';
 
@@ -62,7 +64,14 @@ test('levels, sector and search combine with AND; search ignores accents and cas
     assert.equal(filterProjects(sample, {}).length, sample.length);
 });
 
-test('sorting: newest first by default, or by project number', () => {
+test('sorting: by project number (ascending) by default', () => {
+    assert.equal(DEFAULT_SORT, 'numero');
+    assert.equal(SORTS[0].value, 'numero');
+    assert.deepEqual(sortProjects(sample, DEFAULT_SORT).map((x) => x.id).slice(0, 2), ['proj_001', 'proj_002']);
+    assert.deepEqual(sortProjects(sample).map((x) => x.id).slice(0, 2), ['proj_001', 'proj_002']);
+});
+
+test('sorting: newest first on request, or by project number', () => {
     assert.deepEqual(sortProjects(sample, 'recientes').map((x) => x.id).slice(0, 2), ['proj_201', 'proj_161']);
     assert.deepEqual(sortProjects(sample, 'numero').map((x) => x.id).slice(0, 2), ['proj_001', 'proj_002']);
     assert.deepEqual(sample.map((x) => x.id)[0], 'proj_001');

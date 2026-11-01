@@ -74,13 +74,15 @@ export function filterProjects(projects, { query = '', areas = [], levels = [], 
 }
 
 export const SORTS = [
-    { value: 'recientes', label: 'Más recientes' },
     { value: 'numero', label: 'Número de proyecto' },
+    { value: 'recientes', label: 'Más recientes' },
 ];
 
-/** Returns a new sorted list: "recientes" (highest project number first, the default) or "numero". */
-export function sortProjects(projects, sort) {
-    const direction = sort === 'numero' ? 1 : -1;
+export const DEFAULT_SORT = 'numero';
+
+/** Returns a new sorted list: "numero" (project 1 first, the default) or "recientes" (highest number first). */
+export function sortProjects(projects, sort = DEFAULT_SORT) {
+    const direction = sort === 'recientes' ? -1 : 1;
     return [...projects].sort((a, b) => direction * (projectNumber(a) - projectNumber(b)));
 }
 
