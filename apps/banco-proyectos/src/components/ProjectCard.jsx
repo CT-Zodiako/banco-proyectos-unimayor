@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, CalendarDays } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { isNewProject } from '../lib/catalog';
-import { wherePublishUrl } from '../lib/links';
+import { wherePublishUrl, eventsForProjectUrl } from '../lib/links';
 
 // Splits "🌾 Proyecto 1: Título" into the emoji and the visible title.
 const splitTitle = (titulo) => {
@@ -54,13 +54,22 @@ const ProjectCard = ({ project }) => {
                     <span title="Herramientas de software">SW <b className="text-gray-700">{project.software.length}</b></span>
                     <span>{project.duracion}</span>
                 </div>
-                <a
-                    href={wherePublishUrl(project.id)}
-                    className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"
-                >
-                    <BookOpen size={14} aria-hidden="true" />
-                    Dónde publicar
-                </a>
+                <div className="flex gap-3">
+                    <a
+                        href={eventsForProjectUrl(project.id)}
+                        className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"
+                    >
+                        <CalendarDays size={14} aria-hidden="true" />
+                        Eventos
+                    </a>
+                    <a
+                        href={wherePublishUrl(project.id)}
+                        className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"
+                    >
+                        <BookOpen size={14} aria-hidden="true" />
+                        Dónde publicar
+                    </a>
+                </div>
             </div>
         </motion.article>
     );

@@ -5,3 +5,7 @@ export const wherePublishUrl = (projectId) =>
 
 // Event finder (apps/eventos), served by this app under /eventos/.
 export const EVENTS_URL = '/eventos/index.html';
+
+// Event finder with the events ranked by affinity with one project.
+export const eventsForProjectUrl = (projectId) =>
+    `${EVENTS_URL}?p=${encodeURIComponent(projectId)}`;

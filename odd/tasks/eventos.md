@@ -17,6 +17,9 @@ Lives in apps/eventos (Python pipeline + static HTML/JS), same pattern as apps/d
   congresses, talks, fairs); they are mixed into the same search.
 - S4. Freshness: "A mano antes de pushear" — like donde-publicar: run a command that downloads the events, commit and
   push. The page hides expired events by itself. No new infrastructure.
+- S6. Per-project button and cross: "ahora podemos hacer un boton como donde publicar de que eventos ir y tambien ahcer
+  el cruce segun el evento"; direction chosen: "Proyecto → eventos" ("Botón en cada proyecto: abre los eventos ordenados
+  por afinidad con ese proyecto (como Donde publicar)").
 - S5. Deploy stays push to master → Railway (L1 context: "dejmolo lo mas sencilla push a main o amaster y railway se
   actualiza"); the project bank serves the page at /eventos/, like /donde-publicar/.
 
@@ -28,6 +31,10 @@ Lives in apps/eventos (Python pipeline + static HTML/JS), same pattern as apps/d
 | T2 | Page: list with filters (type, topic, online/in person, Colombia, search), sort by deadline/date, hides expired events client-side; pure filter logic tested with node --test | S1, S4 | worker | f1d5ef3 |
 | T3 | Integration: sync into banco public/eventos, nginx location, Dockerfile copy, navbar link, READMEs | S5 | inline | (this commit) |
 | T4 | Verify: run the pipeline against live sources, browser check, docker image serves /eventos/ | S1–S5 | inline | — |
+| T5 | Pipeline: read ../donde-publicar/data/projects.json, give each project topics (fixed list) and keywords, add `projects` to site/data.js (tests first) | S6 | worker | — |
+| T6 | Page: `?p=<project id>` shows the project card and its events ranked by estimated affinity with a "¿Por qué X %?" breakdown (pure logic tested first) | S6 | worker | — |
+| T7 | Bank: "¿A qué eventos ir?" button on project detail and catalog card (link helper + test), docs | S6 | inline | — |
+| T8 | Verify: build, browser check with real data for a few projects, docker image | S6 | inline | — |
 
 ### Event schema (contract between T1 and T2)
 
@@ -50,6 +57,23 @@ Each event:
   Machine Learning, Robótica, Sistemas Ciberfísicos, Desarrollo de Software, Videojuegos, Salud y Bioingeniería,
   Big Data.
 - `source`: `wikicfp`, `ccfddl`, `devpost` or `manual`.
+
+### Project cross (contract between T5 and T6)
+
+`window.EVENTOS.projects` lists every bank project:
+
+```json
+{"id": "proj_001", "title": "Sistema de Monitoreo Agrícola Distribuido con MQTT", "emoji": "🌾",
+ "area": "SBC-IoT", "level": "Intermedio", "topics": ["IoT", "Sistemas Ciberfísicos"],
+ "keywords": ["mqtt", "agricultura", "raspberry pi", "esp32", "sensores"]}
+```
+
+- `topics`: from the fixed event topic list, derived from area, sector and title (at least one per project).
+- `keywords`: up to 12 lowercase, accent-free terms (technologies and domain) to look for in event title/name.
+- Affinity (page, 0–100, labeled "afinidad estimada", never acceptance): shared topics 60 (shared / project topics),
+  keyword hits in the event title or name 20 (10 per hit, max 2), Colombia or online 10, time to prepare 10 (cfp:
+  deadline ≥ 21 days 10, 7–20 days 5, < 7 days 0; attend: 10). Only events sharing at least one topic are shown,
+  sorted by affinity, then deadline. Unknown `?p` shows the normal list.
 
 ## Log
 
@@ -81,4 +105,12 @@ Each event:
   decf34d: existing routes unchanged; /eventos/ 200, sample-data.js 404). Advisory fixed (RED then GREEN): the pipeline
   now expires a cfp without deadline by end, else start, like site/filters.js. Local logo.jpg mode set to 755 (git
   already stored 100755; local Docker builds returned 403).
+- L12. "ahora podemos hacer un boton como donde publicar de que eventos ir y tambien ahcer el cruce segun el evento";
+  "¿Qué cruce querés?" → "Proyecto → eventos".
+- L13. T5 (worker): 49 Python tests; 210 profiles, all with ≥1 topic (IoT 112, ML 53, Salud 51, IA 50, CPS 36…);
+  emoji only when the first token has no letters/digits. T6 (worker): 32 node tests; cfp without deadline scores
+  time 5; levels high ≥80, mid ≥60. T7 (parent): eventsForProjectUrl + test (RED then GREEN), buttons on project
+  detail (top and side panel) and catalog card. Real-data check (built bank, headless Chrome): proj_001 51 events
+  (top 80 %), proj_151 239 (top 70 %), proj_202 79, proj_112 59, proj_103 5. Known limit: broad WikiCFP conferences
+  tagged with many topics rank high for broad projects; specific events win only through keyword hits.
 

@@ -22,7 +22,9 @@ npm run build      # production build (dist/)
 
 Projects are stored in `src/data/mockProjects.js` (original 100) and `src/data/projects/<area>.js` (new areas);
 `npm test` validates them and `npm run lint` checks the code (ESLint, config in `.eslintrc.cjs`). The journal finder and the event finder are served by this app at `/donde-publicar/` and `/eventos/` (copied from
-`apps/donde-publicar/site` and `apps/eventos/site` before `dev`/`build`). Deployment: see Railway deployment below.
+`apps/donde-publicar/site` and `apps/eventos/site` before `dev`/`build`). Each project links to both: "¿Dónde publicar este
+proyecto?" (`/donde-publicar/index.html?p=<id>`) and "¿A qué eventos ir?" (`/eventos/index.html?p=<id>`, events ranked by
+estimated affinity with the project). Deployment: see Railway deployment below.
 
 ## Railway deployment
 
