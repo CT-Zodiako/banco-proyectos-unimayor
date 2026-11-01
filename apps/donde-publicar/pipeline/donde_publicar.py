@@ -212,6 +212,8 @@ AREA_RULES = [
     ("machine learning", ["ia", "datos"]),
     ("ciberfísic", ["electronica", "industria40", "iot_redes"]),
     ("robótica", ["robotica", "electronica"]),
+    ("neurociencia con aiot", ["salud_digital"]),
+    ("discapacidad y enfermedad", ["salud_digital"]),
 ]
 
 # Project title keywords -> technology themes (the area does not always name every technique used).
@@ -242,6 +244,8 @@ SECTOR_RULES = [
     ("parqueaderos", ["ciudades"]), ("urbano", ["ciudades"]),
     ("salud", ["salud"]), ("medicina", ["salud"]), ("hospital", ["salud"]),
     ("neurología", ["neuro", "salud"]), ("neurociencia", ["neuro"]), ("salud mental", ["neuro"]),
+    ("neurorrehabilitación", ["neuro", "rehabilitacion", "salud"]), ("neurodesarrollo", ["neuro", "salud"]),
+    ("neurotecnología", ["neuro"]), ("enfermedades crónicas", ["salud"]), ("adulto mayor", ["salud"]),
     ("fisioterapia", ["rehabilitacion", "salud"]), ("deportes", ["rehabilitacion"]),
     ("farmac", ["farmacia"]),
     ("educación", ["educacion"]), ("formación", ["educacion"]), ("educativa", ["educacion"]),

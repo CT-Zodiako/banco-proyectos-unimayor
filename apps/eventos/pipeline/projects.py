@@ -27,7 +27,7 @@ AREA_TOPICS = {
     "Sistemas Ciberfísicos": r"ciberfisicos|industrial 4\.0|aeroespacial",
     "Desarrollo de Software": r"desarrollo de software|arquitectura de software",
     "Videojuegos": r"videojuegos",
-    "Salud y Bioingeniería": r"medico|medicina|bioingenieria|salud",
+    "Salud y Bioingeniería": r"medico|medicina|bioingenieria|salud|neurociencia|discapacidad",
     "Big Data": r"big data|analitica",
 }
 

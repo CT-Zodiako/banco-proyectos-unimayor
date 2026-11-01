@@ -5,7 +5,7 @@ Institución Universitaria Colegio Mayor del Cauca.
 
 | App | Path | What it does | Stack |
 |---|---|---|---|
-| Project bank | [`apps/banco-proyectos`](apps/banco-proyectos) | Catalog of the 100 IoT projects, filters by area and sector, project detail | React 18, Vite 5, Tailwind 3, React Router, deployed on Railway |
+| Project bank | [`apps/banco-proyectos`](apps/banco-proyectos) | Catalog of 236 projects in 23 areas (the original 100 IoT projects plus new areas), filters by area and sector, project detail | React 18, Vite 5, Tailwind 3, React Router, deployed on Railway |
 | Where to publish | [`apps/donde-publicar`](apps/donde-publicar) | Indexed (SCImago Q1–Q4), no-APC, free-to-read journals (DOAJ) for each project | Python 3 data pipeline + static HTML/JS |
 | Event finder | [`apps/eventos`](apps/eventos) | Calls for papers and events to attend (WikiCFP, ccf-deadlines, Devpost and a manual file of local events) | Python 3 data pipeline + static HTML/JS |
 

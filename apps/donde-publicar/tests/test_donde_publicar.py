@@ -149,6 +149,17 @@ class ThemeTests(unittest.TestCase):
         self.assertIn("seguridad", tech)
         self.assertIn("acuicultura", domain)
 
+    def test_neuroscience_and_disability_sectors_give_health_domains(self):
+        cases = {
+            "Neurología - Epilepsia": "neuro", "Neurorrehabilitación - Accidente Cerebrovascular": "neuro",
+            "Neurodesarrollo - Trastorno del Espectro Autista": "neuro", "Neurociencia - Medicina del Sueño": "neuro",
+            "Discapacidad visual - Movilidad urbana": "rehabilitacion", "Adulto mayor - Vida independiente": "salud",
+            "Enfermedades crónicas - Diabetes": "salud", "Educación inclusiva - Discapacidad auditiva": "rehabilitacion",
+        }
+        for sector, theme in cases.items():
+            _, domain = dp.project_themes({"area": "Neurociencia con AIoT", "sector": sector, "title": "Proyecto"})
+            self.assertIn(theme, domain, f"{sector}: {domain}")
+
     def test_project_title_adds_technology_themes(self):
         project = {"area": "IoT Industrial 4.0 y Manufactura Inteligente", "sector": "Industria - Control de calidad",
                    "title": "Sistema de Control de Calidad Automatizado con Visión Artificial"}
@@ -169,6 +180,8 @@ class ThemeTests(unittest.TestCase):
             "Sistemas Ciberfísicos": {"electronica", "industria40"},
             "Robótica": {"robotica", "electronica"},
             "Ciberseguridad": {"seguridad"},
+            "Neurociencia con AIoT": {"salud_digital", "ia", "iot_redes"},
+            "AIoT para Discapacidad y Enfermedad": {"salud_digital", "ia", "iot_redes"},
         }
         for area, themes in expected.items():
             tech, _ = dp.project_themes({"area": area, "sector": "Educación superior", "title": "Proyecto"})

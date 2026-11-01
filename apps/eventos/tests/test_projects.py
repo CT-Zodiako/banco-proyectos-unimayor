@@ -85,6 +85,14 @@ class RealProjectsFileTest(unittest.TestCase):
         cls.raw = json.loads(REAL_PROJECTS.read_text(encoding="utf-8"))
         cls.profiles = pr.project_profiles(cls.raw)
 
+    def test_neuroscience_and_disability_areas_are_health_iot_and_ai(self):
+        for area in ("Neurociencia con AIoT", "AIoT para Discapacidad y Enfermedad"):
+            raw = {"id": "proj_230", "titulo": "🧠 Proyecto 230: Prototipo", "area": area,
+                   "sector": "Discapacidad visual - Movilidad urbana", "nivel": "Intermedio"}
+            topics = pr.project_profile(raw)["topics"]
+            for topic in ("IoT", "Inteligencia Artificial", "Salud y Bioingeniería"):
+                self.assertIn(topic, topics, f"{area}: {topics}")
+
     def test_every_project_gets_a_profile_with_at_least_one_topic(self):
         self.assertEqual(len(self.profiles), len(self.raw))
         for profile in self.profiles:
