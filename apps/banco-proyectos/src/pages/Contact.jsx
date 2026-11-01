@@ -30,6 +30,7 @@ const Contact = () => {
                         <div>
                             <h3 className="font-bold text-gray-900">Correo Electrónico</h3>
                             <p className="text-gray-500 text-sm">sdionizio@unimayor.edu.co</p>
+                            <p className="text-gray-500 text-sm">cristiantovar@unimayor.edu.co</p>
                             <p className="text-gray-400 text-xs">Atención a docentes y estudiantes</p>
                         </div>
                     </div>

@@ -41,9 +41,12 @@ const Footer = () => (
                         <MapPin size={18} className="text-institutional-yellow flex-shrink-0" />
                         Carrera 5 No. 5-40, Claustro de la Encarnación, Popayán
                     </p>
-                    <p className="flex items-center gap-2">
-                        <Mail size={18} className="text-institutional-yellow" />
-                        sdionizio@unimayor.edu.co
+                    <p className="flex items-start gap-2">
+                        <Mail size={18} className="text-institutional-yellow flex-shrink-0" />
+                        <span className="flex flex-col">
+                            <span>sdionizio@unimayor.edu.co</span>
+                            <span>cristiantovar@unimayor.edu.co</span>
+                        </span>
                     </p>
                     <p className="flex items-center gap-2">
                         <Globe size={18} className="text-institutional-yellow" />
