@@ -120,6 +120,53 @@ test('calendar folding never splits a multi-byte UTF-8 character', () => {
     assert.ok(unfold(ics).includes(`SUMMARY:${title}\r\n`));
 });
 
+const summaryLines = (title) => {
+    const lines = calendarFile({ ...event, title, start: '2027-01-31' }, 'start').split('\r\n');
+    const first = lines.findIndex((line) => line.startsWith('SUMMARY:'));
+    const end = lines.findIndex((line, index) => index > first && !line.startsWith(' '));
+    return lines.slice(first, end);
+};
+
+test('a content line of exactly 75 octets is not folded', () => {
+    for (const title of ['a'.repeat(67), `${'é'.repeat(33)}a`]) {
+        assert.equal(octets(`SUMMARY:${title}`), 75);
+        const lines = summaryLines(title);
+        assert.deepEqual(lines, [`SUMMARY:${title}`]);
+    }
+});
+
+test('a content line of 76 octets is folded into two physical lines of at most 75 octets', () => {
+    for (const title of ['a'.repeat(68), 'é'.repeat(34)]) {
+        assert.equal(octets(`SUMMARY:${title}`), 76);
+        const lines = summaryLines(title);
+        assert.equal(lines.length, 2);
+        assert.ok(lines[1].startsWith(' '));
+        assert.ok(lines.every((line) => octets(line) <= 75));
+        assert.equal(lines[0] + lines[1].slice(1), `SUMMARY:${title}`);
+    }
+});
+
+const paddedBackup = (size) => {
+    const json = JSON.stringify({ version: 1, items: [] });
+    return json + ' '.repeat(size - octets(json));
+};
+
+test('a backup of exactly the size limit is accepted', () => {
+    const text = paddedBackup(MAX_BACKUP_SIZE);
+    assert.equal(octets(text), MAX_BACKUP_SIZE);
+    const s = storage(); addOpportunity(s, event); const before = s.value();
+    assert.deepEqual(importBackup(s, text), { added: 0, duplicates: 0 });
+    assert.equal(s.value(), before);
+});
+
+test('a backup one byte over the size limit is rejected', () => {
+    const text = paddedBackup(MAX_BACKUP_SIZE + 1);
+    assert.equal(octets(text), MAX_BACKUP_SIZE + 1);
+    const s = storage(); addOpportunity(s, event); const before = s.value();
+    assert.throws(() => importBackup(s, text), /demasiado grande/);
+    assert.equal(s.value(), before);
+});
+
 test('backups larger than the shared size limit are rejected without changing stored data', () => {
     assert.equal(MAX_BACKUP_SIZE, 5 * 1024 * 1024);
     const s = storage(); addOpportunity(s, event); const before = s.value();

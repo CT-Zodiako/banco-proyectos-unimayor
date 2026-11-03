@@ -89,11 +89,9 @@ main.wrap { padding-top: 22px; padding-bottom: 40px; }
 .comparison table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: 13px; }
 .comparison th, .comparison td { text-align: left; vertical-align: top; padding: 8px; border-bottom: 1px solid var(--g100); }
 .comparison th { color: var(--g700); }
-.compare-button { cursor: pointer; color: var(--blue); background: #fff; }
+.compare-button, .favorite-button { cursor: pointer; color: var(--blue); background: #fff; }
 .compare-button[aria-pressed="true"] { background: var(--b50); }
-.compare-button:disabled { opacity: .55; cursor: not-allowed; }
-.favorite-button { cursor: pointer; color: var(--blue); background: #fff; }
-.favorite-button:disabled { opacity: .55; cursor: not-allowed; }
+.compare-button:disabled, .favorite-button:disabled { opacity: .55; cursor: not-allowed; }
 
 /* Event cards */
 .event-list { display: grid; gap: 12px; }

@@ -20,6 +20,7 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - T5 [S7] inline blocked — backup implemented and functional checks passed; independent verifier unavailable; user decision required; implementation commit 93051e6.
 - T6 [S8] inline done — guides, tests, browser checks and build passed; commit 3a0839c.
 - T7 [S1-S8] delegated done — review follow-ups (RFC 5545 folding, named limits, dedicated favorite class, favorite UI tests); commit ca8a56f.
+- T8 [S1,S3,S7] delegated done — remaining advisory findings (fold and size boundary tests, favorite readiness marker, shared button CSS, composite comparison key, modality wording, readable design/system.html); uncommitted.
 
 ## Log
 - L1: «Dale conitnua si quieres levant todo el proyecot apra ver»
@@ -51,3 +52,5 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - Native review receipts (all approved and acknowledged): review-24522d52dfc89517 (initial candidate), review-ba33562fc0806e5b (ca8a56f fixes), review-dad916c560421ea7 (dedef63 fixes), review-a526532a54d461a8 (5b136a8 grouped fixes).
 - Final checks at close: bank 52/52, eventos 43/43, lint ok, working tree clean.
 - Known open advisory findings, deliberately left as later work: fold and size-limit boundary tests, favorite-test async polling, duplicated CSS, duplicated storage copies, all-or-nothing read of malformed favorites, event-id key dependency, modality label wording, single-line design/system.html.
+- T8: applied the advisory findings except the two kept by decision (three byte-identical storage copies; strict all-or-nothing read). Favorite buttons set data-favorite-ready to "true" once the click listener is attached and "false" when the module fails to load; the test waits for it and fails after 2 s. Comparison selection uses JSON.stringify(["event", id]). Modality row: "En línea" (online, no physical place), "Confirmar en la fuente" (physical place published), "No informado" (otherwise).
+- Checks after T8: bank 56/56, eventos 46/46, lint ok, three storage copies byte-identical. Boundary tests passed on first run (they pin existing behavior); an off-by-one mutation in a scratch copy made them fail.

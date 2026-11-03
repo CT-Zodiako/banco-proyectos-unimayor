@@ -172,9 +172,24 @@
       return el("details", { className: "why" }, [el("summary", { text: `¿Por qué ${affinity.total} %?` }), bars]);
     }
 
-    function locationPanel(event) {
+    /* The published place, or null when it is missing, a placeholder or only says the event is online. */
+    function physicalLocation(event) {
       const location = typeof event.location === "string" ? event.location.trim() : "";
       if (!location || /^(?:n\/?a|tbd|tba|por confirmar|(?:fully?\s+|100%\s+)?(?:online|virtual|hybrid)(?:\s+(?:conference|event|only|meeting))?)$/i.test(location)) return null;
+      return location;
+    }
+
+    /* Comparison selection is keyed by type and id, like the saved opportunities. */
+    const comparisonKey = (event) => JSON.stringify(["event", event.id]);
+
+    function modality(event) {
+      if (physicalLocation(event)) return "Confirmar en la fuente";
+      return event.online ? "En línea" : null;
+    }
+
+    function locationPanel(event) {
+      const location = physicalLocation(event);
+      if (!location) return null;
       const url = new URL("https://www.google.com/maps/search/");
       url.searchParams.set("api", "1");
       url.searchParams.set("query", location);
@@ -212,13 +227,15 @@
         affinity ? affinityBreakdown(event, affinity) : null,
       ]);
       const label = isCfp ? "Ver convocatoria" : "Ver evento";
-      const compare = el("button", { className: "btn compare-button", text: selected.includes(event.id) ? "Quitar de comparación" : "Comparar", attrs: { type: "button", "aria-pressed": String(selected.includes(event.id)), "aria-label": `Comparar ${event.title}` } });
-      compare.disabled = !selected.includes(event.id) && selected.length >= F.MAX_COMPARISON;
-      compare.dataset.eventId = event.id;
+      const key = comparisonKey(event);
+      const isSelected = selected.includes(key);
+      const compare = el("button", { className: "btn compare-button", text: isSelected ? "Quitar de comparación" : "Comparar", attrs: { type: "button", "aria-pressed": String(isSelected), "aria-label": `Comparar ${event.title}` } });
+      compare.disabled = !isSelected && selected.length >= F.MAX_COMPARISON;
+      compare.dataset.comparisonKey = key;
       compare.addEventListener("click", () => {
-        selected = F.toggleComparison(selected, event.id);
+        selected = F.toggleComparison(selected, key);
         update();
-        const replacement = $$(".compare-button").find((button) => button.dataset.eventId === event.id);
+        const replacement = $$(".compare-button").find((button) => button.dataset.comparisonKey === key);
         if (replacement) replacement.focus();
       });
       const favorite = el("button", { className: "btn favorite-button", text: "Guardar", attrs: { type: "button", "aria-label": `Guardar ${event.title} en mis oportunidades` } });
@@ -233,7 +250,8 @@
             refresh();
           } catch (_) { favorite.textContent = "No se pudo guardar"; }
         });
-      }).catch(() => { favorite.textContent = "Favoritos no disponibles"; favorite.disabled = true; });
+        favorite.dataset.favoriteReady = "true";
+      }).catch(() => { favorite.textContent = "Favoritos no disponibles"; favorite.disabled = true; favorite.dataset.favoriteReady = "false"; });
       const side = el("div", { className: "event-side" }, [
         compare, favorite,
         el("span", { className: "source", text: `Fuente: ${SOURCE_LABELS[event.source] || event.source}` }),
@@ -245,7 +263,8 @@
     }
 
     function renderComparison() {
-      const chosen = selected.map((id) => events.find((event) => event.id === id)).filter(Boolean);
+      const byKey = new Map(events.map((event) => [comparisonKey(event), event]));
+      const chosen = selected.map((key) => byKey.get(key)).filter(Boolean);
       $("#comparison").hidden = chosen.length === 0;
       const header = el("tr", {}, [el("th", { text: "Dato", attrs: { scope: "col" } }), ...chosen.map((event) => el("th", { text: event.title, attrs: { scope: "col" } }))]);
       $("#comparison-head").replaceChildren(header);
@@ -254,7 +273,7 @@
         ["Fechas", (e) => F.formatRange(e.start, e.end)],
         ["Cierre", (e) => e.deadline ? F.formatDate(e.deadline) : null],
         ["Lugar", (e) => e.location || (e.online ? "En línea" : null)],
-        ["Modalidad", (e) => e.online ? (e.location ? "En línea o híbrido; confirmar" : "En línea") : "Confirmar en la fuente"],
+        ["Modalidad", modality],
         ["Temas", (e) => (e.topics || []).join(", ")],
         ["Fuente", (e) => SOURCE_LABELS[e.source] || e.source],
       ];
