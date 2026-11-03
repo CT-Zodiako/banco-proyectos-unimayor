@@ -28,7 +28,7 @@ estimated affinity with the project). Deployment: see Railway deployment below.
 
 ## Saved opportunities
 
-The project bank's **Mis oportunidades** page (`/oportunidades`) gathers events and journals saved from their cards. Favorites are kept only in the current browser's local storage, are not synchronized between devices, and can be lost when browser data is cleared. Saved events can download calendar files for their start and submission deadline when those dates are known; preparation checklists are not persisted. From that page, export a JSON backup of favorites, statuses and notes, or preview a backup before importing it. Import keeps existing records unchanged when the same type and ID already exist, including their notes and status; malformed files are rejected. The JSON file contains personal notes, so store it securely. Official sources remain authoritative.
+The project bank's **Mis oportunidades** page (`/oportunidades`) gathers events and journals saved from their cards. Favorites are kept only in the current browser's local storage, are not synchronized between devices, and can be lost when browser data is cleared. Saved events can download calendar files for their start and submission deadline when those dates are known; preparation checklists offer guidance for events and journals, link to the saved official source when available, and are not persisted. From that page, export a JSON backup of favorites, statuses and notes, or preview a backup before importing it. Import keeps existing records unchanged when the same type and ID already exist, including their notes and status; malformed files are rejected. The JSON file contains personal notes, so store it securely. Official sources remain authoritative.
 
 ## Railway deployment
 

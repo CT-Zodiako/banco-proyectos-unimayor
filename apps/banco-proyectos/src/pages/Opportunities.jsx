@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { calendarFile, exportBackup, filterOpportunities, importBackup, previewBackup, readOpportunities, removeOpportunity, STATUS_LABELS, updateOpportunity } from '../lib/opportunities';
+import { submissionGuide } from '../lib/submissionGuide';
 
 function BackupControls({ onImport }) {
     const [backup, setBackup] = useState(null);
@@ -136,9 +137,11 @@ export default function Opportunities() {
                 </div>
                 <OpportunityEditor item={item} onSave={setItems} />
                 <details className="text-sm text-gray-700"><summary className="cursor-pointer font-semibold text-institutional-blue">Lista de preparación</summary>
-                    <ul className="mt-2 space-y-1">
-                        {(type === 'event' ? ['Confirmar fechas, modalidad y sede en la fuente oficial', 'Revisar requisitos y preparar la participación'] : ['Revisar el alcance y las instrucciones para autores', 'Confirmar los costos y preparar el manuscrito']).map((step) => <li key={step}><label className="flex gap-2"><input type="checkbox" />{step}</label></li>)}
-                    </ul><p className="mt-2 text-gray-600">Las marcas de esta lista no se guardan.</p>
+                    <p className="mt-2 text-gray-600">Estos pasos son orientativos; confirme los requisitos en la fuente oficial.</p>
+                    {(safeUrl(item.instructions) || safeUrl(item.url)) ? <a className="mt-2 inline-block text-institutional-blue underline" href={safeUrl(item.instructions) || safeUrl(item.url)} target="_blank" rel="noopener noreferrer">{type === 'journal' && safeUrl(item.instructions) ? 'Consultar instrucciones para autores ↗' : 'Consultar fuente oficial ↗'}</a> : <p className="mt-2 text-gray-600">No hay un enlace oficial disponible.</p>}
+                    <ol className="mt-3 space-y-2">
+                        {submissionGuide(type).map((step) => <li key={step}><label className="flex gap-2"><input type="checkbox" />{step}</label></li>)}
+                    </ol><p className="mt-2 text-gray-600">Las marcas de esta lista no se guardan.</p>
                 </details>
             </article>)}
         </section>)}
