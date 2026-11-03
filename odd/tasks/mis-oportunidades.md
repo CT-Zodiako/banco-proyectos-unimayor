@@ -18,7 +18,7 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - T3 [S1-S5] inline blocked — independent verifier unavailable; requires user decision on missing independent proof; implementation commit 93051e6.
 - T4 [S6] inline blocked — implementation and functional checks passed; independent verification unavailable, awaiting user decision; implementation commit 93051e6.
 - T5 [S7] inline blocked — backup implemented and functional checks passed; independent verifier unavailable; user decision required; implementation commit 93051e6.
-- T6 [S8] inline done — guides, tests, browser checks and build passed; commit pending.
+- T6 [S8] inline done — guides, tests, browser checks and build passed; commit 3a0839c.
 
 ## Log
 - L1: «Dale conitnua si quieres levant todo el proyecot apra ver»
@@ -34,4 +34,4 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - L4: «commitea no depsleigues y sigmaos con los demas mejoras»; delivery choice: «Cadena sobre una rama de seguimiento». No push, PR or deployment authorized.
 - Commit boundaries: design b881317; event discovery and opportunities 93051e6. The latter combines previously accumulated behavior and exceeds the review-size guideline; independent verification remains unavailable.
 - L5: «Guía para postular» (selected improvement).
-- T6: 44 Node tests, lint and build passed; browser verified six steps and official links for an event and a journal. The build warned about chunk size and stale Browserslist data. Native assessment could not assess untracked scope.
+- T6: 44 Node tests, lint and build passed; browser verified six steps and official links for an event and a journal. The build warned about chunk size and stale Browserslist data. Commit 3a0839c: native assessment medium, review not due (under budget).
