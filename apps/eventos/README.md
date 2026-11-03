@@ -149,6 +149,14 @@ Any other field, an unknown topic or an invalid date stops the build with an err
 (counted from 0). Expired entries are left out of `data.js` automatically; delete them from the file when you
 see them.
 
+## Search and comparison
+
+Filter events by start date (inclusive) and by city or country, in addition to the existing filters. Date filters omit events without a start date. Filters are saved in the URL. Select up to three events with **Comparar** to see their dates, location, modality, topics and source side by side; selections remain while filters change and can be cleared. Unknown information is shown as such. Comparison is temporary and is not stored after reloading the page.
+
+## Event locations
+
+Events with a published physical location include a link to a Google Maps search for that text. Google Maps opens only when the visitor selects the link; no map is embedded or loaded automatically. Locations may identify a city rather than a venue, so visitors should confirm the address with the event source. Events without a confirmed physical location, including online-only events, have no map link. Hybrid events with a physical location retain the link.
+
 ## Affinity on the page
 
 With `?p=<project id>` (the bank's "¿A qué eventos ir?" button), `site/filters.js` (`affinity`, `rankForProject`)

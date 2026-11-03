@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.resolve(appRoot, '../donde-publicar/site');
 const target = path.resolve(appRoot, 'public/donde-publicar');
-const FILES = ['index.html', 'styles.css', 'app.js', 'table.js', 'data.js', 'catalog.js', 'logo.jpg'];
+const FILES = ['index.html', 'styles.css', 'app.js', 'table.js', 'opportunities.js', 'data.js', 'catalog.js', 'logo.jpg'];
 
 const missing = FILES.filter((file) => !existsSync(path.join(source, file)));
 if (missing.length) {

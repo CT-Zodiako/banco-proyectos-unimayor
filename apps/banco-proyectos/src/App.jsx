@@ -6,6 +6,7 @@ import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetail from './pages/ProjectDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Opportunities from './pages/Opportunities';
 import logo from './assets/logo.png';
 import { EVENTS_URL } from './lib/links';
 import { Mail, Globe, MapPin } from 'lucide-react';
@@ -74,6 +75,7 @@ function App() {
                         <Route path="/proyecto/:id" element={<ProjectDetail />} />
                         <Route path="/acerca" element={<About />} />
                         <Route path="/contacto" element={<Contact />} />
+                        <Route path="/oportunidades" element={<Opportunities />} />
                         <Route path="*" element={<div className="py-20 text-center">Página no encontrada</div>} />
                     </Routes>
                 </main>

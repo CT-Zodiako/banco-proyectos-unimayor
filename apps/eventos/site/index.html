@@ -14,7 +14,7 @@
       <span class="logo-tile"><img src="logo.jpg" alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" width="46" height="43"></span>
       <span><b>Institución Universitaria Colegio Mayor del Cauca</b><small>Laboratorio de Física y Sistemas Embebidos</small></span>
     </a>
-    <a class="nav-link" href="/proyectos">Catálogo de Proyectos</a>
+    <nav aria-label="Navegación"><a class="nav-link" href="/oportunidades">Mis oportunidades</a> · <a class="nav-link" href="/proyectos">Catálogo de Proyectos</a></nav>
   </div>
 </header>
 
@@ -27,6 +27,14 @@
     </div>
     <a class="back" href="/proyectos">← Volver al banco de proyectos</a>
   </div>
+
+  <p><a href="/oportunidades">Mis oportunidades guardadas →</a></p>
+
+  <section class="notice data-status" id="data-status" aria-label="Estado de los datos">
+    <strong>Estado de los datos</strong>
+    <p id="data-status-date">Fecha de generación no disponible.</p>
+    <p>La fecha indica cuándo se generó el listado, no cuándo se verificó cada evento. No se registra el estado individual de las fuentes. Confirme fechas y sede en el sitio oficial.</p>
+  </section>
 
   <section class="project-card" id="project-card" aria-labelledby="project-title" hidden>
     <div class="project-emoji" id="project-emoji" aria-hidden="true"></div>
@@ -70,6 +78,12 @@
         </select>
       </label>
     </div>
+    <div class="filters-row">
+      <label class="field" for="date-from">Inicio desde <input id="date-from" type="date"></label>
+      <label class="field" for="date-to">Inicio hasta <input id="date-to" type="date"></label>
+      <label class="field" for="location">Ciudad o país <input id="location" type="search" placeholder="Ej.: Popayán"></label>
+    </div>
+    <p class="filter-note">Las fechas filtran por el inicio del evento; se excluyen eventos sin fecha de inicio cuando se usa este filtro.</p>
     <fieldset class="topics">
       <legend>Temas</legend>
       <div class="pills" id="topic-pills"></div>
@@ -80,6 +94,12 @@
     <span class="count" id="count" aria-live="polite"></span>
     <button type="button" class="link-btn" id="clear-top" hidden>Limpiar filtros</button>
   </div>
+
+  <section id="comparison" class="comparison" aria-labelledby="comparison-title" hidden>
+    <div class="comparison-head"><h2 id="comparison-title">Comparar eventos</h2><button type="button" id="comparison-clear" class="link-btn">Quitar todos</button></div>
+    <p>Seleccione hasta tres eventos. Los datos no informados aparecen como «No informado».</p>
+    <div class="comparison-scroll"><table><caption class="sr-only">Comparación de eventos seleccionados</caption><thead id="comparison-head"></thead><tbody id="comparison-body"></tbody></table></div>
+  </section>
 
   <section aria-label="Eventos encontrados">
     <div id="results" class="event-list"></div>

@@ -7,7 +7,7 @@
   const KINDS = ["all", "cfp", "attend"];
   const MODALITIES = ["all", "online", "presencial"];
   const SORTS = ["deadline", "start", "title", "affinity"];
-  const DEFAULT_STATE = { kind: "all", topics: [], modality: "all", colombia: false, query: "", sort: "deadline" };
+  const DEFAULT_STATE = { kind: "all", topics: [], modality: "all", colombia: false, query: "", sort: "deadline", dateFrom: "", dateTo: "", location: "" };
   const DAY_MS = 24 * 60 * 60 * 1000;
 
   const normalize = (text) => String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -42,7 +42,7 @@
   /** options: { kind, topics (OR, empty = all), modality, colombia, query, today }. Groups combine with AND and
       expired events are always dropped. */
   function filterEvents(events, options = {}) {
-    const { kind = "all", topics = [], modality = "all", colombia = false, query = "", today } = options;
+    const { kind = "all", topics = [], modality = "all", colombia = false, query = "", dateFrom = "", dateTo = "", location = "", today } = options;
     const words = normalize(query).split(/\s+/).filter(Boolean);
     return events.filter((event) => {
       if (today && isExpired(event, today)) return false;
@@ -51,6 +51,8 @@
       if (modality === "online" && !event.online) return false;
       if (modality === "presencial" && event.online) return false;
       if (colombia && normalize(event.country) !== "colombia") return false;
+      if ((dateFrom || dateTo) && (!event.start || (dateFrom && event.start < dateFrom) || (dateTo && event.start > dateTo))) return false;
+      if (location && !normalize([event.location, event.country].join(" ")).includes(normalize(location.trim()))) return false;
       if (words.length) {
         const haystack = normalize([event.title, event.name, event.location].join(" "));
         if (!words.every((word) => haystack.includes(word))) return false;
@@ -188,6 +190,9 @@
       modality: pick(params.get("modalidad"), MODALITIES, DEFAULT_STATE.modality),
       colombia: params.get("co") === "1",
       query: params.get("q") || "",
+      dateFrom: /^\d{4}-\d{2}-\d{2}$/.test(params.get("desde") || "") ? params.get("desde") : "",
+      dateTo: /^\d{4}-\d{2}-\d{2}$/.test(params.get("hasta") || "") ? params.get("hasta") : "",
+      location: params.get("lugar") || "",
       sort: pick(params.get("orden"), sorts, project ? "affinity" : DEFAULT_STATE.sort),
     };
     if (project) state.project = project;
@@ -203,12 +208,20 @@
     if (state.modality !== DEFAULT_STATE.modality) params.set("modalidad", state.modality);
     if (state.colombia) params.set("co", "1");
     if (state.query) params.set("q", state.query);
+    if (state.dateFrom) params.set("desde", state.dateFrom);
+    if (state.dateTo) params.set("hasta", state.dateTo);
+    if (state.location) params.set("lugar", state.location);
     const defaultSort = state.project ? "affinity" : DEFAULT_STATE.sort;
     if (state.sort !== defaultSort && (state.project || state.sort !== "affinity")) params.set("orden", state.sort);
     return params.toString();
   }
 
-  const api = { DEFAULT_STATE, normalize, localIsoDate, closingDate, isExpired, daysLeft, filterEvents, sortEvents,
+  function toggleComparison(selected, id) {
+    if (selected.includes(id)) return selected.filter((item) => item !== id);
+    return selected.length < 3 ? [...selected, id] : selected;
+  }
+
+  const api = { toggleComparison, DEFAULT_STATE, normalize, localIsoDate, closingDate, isExpired, daysLeft, filterEvents, sortEvents,
     topicCounts, formatDate, formatRange, parseQuery, stateToQuery, AFFINITY_MAX, hasKeyword, affinity, affinityLevel,
     rankForProject };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
