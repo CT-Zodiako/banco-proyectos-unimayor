@@ -46,3 +46,8 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - L8: «agre agruapalos» (group the remaining review findings into one change). Applied R3-ics-lone-cr-unasserted (test for a lone CR), R3-utf8-length-no-early-exit (utf8Length stops at the limit) and R3-utf8-limit-throws-unmatched (the byte-limit test now asserts the error message).
 - Honest note: the early exit is an internal optimization; no test proves it, because a timing assertion would be flaky. The added test proves only that a large oversized backup is rejected without touching stored data.
 - Checks after L8: bank 52/52, eventos 43/43, lint 0, three storage copies byte-identical.
+- L9: «cerremos con commit» (close the feature with a commit).
+- Closing state: all T1-T7 done. No open implementation work. Delivery not performed: no push, no PR, no merge, no deployment; that remains the user's decision.
+- Native review receipts (all approved and acknowledged): review-24522d52dfc89517 (initial candidate), review-ba33562fc0806e5b (ca8a56f fixes), review-dad916c560421ea7 (dedef63 fixes), review-a526532a54d461a8 (5b136a8 grouped fixes).
+- Final checks at close: bank 52/52, eventos 43/43, lint ok, working tree clean.
+- Known open advisory findings, deliberately left as later work: fold and size-limit boundary tests, favorite-test async polling, duplicated CSS, duplicated storage copies, all-or-nothing read of malformed favorites, event-id key dependency, modality label wording, single-line design/system.html.
