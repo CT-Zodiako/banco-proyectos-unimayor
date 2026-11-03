@@ -19,6 +19,7 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - T4 [S6] inline blocked — implementation and functional checks passed; independent verification unavailable, awaiting user decision; implementation commit 93051e6.
 - T5 [S7] inline blocked — backup implemented and functional checks passed; independent verifier unavailable; user decision required; implementation commit 93051e6.
 - T6 [S8] inline done — guides, tests, browser checks and build passed; commit 3a0839c.
+- T7 [S1-S8] delegated done — review follow-ups (RFC 5545 folding, named limits, dedicated favorite class, favorite UI tests); commit ca8a56f.
 
 ## Log
 - L1: «Dale conitnua si quieres levant todo el proyecot apra ver»
@@ -35,3 +36,7 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - Commit boundaries: design b881317; event discovery and opportunities 93051e6. The latter combines previously accumulated behavior and exceeds the review-size guideline; independent verification remains unavailable.
 - L5: «Guía para postular» (selected improvement).
 - T6: 44 Node tests, lint and build passed; browser verified six steps and official links for an event and a journal. The build warned about chunk size and stale Browserslist data. Commit 3a0839c: native assessment medium, review not due (under budget).
+- Review receipt: approved and acknowledged (lineage review-24522d52dfc89517, target sha256:5656374c…). 13 non-blocking findings.
+- L6: «dale» (act on the review findings). T7 delegated to a bounded writer; parent re-ran eventos 43/43, bank 47/47 and lint 0, confirmed the three storage copies byte-identical and checked a generated .ics (max 75 octets, folded space continuation, CRLF terminator). Commit ca8a56f assessed medium, under budget, review not due.
+- Findings fixed: ICS CR/line folding (R1-ics-cr-escape, R3-ics-folding), duplicated size limit (R2-backup-size-limit-duplicated), comparison magic number (R2-comparison-limit-magic-number), favorite reused compare class (R2-favorite-uses-compare-class), stale filterEvents doc (R2-filterEvents-doc-stale), untested favorite UI (R3-favorite-ui-untested).
+- Findings deliberately kept: R2-opportunities-store-triplicated (the three static/SPA copies are enforced identical by a test because the standalone pages cannot share a module), R4-favorites-all-or-nothing-read (refusing to overwrite unreadable stored data is the chosen safety rule), R3-event-id-dependency, R2-modality-label-inconsistent, R3-ics-folding residual risk, R2-system-html-minified.
