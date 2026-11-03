@@ -1,0 +1,27 @@
+{
+  "title": "Eventos académicos · mapa",
+  "brief": "Alternativas para conocer dónde se realizan los eventos académicos.",
+  "artboards": [
+    {
+      "file": "01-lista-y-mapa.html",
+      "title": "Lista y mapa en paralelo",
+      "tradeoff": "Permite comparar eventos y ubicaciones; requiere espacio horizontal.",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "02-mapa-protagonista.html",
+      "title": "Mapa protagonista",
+      "tradeoff": "Prioriza la exploración geográfica; los resultados quedan más abajo.",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "03-mapa-en-tarjeta.html",
+      "title": "Mapa dentro de cada evento",
+      "tradeoff": "Conserva la lectura por evento; dificulta comparar ubicaciones entre sí.",
+      "width": 1440,
+      "height": 1000
+    }
+  ]
+}

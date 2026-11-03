@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "chosen": "03-mapa-en-tarjeta.html",
+  "handoffs": {
+    "03-mapa-en-tarjeta.html": {
+      "status": "implemented",
+      "queued": false,
+      "sentAt": "2026-11-02T21:08:01.870Z",
+      "startedAt": null,
+      "implementedAt": "2026-11-02T21:09:20.215Z",
+      "note": "Google Maps opens on click; location panel replaces the artboard's illustrative map. No embedded third-party map.",
+      "previewUrl": "http://127.0.0.1:8766/"
+    }
+  }
+}
