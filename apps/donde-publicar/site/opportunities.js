@@ -1,4 +1,5 @@
 export const STORAGE_KEY = 'unimayor.opportunities.v1';
+export const MAX_BACKUP_SIZE = 5 * 1024 * 1024;
 export const STATUS_LABELS = { review: 'Por revisar', preparing: 'Preparando', submitted: 'Enviado', discarded: 'Descartado' };
 
 const validItem = (item) => item && ['event', 'journal'].includes(item.type) && typeof item.id === 'string' && item.id.length > 0 && typeof item.title === 'string' && item.title.length > 0;
@@ -37,7 +38,7 @@ export function exportBackup(storage) {
 }
 
 function backupItems(text) {
-    if (typeof text !== 'string' || text.length > 5 * 1024 * 1024) throw new Error('El archivo es demasiado grande o inválido.');
+    if (typeof text !== 'string' || text.length > MAX_BACKUP_SIZE) throw new Error('El archivo es demasiado grande o inválido.');
     const backup = JSON.parse(text);
     if (!backup || backup.version !== 1 || !Array.isArray(backup.items) || backup.items.some((item) =>
         !validItem(item) || (item.status !== undefined && !Object.hasOwn(STATUS_LABELS, item.status)) ||
@@ -71,6 +72,21 @@ export function importBackup(storage, text) {
     return { added: result.added.length, duplicates: result.duplicates };
 }
 
+// RFC 5545 content lines: at most 75 octets each, continuations start with one space; never split a character.
+function foldLine(line) {
+    const lines = [];
+    let current = '';
+    let size = 0;
+    for (const char of line) {
+        const point = char.codePointAt(0);
+        const octets = point < 0x80 ? 1 : point < 0x800 ? 2 : point < 0x10000 ? 3 : 4;
+        if (size + octets > (lines.length ? 74 : 75)) { lines.push(current); current = ''; size = 0; }
+        current += char;
+        size += octets;
+    }
+    return [...lines, current].join('\r\n ');
+}
+
 export function calendarFile(item, field) {
     const date = item[field];
     if (!['start', 'deadline'].includes(field) || typeof date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
@@ -82,7 +98,7 @@ export function calendarFile(item, field) {
     return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//UNIMAYOR//Oportunidades//ES', 'BEGIN:VEVENT',
         `UID:${encodeURIComponent(String(item.id))}-${field}@unimayor`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
         `DTSTART;VALUE=DATE:${date.replaceAll('-', '')}`, `DTEND;VALUE=DATE:${next}`,
-        `SUMMARY:${escape(title)}`, `DESCRIPTION:${escape(item.url)}`, 'END:VEVENT', 'END:VCALENDAR', ''].join('\r\n');
+        `SUMMARY:${escape(title)}`, `DESCRIPTION:${escape(item.url)}`, 'END:VEVENT', 'END:VCALENDAR'].map(foldLine).join('\r\n') + '\r\n';
 }
 
 export function removeOpportunity(storage, type, id) {

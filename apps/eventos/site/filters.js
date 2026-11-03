@@ -9,6 +9,7 @@
   const SORTS = ["deadline", "start", "title", "affinity"];
   const DEFAULT_STATE = { kind: "all", topics: [], modality: "all", colombia: false, query: "", sort: "deadline", dateFrom: "", dateTo: "", location: "" };
   const DAY_MS = 24 * 60 * 60 * 1000;
+  const MAX_COMPARISON = 3;
 
   const normalize = (text) => String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
@@ -39,8 +40,10 @@
     return Math.round((utcDay(event.deadline) - utcDay(today)) / DAY_MS);
   }
 
-  /** options: { kind, topics (OR, empty = all), modality, colombia, query, today }. Groups combine with AND and
-      expired events are always dropped. */
+  /** options: { kind, topics (OR, empty = all), modality, colombia, query, dateFrom, dateTo, location, today }.
+      dateFrom/dateTo are inclusive "YYYY-MM-DD" bounds on the start date (events without a start are dropped when
+      either is set); location matches the event location or country, ignoring case and accents.
+      Groups combine with AND and expired events are always dropped. */
   function filterEvents(events, options = {}) {
     const { kind = "all", topics = [], modality = "all", colombia = false, query = "", dateFrom = "", dateTo = "", location = "", today } = options;
     const words = normalize(query).split(/\s+/).filter(Boolean);
@@ -216,12 +219,13 @@
     return params.toString();
   }
 
+  /** Adds or removes an event id from the comparison, keeping at most MAX_COMPARISON ids. */
   function toggleComparison(selected, id) {
     if (selected.includes(id)) return selected.filter((item) => item !== id);
-    return selected.length < 3 ? [...selected, id] : selected;
+    return selected.length < MAX_COMPARISON ? [...selected, id] : selected;
   }
 
-  const api = { toggleComparison, DEFAULT_STATE, normalize, localIsoDate, closingDate, isExpired, daysLeft, filterEvents, sortEvents,
+  const api = { toggleComparison, MAX_COMPARISON, DEFAULT_STATE, normalize, localIsoDate, closingDate, isExpired, daysLeft, filterEvents, sortEvents,
     topicCounts, formatDate, formatRange, parseQuery, stateToQuery, AFFINITY_MAX, hasKeyword, affinity, affinityLevel,
     rankForProject };
   if (typeof module !== "undefined" && module.exports) module.exports = api;

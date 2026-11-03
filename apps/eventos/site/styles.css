@@ -92,6 +92,8 @@ main.wrap { padding-top: 22px; padding-bottom: 40px; }
 .compare-button { cursor: pointer; color: var(--blue); background: #fff; }
 .compare-button[aria-pressed="true"] { background: var(--b50); }
 .compare-button:disabled { opacity: .55; cursor: not-allowed; }
+.favorite-button { cursor: pointer; color: var(--blue); background: #fff; }
+.favorite-button:disabled { opacity: .55; cursor: not-allowed; }
 
 /* Event cards */
 .event-list { display: grid; gap: 12px; }

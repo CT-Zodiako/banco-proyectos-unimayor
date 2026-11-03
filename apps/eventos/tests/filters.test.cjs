@@ -176,6 +176,7 @@ test('new filters round trip in URLs without changing legacy defaults', () => {
 
 
 test('comparison selects at most three events and toggles selected events', () => {
+    assert.equal(F.MAX_COMPARISON, 3);
     let selected = [];
     for (const id of ['one', 'two', 'three', 'four']) selected = F.toggleComparison(selected, id);
     assert.deepEqual(selected, ['one', 'two', 'three']);

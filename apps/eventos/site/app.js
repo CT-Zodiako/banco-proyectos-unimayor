@@ -213,7 +213,7 @@
       ]);
       const label = isCfp ? "Ver convocatoria" : "Ver evento";
       const compare = el("button", { className: "btn compare-button", text: selected.includes(event.id) ? "Quitar de comparación" : "Comparar", attrs: { type: "button", "aria-pressed": String(selected.includes(event.id)), "aria-label": `Comparar ${event.title}` } });
-      compare.disabled = !selected.includes(event.id) && selected.length >= 3;
+      compare.disabled = !selected.includes(event.id) && selected.length >= F.MAX_COMPARISON;
       compare.dataset.eventId = event.id;
       compare.addEventListener("click", () => {
         selected = F.toggleComparison(selected, event.id);
@@ -221,7 +221,7 @@
         const replacement = $$(".compare-button").find((button) => button.dataset.eventId === event.id);
         if (replacement) replacement.focus();
       });
-      const favorite = el("button", { className: "btn compare-button", text: "Guardar", attrs: { type: "button", "aria-label": `Guardar ${event.title} en mis oportunidades` } });
+      const favorite = el("button", { className: "btn favorite-button", text: "Guardar", attrs: { type: "button", "aria-label": `Guardar ${event.title} en mis oportunidades` } });
       import("./opportunities.js").then((store) => {
         const refresh = () => { favorite.textContent = store.readOpportunities(localStorage).some((item) => item.type === "event" && item.id === event.id) ? "Guardado" : "Guardar"; };
         try { refresh(); } catch (_) { favorite.textContent = "Favoritos no disponibles"; favorite.disabled = true; }

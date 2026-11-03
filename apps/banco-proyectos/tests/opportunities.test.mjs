@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { addOpportunity, readOpportunities, removeOpportunity, calendarFile, updateOpportunity, filterOpportunities, exportBackup, previewBackup, importBackup } from '../src/lib/opportunities.js';
+import { addOpportunity, readOpportunities, removeOpportunity, calendarFile, updateOpportunity, filterOpportunities, exportBackup, previewBackup, importBackup, MAX_BACKUP_SIZE } from '../src/lib/opportunities.js';
 
 function storage(initial = null) {
   let value = initial;
@@ -92,4 +92,37 @@ test('calendar export uses an all-day event and escapes text', () => {
   assert.match(ics, /DTEND;VALUE=DATE:20270201/);
   assert.ok(ics.includes('Congreso\\, IA\\; redes'));
   assert.equal(calendarFile(event, 'start'), null);
+});
+
+const unfold = (ics) => ics.replaceAll('\r\n ', '');
+const octets = (line) => Buffer.byteLength(line, 'utf8');
+
+test('calendar export folds long lines at 75 octets with a leading space on continuations', () => {
+    const title = 'Congreso internacional de ingeniería, ciencia de datos y redes; edición especial 2027 en Popayán';
+    const ics = calendarFile({ ...event, title, start: '2027-01-31' }, 'start');
+    const lines = ics.split('\r\n');
+    assert.ok(lines.every((line) => octets(line) <= 75));
+    assert.ok(lines.some((line) => line.startsWith(' ')));
+    assert.ok(unfold(ics).includes(`SUMMARY:${title.replaceAll(',', '\\,').replaceAll(';', '\\;')}\r\n`));
+    assert.match(unfold(ics), /DTSTART;VALUE=DATE:20270131\r\nDTEND;VALUE=DATE:20270201\r\n/);
+    assert.match(unfold(ics), /UID:e1-start@unimayor\r\n/);
+});
+
+test('calendar folding never splits a multi-byte UTF-8 character', () => {
+    const title = 'ñáéíóú€😀'.repeat(20);
+    const ics = calendarFile({ ...event, title, start: '2027-01-31' }, 'start');
+    const lines = ics.split('\r\n');
+    assert.ok(lines.length > 13);
+    for (const line of lines) {
+        assert.ok(octets(line) <= 75);
+        assert.ok(line.isWellFormed());
+    }
+    assert.ok(unfold(ics).includes(`SUMMARY:${title}\r\n`));
+});
+
+test('backups larger than the shared size limit are rejected without changing stored data', () => {
+    assert.equal(MAX_BACKUP_SIZE, 5 * 1024 * 1024);
+    const s = storage(); addOpportunity(s, event); const before = s.value();
+    assert.throws(() => importBackup(s, ' '.repeat(MAX_BACKUP_SIZE + 1)), /demasiado grande/);
+    assert.equal(s.value(), before);
 });

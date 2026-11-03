@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { calendarFile, exportBackup, filterOpportunities, importBackup, previewBackup, readOpportunities, removeOpportunity, STATUS_LABELS, updateOpportunity } from '../lib/opportunities';
+import { calendarFile, exportBackup, filterOpportunities, importBackup, MAX_BACKUP_SIZE, previewBackup, readOpportunities, removeOpportunity, STATUS_LABELS, updateOpportunity } from '../lib/opportunities';
 import { submissionGuide } from '../lib/submissionGuide';
 
 function BackupControls({ onImport }) {
@@ -26,7 +26,7 @@ function BackupControls({ onImport }) {
         setBackup(null); setPreview(null); setMessage('');
         if (!file) return;
         try {
-            if (file.size > 5 * 1024 * 1024) throw new Error('Archivo demasiado grande');
+            if (file.size > MAX_BACKUP_SIZE) throw new Error('Archivo demasiado grande');
             const text = await file.text();
             const result = previewBackup(localStorage, text);
             if (token !== selection.current) return;
