@@ -12,11 +12,11 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - S7: «Exportar favoritos, estados y notas a un archivo.»; «Importarlos después o en otro navegador.»; «Antes de importar, mostrar qué se va a agregar y cómo se resolverán los duplicados, sin borrar datos silenciosamente.»
 
 ## Tasks
-- T1 [S1-S2,S5] inline done — invalid-entry storage safety RED/GREEN; commit pending.
-- T2 [S3-S4] inline done — calendar and preparation; calendar unit tests and browser download/checklist observed; commit pending.
-- T3 [S1-S5] inline blocked — independent verifier unavailable; requires user decision on missing independent proof; commit pending.
-- T4 [S6] inline blocked — implementation and functional checks passed; independent verification unavailable, awaiting user decision; commit pending.
-- T5 [S7] inline blocked — backup implemented and functional checks passed; independent verifier unavailable; user decision required; commit pending.
+- T1 [S1-S2,S5] inline done — invalid-entry storage safety RED/GREEN; commit 93051e6.
+- T2 [S3-S4] inline done — calendar and preparation; calendar unit tests and browser download/checklist observed; commit 93051e6.
+- T3 [S1-S5] inline blocked — independent verifier unavailable; requires user decision on missing independent proof; implementation commit 93051e6.
+- T4 [S6] inline blocked — implementation and functional checks passed; independent verification unavailable, awaiting user decision; implementation commit 93051e6.
+- T5 [S7] inline blocked — backup implemented and functional checks passed; independent verifier unavailable; user decision required; implementation commit 93051e6.
 
 ## Log
 - L1: «Dale conitnua si quieres levant todo el proyecot apra ver»
@@ -30,3 +30,4 @@ Delivery: auto-chain; chain_strategy=feature-branch-chain; forecast: approximate
 - L3: «no evale»; «dale hazlo» (authorizes S7). Assumption: preserve existing items on duplicate type and ID, including their notes and status.
 - T5: RED/GREEN backup tests; 41 bank tests, lint and build passed. Browser verified an empty, non-mutating import preview/confirmation and backup download. Native assessment was unassessable, and the prior independent verifier is unavailable.
 - L4: «commitea no depsleigues y sigmaos con los demas mejoras»; delivery choice: «Cadena sobre una rama de seguimiento». No push, PR or deployment authorized.
+- Commit boundaries: design b881317; event discovery and opportunities 93051e6. The latter combines previously accumulated behavior and exceeds the review-size guideline; independent verification remains unavailable.
