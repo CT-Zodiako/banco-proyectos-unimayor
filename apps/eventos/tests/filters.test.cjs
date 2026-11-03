@@ -131,7 +131,7 @@ test('localIsoDate formats a Date with the local calendar day', () => {
 });
 
 test('URL state round-trips and ignores unknown values', () => {
-    const state = { kind: 'attend', topics: ['IoT', 'Robótica'], modality: 'online', colombia: true, query: 'bogotá', sort: 'start' };
+    const state = { ...F.DEFAULT_STATE, kind: 'attend', topics: ['IoT', 'Robótica'], modality: 'online', colombia: true, query: 'bogotá', sort: 'start' };
     const query = F.stateToQuery(state);
     assert.deepEqual(F.parseQuery(query), state);
     assert.deepEqual(F.parseQuery('?kind=otro&modalidad=x&orden=y&co=0'), F.DEFAULT_STATE);
@@ -154,4 +154,31 @@ test('formatRange writes Spanish date ranges and handles missing dates', () => {
     assert.equal(F.formatRange(null, '2027-06-21'), 'hasta el 21 jun 2027');
     assert.equal(F.formatRange(null, null), null);
     assert.equal(F.formatDate('2026-11-05'), '5 nov 2026');
+});
+
+
+test('date range uses inclusive event start dates and excludes unknown dates', () => {
+    assert.deepEqual(ids(F.filterEvents(events, { ...base, dateFrom: '2026-11-10', dateTo: '2026-11-20' })), ['hack', 'taller']);
+    assert.deepEqual(ids(F.filterEvents(events, { ...base, dateFrom: '2027-01-01' })), ['iot', 'ai']);
+});
+
+test('location filter matches location and country without accents, independent of title', () => {
+    assert.deepEqual(ids(F.filterEvents(events, { ...base, location: 'colombia' })), ['hack', 'taller', 'webinar']);
+    assert.deepEqual(ids(F.filterEvents(events, { ...base, location: 'bogota' })), ['hack']);
+    assert.deepEqual(ids(F.filterEvents(events, { ...base, location: 'robotica' })), []);
+});
+
+test('new filters round trip in URLs without changing legacy defaults', () => {
+    const state = { ...F.DEFAULT_STATE, dateFrom: '2026-11-10', dateTo: '2027-01-31', location: 'Bogotá' };
+    assert.deepEqual(F.parseQuery(F.stateToQuery(state)), state);
+    assert.equal(F.stateToQuery(F.DEFAULT_STATE), '');
+});
+
+
+test('comparison selects at most three events and toggles selected events', () => {
+    assert.equal(F.MAX_COMPARISON, 3);
+    let selected = [];
+    for (const id of ['one', 'two', 'three', 'four']) selected = F.toggleComparison(selected, id);
+    assert.deepEqual(selected, ['one', 'two', 'three']);
+    assert.deepEqual(F.toggleComparison(selected, 'two'), ['one', 'three']);
 });

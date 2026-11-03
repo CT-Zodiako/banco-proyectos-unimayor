@@ -70,6 +70,12 @@ Tailwind v3 default palette values are listed only for the utility classes the a
 - **Metric card** (`.metric-card`): white, `rounded-xl`, `border-gray-100`, padding 24px, hover `shadow-lg`.
 - **Motion**: `fadeIn` 0.5s (opacity + translateY 10px).
 
-## Secondary source: `apps/donde-publicar/site/styles.css`
+## Static pages: events and journals
 
-Separate static page with its own palette (navy `#12305a`, `#1d4a85`, gold `#c9a227`, quartile colors Q1 `#1b7f3b`, Q2 `#2f6fd0`, Q3 `#c27c0e`, Q4 `#8a5a9e`). Quartile colors are reused only when a design shows journal quartiles.
+Sources: `apps/eventos/site/styles.css`, `apps/banco-proyectos/public/eventos/styles.css`, `apps/donde-publicar/site/styles.css`, and `apps/banco-proyectos/public/donde-publicar/styles.css`. Each deployed stylesheet matches its site counterpart. Both use the institutional palette above. The journal page additionally declares quartile colors Q1 `#1b7f3b`, Q2 `#2f6fd0`, Q3 `#c27c0e`, Q4 `#8a5a9e`.
+
+- Event filters and cards: white backgrounds, 16px radius, gray-100 border, small shadow; selected segments use institutional blue and white.
+- Event tags: blue-50/blue-700 for calls, green-50/green-700 for attendance, gray-100/gray-700 for online.
+- Layout: maximum width 1376px, horizontal padding 32px, reduced to 16px at 760px.
+- Focus: 3px yellow outline, 2px offset. Mobile event cards stack below 760px.
+- Spacing used by the static pages: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 32 and 40px; source: `apps/eventos/site/styles.css`.

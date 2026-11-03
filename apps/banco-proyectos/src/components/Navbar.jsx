@@ -20,7 +20,12 @@ const Navbar = () => {
 
                     <div className="hidden md:flex items-center gap-6">
                         <a href={EVENTS_URL} className="font-semibold hover:text-institutional-yellow transition-colors">Eventos académicos</a>
+                        <Link to="/oportunidades" className="font-semibold hover:text-institutional-yellow transition-colors">Mis oportunidades</Link>
                     </div>
+                </div>
+                <div className="flex gap-5 pb-3 text-sm font-semibold md:hidden">
+                    <a href={EVENTS_URL}>Eventos académicos</a>
+                    <Link to="/oportunidades">Mis oportunidades</Link>
                 </div>
             </div>
         </nav>

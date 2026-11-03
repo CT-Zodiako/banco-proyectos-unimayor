@@ -1,139 +1,102 @@
 <!doctype html>
 <html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Design system — Banco de Proyectos UNIMAYOR</title>
-<style>
-  :root {
-    --blue: #00428A; --yellow: #FFC107; --light: #F8FAFC; --dark: #0F172A;
-    --pink: #ED64A6; --green-acc: #48BB78; --orange-acc: #ED8936;
-    --g50: #F9FAFB; --g100: #F3F4F6; --g200: #E5E7EB; --g400: #9CA3AF; --g500: #6B7280; --g600: #4B5563; --g700: #374151; --g900: #111827;
-    --b50: #EFF6FF; --b100: #DBEAFE; --b700: #1D4ED8; --b800: #1E40AF; --b900: #1E3A8A;
-    --gr50: #F0FDF4; --gr700: #15803D; --o50: #FFF7ED; --o600: #EA580C; --o700: #C2410C; --p50: #FAF5FF; --p600: #9333EA;
-    --sh-sm: 0 1px 2px 0 rgb(0 0 0 / .05); --sh-md: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
-    --sh-lg: 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1); --sh-xl: 0 20px 25px -5px rgb(0 0 0 / .1), 0 8px 10px -6px rgb(0 0 0 / .1);
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--light); color: var(--dark); -webkit-font-smoothing: antialiased; }
-  main { width: 1440px; margin: 0 auto; padding: 48px 64px 64px; }
-  h1 { font-size: 30px; margin: 0 0 4px; color: var(--g900); }
-  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--g400); margin: 40px 0 14px; }
-  p.lead { color: var(--g600); margin: 0; }
-  .grid { display: grid; gap: 16px; }
-  .swatches { grid-template-columns: repeat(7, 1fr); }
-  .swatch { background: #fff; border: 1px solid var(--g100); border-radius: 12px; overflow: hidden; box-shadow: var(--sh-sm); }
-  .swatch .chip { height: 72px; }
-  .swatch div.meta { padding: 10px 12px; font-size: 12px; color: var(--g600); }
-  .swatch b { display: block; color: var(--g900); font-size: 13px; }
-  .type div { display: flex; align-items: baseline; gap: 24px; border-bottom: 1px solid var(--g200); padding: 10px 0; }
-  .type span.k { width: 120px; font-size: 12px; color: var(--g400); }
-  .row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
-  .rad { width: 96px; height: 64px; background: var(--b50); border: 2px solid var(--blue); display: grid; place-items: center; font-size: 12px; color: var(--b700); }
-  .sh { width: 180px; height: 90px; background: #fff; border-radius: 12px; display: grid; place-items: center; font-size: 13px; color: var(--g600); }
-  .btn-primary { padding: 8px 24px; background: var(--blue); color: #fff; border: 0; border-radius: 8px; font: 500 15px/1.4 inherit; cursor: pointer; }
-  .btn-primary:hover { background: var(--b800); }
-  :focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
-  .badge { display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
-  .card { width: 560px; background: #fff; border: 1px solid var(--g100); border-radius: 16px; box-shadow: var(--sh-sm); padding: 24px; }
-  .card .top { display: flex; gap: 16px; }
-  .emoji { width: 64px; height: 64px; background: var(--b50); border-radius: 16px; display: grid; place-items: center; font-size: 30px; flex-shrink: 0; }
-  .card h3 { margin: 0 0 4px; font-size: 20px; color: var(--g900); line-height: 1.25; }
-  .card p { margin: 0; font-size: 14px; color: var(--g600); }
-  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
-  .t { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-  .t.area { background: var(--b50); color: var(--b700); text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
-  .t.sector { background: var(--gr50); color: var(--gr700); }
-  .t.level { background: var(--o50); color: var(--o700); }
-  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; border-top: 1px solid var(--g100); margin-top: 24px; padding-top: 20px; }
-  .metrics small { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--g400); }
-  .metrics b { font-size: 14px; color: var(--g700); }
-  .metric-card { width: 220px; padding: 24px; border-radius: 12px; border: 1px solid var(--g100); background: #fff; }
-  .metric-card b { font-size: 30px; color: var(--blue); display: block; }
-  .metric-card span { color: var(--g500); font-size: 14px; }
-</style>
-</head>
-<body>
-<main>
-  <header>
-    <h1>Sistema de diseño · Banco de Proyectos UNIMAYOR</h1>
-    <p class="lead">Tokens tomados de <code>apps/banco-proyectos/tailwind.config.js</code>, <code>src/index.css</code> y las clases usadas en <code>src/</code>.</p>
-  </header>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Sistema visual · UNIMAYOR</title>
+  <style>
+    body {
+      margin: 0;
+      background: #F8FAFC;
+      color: #0F172A;
+      font: 16px system-ui, sans-serif;
+    }
+    header {
+      background: #00428A;
+      color: white;
+      padding: 24px 40px;
+    }
+    main {
+      padding: 40px;
+      max-width: 1360px;
+      margin: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 16px;
+    }
+    .grid div,
+    .card {
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 16px;
+    }
+    i {
+      display: block;
+      height: 65px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #E5E7EB;
+    }
+    button {
+      background: #00428A;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font: inherit;
+    }
+    small {
+      color: #4B5563;
+    }
+  </style>
+  <header><b>UNIMAYOR</b> · Sistema visual</header>
+  <main>
+    <h1>Identidad y componentes</h1>
+    <p>Tokens observados en las hojas de estilo del banco, eventos y publicaciones.</p>
 
-  <section aria-labelledby="h-brand">
-    <h2 id="h-brand">Colores institucionales</h2>
-    <div class="grid swatches">
-      <div class="swatch"><div class="chip" style="background:#00428A"></div><div class="meta"><b>institutional.blue</b>#00428A</div></div>
-      <div class="swatch"><div class="chip" style="background:#FFC107"></div><div class="meta"><b>institutional.yellow</b>#FFC107</div></div>
-      <div class="swatch"><div class="chip" style="background:#F8FAFC;border-bottom:1px solid #E5E7EB"></div><div class="meta"><b>institutional.light</b>#F8FAFC</div></div>
-      <div class="swatch"><div class="chip" style="background:#0F172A"></div><div class="meta"><b>institutional.dark</b>#0F172A</div></div>
-      <div class="swatch"><div class="chip" style="background:#ED64A6"></div><div class="meta"><b>accent.pink</b>#ED64A6</div></div>
-      <div class="swatch"><div class="chip" style="background:#48BB78"></div><div class="meta"><b>accent.green</b>#48BB78</div></div>
-      <div class="swatch"><div class="chip" style="background:#ED8936"></div><div class="meta"><b>accent.orange</b>#ED8936</div></div>
+    <h2>Colores</h2>
+    <div class="grid">
+        <div><i style="background:#00428A"></i><code>#00428A</code></div>
+        <div><i style="background:#FFC107"></i><code>#FFC107</code></div>
+        <div><i style="background:#F8FAFC"></i><code>#F8FAFC</code></div>
+        <div><i style="background:#0F172A"></i><code>#0F172A</code></div>
+        <div><i style="background:#F9FAFB"></i><code>#F9FAFB</code></div>
+        <div><i style="background:#F3F4F6"></i><code>#F3F4F6</code></div>
+        <div><i style="background:#E5E7EB"></i><code>#E5E7EB</code></div>
+        <div><i style="background:#9CA3AF"></i><code>#9CA3AF</code></div>
+        <div><i style="background:#6B7280"></i><code>#6B7280</code></div>
+        <div><i style="background:#4B5563"></i><code>#4B5563</code></div>
+        <div><i style="background:#374151"></i><code>#374151</code></div>
+        <div><i style="background:#111827"></i><code>#111827</code></div>
+        <div><i style="background:#EFF6FF"></i><code>#EFF6FF</code></div>
+        <div><i style="background:#DBEAFE"></i><code>#DBEAFE</code></div>
+        <div><i style="background:#1D4ED8"></i><code>#1D4ED8</code></div>
+        <div><i style="background:#1E40AF"></i><code>#1E40AF</code></div>
+        <div><i style="background:#F0FDF4"></i><code>#F0FDF4</code></div>
+        <div><i style="background:#15803D"></i><code>#15803D</code></div>
+        <div><i style="background:#FFF7ED"></i><code>#FFF7ED</code></div>
+        <div><i style="background:#EA580C"></i><code>#EA580C</code></div>
+        <div><i style="background:#C2410C"></i><code>#C2410C</code></div>
+        <div><i style="background:#ED64A6"></i><code>#ED64A6</code></div>
+        <div><i style="background:#48BB78"></i><code>#48BB78</code></div>
+        <div><i style="background:#ED8936"></i><code>#ED8936</code></div>
+        <div><i style="background:#1b7f3b"></i><code>#1b7f3b</code></div>
+        <div><i style="background:#2f6fd0"></i><code>#2f6fd0</code></div>
+        <div><i style="background:#c27c0e"></i><code>#c27c0e</code></div>
+        <div><i style="background:#8a5a9e"></i><code>#8a5a9e</code></div>
     </div>
-    <h2>Neutros y apoyos (Tailwind)</h2>
-    <div class="grid swatches">
-      <div class="swatch"><div class="chip" style="background:#F3F4F6"></div><div class="meta"><b>gray-100</b>#F3F4F6</div></div>
-      <div class="swatch"><div class="chip" style="background:#E5E7EB"></div><div class="meta"><b>gray-200</b>#E5E7EB</div></div>
-      <div class="swatch"><div class="chip" style="background:#9CA3AF"></div><div class="meta"><b>gray-400</b>#9CA3AF</div></div>
-      <div class="swatch"><div class="chip" style="background:#4B5563"></div><div class="meta"><b>gray-600</b>#4B5563</div></div>
-      <div class="swatch"><div class="chip" style="background:#111827"></div><div class="meta"><b>gray-900</b>#111827</div></div>
-      <div class="swatch"><div class="chip" style="background:#EFF6FF"></div><div class="meta"><b>blue-50</b>#EFF6FF</div></div>
-      <div class="swatch"><div class="chip" style="background:#1E3A8A"></div><div class="meta"><b>blue-900</b>#1E3A8A</div></div>
-    </div>
-  </section>
 
-  <section aria-labelledby="h-type">
-    <h2 id="h-type">Tipografía · Inter</h2>
-    <div class="type">
-      <div><span class="k">3xl · 700</span><span style="font-size:30px;font-weight:700">Explorar Proyectos</span></div>
-      <div><span class="k">xl · 700</span><span style="font-size:20px;font-weight:700">Sistema de Monitoreo Agrícola Distribuido con MQTT</span></div>
-      <div><span class="k">base · 400</span><span style="font-size:16px">Filtrar por tecnología, sector o palabras clave.</span></div>
-      <div><span class="k">sm · 400</span><span style="font-size:14px;color:#4B5563">Los agricultores carecen de información en tiempo real.</span></div>
-      <div><span class="k">xs · 700 · caps</span><span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#9CA3AF">Duración</span></div>
+    <h2>Tipografía y componentes</h2>
+    <div class="card">
+      <h3>Evento académico <small>· Inter / system-ui</small></h3>
+      <p>Texto secundario · 14 px · tarjetas de 16 px de radio</p>
+      <button>Acción principal</button>
     </div>
-  </section>
 
-  <section aria-labelledby="h-shape">
-    <h2 id="h-shape">Radios y sombras</h2>
-    <div class="row">
-      <div class="rad" style="border-radius:6px">md 6</div>
-      <div class="rad" style="border-radius:8px">lg 8</div>
-      <div class="rad" style="border-radius:12px">xl 12</div>
-      <div class="rad" style="border-radius:16px">2xl 16</div>
-      <div class="rad" style="border-radius:24px">3xl 24</div>
-      <div class="rad" style="border-radius:9999px">full</div>
-    </div>
-    <div class="row" style="margin-top:24px">
-      <div class="sh" style="box-shadow:var(--sh-sm)">shadow-sm</div>
-      <div class="sh" style="box-shadow:var(--sh-md)">shadow-md</div>
-      <div class="sh" style="box-shadow:var(--sh-lg)">shadow-lg</div>
-      <div class="sh" style="box-shadow:var(--sh-xl)">shadow-xl</div>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-comp">
-    <h2 id="h-comp">Componentes</h2>
-    <div class="row" style="align-items:flex-start">
-      <article class="card" aria-label="Tarjeta de proyecto">
-        <div class="top">
-          <div class="emoji" aria-hidden="true">🌾</div>
-          <div><h3>Sistema de Monitoreo Agrícola Distribuido con MQTT</h3><p>Los agricultores carecen de información en tiempo real sobre condiciones del suelo y clima…</p></div>
-        </div>
-        <div class="tags"><span class="t area">SBC-IoT</span><span class="t sector">Agricultura de precisión</span><span class="t level">Intermedio</span></div>
-        <div class="metrics">
-          <div><small>Duración</small><b>Un semestre</b></div><div><small>Presp.</small><b>Bajo costo</b></div>
-          <div><small>Hardware</small><b>7</b></div><div><small>Software</small><b>7</b></div>
-        </div>
-      </article>
-      <div style="display:grid;gap:16px">
-        <button class="btn-primary">¿Dónde publicar este proyecto?</button>
-        <div><span class="badge" style="background:#FFC107;color:#0F172A">Nuevo</span> <span class="badge" style="background:#DBEAFE;color:#1D4ED8">AIoT</span></div>
-        <div class="metric-card"><b>100</b><span>Proyectos en el banco</span></div>
-      </div>
-    </div>
-  </section>
-</main>
-</body>
+    <h2>Espaciado y radios</h2>
+    <p>Espaciado: 4–40 px · Radios: 6, 8, 12, 16, 24 px y circular.</p>
+    <p>Sombras: small, medium, large y extra large. Ver <code>system.md</code> para valores y fuentes.</p>
+  </main>
 </html>

@@ -100,6 +100,23 @@
     return href ? el("a", { text: label, className, attrs: { href, target: "_blank", rel: "noopener noreferrer" } }) : null;
   }
 
+  function favoriteButton(journal) {
+    const button = el("button", { className: "btn", text: "Guardar", attrs: { type: "button", "aria-label": `Guardar ${journal.title} en mis oportunidades` } });
+    import("./opportunities.js").then((store) => {
+      const refresh = () => { button.textContent = store.readOpportunities(localStorage).some((item) => item.type === "journal" && item.id === journal.id) ? "Guardado" : "Guardar"; };
+      try { refresh(); } catch (_) { button.textContent = "Favoritos no disponibles"; button.disabled = true; }
+      button.addEventListener("click", () => {
+        try {
+          const exists = store.readOpportunities(localStorage).some((item) => item.type === "journal" && item.id === journal.id);
+          if (exists) store.removeOpportunity(localStorage, "journal", journal.id);
+          else store.addOpportunity(localStorage, { type: "journal", id: journal.id, title: journal.title, url: journal.url, instructions: journal.author_instructions_url });
+          refresh();
+        } catch (_) { button.textContent = "No se pudo guardar"; }
+      });
+    }).catch(() => { button.textContent = "Favoritos no disponibles"; button.disabled = true; });
+    return button;
+  }
+
   /* ---------- Templates and publication format ---------- */
 
   // Short hint to tell apart several templates of the same kind; the full file name goes in the tooltip.
@@ -227,6 +244,7 @@
     const acts = el("div", { className: "acts" }, [
       ...templates,
       instructions,
+      favoriteButton(journal),
       el("div", { className: "btn-links" }, [link(journal.aims_scope_url, "Alcance"), link(journal.url, "Sitio"),
         link(journal.doaj_url, "DOAJ"), link(journal.scimago_url, "SCImago")]),
     ]);
@@ -594,6 +612,7 @@
     const cats = (journal.categories || []).map((c) => (c.quartile ? `${c.name} (${c.quartile})` : c.name));
     $(".journal-cats", card).textContent = cats.length ? `Categorías SCImago: ${cats.join(" · ")}` : "";
     const links = $(".journal-links", card);
+    links.appendChild(favoriteButton(journal));
     for (const node of [link(journal.url, "Sitio de la revista", "primary"), link(journal.author_instructions_url, "Instrucciones para autores"),
       link(journal.aims_scope_url, "Alcance de la revista"), link(journal.doaj_url, "Ficha en DOAJ"), link(journal.scimago_url, "Ficha en SCImago")]) {
       if (node) links.appendChild(node);
@@ -682,6 +701,9 @@
     setupSegmented($('[data-catalog="quartile"]'), (value) => { state.catalogQuartile = value; state.catalogShown = PAGE_SIZE; renderCatalog(); });
     $("#catalog-more").addEventListener("click", () => { state.catalogShown += PAGE_SIZE; renderCatalog(); });
 
+    $("#data-status-date").textContent = DATA.generated
+      ? `Catálogo generado el ${DATA.generated}.`
+      : "Fecha de generación no disponible.";
     const s = DATA.sources;
     $("#data-sources").textContent = `Datos generados el ${DATA.generated}: ${s.doaj_free_journals.toLocaleString("es-CO")} revistas de DOAJ sin APC ni otros cobros, de las cuales ${s.diamond_ranked_journals.toLocaleString("es-CO")} tienen cuartil en SCImago.`;
 
