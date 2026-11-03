@@ -146,6 +146,18 @@ test('the backup limit is measured in UTF-8 bytes, matching File.size', () => {
   const text = JSON.stringify({ version: 1, items: [item] });
   assert.ok(text.length < 5 * 1024 * 1024 && Buffer.byteLength(text, 'utf8') > 5 * 1024 * 1024);
   const before = s.value();
-  assert.throws(() => importBackup(s, text));
+  assert.throws(() => importBackup(s, text), /demasiado grande/);
+  assert.equal(s.value(), before);
+});
+
+test('a lone carriage return is escaped like any other line break', () => {
+  const ics = calendarFile({ ...event, title: 'Congreso\rX-INJECTED:1', start: '2027-01-31' }, 'start');
+  assert.ok(!ics.split('\r\n').some((line) => line.startsWith('X-INJECTED')));
+  assert.ok(ics.includes('SUMMARY:Congreso\\nX-INJECTED:1'));
+});
+
+test('a large oversized backup is rejected without touching stored data', () => {
+  const s = storage(); addOpportunity(s, event); const before = s.value();
+  assert.throws(() => importBackup(s, 'x'.repeat(5 * 1024 * 1024 + 1)), /demasiado grande/);
   assert.equal(s.value(), before);
 });

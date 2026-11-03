@@ -7,9 +7,12 @@ function utf8Octets(char) {
     return point < 0x80 ? 1 : point < 0x800 ? 2 : point < 0x10000 ? 3 : 4;
 }
 
-function utf8Length(text) {
+function utf8Length(text, limit = Infinity) {
     let size = 0;
-    for (const char of text) size += utf8Octets(char);
+    for (const char of text) {
+        size += utf8Octets(char);
+        if (size > limit) return size;
+    }
     return size;
 }
 
@@ -51,7 +54,7 @@ export function exportBackup(storage) {
 }
 
 function backupItems(text) {
-    if (typeof text !== 'string' || utf8Length(text) > MAX_BACKUP_SIZE) throw new Error('El archivo es demasiado grande o inválido.');
+    if (typeof text !== 'string' || utf8Length(text, MAX_BACKUP_SIZE) > MAX_BACKUP_SIZE) throw new Error('El archivo es demasiado grande o inválido.');
     const backup = JSON.parse(text);
     if (!backup || backup.version !== 1 || !Array.isArray(backup.items) || backup.items.some((item) =>
         !validItem(item) || (item.status !== undefined && !Object.hasOwn(STATUS_LABELS, item.status)) ||
