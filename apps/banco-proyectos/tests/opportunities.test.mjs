@@ -126,3 +126,26 @@ test('backups larger than the shared size limit are rejected without changing st
     assert.throws(() => importBackup(s, ' '.repeat(MAX_BACKUP_SIZE + 1)), /demasiado grande/);
     assert.equal(s.value(), before);
 });
+
+test('carriage returns are escaped so a title cannot break the calendar structure', () => {
+  const ics = calendarFile({ ...event, title: 'Congreso\r\nX-INJECTED:1', start: '2027-01-31' }, 'start');
+  const lines = ics.split('\r\n');
+  assert.ok(!lines.some((line) => line.startsWith('X-INJECTED')));
+  assert.ok(lines.some((line) => line.startsWith('SUMMARY:Congreso\\nX-INJECTED:1')));
+});
+
+test('the calendar file ends with a single CRLF terminator', () => {
+  const ics = calendarFile({ ...event, start: '2027-01-31' }, 'start');
+  assert.ok(ics.endsWith('END:VCALENDAR\r\n'));
+  assert.ok(!ics.endsWith('\r\n\r\n'));
+});
+
+test('the backup limit is measured in UTF-8 bytes, matching File.size', () => {
+  const s = storage();
+  const item = { type: 'event', id: 'big', title: 'ñ'.repeat(3 * 1024 * 1024) };
+  const text = JSON.stringify({ version: 1, items: [item] });
+  assert.ok(text.length < 5 * 1024 * 1024 && Buffer.byteLength(text, 'utf8') > 5 * 1024 * 1024);
+  const before = s.value();
+  assert.throws(() => importBackup(s, text));
+  assert.equal(s.value(), before);
+});

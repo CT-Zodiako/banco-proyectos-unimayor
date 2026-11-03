@@ -1,5 +1,18 @@
 export const STORAGE_KEY = 'unimayor.opportunities.v1';
-export const MAX_BACKUP_SIZE = 5 * 1024 * 1024;
+export const MAX_BACKUP_SIZE = 5 * 1024 * 1024; // bytes of UTF-8 text, the same unit as File.size
+
+// UTF-8 octets of one code point, so byte limits and iCalendar folding agree.
+function utf8Octets(char) {
+    const point = char.codePointAt(0);
+    return point < 0x80 ? 1 : point < 0x800 ? 2 : point < 0x10000 ? 3 : 4;
+}
+
+function utf8Length(text) {
+    let size = 0;
+    for (const char of text) size += utf8Octets(char);
+    return size;
+}
+
 export const STATUS_LABELS = { review: 'Por revisar', preparing: 'Preparando', submitted: 'Enviado', discarded: 'Descartado' };
 
 const validItem = (item) => item && ['event', 'journal'].includes(item.type) && typeof item.id === 'string' && item.id.length > 0 && typeof item.title === 'string' && item.title.length > 0;
@@ -38,7 +51,7 @@ export function exportBackup(storage) {
 }
 
 function backupItems(text) {
-    if (typeof text !== 'string' || text.length > MAX_BACKUP_SIZE) throw new Error('El archivo es demasiado grande o inválido.');
+    if (typeof text !== 'string' || utf8Length(text) > MAX_BACKUP_SIZE) throw new Error('El archivo es demasiado grande o inválido.');
     const backup = JSON.parse(text);
     if (!backup || backup.version !== 1 || !Array.isArray(backup.items) || backup.items.some((item) =>
         !validItem(item) || (item.status !== undefined && !Object.hasOwn(STATUS_LABELS, item.status)) ||
@@ -78,8 +91,7 @@ function foldLine(line) {
     let current = '';
     let size = 0;
     for (const char of line) {
-        const point = char.codePointAt(0);
-        const octets = point < 0x80 ? 1 : point < 0x800 ? 2 : point < 0x10000 ? 3 : 4;
+        const octets = utf8Octets(char);
         if (size + octets > (lines.length ? 74 : 75)) { lines.push(current); current = ''; size = 0; }
         current += char;
         size += octets;
@@ -93,7 +105,7 @@ export function calendarFile(item, field) {
     const day = new Date(`${date}T00:00:00Z`);
     if (Number.isNaN(day.getTime()) || day.toISOString().slice(0, 10) !== date) return null;
     const next = new Date(day.getTime() + 86400000).toISOString().slice(0, 10).replaceAll('-', '');
-    const escape = (text) => String(text || '').replaceAll('\\', '\\\\').replaceAll('\n', '\\n').replaceAll(',', '\\,').replaceAll(';', '\\;');
+    const escape = (text) => String(text || '').replaceAll('\\', '\\\\').replaceAll(/\r\n|\r|\n/g, '\\n').replaceAll(',', '\\,').replaceAll(';', '\\;');
     const title = field === 'deadline' ? `Cierre: ${item.title}` : item.title;
     return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//UNIMAYOR//Oportunidades//ES', 'BEGIN:VEVENT',
         `UID:${encodeURIComponent(String(item.id))}-${field}@unimayor`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
