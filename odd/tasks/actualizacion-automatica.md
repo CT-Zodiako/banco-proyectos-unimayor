@@ -24,10 +24,10 @@ the date of each source.
 
 ## Tasks
 
-- T1 [S2 S5 S6] Journal build records DOAJ date and SCImago edition, refuses an empty join; page shows them — inline — commit pending
-- T2 [S3 S5] Event build option that fails when any public source fails — inline — commit pending
-- T3 [S1 S2 S3 S4 S5] Workflow `.github/workflows/actualizar-datos.yml`, version the SCImago folder — inline — commit pending
-- T4 [S7] Docs (root, donde-publicar and eventos READMEs) — inline, with T1-T3 — commit pending
+- T1 [S2 S5 S6] Journal build records DOAJ date and SCImago edition, refuses an empty join; page shows them — inline — done 6346d33
+- T2 [S3 S5] Event build option that fails when any public source fails — inline — done 1d48c16
+- T3 [S1 S2 S3 S4 S5] Workflow `.github/workflows/actualizar-datos.yml`, version the SCImago folder — inline — done 5b1b737
+- T4 [S7] Docs (root, donde-publicar and eventos READMEs) — inline, with T1-T3 — done 5b1b737
 
 ## Log
 
@@ -43,3 +43,11 @@ the date of each source.
 - **L4** (user) "Implementalo asi, incluye enventos y revistas".
 - **L5** Decision: the events build in the workflow uses a new `--require-all-sources` option so a source outage
   does not publish a week without that source (S5); the journal build exits 1 when no journal survives the join.
+- **L6** Verification (2026-11-08, inline; the independent verifier was not admitted): all suites pass
+  (donde-publicar 54 py + 31 node, eventos 54 py + 46 node, banco-proyectos 56 + lint). Workflow simulated in an
+  isolated clone with a local bare origin: journals step failed with the missing-SCImago `::error` and the restore
+  left `site/` clean; events step failed because every WikiCFP page timed out (`curl` to wikicfp.com also timed out
+  from this machine; ccfddl answered 200), `--require-all-sources` wrote nothing, no commit, final step exits 1 (S5).
+  Commit step alone, with a data change and a concurrent remote commit: rebased and pushed
+  `chore(data): refresh journals and events <date>` as github-actions[bot]. Not provable locally: a run on GitHub
+  (schedule, permissions, branch protection on master, runner access to WikiCFP) and the real SCImago CSV.
