@@ -38,12 +38,12 @@ class OfflineBuildTest(unittest.TestCase):
             (self.raw / "devpost").mkdir(parents=True)
             shutil.copy(FIXTURES / "devpost-page-1.json", self.raw / "devpost" / "page-1.json")
 
-    def run_build(self):
+    def run_build(self, *extra):
         stdout, stderr = io.StringIO(), io.StringIO()
         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
             code = build.main(["--offline", "--today", "2026-10-31", "--wikicfp-pages", "1", "--raw", str(self.raw),
                                "--manual", str(self.manual), "--projects", str(self.projects),
-                               "--out", str(self.out)])
+                               "--out", str(self.out), *extra])
         return code, stdout.getvalue(), stderr.getvalue()
 
     def payload(self):
@@ -77,6 +77,25 @@ class OfflineBuildTest(unittest.TestCase):
         self.assertIn("warning: wikicfp failed:", stderr)
         self.assertIn("warning: devpost failed:", stderr)
         self.assertEqual(self.payload()["sources"], {"wikicfp": 0, "ccfddl": 3, "devpost": 0, "manual": 1})
+
+    def test_require_all_sources_fails_without_writing_when_one_source_fails(self):
+        self.cache(devpost=False)
+        self.out.parent.mkdir(parents=True)
+        self.out.write_text("previous\n", encoding="utf-8")
+        code, stdout, stderr = self.run_build("--require-all-sources")
+        self.assertEqual(code, 1)
+        self.assertEqual(stdout, "")
+        self.assertIn("warning: devpost failed:", stderr)
+        self.assertTrue(stderr.endswith("error: --require-all-sources: devpost failed; site/data.js was not written\n"))
+        self.assertEqual(self.out.read_text(encoding="utf-8"), "previous\n")
+
+    def test_require_all_sources_writes_when_every_source_answers(self):
+        self.cache()
+        code, stdout, stderr = self.run_build("--require-all-sources")
+        self.assertEqual(code, 0)
+        self.assertNotIn("error:", stderr)
+        self.assertEqual(stdout, f"wikicfp=4 ccfddl=3 devpost=3 manual=1 events=11 projects=4 out={self.out}\n")
+        self.assertEqual(self.payload()["sources"], {"wikicfp": 4, "ccfddl": 3, "devpost": 3, "manual": 1})
 
     def test_all_sources_failing_exits_non_zero_without_writing(self):
         code, stdout, stderr = self.run_build()

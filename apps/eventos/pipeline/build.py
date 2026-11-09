@@ -7,6 +7,7 @@ Downloads are saved under data/raw/ (not versioned); --offline rebuilds from tho
 Usage (from apps/eventos):
     python3 -E -m pipeline.build              # download (about 4-5 minutes, WikiCFP asks 5 s between pages)
     python3 -E -m pipeline.build --offline    # rebuild from data/raw/
+    python3 -E -m pipeline.build --require-all-sources   # weekly job: keep the old data if any source fails
 """
 
 import argparse
@@ -31,6 +32,8 @@ def main(argv=None):
     parser.add_argument("--raw", default=ROOT / "data/raw", type=pathlib.Path, help="download cache")
     parser.add_argument("--out", default=ROOT / "site/data.js", type=pathlib.Path)
     parser.add_argument("--offline", action="store_true", help="read data/raw/ instead of downloading")
+    parser.add_argument("--require-all-sources", action="store_true",
+                        help="exit 1 without writing when any public source fails (default: count it as 0)")
     parser.add_argument("--wikicfp-pages", default=5, type=int,
                         help="maximum pages (20 calls each) per WikiCFP topic; paging stops at past calls")
     parser.add_argument("--timeout", default=30, type=float, help="seconds per request")
@@ -77,6 +80,10 @@ def main(argv=None):
             failed.append(name)
     if len(failed) == len(PUBLIC_SOURCES):
         print("error: every public source failed; site/data.js was not written", file=sys.stderr)
+        return 1
+    if failed and args.require_all_sources:
+        print(f"error: --require-all-sources: {', '.join(failed)} failed; site/data.js was not written",
+              file=sys.stderr)
         return 1
 
     events = ev.drop_expired(ev.merge_events(manual + downloaded), today)
