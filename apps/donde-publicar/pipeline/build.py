@@ -11,11 +11,20 @@ import argparse
 import datetime
 import json
 import pathlib
+import re
 import sys
 
 from pipeline import donde_publicar as dp
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+EDITION = re.compile(r"Total Docs\. \((\d{4})\)")
+
+
+def scimago_edition(path):
+    """Year of the SCImago ranking, read from its "Total Docs. (YYYY)" column; None when the header has no year."""
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        match = EDITION.search(handle.readline())
+    return int(match.group(1)) if match else None
 
 
 def main(argv=None):
@@ -25,6 +34,8 @@ def main(argv=None):
     parser.add_argument("--scimago", default=ROOT / "data/raw/scimago/scimagojr.csv", type=pathlib.Path)
     parser.add_argument("--templates", default=ROOT / "data/templates.json", type=pathlib.Path,
                         help="optional output of pipeline.templates; missing means no templates")
+    parser.add_argument("--doaj-date", type=datetime.date.fromisoformat, default=None,
+                        help="YYYY-MM-DD when the DOAJ CSV was downloaded (default: the file's modification day)")
     parser.add_argument("--out", default=ROOT / "site/data.js", type=pathlib.Path)
     parser.add_argument("--catalog-out", default=ROOT / "site/catalog.js", type=pathlib.Path)
     args = parser.parse_args(argv)
@@ -41,6 +52,11 @@ def main(argv=None):
     with args.scimago.open(encoding="utf-8-sig", newline="") as handle:
         scimago = dp.load_scimago(handle)
     journals = dp.build_journals(doaj, scimago)
+    if not journals:
+        print("error: no DOAJ journal without fees has a SCImago quartile; "
+              "site/data.js and site/catalog.js were not written", file=sys.stderr)
+        return 1
+    doaj_date = args.doaj_date or datetime.date.fromtimestamp(args.doaj.stat().st_mtime)
     templates = {}
     if args.templates.is_file():
         templates = json.loads(args.templates.read_text(encoding="utf-8")).get("journals", {})
@@ -63,7 +79,8 @@ def main(argv=None):
     payload = {
         "generated": datetime.date.today().isoformat(),
         "sources": {"doaj_free_journals": len(doaj), "scimago_ranked_issns": len(scimago),
-                    "diamond_ranked_journals": len(journals)},
+                    "diamond_ranked_journals": len(journals), "doaj_downloaded": doaj_date.isoformat(),
+                    "scimago_edition": scimago_edition(args.scimago)},
         "themes": {theme: spec["label"] for theme, spec in dp.THEMES.items()},
         "projects": projects,
         "journals": [slim(j) for j in journals if j["id"] in used],

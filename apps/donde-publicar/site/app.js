@@ -701,9 +701,7 @@
     setupSegmented($('[data-catalog="quartile"]'), (value) => { state.catalogQuartile = value; state.catalogShown = PAGE_SIZE; renderCatalog(); });
     $("#catalog-more").addEventListener("click", () => { state.catalogShown += PAGE_SIZE; renderCatalog(); });
 
-    $("#data-status-date").textContent = DATA.generated
-      ? `Catálogo generado el ${DATA.generated}.`
-      : "Fecha de generación no disponible.";
+    $("#data-status-date").textContent = T.dataStatus(DATA);
     const s = DATA.sources;
     $("#data-sources").textContent = `Datos generados el ${DATA.generated}: ${s.doaj_free_journals.toLocaleString("es-CO")} revistas de DOAJ sin APC ni otros cobros, de las cuales ${s.diamond_ranked_journals.toLocaleString("es-CO")} tienen cuartil en SCImago.`;
 

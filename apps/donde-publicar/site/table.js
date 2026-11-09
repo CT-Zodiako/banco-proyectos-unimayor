@@ -296,8 +296,17 @@
     return { meets, misses, tips };
   }
 
+  /* "Estado de los datos" line: catalog date plus the date of each source (missing in catalogs built before). */
+  function dataStatus(data) {
+    if (!data || !data.generated) return "Fecha de generación no disponible.";
+    const sources = data.sources || {};
+    const doaj = sources.doaj_downloaded || "fecha no registrada";
+    const scimago = sources.scimago_edition ? `edición ${sources.scimago_edition}` : "edición no registrada";
+    return `Catálogo generado el ${data.generated}. DOAJ: ${doaj} · SCImago: ${scimago}.`;
+  }
+
   const api = { QUARTILE_RANK, MAX_COMPARE, AFFINITY_MAX, ADVANCED_DEFAULTS, PRESETS, normalize, filterRows, sortRows,
-    toggleCompare, compareBest, affinity, affinityLevel, reviewTypes, countAdvanced, applyPreset, makePreset, assessment };
+    toggleCompare, compareBest, affinity, affinityLevel, reviewTypes, countAdvanced, applyPreset, makePreset, assessment, dataStatus };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.DPTable = api;
 })(this);
