@@ -1,0 +1,87 @@
+# Weekly (and on demand) refresh of the journal finder and the event finder.
+# Each app is rebuilt only after its own tests pass; an app that fails keeps its previous data.
+# Whatever was refreshed is committed to master, which makes Railway redeploy the project bank.
+# The run is marked as failed (GitHub e-mails the owner) when either app could not be refreshed.
+name: Actualizar revistas y eventos
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Mondays 09:00 UTC (04:00 in Colombia)
+  workflow_dispatch: # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-datos
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Export the bank projects
+        working-directory: apps/banco-proyectos
+        run: node scripts/export-projects.mjs ../donde-publicar/data/projects.json
+
+      - name: Journals (DOAJ + SCImago in the repository)
+        id: revistas
+        continue-on-error: true
+        working-directory: apps/donde-publicar
+        run: |
+          python3 -I -m unittest discover -s tests -t .
+          node --test "tests/*.test.cjs"
+          test -f data/raw/scimago/scimagojr.csv || {
+            echo "::error::Missing apps/donde-publicar/data/raw/scimago/scimagojr.csv (download it by hand, see the README)"
+            exit 1
+          }
+          mkdir -p data/raw/doaj
+          curl -fsSL --retry 3 --max-time 300 -o data/raw/doaj/journals.csv https://doaj.org/csv
+          python3 -E -m pipeline.build --doaj-date "$(date -u +%F)"
+
+      - name: Keep the previous journal data
+        if: steps.revistas.outcome == 'failure'
+        run: git restore apps/donde-publicar/site
+
+      - name: Events (WikiCFP, ccf-deadlines, Devpost, manual file)
+        id: eventos
+        continue-on-error: true
+        working-directory: apps/eventos
+        run: |
+          python3 -I -m unittest discover -s tests -t .
+          node --test "tests/*.test.cjs"
+          python3 -E -m pipeline.build --require-all-sources
+
+      - name: Keep the previous event data
+        if: steps.eventos.outcome == 'failure'
+        run: git restore apps/eventos/site
+
+      - name: Commit and push the refreshed data
+        run: |
+          git add apps/donde-publicar/data/projects.json apps/donde-publicar/site apps/eventos/site/data.js
+          if git diff --cached --quiet; then
+            echo "No data changed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(data): refresh journals and events $(date -u +%F)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Report a source that could not be refreshed
+        if: steps.revistas.outcome == 'failure' || steps.eventos.outcome == 'failure'
+        run: |
+          echo "::error::journals=${{ steps.revistas.outcome }} events=${{ steps.eventos.outcome }}; the failed app kept its previous data"
+          exit 1

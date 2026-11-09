@@ -33,17 +33,21 @@ instructions, DOAJ and SCImago.
 | `tests/` | Pipeline tests (Python `unittest`) and table logic tests (`node --test "tests/*.test.cjs"`) |
 | `data/projects.json` | Projects exported from `apps/banco-proyectos` (`npm run export:projects`) |
 | `data/templates.json` | Template files found by `python3 -E -m pipeline.templates` (optional input of the build) |
-| `data/raw/` | DOAJ CSV and SCImago CSV (not versioned) |
+| `data/raw/` | DOAJ CSV (not versioned) and SCImago CSV (versioned, replaced by hand once a year) |
 | `odd/tasks/donde-publicar.md` | Feature specification and decision log |
 
 ## Regenerate the data
+
+The workflow `.github/workflows/actualizar-datos.yml` runs these steps every Monday and from **Run workflow** (see the
+root README). It downloads DOAJ but reuses the versioned SCImago CSV, so step 3 is the only manual step, once a year
+when SCImago publishes a new ranking. Run the steps by hand only to check a change locally.
 
 1. **Projects**: exported from the project bank in this repository (all areas):
    `cd ../banco-proyectos && npm run export:projects` writes `data/projects.json`.
 2. **DOAJ**: `curl -L -o data/raw/doaj/journals.csv https://doaj.org/csv`
 3. **SCImago**: SCImago blocks automated downloads. Open
    <https://www.scimagojr.com/journalrank.php>, click **Download data** and save the file as
-   `data/raw/scimago/scimagojr.csv`.
+   `data/raw/scimago/scimagojr.csv`. Commit this file: the weekly workflow uses it.
 4. Build and test:
 
 ```bash
@@ -52,8 +56,12 @@ python3 -I -m unittest discover -s tests -t .
 node --test "tests/*.test.cjs"                # comparison table logic
 ```
 
-`pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths.
-It exits with code 1 and `error: missing input file <path>` if an input is missing.
+`pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths, and
+`--doaj-date YYYY-MM-DD` for the day DOAJ was downloaded (default: the CSV's modification day). It records that date
+and the SCImago edition (the year in the CSV's `Total Docs. (YYYY)` column) in `sources.doaj_downloaded` and
+`sources.scimago_edition`; the page shows them as "DOAJ: 2026-11-09 · SCImago: edición 2025".
+It exits with code 1 and `error: missing input file <path>` if an input is missing, and with code 1 without writing
+anything when no DOAJ journal without fees has a SCImago quartile (e.g. a broken download).
 
 ## How journals are matched
 

@@ -46,8 +46,31 @@ docker run --rm -p 8080:8080 publicaciones
 ```
 
 Public URL: https://banco-proyectos-unimayor-production.up.railway.app
-No Python pipeline runs at deploy time: regenerate and commit journal and event data before deploying updates
-(events expire quickly; see [`apps/eventos/README.md`](apps/eventos/README.md#refresh-before-pushing)).
+No Python pipeline runs at deploy time: the journal and event data are generated beforehand and committed.
+
+## Automatic data refresh
+
+The workflow [`.github/workflows/actualizar-datos.yml`](.github/workflows/actualizar-datos.yml) refreshes the
+journal finder and the event finder every Monday at 09:00 UTC (04:00 in Colombia). To refresh on demand, open
+**Actions → Actualizar revistas y eventos → Run workflow** on GitHub.
+
+Each run:
+
+1. Exports the bank projects to `apps/donde-publicar/data/projects.json`.
+2. Journals: runs the tests, downloads DOAJ, and rebuilds with the SCImago CSV stored in the repository.
+3. Events: runs the tests and rebuilds with `--require-all-sources` (WikiCFP, ccf-deadlines, Devpost and the manual
+   file).
+4. Commits whatever was refreshed to `master` (`chore(data): refresh journals and events <date>`), which makes
+   Railway redeploy.
+
+An app whose tests, download or build fails keeps its previous data, and the run ends as failed, so GitHub e-mails
+the owner. A source outage never publishes an emptier catalog: the journal build refuses an empty DOAJ/SCImago join,
+and the event build refuses to write when any public source fails.
+
+**Once a year, update SCImago by hand.** SCImago blocks scripted downloads and publishes a new ranking yearly.
+Download it as described in [`apps/donde-publicar/README.md`](apps/donde-publicar/README.md#regenerate-the-data),
+replace `apps/donde-publicar/data/raw/scimago/scimagojr.csv`, commit it, and run the workflow. The journal page shows
+the edition in use ("SCImago: edición 2025").
 
 ## Where to publish
 
@@ -59,7 +82,8 @@ python3 -I -m unittest discover -s tests -t .
 python3 -E -m pipeline.build
 ```
 
-The DOAJ and SCImago downloads in `apps/donde-publicar/data/raw/` are not versioned (large third-party files).
+The DOAJ download in `apps/donde-publicar/data/raw/doaj/` is not versioned. The SCImago CSV in
+`apps/donde-publicar/data/raw/scimago/` is versioned so the weekly workflow can use it.
 
 ## Event finder
 
