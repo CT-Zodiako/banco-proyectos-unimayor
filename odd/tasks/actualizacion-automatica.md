@@ -31,7 +31,7 @@ the date of each source.
 - T3 [S1 S2 S3 S4 S5] Workflow `.github/workflows/actualizar-datos.yml`, version the SCImago folder — inline — done 5b1b737
 - T4 [S7] Docs (root, donde-publicar and eventos READMEs) — inline, with T1-T3 — done 5b1b737
 - T5 [S2 S7] Ignore the SCImago folder, skip journals in the workflow without the CSV, update docs — inline — done 586e5d8 (superseded by T6)
-- T6 [S2 S7] Version the SCImago CSV, require it in the workflow, refresh journal data, update docs — inline — pending commit
+- T6 [S2 S7] Version the SCImago CSV, require it in the workflow, refresh journal data, update docs — inline — done a469823
 
 ## Log
 
