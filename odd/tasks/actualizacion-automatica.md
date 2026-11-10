@@ -29,7 +29,7 @@ the date of each source.
 - T2 [S3 S5] Event build option that fails when any public source fails — inline — done 1d48c16
 - T3 [S1 S2 S3 S4 S5] Workflow `.github/workflows/actualizar-datos.yml`, version the SCImago folder — inline — done 5b1b737
 - T4 [S7] Docs (root, donde-publicar and eventos READMEs) — inline, with T1-T3 — done 5b1b737
-- T5 [S2 S7] Ignore the SCImago folder, skip journals in the workflow without the CSV, update docs — inline — pending commit
+- T5 [S2 S7] Ignore the SCImago folder, skip journals in the workflow without the CSV, update docs — inline — done 586e5d8
 
 ## Log
 
