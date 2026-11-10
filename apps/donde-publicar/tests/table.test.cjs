@@ -268,3 +268,15 @@ test('assessment falls back to theme keys without labels', () => {
     const a = T.assessment(project('Intermedio', [], ['ia']), { fit: 'tecnologia', themes: ['ia'] }, j('k', 'Q4'));
     assert.ok(texts(a.meets).includes('Cubre tecnologías del proyecto: ia'));
 });
+
+test('data status names the catalog date, the DOAJ download day and the SCImago edition', () => {
+    assert.equal(T.dataStatus({ generated: '2026-11-09', sources: { doaj_downloaded: '2026-11-09', scimago_edition: 2025 } }),
+        'Catálogo generado el 2026-11-09. DOAJ: 2026-11-09 · SCImago: edición 2025.');
+});
+
+test('data status says which source dates were not recorded (catalogs built before they were)', () => {
+    assert.equal(T.dataStatus({ generated: '2026-10-31', sources: { doaj_free_journals: 14498 } }),
+        'Catálogo generado el 2026-10-31. DOAJ: fecha no registrada · SCImago: edición no registrada.');
+    assert.equal(T.dataStatus({ sources: {} }), 'Fecha de generación no disponible.');
+    assert.equal(T.dataStatus({}), 'Fecha de generación no disponible.');
+});

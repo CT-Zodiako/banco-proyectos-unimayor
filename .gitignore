@@ -21,7 +21,8 @@ apps/banco-proyectos/public/donde-publicar/
 # banco-proyectos: temporary DOCX extraction folders
 apps/banco-proyectos/temp_docx_extract*/
 
-# donde-publicar: large third-party downloads (regenerate as described in its README)
+# donde-publicar: DOAJ download (the weekly workflow downloads it again) and the SCImago CSV, which is
+# downloaded by hand and kept only on the maintainer's machine (the weekly workflow skips journals without it).
 apps/donde-publicar/data/raw/doaj/
 apps/donde-publicar/data/raw/scimago/
 
