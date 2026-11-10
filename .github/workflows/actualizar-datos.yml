@@ -1,4 +1,5 @@
-# Weekly (and on demand) refresh of the journal finder and the event finder.
+# Weekly (and on demand) refresh of the journal finder and the event finder. Journals are skipped when the
+# SCImago CSV is absent, which is the normal case: it is not versioned (see the root README).
 # Each app is rebuilt only after its own tests pass; an app that fails keeps its previous data.
 # Whatever was refreshed is committed to master, which makes Railway redeploy the project bank.
 # The run is marked as failed (GitHub e-mails the owner) when either app could not be refreshed.

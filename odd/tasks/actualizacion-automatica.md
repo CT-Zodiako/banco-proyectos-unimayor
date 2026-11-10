@@ -1,6 +1,6 @@
 # Automatic weekly refresh of journals and events
 
-A GitHub Actions workflow refreshes the journal finder (DOAJ + versioned SCImago CSV) and the event finder every
+A GitHub Actions workflow refreshes the journal finder (DOAJ + SCImago CSV; skipped on GitHub because the CSV is kept only locally) and the event finder every
 week and on demand, commits the generated data to `master` only when every check passes, and the journal page shows
 the date of each source.
 
@@ -56,3 +56,5 @@ the date of each source.
 - **L7** (user, 2026-11-09) Placed the SCImago CSV from ~/Downloads (32,193 rows, edition 2025); isolated build
   passed (catalog=2701, doaj_downloaded 2026-11-10 UTC, scimago_edition 2025). Then: "no incluya el archivo en el git";
   chosen: "Solo en local, ignorado por git" → S2 rewritten, T5 added.
+- **L8** Verification of T5 (gentle-ai-verify, 2026-11-09): S2, S4, S5, S7 met; no blockers or regressions. Advisories
+  applied (header comments mentioning the journal skip). Unverified: a real GitHub run and the restore steps.

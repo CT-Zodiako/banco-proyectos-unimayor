@@ -51,7 +51,7 @@ No Python pipeline runs at deploy time: the journal and event data are generated
 ## Automatic data refresh
 
 The workflow [`.github/workflows/actualizar-datos.yml`](.github/workflows/actualizar-datos.yml) refreshes the
-journal finder and the event finder every Monday at 09:00 UTC (04:00 in Colombia). To refresh on demand, open
+event finder (and the journal finder, only when the SCImago CSV is present) every Monday at 09:00 UTC (04:00 in Colombia). To refresh on demand, open
 **Actions → Actualizar revistas y eventos → Run workflow** on GitHub.
 
 Each run:
