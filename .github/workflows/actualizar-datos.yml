@@ -1,5 +1,5 @@
-# Weekly (and on demand) refresh of the journal finder and the event finder. Journals are skipped when the
-# SCImago CSV is absent, which is the normal case: it is not versioned (see the root README).
+# Weekly (and on demand) refresh of the journal finder and the event finder. Journals use a fresh DOAJ download
+# and the SCImago CSV versioned in the repository (replaced by hand once a year, see the root README).
 # Each app is rebuilt only after its own tests pass; an app that fails keeps its previous data.
 # Whatever was refreshed is committed to master, which makes Railway redeploy the project bank.
 # The run is marked as failed (GitHub e-mails the owner) when either app could not be refreshed.
@@ -36,26 +36,17 @@ jobs:
         working-directory: apps/banco-proyectos
         run: node scripts/export-projects.mjs ../donde-publicar/data/projects.json
 
-      # The SCImago CSV is not versioned (it lives only on the maintainer's machine), so journals are skipped
-      # here unless it is present; they are rebuilt locally and their site/ data committed by hand.
-      - name: Check for the SCImago CSV
-        id: scimago
-        run: |
-          if [ -f apps/donde-publicar/data/raw/scimago/scimagojr.csv ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::SCImago CSV not in the repository; journals keep their data (rebuild them locally)"
-          fi
-
-      - name: Journals (DOAJ + SCImago)
+      - name: Journals (DOAJ + SCImago in the repository)
         id: revistas
-        if: steps.scimago.outputs.present == 'true'
         continue-on-error: true
         working-directory: apps/donde-publicar
         run: |
           python3 -I -m unittest discover -s tests -t .
           node --test "tests/*.test.cjs"
+          test -f data/raw/scimago/scimagojr.csv || {
+            echo "::error::Missing apps/donde-publicar/data/raw/scimago/scimagojr.csv (download it by hand, see the README)"
+            exit 1
+          }
           mkdir -p data/raw/doaj
           curl -fsSL --retry 3 --max-time 300 -o data/raw/doaj/journals.csv https://doaj.org/csv
           python3 -E -m pipeline.build --doaj-date "$(date -u +%F)"

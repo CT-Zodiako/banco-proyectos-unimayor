@@ -21,10 +21,9 @@ apps/banco-proyectos/public/donde-publicar/
 # banco-proyectos: temporary DOCX extraction folders
 apps/banco-proyectos/temp_docx_extract*/
 
-# donde-publicar: DOAJ download (the weekly workflow downloads it again) and the SCImago CSV, which is
-# downloaded by hand and kept only on the maintainer's machine (the weekly workflow skips journals without it).
+# donde-publicar: DOAJ download (the weekly workflow downloads it again). The SCImago CSV in
+# apps/donde-publicar/data/raw/scimago/ is versioned: SCImago blocks scripted downloads, so it is replaced by hand yearly.
 apps/donde-publicar/data/raw/doaj/
-apps/donde-publicar/data/raw/scimago/
 
 # eventos: cached downloads of the public sources (regenerate with python3 -E -m pipeline.build)
 apps/eventos/data/raw/

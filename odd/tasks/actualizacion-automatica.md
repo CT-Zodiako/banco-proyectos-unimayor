@@ -1,6 +1,6 @@
 # Automatic weekly refresh of journals and events
 
-A GitHub Actions workflow refreshes the journal finder (DOAJ + SCImago CSV; skipped on GitHub because the CSV is kept only locally) and the event finder every
+A GitHub Actions workflow refreshes the journal finder (DOAJ + versioned SCImago CSV) and the event finder every
 week and on demand, commits the generated data to `master` only when every check passes, and the journal page shows
 the date of each source.
 
@@ -9,9 +9,10 @@ the date of each source.
 - **S1** Scheduled + manual run: a workflow runs every Monday and from "Run workflow" (`workflow_dispatch`, the
   "botón"). User: "Un workflow de GitHub Actions que se ejecute cada lunes y que también se pueda lanzar a mano con
   "Run workflow", que hace de botón."
-- **S2** Journals: the SCImago CSV (`apps/donde-publicar/data/raw/scimago/scimagojr.csv`) is not versioned. User:
-  "no incluya el archivo en el git"; chosen option: "Solo en local, ignorado por git". The workflow skips the journals
-  with a notice (not a failure) when the CSV is absent; journals are rebuilt locally and their `site/` data committed.
+- **S2** Journals: the workflow downloads DOAJ and rebuilds the journal data with the SCImago CSV stored in the
+  repository (`apps/donde-publicar/data/raw/scimago/scimagojr.csv`, versioned, replaced by hand once a year). User
+  (L9): "sube el csv para poder hacer las actualizaciones automaticamente para DOAJ y SCImago". A missing CSV fails
+  the journals step (previous data kept).
 - **S3** Events: the same workflow rebuilds the event data (WikiCFP, ccf-deadlines, Devpost, manual file).
 - **S4** Direct commit to `master` only if the tests pass and the data changed: "Commit directo a master, solo si
   pasan los tests y solo si los datos cambiaron."
@@ -29,7 +30,8 @@ the date of each source.
 - T2 [S3 S5] Event build option that fails when any public source fails — inline — done 1d48c16
 - T3 [S1 S2 S3 S4 S5] Workflow `.github/workflows/actualizar-datos.yml`, version the SCImago folder — inline — done 5b1b737
 - T4 [S7] Docs (root, donde-publicar and eventos READMEs) — inline, with T1-T3 — done 5b1b737
-- T5 [S2 S7] Ignore the SCImago folder, skip journals in the workflow without the CSV, update docs — inline — done 586e5d8
+- T5 [S2 S7] Ignore the SCImago folder, skip journals in the workflow without the CSV, update docs — inline — done 586e5d8 (superseded by T6)
+- T6 [S2 S7] Version the SCImago CSV, require it in the workflow, refresh journal data, update docs — inline — pending commit
 
 ## Log
 
@@ -58,3 +60,6 @@ the date of each source.
   chosen: "Solo en local, ignorado por git" → S2 rewritten, T5 added.
 - **L8** Verification of T5 (gentle-ai-verify, 2026-11-09): S2, S4, S5, S7 met; no blockers or regressions. Advisories
   applied (header comments mentioning the journal skip). Unverified: a real GitHub run and the restore steps.
+- **L9** (user, 2026-11-09) "sube el csv para poder hacer las actualizaciones automaticamente para DOAJ y SCImago" →
+  supersedes L7's "no incluya el archivo en el git". The SCImago CSV (edition 2025) is versioned again, the workflow
+  requires it, and the journal data was rebuilt (catalog=2701, DOAJ 2026-11-10, SCImago edition 2025); tests pass.
