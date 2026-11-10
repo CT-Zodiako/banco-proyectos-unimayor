@@ -33,21 +33,21 @@ instructions, DOAJ and SCImago.
 | `tests/` | Pipeline tests (Python `unittest`) and table logic tests (`node --test "tests/*.test.cjs"`) |
 | `data/projects.json` | Projects exported from `apps/banco-proyectos` (`npm run export:projects`) |
 | `data/templates.json` | Template files found by `python3 -E -m pipeline.templates` (optional input of the build) |
-| `data/raw/` | DOAJ CSV (not versioned) and SCImago CSV (versioned, replaced by hand once a year) |
+| `data/raw/` | DOAJ CSV and SCImago CSV (neither versioned; SCImago is downloaded by hand once a year) |
 | `odd/tasks/donde-publicar.md` | Feature specification and decision log |
 
 ## Regenerate the data
 
-The workflow `.github/workflows/actualizar-datos.yml` runs these steps every Monday and from **Run workflow** (see the
-root README). It downloads DOAJ but reuses the versioned SCImago CSV, so step 3 is the only manual step, once a year
-when SCImago publishes a new ranking. Run the steps by hand only to check a change locally.
+The SCImago CSV is not versioned, so the weekly workflow `.github/workflows/actualizar-datos.yml` skips the journals
+(see the root README). Refresh them locally with these steps and commit the generated `site/data.js` and
+`site/catalog.js`; step 3 is needed only once a year, when SCImago publishes a new ranking.
 
 1. **Projects**: exported from the project bank in this repository (all areas):
    `cd ../banco-proyectos && npm run export:projects` writes `data/projects.json`.
 2. **DOAJ**: `curl -L -o data/raw/doaj/journals.csv https://doaj.org/csv`
 3. **SCImago**: SCImago blocks automated downloads. Open
    <https://www.scimagojr.com/journalrank.php>, click **Download data** and save the file as
-   `data/raw/scimago/scimagojr.csv`. Commit this file: the weekly workflow uses it.
+   `data/raw/scimago/scimagojr.csv`. Do not commit it: the folder is ignored by git.
 4. Build and test:
 
 ```bash

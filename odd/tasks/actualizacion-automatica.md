@@ -9,8 +9,9 @@ the date of each source.
 - **S1** Scheduled + manual run: a workflow runs every Monday and from "Run workflow" (`workflow_dispatch`, the
   "botón"). User: "Un workflow de GitHub Actions que se ejecute cada lunes y que también se pueda lanzar a mano con
   "Run workflow", que hace de botón."
-- **S2** Journals: the workflow downloads DOAJ and rebuilds the journal data with the SCImago CSV stored in the
-  repository (`apps/donde-publicar/data/raw/scimago/scimagojr.csv`, versioned, replaced by hand once a year).
+- **S2** Journals: the SCImago CSV (`apps/donde-publicar/data/raw/scimago/scimagojr.csv`) is not versioned. User:
+  "no incluya el archivo en el git"; chosen option: "Solo en local, ignorado por git". The workflow skips the journals
+  with a notice (not a failure) when the CSV is absent; journals are rebuilt locally and their `site/` data committed.
 - **S3** Events: the same workflow rebuilds the event data (WikiCFP, ccf-deadlines, Devpost, manual file).
 - **S4** Direct commit to `master` only if the tests pass and the data changed: "Commit directo a master, solo si
   pasan los tests y solo si los datos cambiaron."
@@ -28,6 +29,7 @@ the date of each source.
 - T2 [S3 S5] Event build option that fails when any public source fails — inline — done 1d48c16
 - T3 [S1 S2 S3 S4 S5] Workflow `.github/workflows/actualizar-datos.yml`, version the SCImago folder — inline — done 5b1b737
 - T4 [S7] Docs (root, donde-publicar and eventos READMEs) — inline, with T1-T3 — done 5b1b737
+- T5 [S2 S7] Ignore the SCImago folder, skip journals in the workflow without the CSV, update docs — inline — pending commit
 
 ## Log
 
@@ -51,3 +53,6 @@ the date of each source.
   Commit step alone, with a data change and a concurrent remote commit: rebased and pushed
   `chore(data): refresh journals and events <date>` as github-actions[bot]. Not provable locally: a run on GitHub
   (schedule, permissions, branch protection on master, runner access to WikiCFP) and the real SCImago CSV.
+- **L7** (user, 2026-11-09) Placed the SCImago CSV from ~/Downloads (32,193 rows, edition 2025); isolated build
+  passed (catalog=2701, doaj_downloaded 2026-11-10 UTC, scimago_edition 2025). Then: "no incluya el archivo en el git";
+  chosen: "Solo en local, ignorado por git" → S2 rewritten, T5 added.

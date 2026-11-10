@@ -35,17 +35,26 @@ jobs:
         working-directory: apps/banco-proyectos
         run: node scripts/export-projects.mjs ../donde-publicar/data/projects.json
 
-      - name: Journals (DOAJ + SCImago in the repository)
+      # The SCImago CSV is not versioned (it lives only on the maintainer's machine), so journals are skipped
+      # here unless it is present; they are rebuilt locally and their site/ data committed by hand.
+      - name: Check for the SCImago CSV
+        id: scimago
+        run: |
+          if [ -f apps/donde-publicar/data/raw/scimago/scimagojr.csv ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::SCImago CSV not in the repository; journals keep their data (rebuild them locally)"
+          fi
+
+      - name: Journals (DOAJ + SCImago)
         id: revistas
+        if: steps.scimago.outputs.present == 'true'
         continue-on-error: true
         working-directory: apps/donde-publicar
         run: |
           python3 -I -m unittest discover -s tests -t .
           node --test "tests/*.test.cjs"
-          test -f data/raw/scimago/scimagojr.csv || {
-            echo "::error::Missing apps/donde-publicar/data/raw/scimago/scimagojr.csv (download it by hand, see the README)"
-            exit 1
-          }
           mkdir -p data/raw/doaj
           curl -fsSL --retry 3 --max-time 300 -o data/raw/doaj/journals.csv https://doaj.org/csv
           python3 -E -m pipeline.build --doaj-date "$(date -u +%F)"
