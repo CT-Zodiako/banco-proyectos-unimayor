@@ -63,3 +63,7 @@ the date of each source.
 - **L9** (user, 2026-11-09) "sube el csv para poder hacer las actualizaciones automaticamente para DOAJ y SCImago" →
   supersedes L7's "no incluya el archivo en el git". The SCImago CSV (edition 2025) is versioned again, the workflow
   requires it, and the journal data was rebuilt (catalog=2701, DOAJ 2026-11-10, SCImago edition 2025); tests pass.
+- **L10** (user, 2026-11-10) Screenshot: a re-run of run 42748124710 (built from the old commit d2ea8cd) failed at
+  "Commit and push the refreshed data" with `CONFLICT (content): Merge conflict in apps/eventos/site/data.js`. Fix:
+  check out the branch tip instead of the triggering commit, and rebase with `-X theirs` so the freshly generated
+  data wins. Reproduced in a scratch repo: plain rebase conflicts (exit 1), `-X theirs` succeeds with the new data.

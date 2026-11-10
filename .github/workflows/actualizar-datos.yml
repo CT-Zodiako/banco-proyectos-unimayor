@@ -22,7 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # Check out the current tip of the branch, not the triggering commit: a queued run or a "Re-run" of an old run
+      # would otherwise rebuild from stale code and data.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - uses: actions/setup-python@v5
         with:
@@ -78,7 +82,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore(data): refresh journals and events $(date -u +%F)"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
+          # The data is regenerated from scratch, so if master changed the same generated files meanwhile,
+          # keep this run's freshly built version (-X theirs keeps the commit being replayed).
+          git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Report a source that could not be refreshed
