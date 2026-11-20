@@ -1,6 +1,6 @@
 # ¿Dónde publicar este proyecto? — journal finder for the UNIMAYOR IoT project bank
 
-Static page that suggests, for each of the 100 projects of the
+React page (a route of the project bank) that suggests, for each project of the
 [Banco de Proyectos IoT](https://banco-proyectos-unimayor-production.up.railway.app/proyectos), journals that are:
 
 1. **Indexed** — have a best quartile (Q1–Q4) in [SCImago](https://www.scimagojr.com/).
@@ -11,7 +11,7 @@ For each project the page shows two views with the same filters and sort:
 
 - **Lista** (default, design 04): journals ranked by an estimated affinity (0–100 %) shown as a ring, with a
   "¿Por qué X %?" breakdown that also lists, in words, what the journal meets ("Cumple") and misses ("No cumple")
-  for the project and gives recommendations (`assessment` in `site/table.js`), template download, author instructions,
+  for the project and gives recommendations (`assessment` in `src/lib/publicar/table.js`), template download, author instructions,
   scope and links.
 - **Tabla** (design 02): sortable comparison table and a side-by-side comparison of up to 3 journals.
 
@@ -27,10 +27,12 @@ instructions, DOAJ and SCImago.
 
 | Path | Purpose |
 |---|---|
-| `site/` | The page: `index.html`, `styles.css`, `app.js`, `table.js` (pure table logic), `logo.jpg`, generated `data.js` and `catalog.js` |
+| `../banco-proyectos/src/data/publicar-data.json` | Generated data the page imports: projects and the journals suggested for them (committed) |
+| `../banco-proyectos/src/data/publicar-catalog.json` | Generated catalog of every ranked diamond journal; the "Catálogo completo" tab loads it on demand (committed) |
+| `../banco-proyectos/src/pages/DondePublicar.jsx` | The page; its components are in `src/components/publicar/` and its pure logic (`table.js`: filters, affinity, assessment, saved filters; `display.js`, `project.js`, `presets.js`, `favorites.js`) in `src/lib/publicar/` |
 | `pipeline/donde_publicar.py` | Loading, filtering, joining and matching logic |
-| `pipeline/build.py` | Command that generates `site/data.js` and `site/catalog.js` |
-| `tests/` | Pipeline tests (Python `unittest`) and table logic tests (`node --test "tests/*.test.cjs"`) |
+| `pipeline/build.py` | Command that generates `publicar-data.json` and `publicar-catalog.json` |
+| `tests/` | Pipeline tests (Python `unittest`); the tests of the page logic are `apps/banco-proyectos/tests/publicar-*.test.mjs` |
 | `data/projects.json` | Projects exported from `apps/banco-proyectos` (`npm run export:projects`) |
 | `data/templates.json` | Template files found by `python3 -E -m pipeline.templates` (optional input of the build) |
 | `data/raw/` | DOAJ CSV (not versioned) and SCImago CSV (versioned, replaced by hand once a year) |
@@ -51,17 +53,18 @@ when SCImago publishes a new ranking. Run the steps by hand only to check a chan
 4. Build and test:
 
 ```bash
-python3 -E -m pipeline.build          # writes site/data.js and site/catalog.js
+python3 -E -m pipeline.build          # writes publicar-data.json and publicar-catalog.json in apps/banco-proyectos/src/data
 python3 -I -m unittest discover -s tests -t .
-node --test "tests/*.test.cjs"                # comparison table logic
+(cd ../banco-proyectos && npm test)   # page logic (publicar-*.test.mjs) and the committed data
 ```
 
-`pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths, and
+The generated JSON is committed and bundled by Vite, so deploying needs no Python. `pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths, and
 `--doaj-date YYYY-MM-DD` for the day DOAJ was downloaded (default: the CSV's modification day). It records that date
 and the SCImago edition (the year in the CSV's `Total Docs. (YYYY)` column) in `sources.doaj_downloaded` and
 `sources.scimago_edition`; the page shows them as "DOAJ: 2026-11-09 · SCImago: edición 2025".
 It exits with code 1 and `error: missing input file <path>` if an input is missing, and with code 1 without writing
-anything when no DOAJ journal without fees has a SCImago quartile (e.g. a broken download).
+anything (`error: no DOAJ journal without fees has a SCImago quartile; publicar-data.json and publicar-catalog.json were not written`)
+when no DOAJ journal without fees has a SCImago quartile (e.g. a broken download).
 
 ## How journals are matched
 
@@ -80,24 +83,25 @@ Matching is automatic: always read the journal's aims & scope and confirm fees b
 ## Preview locally
 
 ```bash
-python3 -I -m http.server 8765 --bind 127.0.0.1 --directory site
-# open http://127.0.0.1:8765/?p=proj_001
+cd ../banco-proyectos
+npm run dev
+# open http://localhost:5173/donde-publicar?p=proj_001
 ```
-
-The page also works when `site/index.html` is opened directly from disk.
 
 ## How the project bank uses it
 
-`apps/banco-proyectos` serves this page under `/donde-publicar/`: its `predev`/`prebuild` scripts run
-`scripts/sync-donde-publicar.mjs`, which copies `site/` into `public/donde-publicar/` (not versioned). The
-"¿Dónde publicar este proyecto?" buttons link to:
+The page is a lazy-loaded route of `apps/banco-proyectos`, `/donde-publicar` (`src/pages/DondePublicar.jsx`), linked
+from the navbar and footer. The "¿Dónde publicar este proyecto?" buttons link to:
 
 ```
-/donde-publicar/index.html?p=<project id>     e.g. ?p=proj_199
+/donde-publicar?p=<project id>     e.g. ?p=proj_199
 ```
 
-The explicit `index.html` works with both the Vite dev server and the Nginx image (no SPA rewrite needed). When a project is selected,
-the header link goes back to `/proyecto/<id>`. Unknown or missing ids open the page with the project list.
+The old static URL `/donde-publicar/index.html?p=<project id>` (and the old `#<project id>` form) still works: the router
+redirects it to `/donde-publicar` keeping the query and hash, and the Nginx image serves every unknown path with the
+single page app. When a project is selected, the header link goes back to `/proyecto/<id>`. Unknown or missing ids open
+the page with the project picker. "Guardar" uses the shared "Mis oportunidades" store (`src/lib/opportunities.js`), and
+the user's saved filters live in the browser's localStorage under `donde-publicar.presets.v1`.
 
 ## Downloadable templates
 
@@ -106,6 +110,8 @@ keeps only strict template files: `.docx/.dotx/.doc/.dot/.tex/.zip` links whose 
 *plantilla*, hosted on the journal's own domain, that answer with a non-HTML file. Results go to
 `data/templates.json`; run `python3 -E -m pipeline.build` afterwards and the "Formato" column shows
 "⬇ Plantilla Word/LaTeX" buttons. Journals without a detected template keep the "Instrucciones ↗" link.
+
+`python3 -E -m pipeline.templates` reads the journals of `publicar-data.json` (option `--data`).
 
 After changing projects in the bank, regenerate: `npm run export:projects` (in `apps/banco-proyectos`), then
 `python3 -E -m pipeline.build` here.

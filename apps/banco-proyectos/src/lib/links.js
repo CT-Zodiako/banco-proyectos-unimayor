@@ -1,7 +1,13 @@
-// Journal finder (apps/donde-publicar), served by this app under /donde-publicar/.
-// The explicit index.html works with both the Vite dev server and the Nginx image (no SPA rewrite needed).
+// Journal finder: a route of this app (src/pages/DondePublicar.jsx).
+export const PUBLISH_URL = '/donde-publicar';
+
+// URL of the old static page. Links and bookmarks to it keep working: the router redirects it to PUBLISH_URL
+// with the same query (and hash), so ?p=<project id> still preselects the project.
+export const LEGACY_PUBLISH_PATH = '/donde-publicar/index.html';
+
+// Journal finder with the journals suggested for one project.
 export const wherePublishUrl = (projectId) =>
-    `/donde-publicar/index.html?p=${encodeURIComponent(projectId)}`;
+    `${PUBLISH_URL}?p=${encodeURIComponent(projectId)}`;
 
 // Event finder: a route of this app (src/pages/Eventos.jsx).
 export const EVENTS_URL = '/eventos';

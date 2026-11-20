@@ -355,18 +355,15 @@ class BuildCliTests(unittest.TestCase):
 
     def args(self, **overrides):
         paths = {"projects": "projects.json", "doaj": "doaj.csv", "scimago": "scimago.csv",
-                 "out": "data.js", "catalog-out": "catalog.js"}
+                 "out": "data.json", "catalog-out": "catalog.json"}
         paths.update(overrides)
         argv = []
         for key, name in paths.items():
             argv += [f"--{key}", str(self.dir / name)]
         return argv
 
-    def read_js(self, name, variable):
-        text = (self.dir / name).read_text(encoding="utf-8")
-        prefix = f"window.{variable} = "
-        self.assertTrue(text.startswith(prefix))
-        return json.loads(text[len(prefix):].rstrip().rstrip(";"))
+    def read_json(self, name):
+        return json.loads((self.dir / name).read_text(encoding="utf-8"))
 
     def test_build_writes_projects_with_only_free_ranked_journals(self):
         from pipeline import build
@@ -375,13 +372,13 @@ class BuildCliTests(unittest.TestCase):
             code = build.main(self.args())
         self.assertEqual(code, 0)
         self.assertIn("projects=1 doaj_free=1 diamond_ranked=1 journals_used=1 catalog=1", stdout.getvalue())
-        data = self.read_js("data.js", "DONDE_PUBLICAR")
+        data = self.read_json("data.json")
         self.assertEqual([j["title"] for j in data["journals"]], ["Agro Engineering"])
         self.assertIn("aims_scope_url", data["journals"][0])
         self.assertEqual(data["journals"][0]["publindex"], "A2")
         match = data["projects"][0]["matches"][0]
         self.assertEqual((match["journal_id"], match["fit"]), ("7", "fuerte"))
-        catalog = self.read_js("catalog.js", "DONDE_PUBLICAR_CATALOGO")
+        catalog = self.read_json("catalog.json")
         self.assertEqual([j["title"] for j in catalog], ["Agro Engineering"])
 
     def test_missing_input_fails_without_writing_output(self):
@@ -391,8 +388,8 @@ class BuildCliTests(unittest.TestCase):
             code = build.main(self.args(scimago="missing.csv"))
         self.assertEqual(code, 1)
         self.assertEqual(stderr.getvalue(), f"error: missing input file {self.dir / 'missing.csv'}\n")
-        self.assertFalse((self.dir / "data.js").exists())
-        self.assertFalse((self.dir / "catalog.js").exists())
+        self.assertFalse((self.dir / "data.json").exists())
+        self.assertFalse((self.dir / "catalog.json").exists())
 
 
 if __name__ == "__main__":

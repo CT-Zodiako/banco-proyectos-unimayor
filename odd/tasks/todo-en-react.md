@@ -16,3 +16,4 @@ Python pipelines stay (data generation); only the front end moves. Branch: feat/
 
 ## Log
 - L1: quiero proemro qu quede todo en react
+- L2: T1 decision: deploy/default.conf.template belongs to T2 (remove both /eventos/ and /donde-publicar/ nginx 404 blocks so the SPA fallback serves legacy URLs). T3 deletes obsolete files (sync scripts, apps/*/site, stale .cjs tests, .gitignore line for public/eventos).

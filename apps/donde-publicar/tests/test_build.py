@@ -1,4 +1,4 @@
-"""Tests for pipeline.build (stdlib unittest, no network): per-source dates and the empty-catalog guard."""
+"""Tests for pipeline.build (stdlib unittest, no network): JSON outputs, per-source dates and the empty-catalog guard."""
 
 import contextlib
 import io
@@ -29,8 +29,8 @@ class BuildTest(unittest.TestCase):
         self.doaj.write_text(doaj_csv([DIAMOND]).getvalue(), encoding="utf-8")
         self.scimago = self.tmp / "scimagojr.csv"
         self.write_scimago(SCIMAGO_HEADER, [RANKED])
-        self.out = self.tmp / "site" / "data.js"
-        self.catalog = self.tmp / "site" / "catalog.js"
+        self.out = self.tmp / "data" / "publicar-data.json"
+        self.catalog = self.tmp / "data" / "publicar-catalog.json"
 
     def tearDown(self):
         shutil.rmtree(self.tmp)
@@ -48,9 +48,8 @@ class BuildTest(unittest.TestCase):
 
     def payload(self):
         text = self.out.read_text(encoding="utf-8")
-        prefix = "window.DONDE_PUBLICAR = "
-        self.assertTrue(text.startswith(prefix))
-        return json.loads(text[len(prefix):-2])
+        self.assertNotIn("window.", text)
+        return json.loads(text)
 
     def test_records_doaj_date_option_and_scimago_edition_from_header(self):
         code, stdout, stderr = self.run_build("--doaj-date", "2026-11-09")
@@ -89,7 +88,7 @@ class BuildTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertEqual(stdout, "")
         self.assertEqual(stderr, "error: no DOAJ journal without fees has a SCImago quartile; "
-                                 "site/data.js and site/catalog.js were not written\n")
+                                 "publicar-data.json and publicar-catalog.json were not written\n")
         self.assertEqual(self.out.read_text(encoding="utf-8"), "previous\n")
         self.assertFalse(self.catalog.exists())
 
@@ -100,3 +99,24 @@ class BuildTest(unittest.TestCase):
         self.assertEqual(stderr, f"error: missing input file {self.scimago}\n")
         self.assertFalse(self.out.exists())
 
+
+
+class DefaultOutputTest(unittest.TestCase):
+    def test_default_outputs_are_the_json_files_read_by_the_react_app(self):
+        data_dir = pathlib.Path(__file__).resolve().parent.parent.parent / "banco-proyectos" / "src" / "data"
+        self.assertEqual(build.DEFAULT_OUT, data_dir / "publicar-data.json")
+        self.assertEqual(build.DEFAULT_CATALOG_OUT, data_dir / "publicar-catalog.json")
+
+    def test_json_files_are_one_document_each_ending_with_a_newline(self):
+        tmp = pathlib.Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        case = BuildTest("test_records_doaj_date_option_and_scimago_edition_from_header")
+        case.setUp()
+        self.addCleanup(case.tearDown)
+        code, _, stderr = case.run_build("--doaj-date", "2026-11-09")
+        self.assertEqual((code, stderr), (0, ""))
+        for path in (case.out, case.catalog):
+            text = path.read_text(encoding="utf-8")
+            self.assertTrue(text.endswith("}\n") or text.endswith("]\n"))
+            self.assertNotIn("window.", text)
+        self.assertEqual([j["title"] for j in json.loads(case.catalog.read_text(encoding="utf-8"))], ["Sensores Abiertos"])

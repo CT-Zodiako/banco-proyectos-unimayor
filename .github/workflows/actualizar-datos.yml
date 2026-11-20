@@ -46,7 +46,7 @@ jobs:
         working-directory: apps/donde-publicar
         run: |
           python3 -I -m unittest discover -s tests -t .
-          node --test "tests/*.test.cjs"
+          node --test "../banco-proyectos/tests/publicar-*.test.mjs"
           test -f data/raw/scimago/scimagojr.csv || {
             echo "::error::Missing apps/donde-publicar/data/raw/scimago/scimagojr.csv (download it by hand, see the README)"
             exit 1
@@ -54,10 +54,11 @@ jobs:
           mkdir -p data/raw/doaj
           curl -fsSL --retry 3 --max-time 300 -o data/raw/doaj/journals.csv https://doaj.org/csv
           python3 -E -m pipeline.build --doaj-date "$(date -u +%F)"
+          node --test ../banco-proyectos/tests/publicar-data.test.mjs
 
       - name: Keep the previous journal data
         if: steps.revistas.outcome == 'failure'
-        run: git restore apps/donde-publicar/site
+        run: git restore apps/banco-proyectos/src/data/publicar-data.json apps/banco-proyectos/src/data/publicar-catalog.json
 
       - name: Events (WikiCFP, ccf-deadlines, Devpost, manual file)
         id: eventos
@@ -75,7 +76,7 @@ jobs:
 
       - name: Commit and push the refreshed data
         run: |
-          git add apps/donde-publicar/data/projects.json apps/donde-publicar/site apps/banco-proyectos/src/data/eventos.json
+          git add apps/donde-publicar/data/projects.json apps/banco-proyectos/src/data/publicar-data.json apps/banco-proyectos/src/data/publicar-catalog.json apps/banco-proyectos/src/data/eventos.json
           if git diff --cached --quiet; then
             echo "No data changed."
             exit 0

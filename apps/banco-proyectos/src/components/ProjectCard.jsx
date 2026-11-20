@@ -62,13 +62,13 @@ const ProjectCard = ({ project }) => {
                         <CalendarDays size={14} aria-hidden="true" />
                         Eventos
                     </Link>
-                    <a
-                        href={wherePublishUrl(project.id)}
+                    <Link
+                        to={wherePublishUrl(project.id)}
                         className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"
                     >
                         <BookOpen size={14} aria-hidden="true" />
                         Dónde publicar
-                    </a>
+                    </Link>
                 </div>
             </div>
         </motion.article>

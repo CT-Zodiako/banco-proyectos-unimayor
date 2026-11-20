@@ -151,13 +151,25 @@ class BuildMergesTemplatesTests(unittest.TestCase):
             (d / "templates.json").write_text(json.dumps({"checked": "2026-10-31", "journals": {"7": [template]}}), encoding="utf-8")
             argv = []
             for key, name in {"projects": "projects.json", "doaj": "doaj.csv", "scimago": "scimago.csv", "templates": "templates.json",
-                              "out": "data.js", "catalog-out": "catalog.js"}.items():
+                              "out": "data.json", "catalog-out": "catalog.json"}.items():
                 argv += [f"--{key}", str(d / name)]
             with contextlib.redirect_stdout(io.StringIO()):
                 self.assertEqual(build.main(argv), 0)
-            text = (d / "data.js").read_text(encoding="utf-8")
-            data = json.loads(text[len("window.DONDE_PUBLICAR = "):].rstrip().rstrip(";"))
+            data = json.loads((d / "data.json").read_text(encoding="utf-8"))
             self.assertEqual(data["journals"][0]["templates"], [template])
+
+
+class ReadJournalsTests(unittest.TestCase):
+    def test_reads_the_journals_of_the_json_file_written_by_the_build(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "publicar-data.json"
+            path.write_text(json.dumps({"projects": [], "journals": [{"id": "7", "title": "Agro Engineering"}]}),
+                            encoding="utf-8")
+            self.assertEqual(tp.read_journals(path), [{"id": "7", "title": "Agro Engineering"}])
+
+    def test_default_input_is_the_data_file_of_the_react_app(self):
+        expected = pathlib.Path(__file__).resolve().parent.parent.parent / "banco-proyectos" / "src" / "data" / "publicar-data.json"
+        self.assertEqual(tp.DEFAULT_DATA, expected)
 
 
 if __name__ == "__main__":

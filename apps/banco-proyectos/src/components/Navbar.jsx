@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import { EVENTS_URL } from '../lib/links';
+import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
 
 const Navbar = () => {
 
@@ -20,11 +20,13 @@ const Navbar = () => {
 
                     <div className="hidden md:flex items-center gap-6">
                         <Link to={EVENTS_URL} className="font-semibold hover:text-institutional-yellow transition-colors">Eventos académicos</Link>
+                        <Link to={PUBLISH_URL} className="font-semibold hover:text-institutional-yellow transition-colors">Dónde publicar</Link>
                         <Link to="/oportunidades" className="font-semibold hover:text-institutional-yellow transition-colors">Mis oportunidades</Link>
                     </div>
                 </div>
                 <div className="flex gap-5 pb-3 text-sm font-semibold md:hidden">
                     <Link to={EVENTS_URL}>Eventos académicos</Link>
+                    <Link to={PUBLISH_URL}>Dónde publicar</Link>
                     <Link to="/oportunidades">Mis oportunidades</Link>
                 </div>
             </div>

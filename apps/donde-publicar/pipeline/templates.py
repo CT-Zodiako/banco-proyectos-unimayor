@@ -26,6 +26,7 @@ import urllib.request
 from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+DEFAULT_DATA = ROOT.parent / "banco-proyectos" / "src" / "data" / "publicar-data.json"
 EXTENSIONS = {".docx": "Word", ".dotx": "Word", ".doc": "Word", ".dot": "Word", ".tex": "LaTeX", ".zip": None}
 NAME_WORDS = ("template", "plantilla")
 SECOND_LEVEL = {"ac", "co", "com", "edu", "gov", "gob", "org", "net", "mil", "nic", "res"}
@@ -212,9 +213,14 @@ def _check_journal_page(journal, timeout):
     return journal["id"], templates, "ok"
 
 
+def read_journals(path):
+    """The journals of the JSON file written by pipeline.build (apps/banco-proyectos/src/data/publicar-data.json)."""
+    return json.loads(path.read_text(encoding="utf-8"))["journals"]
+
+
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="Find downloadable templates for the journals in site/data.js.")
-    parser.add_argument("--data", default=ROOT / "site/data.js", type=pathlib.Path)
+    parser = argparse.ArgumentParser(description="Find downloadable templates for the journals in publicar-data.json.")
+    parser.add_argument("--data", default=DEFAULT_DATA, type=pathlib.Path)
     parser.add_argument("--out", default=ROOT / "data/templates.json", type=pathlib.Path)
     parser.add_argument("--workers", default=16, type=int)
     parser.add_argument("--timeout", default=15, type=float)
@@ -222,8 +228,7 @@ def main(argv=None):
     if not args.data.is_file():
         print(f"error: missing input file {args.data}", file=sys.stderr)
         return 1
-    text = args.data.read_text(encoding="utf-8")
-    journals = json.loads(text[text.index("=") + 1:].strip().rstrip(";"))["journals"]
+    journals = read_journals(args.data)
 
     results, statuses = {}, {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as pool:

@@ -6,6 +6,7 @@ journals through subject themes derived from DOAJ subjects/keywords and SCImago 
 """
 
 import csv
+import json
 import re
 
 PUBLINDEX_BY_QUARTILE = {"Q1": "A1", "Q2": "A2", "Q3": "B", "Q4": "C"}
@@ -512,3 +513,8 @@ def normalize_project(raw):
         "objective": objective,
         "skills": raw.get("habilidades") or [],
     }
+
+
+def render_json(payload):
+    """The payload as a JSON file the React app imports (apps/banco-proyectos/src/data/publicar-*.json)."""
+    return json.dumps(payload, ensure_ascii=False) + "\n"

@@ -1,6 +1,5 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { addOpportunity, readOpportunities, removeOpportunity, calendarFile, updateOpportunity, filterOpportunities, exportBackup, previewBackup, importBackup, MAX_BACKUP_SIZE } from '../src/lib/opportunities.js';
 
 function storage(initial = null) {
@@ -9,13 +8,6 @@ function storage(initial = null) {
 }
 const event = { type: 'event', id: 'e1', title: 'Congreso', url: 'https://example.org' };
 const journal = { type: 'journal', id: 'e1', title: 'Revista', url: 'https://example.org' };
-
-test('the applications that still ship a copy use the same local storage contract', () => {
-  const canonical = readFileSync(new URL('../src/lib/opportunities.js', import.meta.url), 'utf8');
-  for (const path of ['../../donde-publicar/site/opportunities.js']) {
-    assert.equal(readFileSync(new URL(path, import.meta.url), 'utf8'), canonical);
-  }
-});
 
 test('favorites persist by type and id, are unique, and can be removed independently', () => {
   const s = storage();

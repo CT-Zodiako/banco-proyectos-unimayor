@@ -1,6 +1,7 @@
-"""Build site/data.js and site/catalog.js from the project bundle, the DOAJ CSV and the SCImago CSV.
+"""Build the JSON files read by the React app (apps/banco-proyectos/src/data) from the project bundle, the DOAJ CSV
+and the SCImago CSV.
 
-site/data.js holds the projects and the journals suggested for them; site/catalog.js holds every
+publicar-data.json holds the projects and the journals suggested for them; publicar-catalog.json holds every
 diamond open access journal with a SCImago quartile (loaded on demand by the catalog tab).
 
 Usage (from the repository root):
@@ -18,6 +19,10 @@ from pipeline import donde_publicar as dp
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 EDITION = re.compile(r"Total Docs\. \((\d{4})\)")
+# The React app imports these files at build time, so the generated data stays committed and deploy needs no Python.
+DATA_DIR = ROOT.parent / "banco-proyectos" / "src" / "data"
+DEFAULT_OUT = DATA_DIR / "publicar-data.json"
+DEFAULT_CATALOG_OUT = DATA_DIR / "publicar-catalog.json"
 
 
 def scimago_edition(path):
@@ -36,8 +41,8 @@ def main(argv=None):
                         help="optional output of pipeline.templates; missing means no templates")
     parser.add_argument("--doaj-date", type=datetime.date.fromisoformat, default=None,
                         help="YYYY-MM-DD when the DOAJ CSV was downloaded (default: the file's modification day)")
-    parser.add_argument("--out", default=ROOT / "site/data.js", type=pathlib.Path)
-    parser.add_argument("--catalog-out", default=ROOT / "site/catalog.js", type=pathlib.Path)
+    parser.add_argument("--out", default=DEFAULT_OUT, type=pathlib.Path)
+    parser.add_argument("--catalog-out", default=DEFAULT_CATALOG_OUT, type=pathlib.Path)
     args = parser.parse_args(argv)
 
     for path in (args.projects, args.doaj, args.scimago):
@@ -54,7 +59,7 @@ def main(argv=None):
     journals = dp.build_journals(doaj, scimago)
     if not journals:
         print("error: no DOAJ journal without fees has a SCImago quartile; "
-              "site/data.js and site/catalog.js were not written", file=sys.stderr)
+              f"{args.out.name} and {args.catalog_out.name} were not written", file=sys.stderr)
         return 1
     doaj_date = args.doaj_date or datetime.date.fromtimestamp(args.doaj.stat().st_mtime)
     templates = {}
@@ -86,11 +91,10 @@ def main(argv=None):
         "journals": [slim(j) for j in journals if j["id"] in used],
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text("window.DONDE_PUBLICAR = " + json.dumps(payload, ensure_ascii=False) + ";\n",
-                        encoding="utf-8")
+    args.out.write_text(dp.render_json(payload), encoding="utf-8")
     catalog = [slim(j) for j in journals if not dp.is_humanities_led([c["name"] for c in j["categories"]])]
-    args.catalog_out.write_text("window.DONDE_PUBLICAR_CATALOGO = " + json.dumps(catalog, ensure_ascii=False) + ";\n",
-                                encoding="utf-8")
+    args.catalog_out.parent.mkdir(parents=True, exist_ok=True)
+    args.catalog_out.write_text(dp.render_json(catalog), encoding="utf-8")
     print(f"projects={len(projects)} doaj_free={len(doaj)} diamond_ranked={len(journals)} "
           f"journals_used={len(used)} catalog={len(catalog)} out={args.out}")
     return 0
