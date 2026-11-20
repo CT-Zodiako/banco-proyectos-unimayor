@@ -158,6 +158,7 @@ function DondePublicarPage({ publicarData }) {
 
                         <div className={`grid grid-cols-1 gap-5 items-start ${finder.panelOpen ? 'min-[1100px]:grid-cols-[minmax(0,1fr)_380px]' : ''}`}>
                             <section aria-label="Revistas sugeridas" className="min-w-0">
+                                <h2 className="sr-only">Revistas sugeridas</h2>
                                 <ResultsLegend className="mb-3" />
                                 <JournalResults rows={visible} mode={finder.mode} sort={finder.sort} onSort={finder.setSort} compare={compare} onToggleCompare={finder.toggleCompared} />
                                 <AffinityNote className="mt-3.5" />

@@ -27,6 +27,7 @@ function EventosPage({ eventosData }) {
     const [projectMissing, setProjectMissing] = useState(false);
     const searchRef = useRef(null);
     const statusRef = useRef(null);
+    const headingRef = useRef(null);
 
     const requested = useMemo(() => {
         const parsed = parseQuery(search);
@@ -134,7 +135,7 @@ function EventosPage({ eventosData }) {
             <EventFilters state={state} hasProject={Boolean(project)} topics={knownTopics} counts={counts} kindTotals={kindTotals} onChange={update} searchRef={searchRef} />
 
             <div className="space-y-2.5">
-                <h2 aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
+                <h2 ref={headingRef} tabIndex={-1} aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
                     {shown.length
                         ? `${plural(shown.length, 'evento vigente', 'eventos vigentes')}${project ? ' afines al proyecto' : ''}`
                         : 'Sin resultados'}
@@ -145,7 +146,7 @@ function EventosPage({ eventosData }) {
                         {chips.map((chip) => (
                             <span key={chip.id} className="filter-chip">
                                 <span><small>{chip.group}:</small> {chip.text}</span>
-                                <button type="button" onClick={() => update(chip.patch)} aria-label={`Quitar filtro: ${chip.group}: ${chip.text}`}>
+                                <button type="button" onClick={() => { update(chip.patch); headingRef.current?.focus({ preventScroll: true }); }} aria-label={`Quitar filtro: ${chip.group}: ${chip.text}`}>
                                     <X size={15} aria-hidden="true" />
                                 </button>
                             </span>

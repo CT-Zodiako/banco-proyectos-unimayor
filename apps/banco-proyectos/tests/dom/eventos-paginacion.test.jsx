@@ -87,7 +87,7 @@ describe('/eventos: show more', () => {
         expect(cards()).toHaveLength(20);
 
         await user.click(more());
-        await user.click(screen.getByRole('button', { name: /^IoT, / }));
+        await user.click(screen.getByRole('button', { name: /^IoT \d+ eventos?$/ }));
         await waitFor(() => expect(status('Mostrando 20 de 22 eventos')).toBeTruthy());
         expect(cards()).toHaveLength(20);
 

@@ -58,8 +58,6 @@ describe.each(ROUTES)('page structure of $url', (route) => {
     it('has exactly one h1 and its headings never skip a level', async () => {
         await open(route);
         expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-        // Known gap outside T4's surfaces: the journal cards (src/components/publicar/ResultItem.jsx) are h3 right under the h1.
-        if (route.url.startsWith('/donde-publicar')) return;
         const levels = screen.getAllByRole('heading').map((h) => Number(h.tagName[1]));
         levels.forEach((level, index) => {
             if (index > 0) expect(level, `heading ${index} (${screen.getAllByRole('heading')[index].textContent}) after level ${levels[index - 1]}`).toBeLessThanOrEqual(levels[index - 1] + 1);

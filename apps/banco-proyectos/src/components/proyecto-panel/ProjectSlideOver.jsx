@@ -4,14 +4,10 @@ import { EscapeLink } from './PanelParts';
 import EventsTab from './EventsTab';
 import JournalsTab from './JournalsTab';
 import { BTN, FOCUS } from '../publicar/classes';
+import { focusables } from '../../lib/focusables';
 import { PANEL_TABS, nextTab, nextTrapIndex, panelFullUrl } from '../../lib/project-panel';
 
 const TAB_LABELS = { revistas: 'Revistas', eventos: 'Eventos' };
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])';
-
-const focusables = (root) => [...root.querySelectorAll(FOCUSABLE)]
-    .filter((element) => !element.closest('[hidden],[inert]') && (element.offsetParent !== null || element === document.activeElement));
-
 // Slide-over of the project page (design 02): the journals and events of the project without leaving it.
 // mode "push": wide screens, the page shifts left (class on <body>, see index.css) and stays usable.
 // mode "modal": "Ampliar" or a screen of up to 1100 px; a scrim covers the page, the rest of the app is inert, the

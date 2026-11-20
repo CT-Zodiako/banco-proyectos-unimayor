@@ -40,12 +40,12 @@ describe('/eventos filters', () => {
     it('a topic filter narrows the cards and writes the URL; a second topic widens it', async () => {
         await open();
         const user = userEvent.setup();
-        await user.click(screen.getByRole('button', { name: /^IoT, 2 eventos$/ }));
+        await user.click(screen.getByRole('button', { name: /^IoT 2 eventos$/ }));
         await waitFor(() => expect(titles().sort()).toEqual(['Congreso IoT Cauca 2099', 'Feria IoT y Robótica 2099']));
         expect(window.location.search).toBe('?tema=IoT');
-        expect(screen.getByRole('button', { name: /^IoT, / }).getAttribute('aria-pressed')).toBe('true');
+        expect(screen.getByRole('button', { name: /^IoT \d+ eventos?$/ }).getAttribute('aria-pressed')).toBe('true');
 
-        await user.click(screen.getByRole('button', { name: /^Ciberseguridad, / }));
+        await user.click(screen.getByRole('button', { name: /^Ciberseguridad \d+ eventos?$/ }));
         await waitFor(() => expect(titles()).toHaveLength(3));
         expect(window.location.search).toBe('?tema=IoT%2CCiberseguridad');
     });
@@ -54,7 +54,7 @@ describe('/eventos filters', () => {
         await open();
         const user = userEvent.setup();
         await user.click(screen.getByRole('button', { name: 'Convocatorias (presentar)' }));
-        await user.click(screen.getByRole('button', { name: /^IoT, / }));
+        await user.click(screen.getByRole('button', { name: /^IoT \d+ eventos?$/ }));
         await waitFor(() => expect(titles()).toEqual(['Congreso IoT Cauca 2099']));
         expect(window.location.search).toBe('?kind=cfp&tema=IoT');
 

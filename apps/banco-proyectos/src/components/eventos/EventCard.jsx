@@ -65,8 +65,7 @@ function Fact({ icon: Icon, label, value, children }) {
                 <Icon size={15} aria-hidden="true" className="flex-none" />
                 {label}
             </dt>
-            <dd className="m-0 font-medium text-gray-900">{value}</dd>
-            {children}
+            <dd className="m-0 flex flex-wrap items-center gap-x-2 font-medium text-gray-900">{value}{children}</dd>
         </div>
     ) : null;
 }

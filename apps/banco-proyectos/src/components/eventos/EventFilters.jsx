@@ -77,7 +77,9 @@ const EventFilters = ({ state, hasProject, topics, counts, kindTotals, onChange,
                 </Section>
             )}
 
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(420px,100%),1fr))] gap-x-10 gap-y-5">
+            {/* Page: one, two or three columns by width, «Fechas» filling the last row so no cell stays empty. The project
+                panel (no kindTotals) is narrow, so it keeps the width-based grid and «Fechas» takes its own row. */}
+            <div className={`grid gap-x-10 gap-y-5 ${kindTotals ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-[repeat(auto-fit,minmax(min(420px,100%),1fr))]'}`}>
                 <Section title="Búsqueda" hint="Busca en el nombre del evento y en su lugar.">
                     <label htmlFor="search" className="field-label mb-1 !text-[13.5px]">Buscar por nombre o lugar</label>
                     <div className="relative">
@@ -117,7 +119,7 @@ const EventFilters = ({ state, hasProject, topics, counts, kindTotals, onChange,
                     </label>
                 </Section>
 
-                <Section title="Fechas" hint="Se filtra por la fecha de inicio del evento. Si usas este filtro, se excluyen los eventos sin fecha de inicio.">
+                <Section title="Fechas" hint="Se filtra por la fecha de inicio del evento. Si usas este filtro, se excluyen los eventos sin fecha de inicio." className={kindTotals ? 'md:col-span-2 xl:col-span-1' : 'col-span-full'}>
                     <div className="grid grid-cols-[repeat(auto-fit,minmax(min(140px,100%),1fr))] gap-3">
                         <Field id="date-from" label="Inicio desde">
                             <input id="date-from" type="date" value={state.dateFrom} onChange={(event) => onChange({ dateFrom: event.target.value })} className="field-input !h-10 !pl-3" />
@@ -139,13 +141,13 @@ const EventFilters = ({ state, hasProject, topics, counts, kindTotals, onChange,
                                 key={topic}
                                 type="button"
                                 aria-pressed={pressed}
-                                aria-label={`${topic}, ${plural(n, 'evento', 'eventos')}`}
                                 onClick={() => onChange({ topics: pressed ? state.topics.filter((t) => t !== topic) : [...state.topics, topic] })}
                                 className="chip chip-sm"
                             >
                                 <Check size={14} aria-hidden="true" className="chip-check flex-none" />
-                                {topic}
-                                <span aria-hidden="true" className="chip-count">{n}</span>
+                                {topic}{' '}
+                                <span className="chip-count">{n}</span>
+                                <span className="sr-only"> {n === 1 ? 'evento' : 'eventos'}</span>
                             </button>
                         );
                     })}

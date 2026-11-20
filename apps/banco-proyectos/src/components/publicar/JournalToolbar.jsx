@@ -10,7 +10,7 @@ const MODES = [['list', 'Lista', List], ['table', 'Tabla', Table2]];
 // has a visible label. Shared by the /donde-publicar page and the project panel; it holds no state.
 export default function JournalToolbar({ query, onQuery, sort, onSort, mode, onMode, filtersOpen, onToggleFilters, advancedCount, toggleRef }) {
     return (
-        <div role="search" className="flex flex-wrap items-end gap-x-3 gap-y-3">
+        <div role="search" aria-label="Buscar y ordenar revistas" className="flex flex-wrap items-end gap-x-3 gap-y-3">
             <div className="min-w-[240px] flex-1">
                 <label htmlFor="publicar-table-search" className="field-label mb-1">Buscar revistas</label>
                 <div className="relative">

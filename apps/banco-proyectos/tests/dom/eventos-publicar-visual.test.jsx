@@ -76,13 +76,13 @@ describe('/eventos: filters grouped in labeled sections', () => {
     it('topic pills are shared .chip buttons with aria-pressed and a readable count', async () => {
         await openEventos();
         const user = userEvent.setup();
-        const iot = screen.getByRole('button', { name: /^IoT, 2 eventos$/ });
+        const iot = screen.getByRole('button', { name: /^IoT 2 eventos$/ });
         expect(iot.classList.contains('chip')).toBe(true);
         expect(iot.getAttribute('aria-pressed')).toBe('false');
         expect(iot.textContent).toContain('IoT');
         expect(iot.querySelector('.chip-count').textContent).toBe('2');
         await user.click(iot);
-        await waitFor(() => expect(screen.getByRole('button', { name: /^IoT, 2 eventos$/ }).getAttribute('aria-pressed')).toBe('true'));
+        await waitFor(() => expect(screen.getByRole('button', { name: /^IoT 2 eventos$/ }).getAttribute('aria-pressed')).toBe('true'));
     });
 });
 
@@ -94,7 +94,7 @@ describe('/eventos: active filters', () => {
         expect(screen.getByText('Sin filtros activos')).toBeTruthy();
 
         await user.click(screen.getByRole('button', { name: 'Convocatorias (presentar)' }));
-        await user.click(screen.getByRole('button', { name: /^IoT, / }));
+        await user.click(screen.getByRole('button', { name: /^IoT \d+ eventos?$/ }));
         await waitFor(() => expect(window.location.search).toBe('?kind=cfp&tema=IoT'));
         const active = screen.getByRole('group', { name: 'Filtros activos' });
         expect(within(active).getByText('Convocatorias (presentar)')).toBeTruthy();

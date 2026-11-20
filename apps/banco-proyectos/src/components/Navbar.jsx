@@ -24,16 +24,16 @@ const Navbar = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-20 flex flex-wrap items-stretch justify-between gap-x-6">
                     <Link
                         to="/"
-                        aria-label="Ir al inicio"
                         aria-current={pathname === '/' ? 'page' : undefined}
                         className={`flex items-center gap-4 py-2 rounded ${FOCUS}`}
                     >
-                        <div className="bg-white p-1 rounded-sm">
-                            <img src={logo} alt="UNIMAYOR Logo" className="h-10 w-auto" />
+                        <div className="bg-white p-1 rounded-sm flex-none">
+                            <img src={logo} alt="" className="h-10 w-auto max-w-none" />
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[15px] sm:text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
                             <span className="text-sm font-light opacity-90">Laboratorio de Física y Sistemas Embebidos</span>
+                            <span className="sr-only">. Ir al inicio</span>
                         </div>
                     </Link>
 

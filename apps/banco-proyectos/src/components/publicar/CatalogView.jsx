@@ -31,7 +31,7 @@ function JournalCard({ journal }) {
                 ))}
             </dl>
             {categories && <div className="text-xs text-sem-text-2">{categories}</div>}
-            <nav aria-label="Enlaces de la revista" className="mt-3 flex flex-wrap items-center gap-2">
+            <div role="group" aria-label={`Enlaces de ${journal.title}`} className="mt-3 flex flex-wrap items-center gap-2">
                 <ExtLink url={journal.url} className="btn btn-primary">Sitio de la revista</ExtLink>
                 <ExtLink url={journal.author_instructions_url} className="btn btn-secondary">Instrucciones para autores</ExtLink>
                 <FavoriteButton journal={journal} />
@@ -41,7 +41,7 @@ function JournalCard({ journal }) {
                     <ExtLink url={journal.doaj_url} className={MORE_LINK}>Ficha en DOAJ</ExtLink>
                     <ExtLink url={journal.scimago_url} className={MORE_LINK}>Ficha en SCImago</ExtLink>
                 </span>
-            </nav>
+            </div>
         </article>
     );
 }

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
+import TapTips from './components/TapTips';
 import Home from './pages/Home';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetail from './pages/ProjectDetail';
@@ -91,6 +92,7 @@ function App() {
             <ScrollToTop />
             <div className="min-h-screen flex flex-col bg-institutional-light">
                 <SkipLink />
+                <TapTips />
                 <Navbar />
                 <main id="contenido" tabIndex={-1} className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
                     <Routes>

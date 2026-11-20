@@ -3,6 +3,7 @@ import { saveCatalogSearch } from '../lib/links';
 import { useSearchParams } from 'react-router-dom';
 import { Briefcase, ChevronDown, Code, Cpu, Layers, Plus, SlidersHorizontal, X } from 'lucide-react';
 import CatalogFilters from '../components/CatalogFilters';
+import ProposalDialog from '../components/ProposalDialog';
 import ProjectCard, { LevelDots } from '../components/ProjectCard';
 import { useProjects } from '../hooks/useProjects';
 import { NEW_AREAS } from '../data/projects/areas';
@@ -61,6 +62,7 @@ const ProjectsPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [filtersOpen, setFiltersOpen] = useState(false);
     const resultsRef = useRef(null);
+    const headingRef = useRef(null);
 
     // Remember the filters so the project detail can link back to this exact view.
     useEffect(() => { saveCatalogSearch(params.toString() ? `?${params.toString()}` : ''); }, [params]);
@@ -85,7 +87,12 @@ const ProjectsPage = () => {
         next.delete(key);
         (values.includes(value) ? values.filter((v) => v !== value) : [...values, value]).forEach((v) => next.append(key, v));
     });
-    const clearAll = () => setParams(new URLSearchParams(sort === DEFAULT_SORT ? {} : { orden: sort }), { replace: true });
+    // The button that removes a filter disappears with it: the focus goes to the results heading, not to the page.
+    const focusResults = () => headingRef.current?.focus({ preventScroll: true });
+    const clearAll = () => {
+        setParams(new URLSearchParams(sort === DEFAULT_SORT ? {} : { orden: sort }), { replace: true });
+        focusResults();
+    };
 
     const allProjects = useMemo(() => (loading || !projects ? [] : projects), [loading, projects]);
     // Area counts reflect the other active filters, so they tell how many results each checkbox would add.
@@ -121,6 +128,7 @@ const ProjectsPage = () => {
         if (kind === 'area') toggleMulti('area', value);
         else if (kind === 'nivel') toggleMulti('nivel', value);
         else setSingle(kind === 'sector' ? 'sector' : 'q', '');
+        focusResults();
     };
     const one = filtered.length === 1;
 
@@ -156,7 +164,7 @@ const ProjectsPage = () => {
             </button>
 
             <div className="grid grid-cols-1 min-[960px]:grid-cols-[300px_minmax(0,1fr)] gap-7 items-start">
-                <div id="catalog-filters" className={`${filtersOpen ? 'block' : 'hidden'} min-[960px]:block min-[960px]:sticky min-[960px]:top-24`}>
+                <div id="catalog-filters" className={`${filtersOpen ? 'block' : 'hidden'} min-[960px]:block min-[960px]:sticky min-[960px]:top-24 min-[960px]:max-h-[calc(100vh-7rem)] min-[960px]:overflow-y-auto`}>
                     <CatalogFilters
                         facets={facets}
                         query={query}
@@ -176,7 +184,7 @@ const ProjectsPage = () => {
 
                 <section aria-label="Resultados" ref={resultsRef} className="scroll-mt-24 min-w-0">
                     <div className="flex flex-wrap justify-between items-end gap-4 mb-2.5">
-                        <h2 tabIndex={-1} aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
+                        <h2 ref={headingRef} tabIndex={-1} aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
                             {filtered.length} {one ? 'proyecto' : 'proyectos'}{' '}
                             <span className="ml-1.5 text-[15px] font-medium text-sem-text-2">
                                 {hasFilters ? `que ${one ? 'cumple' : 'cumplen'} tus filtros` : (one ? 'disponible' : 'disponibles')}
@@ -228,7 +236,7 @@ const ProjectsPage = () => {
                                 aria-label="Página anterior"
                                 className="page-btn focus-ring"
                             >
-                                ← Anterior
+                                <span aria-hidden="true">←</span> Anterior
                             </button>
                             {pageWindow(page, pages).map((n, i) => (n === '…'
                                 ? <span key={`gap-${i}`} className="h-10 px-2 grid place-items-center text-sem-text-2">…</span>
@@ -251,90 +259,14 @@ const ProjectsPage = () => {
                                 aria-label="Página siguiente"
                                 className="page-btn focus-ring"
                             >
-                                Siguiente →
+                                Siguiente <span aria-hidden="true">→</span>
                             </button>
                         </nav>
                     )}
                 </section>
             </div>
 
-            {/* Modal de Agregar Proyecto */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
-                            <h2 className="text-2xl font-bold text-gray-900">Proponer proyecto</h2>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                                <X size={24} className="text-gray-500" />
-                            </button>
-                        </div>
-
-                        <form className="p-6 space-y-6" onSubmit={(e) => {
-                            e.preventDefault();
-                            alert("El envío de propuestas está en implementación. Por ahora tu proyecto no se guarda.");
-                            setIsModalOpen(false);
-                        }}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Título del Proyecto</label>
-                                    <input required type="text" placeholder="Ej: Monitor de Calidad de Aire" className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-institutional-blue outline-none transition-all" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Área / Tecnología</label>
-                                    <select className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-institutional-blue outline-none transition-all">
-                                        {proposalAreas.map(a => (
-                                            <option key={a} value={a}>{a}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Breve Descripción</label>
-                                <textarea required rows="3" placeholder="Describe el problema y la solución..." className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-institutional-blue outline-none transition-all"></textarea>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Sector</label>
-                                    <input required type="text" placeholder="Ej: Agroindustria" className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-institutional-blue outline-none transition-all" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Nivel</label>
-                                    <select className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-institutional-blue outline-none transition-all">
-                                        <option>Principiante</option>
-                                        <option>Intermedio</option>
-                                        <option>Avanzado</option>
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Duración Est.</label>
-                                    <input required type="text" placeholder="Ej: 4 meses" className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-institutional-blue outline-none transition-all" />
-                                </div>
-                            </div>
-
-                            <div className="pt-4 flex gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 px-6 py-3 border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="flex-1 px-6 py-3 bg-institutional-blue text-white font-bold rounded-xl hover:bg-blue-900 shadow-lg transition-all"
-                                >
-                                    Guardar Proyecto
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {isModalOpen && <ProposalDialog areas={proposalAreas} onClose={() => setIsModalOpen(false)} />}
         </div>
     );
 };
