@@ -1,6 +1,8 @@
 import { Info, Target, ShieldCheck } from 'lucide-react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const About = () => {
+    useDocumentTitle('Sobre el Banco');
     return (
         <div className="py-12 px-4 max-w-4xl mx-auto space-y-16">
             <section className="text-center space-y-4">

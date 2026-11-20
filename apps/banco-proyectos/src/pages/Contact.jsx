@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 // Icon tile: blue = place (the lab), gray = contact data; decorative, the heading names each block.
 const Tile = ({ children }) => (
@@ -8,6 +9,7 @@ const Tile = ({ children }) => (
 );
 
 const Contact = () => {
+    useDocumentTitle('Contacto');
     return (
         <div className="py-12 px-4 max-w-5xl mx-auto">
             <div className="text-center mb-16 space-y-4">

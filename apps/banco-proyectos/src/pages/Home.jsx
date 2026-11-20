@@ -5,6 +5,7 @@ import { ArrowRight, BookOpen, CalendarDays, Compass, Layers, Users } from 'luci
 import MetricsSection from '../components/MetricsSection';
 import { LoadError } from '../components/proyecto-panel/PanelParts';
 import { useProjectsIndex } from '../hooks/useProjects';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import useNearViewport from '../hooks/useNearViewport';
 import { areaTags, buildAreaFacets } from '../lib/catalog';
 import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
@@ -27,6 +28,7 @@ const TOOLS = [
 ];
 
 const Home = () => {
+    useDocumentTitle('');
     // The figures count the projects (the light index, a separate chunk): it is only downloaded when the figures come near the screen.
     const [metricsRef, nearMetrics] = useNearViewport();
     const { projects, error, retry } = useProjectsIndex({ enabled: nearMetrics });

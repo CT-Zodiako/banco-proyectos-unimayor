@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import RouteLoader from './components/RouteLoader';
 import ProjectsPage from './pages/ProjectsPage';
 import { ROUTE_PAGES } from './lib/routeChunks';
+import useDocumentTitle from './hooks/useDocumentTitle';
 import LegacyRedirect from './components/LegacyRedirect';
 import logo from './assets/logo.png';
 import { EVENTS_URL, LEGACY_EVENTS_PATH, LEGACY_PUBLISH_PATH, PUBLISH_URL } from './lib/links';
@@ -15,6 +16,18 @@ import { Mail, Globe, MapPin } from 'lucide-react';
 // Every page but Home and the shell of /proyectos (title, summary, loading state; its results are a chunk) is its own chunk (src/lib/routeChunks.js), downloaded when its route opens. The event and journal
 // data (hundreds of KB to a few MB of JSON) is only downloaded when each finder is opened.
 const { Proyecto, Comparar, Acerca, Contacto, Oportunidades, Eventos, DondePublicar } = ROUTE_PAGES;
+
+// Unknown address: its own title so the tab says it too.
+const NotFound = () => {
+    useDocumentTitle('Página no encontrada');
+    return (
+        <div className="py-20 text-center space-y-4">
+            <h1 className="text-3xl font-extrabold text-gray-900">Página no encontrada</h1>
+            <p className="text-gray-700">La dirección no existe en el banco de proyectos.</p>
+            <Link to="/" className="btn btn-primary btn-lg">Ir al inicio</Link>
+        </div>
+    );
+};
 
 // First stop of the keyboard: moves the focus to <main> without changing the URL (no #hash is added).
 const SkipLink = () => (
@@ -108,11 +121,7 @@ function App() {
                             <Route path={LEGACY_EVENTS_PATH} element={<LegacyRedirect to={EVENTS_URL} />} />
                             <Route path={PUBLISH_URL} element={<RouteLoader what="las revistas"><DondePublicar /></RouteLoader>} />
                             <Route path={LEGACY_PUBLISH_PATH} element={<LegacyRedirect to={PUBLISH_URL} />} />
-                            <Route path="*" element={<div className="py-20 text-center space-y-4">
-                                <h1 className="text-3xl font-extrabold text-gray-900">Página no encontrada</h1>
-                                <p className="text-gray-700">La dirección no existe en el banco de proyectos.</p>
-                                <Link to="/" className="btn btn-primary btn-lg">Ir al inicio</Link>
-                            </div>} />
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </main>
                     <Footer />

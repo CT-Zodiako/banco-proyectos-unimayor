@@ -12,6 +12,7 @@ import HelpView from '../components/publicar/HelpView';
 import JournalResults, { AffinityNote, ResultsLegend } from '../components/publicar/JournalResults';
 import JournalToolbar from '../components/publicar/JournalToolbar';
 import { FOCUS } from '../components/publicar/classes';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import useJournalFinder from '../hooks/useJournalFinder';
 import { DATA_FILES } from '../lib/data-loader';
 import { applyFinderQuery, parseFinderQuery, sameQuery } from '../lib/publicar/finderUrl';
@@ -20,7 +21,6 @@ import { nextTabId } from '../lib/publicar/tabs';
 import { dataUpdatedText } from '../lib/publicar/display';
 import { ADVANCED_DEFAULTS, dataStatus } from '../lib/publicar/table';
 
-const PAGE_TITLE = '¿Dónde publicar este proyecto? · Banco de Proyectos · UNIMAYOR';
 const TABS = [
     ['project', 'Revistas del proyecto', 'Ordenadas por afinidad con tu proyecto'],
     ['catalog', 'Catálogo completo', 'Todas las revistas, sin elegir proyecto'],
@@ -90,10 +90,7 @@ function DondePublicarPage({ publicarData }) {
         if (!sameQuery(next, search)) navigate({ search: next, hash }, { replace: true });
     }, [search, hash, finder.query, finder.sort, finder.mode, finder.advanced, tab, defaultTab, navigate]);
 
-    useEffect(() => {
-        document.title = project ? `${project.title} · ¿Dónde publicar?` : PAGE_TITLE;
-        return () => { document.title = 'Banco de Proyectos IoT - UNIMAYOR'; };
-    }, [project]);
+    useDocumentTitle(project ? `${project.title} · Dónde publicar` : 'Dónde publicar');
 
     const trayVisible = tab === 'project' && finder.mode === 'table' && project !== null && comparedJournals.length > 0;
     const onTrayHeight = useCallback((height) => setTrayHeight(height ? height + 16 : 0), []);

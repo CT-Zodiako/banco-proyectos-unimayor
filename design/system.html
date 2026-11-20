@@ -138,6 +138,7 @@
         <div><i style="background:#FFE4E6;border-color:#FDA4AF"></i><i style="background:#881337"></i><i style="background:#BE123C"></i><code>.tn-low</code><br><small>Extremo desfavorable: afinidad baja, publicación lenta, «No cumple»</small><br><small>#FFE4E6 · #881337 · #BE123C · texto/fondo 7.97:1</small></div>
         <div><i style="background:#DBEAFE;border-color:#93C5FD"></i><i style="background:#1E3A8A"></i><i style="background:#1D4ED8"></i><code>.tn-lang</code><br><small>La revista acepta español</small><br><small>#DBEAFE · #1E3A8A · #1D4ED8 · texto/fondo 8.49:1</small></div>
         <div><i style="background:#F1F5F9;border-color:#CBD5E1"></i><i style="background:#334155"></i><i style="background:#475569"></i><code>.tn-review</code><br><small>Tipo de revisión por pares (doble ciego, simple ciego, abierta…)</small><br><small>#F1F5F9 · #334155 · #475569 · texto/fondo 9.45:1</small></div>
+        <div><i style="background:#EFF6FF;border-color:#93C5FD"></i><i style="background:#00428A"></i><i style="background:#00428A"></i><code>.tn-projects</code><br><small>El banco de proyectos (azul de marca): encabezado de «Comparar proyectos» y «Mis oportunidades», marca «Difiere», fila distinta de la tabla</small><br><small>#EFF6FF · #00428A · #00428A · texto/fondo 8.99:1</small></div>
     </div>
 
     <h2>Botones por herramienta</h2>
@@ -192,7 +193,24 @@
         <button style="background:white;color:#00428A;border:1px solid #00428A">Acción secundaria</button>
         <button class="focus">Con foco: 2 px amarillo + 2 px azul</button>
       </p>
-      <small>Clases: <code>.badge-area</code>, <code>.badge-sector</code>, <code>.badge-level</code>, <code>.badge-new</code>, <code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-tertiary</code>, <code>.chip</code>, <code>.filter-chip</code>, <code>.field-*</code>, <code>.data-status</code>, <code>.qb</code>, <code>.aff-ring</code>, <code>.tn-*</code>, <code>.badge-tone</code>, <code>.btn-journals</code>, <code>.btn-events</code>, <code>.type-ico</code>, <code>.hue-card</code>, <code>.chip-tone</code>, <code>.seg-tone</code>, <code>.tab-pill-journals</code>, <code>.tab-pill-events</code>, <code>[data-tip]</code>, <code>.skip-link</code>.</small>
+      <small>Clases: <code>.badge-area</code>, <code>.badge-sector</code>, <code>.badge-level</code>, <code>.badge-new</code>, <code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-tertiary</code>, <code>.chip</code>, <code>.filter-chip</code>, <code>.field-*</code>, <code>.data-status</code>, <code>.qb</code>, <code>.aff-ring</code>, <code>.tn-*</code>, <code>.badge-tone</code>, <code>.btn-journals</code>, <code>.btn-events</code>, <code>.type-ico</code>, <code>.hue-card</code>, <code>.chip-tone</code>, <code>.seg-tone</code>, <code>.tab-pill-journals</code>, <code>.tab-pill-events</code>, <code>.page-header</code>, <code>.cmp-table</code>, <code>.legend-card</code>, <code>[data-tip]</code>, <code>.skip-link</code>.</small>
+    </div>
+
+    <h2>Componentes de página (T15, T17, T18)</h2>
+    <div class="card">
+      <p><strong>Encabezado de página</strong> (<code>PageHeader</code>, <code>.page-header</code>): tarjeta blanca con borde superior del tono (<code>.hue-card</code>), icono en cuadro teñido (<code>.type-chip</code>), antetítulo en mayúsculas, el único <code>h1</code>, descripción opcional y, a la derecha desde 900 px, el botón de volver y «Mis oportunidades guardadas →» (<code>hideSaved</code> lo quita en /oportunidades). Tonos: <code>events</code>, <code>journals</code> y <code>projects</code> (azul de marca, usado en /proyectos/comparar y /oportunidades).</p>
+      <div style="border:1px solid #E5E7EB;border-top:4px solid #00428A;border-radius:16px;background:linear-gradient(180deg,#EFF6FF,#fff 96px);padding:14px 18px;display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+        <span style="width:52px;height:52px;border-radius:16px;background:#EFF6FF;box-shadow:inset 0 0 0 1.5px #93C5FD;display:grid;place-items:center;color:#00428A;font-size:24px">★</span>
+        <div style="flex:1;min-width:220px"><div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4B5563">Banco de proyectos</div><div style="font-size:24px;font-weight:800;color:#111827">Mis oportunidades</div><div style="font-size:15px;color:#374151">Guardadas solo en este navegador.</div></div>
+        <button style="background:#fff;color:#00428A;border:1px solid #00428A">‹ Volver a los proyectos</button>
+      </div>
+      <p><strong>Bandeja y tabla de comparación</strong> (<code>ProjectCompareTray</code>, <code>.cmp-table</code>, <code>.btn-compare</code>): la bandeja es una tarjeta blanca pegajosa abajo con las fichas de los proyectos elegidos, «N de 3» y «Comparar ahora» (botón primario, deshabilitado con aviso bajo 2 proyectos). La tabla usa <code>.tn-projects</code>: la fila que difiere toma el tinte <code>#EFF6FF</code> y la marca «Difiere»; texto de celdas <code>#1F2937</code> (14.68:1 sobre blanco), encabezados <code>#111827</code> sobre <code>#EFF6FF</code> (16.30:1); «Comparar» pulsado es azul <code>#00428A</code> con texto blanco (9.78:1).</p>
+      <p><strong>Leyenda plegable</strong> (<code>CollapsibleLegend</code>, <code>.legend-card</code>): <code>&lt;details&gt;</code> nativo, abierto desde 700 px y plegado por defecto en pantallas más estrechas (se decide una vez al montar); el <code>&lt;summary&gt;</code> es un punto de tabulación nativo (Enter y Espacio) con título, pista de una línea y chevron (<code>#00428A</code>, 9.78:1; pista <code>#4B5563</code>, 7.56:1).</p>
+      <details open style="border:1px solid #E5E7EB;border-radius:16px;background:#fff">
+        <summary style="min-height:44px;display:flex;align-items:center;gap:12px;padding:6px 16px;cursor:pointer"><b style="font-size:13.5px;color:#111827">Cómo leer cada tarjeta</b><span style="flex:1;font-size:13px;color:#4B5563">Colores y códigos</span><span style="color:#00428A" aria-hidden="true">⌃</span></summary>
+        <div style="padding:2px 16px 12px;font-size:13px;color:#374151">Área = línea técnica · Sector = dónde se aplica · Nivel = 1 a 3 puntos</div>
+      </details>
+      <small>Presencia web: <code>index.html</code> (descripción, <code>theme-color</code> <code>#00428A</code>, canónica, Open Graph y Twitter <code>summary_large_image</code> con <code>og-image.png</code> 1200×630), <code>favicon.svg</code>, <code>apple-touch-icon.png</code> y <code>robots.txt</code>. El título de cada página se fija en el navegador con <code>useDocumentTitle</code>.</small>
     </div>
 
     <h2>Contraste AA en uso</h2>
@@ -206,9 +224,13 @@
       <tr><td><code>#15803D</code> sobre <code>#F0FDF4</code></td><td>4.79:1</td></tr>
       <tr><td><code>#B91C1C</code> sobre <code>#FEF2F2</code></td><td>5.91:1</td></tr>
       <tr><td><code>#9CA3AF</code> sobre <code>#0F172A</code></td><td>7.03:1</td></tr>
-      <tr><td>Insignias de tono: texto sobre su tinte (los 12 tonos)</td><td>7.97 a 10.14:1</td></tr>
+      <tr><td>Insignias de tono: texto sobre su tinte (los 13 tonos)</td><td>7.97 a 10.14:1</td></tr>
       <tr><td>Texto blanco sobre cada tope de los botones y pestañas (con hover)</td><td>5.47 a 10.88:1</td></tr>
       <tr><td>Marcas gráficas sólidas (anillo, barras) sobre blanco (mínimo 3:1)</td><td>5.02 a 7.58:1</td></tr>
+      <tr><td><code>#111827</code> sobre <code>#EFF6FF</code> (encabezados y fila distinta de la tabla de comparación)</td><td>16.30:1</td></tr>
+      <tr><td><code>#1F2937</code> sobre <code>#FFFFFF</code> / <code>#EFF6FF</code> / <code>#F9FAFB</code> (celdas, fila distinta, filas de grupo)</td><td>14.68 / 13.49 / 14.05:1</td></tr>
+      <tr><td><code>#4B5563</code> sobre <code>#EFF6FF</code> (antetítulo del encabezado de página)</td><td>6.94:1</td></tr>
+      <tr><td><code>#4B5563</code> sobre <code>#FFFFFF</code> (pista de una leyenda plegada)</td><td>7.56:1</td></tr>
       <tr><td>Bordes de controles <code>#6B7280</code> sobre <code>#FFFFFF</code> (no texto, mínimo 3:1)</td><td>4.83:1</td></tr>
     </table>
 

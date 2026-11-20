@@ -6,6 +6,7 @@ import PageSkeleton from '../components/PageSkeleton';
 import ShareSearchButton from '../components/ShareSearchButton';
 import { LevelDots } from '../components/ProjectCard';
 import { LoadError } from '../components/proyecto-panel/PanelParts';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useProjects } from '../hooks/useProjects';
 import { MAX_COMPARE, buildComparison, compareUrl, resolveIds, saveSelection, withCompareParam } from '../lib/compare-projects';
 import { eventsForProjectUrl, savedCatalogUrl, wherePublishUrl } from '../lib/links';
@@ -140,6 +141,7 @@ function ComparisonTable({ model, highlight, hideEqual, onRemove, boxRef }) {
 }
 
 const CompareProjects = () => {
+    useDocumentTitle('Comparar proyectos');
     const [params] = useSearchParams();
     const navigate = useNavigate();
     const { projects, loading, error, retry } = useProjects();

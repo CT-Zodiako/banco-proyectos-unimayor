@@ -11,8 +11,10 @@ import { DialogLoader } from '../components/RouteLoader';
 import { lazyRoute } from '../lib/lazyRoute';
 import { LoadError } from '../components/proyecto-panel/PanelParts';
 import { LevelDots } from '../components/ProjectCard';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useProjects } from '../hooks/useProjects';
 import useProjectPanel from '../hooks/useProjectPanel';
+import { projectTitle } from '../lib/page-title';
 import { isNewProject, levelRank } from '../lib/catalog';
 import { wherePublishUrl, eventsForProjectUrl, savedCatalogUrl } from '../lib/links';
 import { FULL_MESSAGE, MAX_COMPARE, loadSelection, saveSelection, withCompareParam } from '../lib/compare-projects';
@@ -42,6 +44,7 @@ const ProjectDetail = () => {
     const panel = useProjectPanel();
 
     const project = projects?.find(p => p.id === id);
+    useDocumentTitle(project ? projectTitle(project.titulo) : !loading && !error ? 'Proyecto no encontrado' : '');
 
     if (error) return <div className="py-8"><LoadError what="el proyecto" onRetry={retry} /></div>;
     if (loading) return <PageSkeleton what="el proyecto" />;

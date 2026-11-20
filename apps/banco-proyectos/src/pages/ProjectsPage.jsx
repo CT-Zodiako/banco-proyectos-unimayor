@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { CatalogGridSkeleton, CatalogHeader } from '../components/CatalogSkeleton';
 import RouteLoader, { DialogLoader } from '../components/RouteLoader';
 import { LoadError } from '../components/proyecto-panel/PanelParts';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useProjectsIndex } from '../hooks/useProjects';
 import { NEW_AREAS } from '../data/projects/areas';
 import { areaTags } from '../lib/catalog';
@@ -17,6 +18,7 @@ const ProposalDialog = lazyRoute(() => import('../components/ProposalDialog'));
 // paint (placeholders where numbers will go), so the page never swaps its heading while the pieces download. The
 // results chunk and the light projects index download in parallel; a failed index says so with «Reintentar».
 const ProjectsPage = () => {
+    useDocumentTitle('Explorar proyectos');
     const { projects, loading, error, retry } = useProjectsIndex();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const ready = !loading && !error;

@@ -10,13 +10,12 @@ import EventFilters from '../components/eventos/EventFilters';
 import ProjectHint from '../components/eventos/ProjectHint';
 import ProjectPanel from '../components/eventos/ProjectPanel';
 import DataStatus from '../components/publicar/DataStatus';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import useEventResults from '../hooks/useEventResults';
 import { DATA_FILES } from '../lib/data-loader';
 import { comparisonKey, dataInfoText, dataStatusText, dataUpdatedText, eventFilterChips, plural } from '../lib/eventos/display';
 import { DEFAULT_STATE, MAX_COMPARISON, kindCounts, parseQuery, stateToQuery, toggleComparison, withProject } from '../lib/eventos/filters';
 import { PAGE_SIZE, nextVisibleCount, pagingStatus, visibleSlice } from '../lib/eventos/paging';
-
-const PAGE_TITLE = 'Buscador de eventos académicos · Banco de Proyectos · UNIMAYOR';
 
 // Filters live in the URL (?p, kind, tema, modalidad, co, q, orden, desde, hasta, lugar), so a search can be shared.
 // With ?p=<project id> only the events sharing a topic with that project are listed, ranked by estimated affinity.
@@ -61,10 +60,7 @@ function EventosPage({ eventosData }) {
         navigate({ search: query ? `?${query}` : '' }, { replace: true });
     }, [requested.project, project, state, navigate]);
 
-    useEffect(() => {
-        document.title = project ? `${project.title} · Eventos académicos` : PAGE_TITLE;
-        return () => { document.title = 'Banco de Proyectos IoT - UNIMAYOR'; };
-    }, [project]);
+    useDocumentTitle(project ? `${project.title} · Eventos académicos` : 'Eventos académicos');
 
     const { today, ranked, affinityByEvent, counts, shown, noProjectEvents } = useEventResults({ events, project, state });
     // Events of each type under every other filter (same base list as the topic counts).

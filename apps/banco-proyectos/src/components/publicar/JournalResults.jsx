@@ -1,4 +1,5 @@
 import { CheckCircle2, XCircle } from 'lucide-react';
+import CollapsibleLegend from '../CollapsibleLegend';
 import { JournalBadge } from './JournalBadges';
 import JournalTable from './JournalTable';
 import { QuartileBadge } from './JournalLinks';
@@ -30,8 +31,7 @@ export function ResultsLegend({ className = '' }) {
         <span className={`aff-ring ${AFFINITY_CLASS[level]} !h-6 !w-6`} style={{ '--v': value }} aria-hidden="true"><i className="block h-[14px] w-[14px] rounded-full bg-white" /></span>
     );
     return (
-        <aside aria-label="Cómo leer los resultados" className={`grid gap-2.5 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-[13px] text-gray-700 shadow-sm ${className}`}>
-            <b className="text-[13.5px] text-gray-900">Cómo leer los resultados</b>
+        <CollapsibleLegend label="Cómo leer los resultados" hint="Colores y códigos" className={className} bodyClassName="grid gap-2.5">
             <LegendRow label="Afinidad">
                 <span>encaje con tu proyecto:</span>
                 <Item>{ring('high', 90)}<span><b className="text-gray-900">alta</b> {high} % o más</span></Item>
@@ -57,7 +57,7 @@ export function ResultsLegend({ className = '' }) {
                 <Item><span className="badge badge-tone tn-good"><CheckCircle2 size={14} aria-hidden="true" className="flex-none" />Cumple</span>lo que la revista pide y el proyecto tiene</Item>
                 <Item><span className="badge badge-tone tn-low"><XCircle size={14} aria-hidden="true" className="flex-none" />No cumple</span>lo que falta</Item>
             </LegendRow>
-        </aside>
+        </CollapsibleLegend>
     );
 }
 

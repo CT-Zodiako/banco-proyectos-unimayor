@@ -313,6 +313,17 @@
     box-shadow: 0 0 0 2px var(--blue-primary);
   }
 
+  /* Collapsible legend (T18, CollapsibleLegend): a native <details> card. Open from 700 px, collapsed by default below
+     (set once on mount), toggled by its <summary> (a native tab stop, Enter/Space). The hint stays visible when closed. */
+  .legend-card { @apply rounded-2xl border border-gray-200 bg-white text-[13px] text-gray-700 shadow-sm; }
+  .legend-card > details > summary { @apply flex min-h-[44px] cursor-pointer list-none items-center gap-x-3 rounded-2xl px-4 py-2; }
+  .legend-card > details > summary::-webkit-details-marker { display: none; }
+  .legend-title { @apply text-[13.5px] font-bold text-gray-900; }
+  .legend-hint { @apply min-w-0 flex-1 truncate text-[13px] text-sem-text-2; }
+  .legend-chevron { @apply flex-none text-institutional-blue transition-transform motion-reduce:transition-none; }
+  .legend-card > details[open] .legend-chevron { transform: rotate(180deg); }
+  .legend-body { @apply px-4 pb-3 pt-0.5; }
+
   /* Segmented control (one option pressed): list/table view, event type, quartile. */
   .seg { @apply inline-flex max-w-full overflow-hidden rounded-lg border border-sem-control-line bg-white; }
   .seg > button {

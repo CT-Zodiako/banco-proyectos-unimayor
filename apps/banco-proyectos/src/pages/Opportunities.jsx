@@ -1,5 +1,7 @@
 import { useId, useRef, useState } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, BookmarkCheck, ChevronLeft } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { calendarFile, exportBackup, filterOpportunities, importBackup, MAX_BACKUP_SIZE, previewBackup, readOpportunities, removeOpportunity, STATUS_LABELS, updateOpportunity } from '../lib/opportunities';
 import { submissionGuide } from '../lib/submissionGuide';
 
@@ -108,6 +110,7 @@ function safeUrl(value) {
 }
 
 export default function Opportunities() {
+    useDocumentTitle('Mis oportunidades');
     const [items, setItems] = useState(() => {
         try { return readOpportunities(localStorage); } catch { return null; }
     });
@@ -131,8 +134,17 @@ export default function Opportunities() {
         anchor.click();
         setTimeout(() => URL.revokeObjectURL(href), 1000);
     }
-    return <div className="py-10 space-y-6">
-        <div><h1 className="text-3xl font-extrabold leading-tight text-gray-900">Mis oportunidades</h1><p className="text-gray-700 mt-2 max-w-3xl">Guardadas solo en este navegador. No se sincronizan entre dispositivos y pueden perderse si se borran los datos del navegador.</p></div>
+    return <div className="py-8 space-y-5">
+        <PageHeader
+            hue="projects"
+            icon={<BookmarkCheck size={26} />}
+            eyebrow="Banco de proyectos"
+            title="Mis oportunidades"
+            back={{ to: '/proyectos', children: <><ChevronLeft size={18} aria-hidden="true" />Volver a los proyectos</> }}
+            hideSaved
+        >
+            Guardadas solo en este navegador. No se sincronizan entre dispositivos y pueden perderse si se borran los datos del navegador.
+        </PageHeader>
         {items === null && <ErrorNote>No se pueden leer los favoritos guardados. No se modificaron los datos.</ErrorNote>}
         {error && <ErrorNote>{error}</ErrorNote>}
         <BackupControls onImport={setItems} />

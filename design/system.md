@@ -61,6 +61,7 @@ One JS file holds every hex value of the hues that carry a meaning, the button g
 | `.tn-low` | Unfavorable end of a scale: affinity baja, speed lenta, «No cumple» | `#FFE4E6` | `#881337` | `#FDA4AF` | `#BE123C` | 7.97:1 | 9.57:1 | 6.29:1 |
 | `.tn-lang` | The journal accepts Spanish | `#DBEAFE` | `#1E3A8A` | `#93C5FD` | `#1D4ED8` | 8.49:1 | 10.36:1 | 6.70:1 |
 | `.tn-review` | Peer-review type (doble ciego, simple ciego, abierta…) | `#F1F5F9` | `#334155` | `#CBD5E1` | `#475569` | 9.45:1 | 10.35:1 | 7.58:1 |
+| `.tn-projects` (T17) | The projects pages, in the brand blue itself: header of «Comparar proyectos» and of «Mis oportunidades», the «Difiere» mark and the tint of a differing row of the comparison table. Not a new color: `bg` is `sem-area-bg`, `fg` and `solid` are `#00428A` | `#EFF6FF` | `#00428A` | `#93C5FD` | `#00428A` | 8.99:1 | 9.78:1 | 9.78:1 |
 
 Type buttons (white text on a vertical gradient, lighter on top; the hover stops are darker):
 
@@ -89,6 +90,7 @@ Events: «Convocatoria» is the filled purple (`.badge-events`, white on `#6B21A
 | Color | Means | Where |
 |---|---|---|
 | Blue (`#00428A`, `#EFF6FF`) | Area and actions: links, primary and secondary buttons, selected chips, info banners | Area badge, `.btn`, `.chip[aria-pressed]`, `.filter-chip`, nav |
+| Brand blue tone (`.tn-projects`) | The project bank itself (not a tool): header of «Comparar proyectos» and «Mis oportunidades», «Difiere» mark and tint of a differing row in the comparison table | `PageHeader hue="projects"`, `.cmp-table`, `.badge-tone.tn-projects` |
 | Teal (`.tn-journals`, `.btn-journals`) | The journals tool, «Dónde publicar», and the license of a journal | Button, tab, tab-pill, card header, global-search badge, `CC BY` badge, nav dot |
 | Purple (`.tn-events`, `.btn-events`) | The events tool, «Ver eventos», event type | Button, tab, type selector of /eventos, card header, `Convocatoria` / `Para asistir`, nav dot |
 | Green / amber / rose (`good` / `fair` / `low`) | Favorable / middle / unfavorable end of a scale: affinity, speed, requirements; «Sin costo» is green | `.aff-ring`, `.aff-word`, speed badge, `Cumple` / `No cumple` boxes |
@@ -131,6 +133,21 @@ T13 pairs (all computed from `src/lib/palette.js` and checked by `tests/palette.
 | `#FFFFFF` on `#0F766E` / `#7E22CE` | 5.47 / 6.98:1 | Count of the selected tab in the project slide-over |
 | `#F0FDFA` on `#0F766E` / `#FAF5FF` on `#7E22CE` | 5.25 / 6.51:1 | Description inside a selected tab-pill |
 | `#5EEAD4` / `#D8B4FE` on `#00428A` | 6.61 / 5.53:1 | Hue dots of the navbar (graphic) |
+
+T17/T18 pairs (from `src/lib/palette.js` `contrastRatio` and the classes above):
+
+| Foreground on background | Ratio | Used for |
+|---|---|---|
+| `#00428A` on `#EFF6FF` (`tn-projects` fg on bg) | 8.99:1 | «Difiere» badge, header icon tile |
+| `#00428A` on `#FFFFFF` (`tn-projects` fg and solid on white) | 9.78:1 | Top border and marks of the projects header (graphic: 3:1 needed) |
+| `#111827` on `#EFF6FF` | 16.30:1 | Column headers and a differing row of the comparison table |
+| `#1F2937` on `#FFFFFF` / `#EFF6FF` | 14.68 / 13.49:1 | Cells of the comparison table (normal / differing row) |
+| `#1F2937` on `#F9FAFB` | 14.05:1 | Group rows of the comparison table |
+| `#FFFFFF` on `#00428A` | 9.78:1 | «Comparar» toggle pressed, «Comparar ahora» |
+| `#4B5563` on `#EFF6FF` | 6.94:1 | Eyebrow of the projects header |
+| `#4B5563` on `#FFFFFF` | 7.56:1 | Hint of a collapsed legend |
+| `#00428A` on `#FFFFFF` | 9.78:1 | Chevron of a legend (graphic) |
+| `#93C5FD` on `#FFFFFF` | 1.80:1 | `line` of the tone: a decorative border only, never the only edge of a control (cards also have a `gray-200` border) |
 
 `#FFC107` on white is 1.63:1: yellow is never used as text or as the only border on white; it is a fill with dark or blue text, or the focus ring paired with blue.
 
@@ -201,7 +218,11 @@ Shared classes; the pages only combine them. Pages that use each one are in the 
 | `.badge-tone` | Soft badge of a tone (tint, `line` border, `fg` text) | Journal badges, legend, search badges, compare tray |
 | `.badge-events` / `.badge-events-soft` | Filled purple («Convocatoria») and light purple («Para asistir») | /eventos, project panel |
 | `.btn-journals` / `.btn-events` (+ `.btn`, `.btn-lg`) | Type buttons: gradient, inner highlight, colored shadow, `.type-ico` icon circle, hover lift, pressed shadow | Project card, project page, Home, opportunity cards, journal row and catalog card (journals), event card (events) |
-| `.type-chip` / `.hue-card` / `.tone-box` | Tinted icon circle; card with a 4px top border and a light tint in the tone; tinted box (Cumple / No cumple) | Home cards, opportunity cards, page headers of /donde-publicar and /eventos, journal assessment |
+| `.type-chip` / `.hue-card` / `.tone-box` | Tinted icon circle; card with a 4px top border and a light tint in the tone; tinted box (Cumple / No cumple) | Home cards, opportunity cards, page headers (`PageHeader`) of /eventos, /donde-publicar, /proyectos/comparar and /oportunidades, journal assessment |
+| `.page-header` (`-main`, `-icon`, `-eyebrow`, `-title`, `-desc`, `-actions`) | `PageHeader`: white card, `rounded-2xl`, `gray-200` border, small shadow, `.hue-card` top border + `.type-chip` icon tile (52px); eyebrow 12px bold uppercase `sem-text-2`, the page's only `h1` (24px, 22px below `md`), optional description 15px `gray-700`; actions on the right from 900px (wrap below): optional back button `.btn-secondary` and the link «Mis oportunidades guardadas →» (`hideSaved` removes it on /oportunidades itself) | /eventos (`events`), /donde-publicar (`journals`), /proyectos/comparar and /oportunidades (`projects`) |
+| `.cmp-table` | Comparison table of 2 or 3 projects (T17): sticky first column and header, `.tn-projects` on the table so a row with `data-differs="true"` takes the `#EFF6FF` tint (plus the word «Difiere» in `.badge-tone.tn-projects`); cell text `gray-800`, header cells `gray-900` on `blue-50`, group rows `gray-800` on `gray-50` | /proyectos/comparar |
+| `.btn-compare` | «Comparar» toggle of a card: secondary button, pressed = blue fill + white text (`aria-pressed`, the name says «Quitar de la comparación») | /proyectos cards |
+| `.legend-card` (`-title`, `-hint`, `-chevron`, `-body`) | `CollapsibleLegend`: `<aside aria-label>` with a native `<details>`; the `<summary>` (44px tall, a native tab stop: Enter and Space toggle it) shows the title (13.5px bold), a one-line hint «Colores y códigos» (`sem-text-2`) and a chevron that turns when open; the body keeps the legend unchanged. Open from 700px, collapsed below, decided once on mount (`useInitialOpen`, `matchMedia`; open without `matchMedia`) and then left to the visitor | «Cómo leer cada tarjeta» (/proyectos), «Cómo leer los resultados» (/donde-publicar and the project slide-over) |
 | `.chip-tone` (+ `.chip-dot`) / `.seg-tone` | Quartile chip and catalog quartile segment: swatch or bar of the hue always, tint when pressed; text, check and `aria-pressed` stay | Custom filters, catalog |
 | `.tab-pill-journals` / `.tab-pill-events` / `.tab-journals` / `.tab-events` (`.tab-count`) | Selected tab-pill = gradient of the hue; slide-over tabs = text and bottom bar in the hue, tinted when selected | /donde-publicar, /eventos type selector, project slide-over |
 | `.nav-dot` | 9px dot in the `line` color of the tone before «Eventos académicos» and «Dónde publicar» (decorative, `aria-hidden`) | Navbar |
@@ -216,6 +237,10 @@ Specific compositions:
 - **Project card** (`src/components/ProjectCard.jsx`): white, `rounded-2xl`, `gray-200` border, lift on hover; 52px emoji tile; title 18px bold; "Problema" 2 lines; badges row area → new → sector → level; footer list "Datos del proyecto" (Hardware N, Software N, duration; tooltips `Hardware: N componentes físicos (placas, sensores, actuadores)`); actions "Ver eventos" (`.btn-events`, purple) / "Dónde publicar" (`.btn-journals`, teal), each with its icon circle.
 - **Project page** (`src/pages/ProjectDetail.jsx`): back link (tertiary) and the two type buttons (`.btn-events` «¿A qué eventos ir?», `.btn-journals` «¿Dónde publicar este proyecto?»); same badges as the card above the `h1`; list "Datos del proyecto" with Hardware, Software, Duración, Presupuesto (icon tile + label + value + tooltip); the two cards of `OpportunityCards` (each with a tinted header in its hue: `.btn-journals` "Ver las revistas aquí" / `.btn-events` "Ver los eventos aquí" that open the slide-over, link "Abrir página completa …"); sections `h2` Hardware necesario, Software y plataformas, Pasos de implementación, Objetivos, Impacto real, Referencias, each with a one-line helper; tables with `caption` and `scope`, neutral gray header, category as sector badge.
 - **Home** (`src/pages/Home.jsx`, `src/components/MetricsSection.jsx`): blue gradient hero with yellow accent (text white / `blue-50`, no opacity trick; reduced motion draws it at its final place); "¿Qué quieres hacer?" with three entry cards (Explorar proyectos primary blue; Buscar eventos `.btn-events` and Dónde publicar `.btn-journals`, each card with a tinted header and icon circle in its hue); "El banco en cifras" with four labelled metrics counted from the data (Proyectos, Áreas tecnológicas, Sectores de aplicación, Áreas nuevas este semestre).
+- **Page header** (`src/components/PageHeader.jsx`, T15/T17/T18): the same card on /eventos, /donde-publicar, /proyectos/comparar and /oportunidades, directly under the navbar (`py-6` to `py-8`), followed by the page content with 16-20px between blocks. `hue` is `events`, `journals` or `projects` (brand blue; «Banco de proyectos» eyebrow, `Scale` icon on the comparison, `BookmarkCheck` on /oportunidades). The page keeps exactly one `h1`, the one in the header.
+- **Compare tray and table** (`src/components/ProjectCompareTray.jsx`, `src/pages/CompareProjects.jsx`, T17): the tray is `sticky bottom-3` white card with chips of the chosen projects, «N de 3» (`role=status`), «Vaciar comparación» and `.btn-primary.btn-lg` «Comparar ahora» (`aria-disabled` and «Elige al menos 2» under 2 projects); the table is a focusable scroll region (`role=region`, `tabIndex=0`) with `scope` headers, sticky first column, and the toggles «Resaltar diferencias» / «Ocultar filas iguales»; each column ends with `.btn-primary` «Ver proyecto», `.btn-journals`, `.btn-events` and a tertiary «Quitar».
+- **Collapsible legend** (`src/components/CollapsibleLegend.jsx`, T18): see `.legend-card`. The content of each legend is unchanged; only the container folds. «Qué significa cada color» in the help tab stays open: it is the content of a tab the visitor chose, not an aside.
+- **Web presence** (T18): `index.html` carries the Spanish title, description (150 characters), `theme-color` `#00428A`, canonical URL, Open Graph and Twitter `summary_large_image` tags with the absolute `og-image.png` (1200×630: `#00428A` background, `#FFC107` accent, the school crest, «Proyectos · Eventos · Dónde publicar»), `favicon.svg` (white columns and a `#FFC107` pediment on `#00428A`), `apple-touch-icon.png` (180×180) and `robots.txt`. Crawlers do not run JavaScript, so these tags are global; every page sets its own tab title client side with `useDocumentTitle` («Página · Banco de Proyectos UNIMAYOR», no live region).
 - **Footer / layout** (`src/App.jsx`, `src/components/Navbar.jsx`): `header` (sticky, contains `nav` "Principal"), one `main#contenido`, one `footer` with `h2` headings; footer text is `gray-400` on `institutional.dark`.
 - **Motion**: `fadeIn` 0.5s (opacity + translateY 10px) in `index.css`; framer-motion entrances check `useReducedMotion`; `prefers-reduced-motion: reduce` removes transitions and animations globally.
 
@@ -223,7 +248,7 @@ Specific compositions:
 
 Sources: `apps/banco-proyectos/src/pages/Eventos.jsx`, `apps/banco-proyectos/src/pages/DondePublicar.jsx`, and the components in `apps/banco-proyectos/src/components/eventos/` and `apps/banco-proyectos/src/components/publicar/`. Both pages are routes of the project bank (`/eventos`, `/donde-publicar`), use the shared classes above and have no stylesheet of their own. Journal fit and class strings live in `src/components/publicar/classes.js` (`FIT_CLASSES`: strong = green tint, technology = `badge-area`, sector = `badge-sector`). The old quartile colors (`#1b7f3b`, `#2f6fd0`, `#c27c0e`, `#8a5a9e`; white text on `#c27c0e` was 3.40:1) are not used. T13 reversed the neutral quartile of T3 on the user's request: quartile is `.qb` (text + bars + Publindex) in four AA-safe hues (dark text on a light tint), see «Meaning hues».
 - Journal result (`ResultItem.jsx`): left edge and quartile badge in the quartile hue; ring, number and word in the affinity hue; one row of at most five soft badges (`JournalBadges.jsx`: Sin costo, Acepta español, review type, speed, license); «Cumple» (green) and «No cumple» (rose) boxes with ✓ / ✗; primary action «Instrucciones para autores» is `.btn-journals`. The table view (`JournalTable.jsx`) and the compare tray color the same cells; the catalog (`CatalogView.jsx`) has the quartile selector with its hues and the same badge row.
-- Legend and help: «Cómo leer los resultados» (above the results) shows a swatch and its words for affinity (3 levels), quartile (Q1..Q4 with Publindex), Sin costo / Acepta español / review / license, speed (3 levels) and Cumple / No cumple; «Cómo leer esta página» has the card «Qué significa cada color» with every swatch and its meaning, including the two type buttons.
+- Legend and help: «Cómo leer los resultados» (above the results, a collapsible `.legend-card`: open from 700px, collapsed below) shows a swatch and its words for affinity (3 levels), quartile (Q1..Q4 with Publindex), Sin costo / Acepta español / review / license, speed (3 levels) and Cumple / No cumple; «Cómo leer esta página» has the card «Qué significa cada color» with every swatch and its meaning, including the two type buttons.
 
 - Event filters and cards: white backgrounds, `rounded-2xl`, `gray-200` border, small shadow; selected `.seg` options and `.chip`s use institutional blue with white text.
 - Event tags: `.badge-events` (filled purple) for «Convocatoria», `.badge-events-soft` (light purple) for «Para asistir», `.badge-sector` for online, `.badge-attn` (amber) for closing soon; the primary action is `.btn-events`; the type selector of /eventos uses `.tab-pill-events`; the section tabs of /donde-publicar use `.tab-pill-journals`.
@@ -235,6 +260,8 @@ Sources: `apps/banco-proyectos/src/pages/Eventos.jsx`, `apps/banco-proyectos/src
 
 - First focusable element: skip link "Saltar al contenido" to `#contenido` (focuses `main`, URL unchanged).
 - Landmarks once per page: `header` > `nav` "Principal", `main`, `footer`.
+- Each page sets `document.title` («Página · Banco de Proyectos UNIMAYOR», `useDocumentTitle`) and restores the site title when it unmounts; nothing is announced (no live region).
+- Legends are native `<details>`: the `<summary>` is focusable, Enter and Space toggle it, and the collapsed state never hides the title and hint.
 - Exactly one `h1`; headings do not skip levels (known gap: journal cards of `/donde-publicar` are `h3` under the `h1`, in `src/components/publicar/ResultItem.jsx`).
 - Every button and link has an accessible name; icons are `aria-hidden`; form fields have a visible label and, when useful, a helper (`aria-describedby`).
 - Touch targets of buttons and chips are at least 32-36px tall; nothing overflows horizontally at 390px.

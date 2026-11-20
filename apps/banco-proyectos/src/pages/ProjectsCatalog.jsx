@@ -3,6 +3,7 @@ import { saveCatalogSearch } from '../lib/links';
 import { useSearchParams } from 'react-router-dom';
 import { Briefcase, ChevronDown, Code, Cpu, Layers, Scale, SlidersHorizontal, X } from 'lucide-react';
 import CatalogFilters from '../components/CatalogFilters';
+import CollapsibleLegend from '../components/CollapsibleLegend';
 import ShareSearchButton from '../components/ShareSearchButton';
 import ProjectCard, { LevelDots } from '../components/ProjectCard';
 import ProjectCompareTray from '../components/ProjectCompareTray';
@@ -35,11 +36,13 @@ const FilterChip = ({ chip, onRemove }) => (
 
 // "How to read each card": one line per element, using the same badges and icons as the cards.
 const CardLegend = () => (
-    <aside
-        aria-label="Cómo leer las tarjetas"
-        className="bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-wrap items-center gap-x-[18px] gap-y-2 px-4 py-3 mb-[18px] text-[13px] text-gray-700"
+    <CollapsibleLegend
+        label="Cómo leer las tarjetas"
+        title="Cómo leer cada tarjeta"
+        hint="Colores y códigos"
+        className="mb-[18px]"
+        bodyClassName="flex flex-wrap items-center gap-x-[18px] gap-y-2"
     >
-        <b className="text-[13.5px] text-gray-900">Cómo leer cada tarjeta</b>
         <span className="inline-flex items-center gap-[7px]">
             <span className="badge badge-area"><Layers size={15} aria-hidden="true" />Área</span> línea técnica
         </span>
@@ -58,7 +61,7 @@ const CardLegend = () => (
         <span className="inline-flex items-center gap-[7px]">
             <Scale size={16} aria-hidden="true" className="text-sem-text-2" />Comparar proyectos: marca «Comparar» en 2 o 3 tarjetas
         </span>
-    </aside>
+    </CollapsibleLegend>
 );
 
 // The results part of /proyectos (filters, cards, pages): its own chunk. The title, the summary and «Proponer proyecto»

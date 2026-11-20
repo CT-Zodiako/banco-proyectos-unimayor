@@ -81,7 +81,8 @@ describe('opening', () => {
         const box = dialog();
         expect(box.getAttribute('aria-modal')).toBe('true');
         expect(within(box).getByRole('heading', { name: BUTTON })).toBeTruthy();
-        expect(document.activeElement).toBe(input);
+        // The focus is set by the dialog's mount effect, which can run just after the dialog appears.
+        await waitFor(() => expect(document.activeElement).toBe(input));
         expect(input.getAttribute('aria-expanded')).toBe('false');
         expect(within(box).getByRole('button', { name: 'Cerrar' })).toBeTruthy();
     });
@@ -446,7 +447,7 @@ describe('closing', () => {
         await openWithButton(user);
         await user.keyboard('{Escape}');
         expect(screen.queryByRole('dialog')).toBeNull();
-        expect(document.activeElement).toBe(opener());
+        await waitFor(() => expect(document.activeElement).toBe(opener()));
     });
 
     it('Esc gives the focus back to the element that had it when Ctrl+K was pressed', async () => {
@@ -454,9 +455,12 @@ describe('closing', () => {
         const link = within(screen.getByRole('navigation', { name: 'Principal' })).getByRole('link', { name: 'Dónde publicar' });
         link.focus();
         await user.keyboard('{Control>}k{/Control}');
-        expect(combobox()).toBe(document.activeElement);
+        // The dialog is a lazy chunk (T16): wait until it is there instead of assuming it already is.
+        await screen.findByRole('dialog', { name: BUTTON });
+        await waitFor(() => expect(combobox()).toBe(document.activeElement));
         await user.keyboard('{Escape}');
-        expect(document.activeElement).toBe(link);
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: BUTTON })).toBeNull());
+        await waitFor(() => expect(document.activeElement).toBe(link));
     });
 
     it('Esc with nothing focused (opened with «/») leaves the focus on the Buscar button', async () => {
@@ -464,7 +468,7 @@ describe('closing', () => {
         await user.keyboard('/');
         await screen.findByRole('dialog', { name: BUTTON }); // a lazy chunk (T16): Esc has to find the dialog open
         await user.keyboard('{Escape}');
-        expect(document.activeElement).toBe(opener());
+        await waitFor(() => expect(document.activeElement).toBe(opener()));
     });
 
     it('the Cerrar button and a click on the backdrop close it too', async () => {
