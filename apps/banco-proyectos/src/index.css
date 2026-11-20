@@ -115,6 +115,59 @@
     @apply min-h-[32px] cursor-pointer border-0 bg-transparent px-1 py-1.5 text-[13.5px] font-semibold text-institutional-blue underline underline-offset-[3px] hover:text-blue-800;
   }
 
+  /* ── Eventos and Dónde publicar (T3): same tokens, new classes only ── */
+  /* Attention badge: yellow = attention (closing soon); dark text, the border carries the yellow. */
+  .badge-attn { @apply border-institutional-yellow bg-sem-attention-bg font-bold text-institutional-dark; }
+
+  /* Data status: one compact line that expands to the full text (native <details>). */
+  .data-status { @apply rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-700; }
+  .data-status > summary { @apply flex min-h-[40px] cursor-pointer list-none items-center gap-2 rounded-xl px-3.5 py-1.5; }
+  .data-status > summary::-webkit-details-marker { display: none; }
+  .data-status-dot { @apply h-[9px] w-[9px] flex-none rounded-full bg-sem-success-fg; }
+  .data-status-more { @apply ml-auto inline-flex flex-none items-center gap-1 text-[13.5px] font-semibold text-institutional-blue; }
+  .data-status[open] .data-status-more svg { transform: rotate(180deg); }
+  .data-status .when-open, .data-status[open] .when-closed { display: none; }
+  .data-status[open] .when-open { display: inline; }
+  .data-status-body { @apply grid gap-1.5 px-3.5 pb-3.5 pt-0.5 text-[13.5px]; }
+  .data-status > summary:focus-visible {
+    outline: 2px solid var(--yellow-accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--blue-primary);
+  }
+
+  /* Segmented control (one option pressed): list/table view, event type, quartile. */
+  .seg { @apply inline-flex max-w-full overflow-hidden rounded-lg border border-sem-control-line bg-white; }
+  .seg > button {
+    @apply inline-flex min-h-[38px] flex-1 cursor-pointer items-center justify-center gap-1.5 border-0 border-r border-sem-control-line bg-white px-3.5 text-[13.5px] font-semibold text-gray-700 transition-colors;
+  }
+  .seg > button:last-child { border-right-width: 0; }
+  .seg > button:hover { @apply bg-sem-area-bg text-institutional-blue; }
+  .seg > button[aria-pressed="true"] { @apply bg-institutional-blue text-white; }
+  .seg > button:focus-visible { outline: 2px solid var(--blue-primary); outline-offset: -4px; }
+  .seg > button[aria-pressed="true"]:focus-visible { outline-color: var(--yellow-accent); }
+
+  /* Quartile badge: text plus 1 to 4 filled bars (more bars = better quartile); no color of its own. */
+  .qb {
+    @apply relative inline-flex items-center gap-2 whitespace-nowrap rounded-md border border-gray-700 bg-white px-2 py-0.5 text-[12.5px] font-bold leading-snug text-institutional-dark;
+  }
+  .qb-bars { @apply inline-flex items-end gap-0.5; }
+  .qb-bars > i { @apply block w-[5px] rounded-[1px] border-[1.5px] border-gray-700; }
+  .qb-bars > i:nth-child(1) { height: 6px; }
+  .qb-bars > i:nth-child(2) { height: 9px; }
+  .qb-bars > i:nth-child(3) { height: 12px; }
+  .qb-bars > i:nth-child(4) { height: 15px; }
+  .qb-bars > i.on { @apply bg-gray-700; }
+  .qb small { @apply text-[12.5px] font-medium text-sem-text-2; }
+
+  /* Affinity: one blue ring (--v = 0 to 100); the level is said in words next to it. */
+  .aff-ring {
+    --v: 0;
+    @apply grid h-[68px] w-[68px] flex-none place-items-center rounded-full;
+    background: conic-gradient(var(--blue-primary) calc(var(--v) * 1%), #E5E7EB 0);
+  }
+  .aff-ring > div { @apply grid h-[54px] w-[54px] place-items-center rounded-full bg-white text-[17px] font-extrabold leading-none text-gray-900; }
+  .aff-word { @apply max-w-[84px] text-center text-[12.5px] font-bold leading-tight text-gray-900; }
+
   /* Pagination */
   .page-btn {
     @apply grid h-10 min-w-[40px] cursor-pointer place-items-center rounded-xl border border-sem-control-line bg-white px-3 text-sm font-semibold text-gray-700 hover:border-institutional-blue hover:bg-sem-area-bg hover:text-institutional-blue disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-600 disabled:hover:bg-gray-100 disabled:hover:text-gray-600;

@@ -281,3 +281,15 @@ test('data status says which source dates were not recorded (catalogs built befo
     assert.equal(T.dataStatus({ sources: {} }), 'Fecha de generación no disponible.');
     assert.equal(T.dataStatus({}), 'Fecha de generación no disponible.');
 });
+
+test('affinityWord says "alta", "media" or "baja" with the thresholds the ring already used (80 and 65)', () => {
+    assert.deepEqual(T.AFFINITY_WORDS, { high: 'alta', mid: 'media', low: 'baja' });
+    assert.deepEqual(T.AFFINITY_THRESHOLDS, { high: 80, mid: 65 });
+    assert.equal(T.affinityWord(100), 'alta');
+    assert.equal(T.affinityWord(80), 'alta');
+    assert.equal(T.affinityWord(79), 'media');
+    assert.equal(T.affinityWord(65), 'media');
+    assert.equal(T.affinityWord(64), 'baja');
+    assert.equal(T.affinityWord(0), 'baja');
+    for (const total of [0, 64, 65, 79, 80, 100]) assert.equal(T.affinityWord(total), T.AFFINITY_WORDS[T.affinityLevel(total)]);
+});

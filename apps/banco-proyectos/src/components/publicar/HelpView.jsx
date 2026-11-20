@@ -1,8 +1,9 @@
-import { dataSourcesText } from '../../lib/publicar/display';
-import { QUARTILE_CLASSES } from './classes';
+import { dataSourcesText, QUARTILE_NOTES } from '../../lib/publicar/display';
+import { QuartileBadge } from './JournalLinks';
+import { AFFINITY_THRESHOLDS } from '../../lib/publicar/table';
 
-const CARD = 'bg-white border border-gray-100 rounded-2xl shadow-sm px-[18px] py-4 [&_li]:mb-1.5 [&_a]:text-institutional-blue [&_a]:underline';
-const H3 = 'mt-0 mb-2 text-lg font-bold text-institutional-blue';
+const CARD = 'bg-white border border-gray-200 rounded-2xl shadow-sm px-[18px] py-4 [&_li]:mb-1.5 [&_a]:text-institutional-blue [&_a]:underline';
+const H3 = 'mt-0 mb-2 text-lg font-extrabold text-gray-900';
 const EXTERNAL = { target: '_blank', rel: 'noopener' };
 
 const QUARTILES = [['Q1', 'A1'], ['Q2', 'A2'], ['Q3', 'B'], ['Q4', 'C']];
@@ -25,29 +26,30 @@ export default function HelpView({ data }) {
                 <div className={CARD}>
                     <h3 className={H3}>Cuartil y categoría Publindex</h3>
                     <table className="w-full border-collapse">
-                        <thead><tr><th className="text-left text-sm p-2 border-b border-gray-200">Cuartil SCImago</th><th className="text-left text-sm p-2 border-b border-gray-200">Homologación Publindex</th></tr></thead>
+                        <thead><tr><th className="text-left text-sm p-2 border-b border-gray-200">Cuartil SCImago</th><th className="text-left text-sm p-2 border-b border-gray-200">Qué significa</th><th className="text-left text-sm p-2 border-b border-gray-200">Homologación Publindex</th></tr></thead>
                         <tbody>
                             {QUARTILES.map(([quartile, publindex]) => (
                                 <tr key={quartile}>
-                                    <td className="text-sm p-2 border-b border-gray-200"><span className={`inline-block text-white font-bold text-xs rounded-md px-[7px] py-[3px] ${QUARTILE_CLASSES[quartile]}`}>{quartile}</span></td>
+                                    <td className="text-sm p-2 border-b border-gray-200"><QuartileBadge quartile={quartile} showPublindex={false} /></td>
+                                    <td className="text-sm p-2 border-b border-gray-200">{QUARTILE_NOTES[quartile]}</td>
                                     <td className="text-sm p-2 border-b border-gray-200">{publindex}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                    <p className="text-[13px] text-gray-500">Se muestra el mejor cuartil de la revista. Minciencias toma el cuartil vigente en el año de publicación.</p>
+                    <p className="text-[13px] text-sem-text-2">Se muestra el mejor cuartil de la revista. Minciencias toma el cuartil vigente en el año de publicación.</p>
                 </div>
                 <div className={CARD}>
                     <h3 className={H3}>¿Cómo se eligen las revistas?</h3>
                     <p>Cada proyecto se describe con temas de <strong>sector</strong> y de <strong>tecnología</strong> (área, sector y título); cada revista, con sus categorías de SCImago y sus palabras clave de DOAJ.</p>
                     <ul className="pl-5 list-disc">
-                        <li><span className="inline-block text-[11.5px] font-semibold px-2 py-[3px] rounded-full bg-green-50 text-green-700">Sector + tecnología</span> cubre el sector del proyecto y publica trabajos tecnológicos.</li>
-                        <li><span className="inline-block text-[11.5px] font-semibold px-2 py-[3px] rounded-full bg-blue-50 text-blue-700">Tecnología</span> revista de computación o ingeniería que acepta aplicaciones de cualquier sector.</li>
+                        <li><span className="badge border-green-200 bg-sem-success-bg text-sem-success-fg">Sector + tecnología</span> cubre el sector del proyecto y publica trabajos tecnológicos.</li>
+                        <li><span className="badge badge-area">Tecnología</span> revista de computación o ingeniería que acepta aplicaciones de cualquier sector.</li>
                     </ul>
                 </div>
                 <div className={CARD}>
                     <h3 className={H3}>¿Qué es la afinidad?</h3>
-                    <p>Una estimación de 0 a 100 % de qué tan bien encaja el proyecto con la revista. <strong>No es una probabilidad de aceptación</strong>: ninguna fuente pública informa tasas de aceptación, y la decisión depende de la calidad del artículo y de la revisión por pares.</p>
+                    <p>Una estimación de 0 a 100 % de qué tan bien encaja el proyecto con la revista. Se dice también con palabras: <strong>alta</strong> ({AFFINITY_THRESHOLDS.high} % o más), <strong>media</strong> ({AFFINITY_THRESHOLDS.mid} a {AFFINITY_THRESHOLDS.high - 1} %) y <strong>baja</strong> (menos de {AFFINITY_THRESHOLDS.mid} %). <strong>No es una probabilidad de aceptación</strong>: ninguna fuente pública informa tasas de aceptación, y la decisión depende de la calidad del artículo y de la revisión por pares.</p>
                     <ul className="pl-5 list-disc">
                         <li><strong>Encaje temático (40):</strong> temas de sector y de tecnología del proyecto que cubre la revista.</li>
                         <li><strong>Exigencia según el nivel (25):</strong> una Q1 es más exigente para un proyecto Intermedio que para uno Avanzado.</li>
@@ -66,7 +68,7 @@ export default function HelpView({ data }) {
                     </ul>
                 </div>
             </div>
-            <p className="mt-3.5 text-[13px] text-gray-500">{dataSourcesText(data)}</p>
+            <p className="mt-3.5 text-[13px] text-sem-text-2">{dataSourcesText(data)}</p>
         </>
     );
 }

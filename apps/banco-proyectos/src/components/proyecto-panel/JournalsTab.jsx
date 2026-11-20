@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Chips from '../publicar/Chips';
 import CompareTray from '../publicar/CompareTray';
 import FiltersPanel from '../publicar/FiltersPanel';
-import JournalResults, { AffinityNote } from '../publicar/JournalResults';
+import JournalResults, { AffinityNote, ResultsLegend } from '../publicar/JournalResults';
 import JournalToolbar from '../publicar/JournalToolbar';
 import { EscapeCard, LoadError, NoData } from './PanelParts';
 import PanelSkeleton from './PanelSkeleton';
@@ -60,6 +60,7 @@ function JournalsLoaded({ data, project, active, slots, onMeta }) {
                 <Chips advanced={finder.advanced} onRemove={(key) => finder.patchAdvanced({ [key]: ADVANCED_DEFAULTS[key] })} onClear={() => finder.setAdvanced(ADVANCED_DEFAULTS)} />
             </div>
             <section aria-label="Revistas sugeridas">
+                <ResultsLegend className="mb-3" />
                 <JournalResults
                     rows={visible}
                     mode={finder.mode}
@@ -68,7 +69,7 @@ function JournalsLoaded({ data, project, active, slots, onMeta }) {
                     compare={finder.compare}
                     onToggleCompare={finder.toggleCompared}
                     limit={limit}
-                    listClassName="[&>article]:items-start"
+                    listClassName="[&>article]:items-start [&>article]:md:grid-cols-[92px_minmax(0,1fr)] [&>article>div:last-child]:md:col-span-full [&>article>div:last-child]:md:flex-row [&>article>div:last-child]:md:flex-wrap"
                     onMore={() => setLimit((current) => nextShown(current, visible.length, MORE_SIZE))}
                     onClearFilters={() => { finder.setAdvanced(ADVANCED_DEFAULTS); finder.setQuery(''); }}
                 />

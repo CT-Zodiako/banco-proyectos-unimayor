@@ -42,9 +42,14 @@ export function affinity(event, project, today) {
 }
 
 /** Color level of an affinity total, like donde-publicar: "high" ≥ 80, "mid" ≥ 60, "low" otherwise. */
+export const AFFINITY_THRESHOLDS = { high: 80, mid: 60 };
 export function affinityLevel(total) {
-    return total >= 80 ? 'high' : total >= 60 ? 'mid' : 'low';
+    return total >= AFFINITY_THRESHOLDS.high ? 'high' : total >= AFFINITY_THRESHOLDS.mid ? 'mid' : 'low';
 }
+
+/** The level in words, for the label next to the ring ("Afinidad alta"). */
+export const AFFINITY_WORDS = { high: 'alta', mid: 'media', low: 'baja' };
+export const affinityWord = (total) => AFFINITY_WORDS[affinityLevel(total)];
 
 /** [{event, affinity}] for the open events sharing at least one topic with the project, sorted by affinity
     (highest first), then by closing date like the "deadline" sort (missing dates last). */

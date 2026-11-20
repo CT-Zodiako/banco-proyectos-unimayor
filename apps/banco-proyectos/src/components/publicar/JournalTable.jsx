@@ -1,26 +1,26 @@
 import { ExtLink, QuartileBadge, TemplateLinks } from './JournalLinks';
-import { BAR_CLASSES, FIT_CLASSES, FOCUS } from './classes';
-import { FIT_LABELS, PUBLINDEX, affinityParts, countryLabel, formatSjr, languageLabel, reviewLabel, safeUrl } from '../../lib/publicar/display';
-import { MAX_COMPARE, affinityLevel } from '../../lib/publicar/table';
+import { FIT_CLASSES, FOCUS } from './classes';
+import { FIT_LABELS, affinityParts, countryLabel, formatSjr, languageLabel, reviewLabel, safeUrl } from '../../lib/publicar/display';
+import { MAX_COMPARE, affinityWord } from '../../lib/publicar/table';
 
 const COLUMNS = [
     { id: 'title', label: 'Revista' }, { id: 'affinity', label: 'Afinidad' }, { id: 'quartile', label: 'Cuartil · Publindex' },
     { id: 'sjr', label: 'SJR' }, { id: 'h_index', label: 'Índice H' }, { id: 'weeks', label: 'Semanas' },
     { label: 'Idiomas' }, { label: 'Revisión' }, { label: 'Licencia' }, { label: 'Encaje' }, { label: 'Formato' },
 ];
-const TH = 'text-left text-[11.5px] font-bold uppercase tracking-wider bg-gray-50 px-3 py-[11px] border-b border-gray-200';
+const TH = 'text-left text-[12px] font-bold uppercase tracking-wider bg-gray-50 px-3 py-[11px] border-b border-gray-200';
 const TD = 'px-3 py-[11px] border-b border-gray-100 text-gray-700 align-middle group-last:border-b-0';
-const LINK = 'text-[12.5px] font-semibold no-underline hover:underline text-institutional-blue';
-const DOWNLOAD = `inline-block max-w-[150px] overflow-hidden text-ellipsis text-[12.5px] font-semibold no-underline bg-institutional-blue text-white rounded-lg px-[9px] py-[3px] hover:bg-blue-800 ${FOCUS}`;
+const LINK = 'link-action !min-h-[28px] !py-0.5 !text-[12.5px]';
+const DOWNLOAD = 'btn btn-secondary !min-h-[30px] max-w-[160px] overflow-hidden text-ellipsis !px-2.5 !text-[12.5px]';
 
 function AffinityCell({ affinity }) {
-    const level = affinityLevel(affinity.total);
     return (
         <div className="flex items-center gap-2 whitespace-nowrap tabular-nums" title={`Afinidad estimada: ${affinityParts(affinity)}`}>
             <b className="min-w-[38px] text-sm text-gray-900">{affinity.total} %</b>
-            <i aria-hidden="true" className="block w-11 h-1.5 rounded-full bg-gray-100 overflow-hidden">
-                <span className={`block h-full rounded-full ${BAR_CLASSES[level]}`} style={{ width: `${affinity.total}%` }} />
+            <i aria-hidden="true" className="block w-11 h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                <span className="block h-full rounded-full bg-institutional-blue" style={{ width: `${affinity.total}%` }} />
             </i>
+            <span className="text-[13px] font-semibold text-gray-700">{affinityWord(affinity.total)}</span>
         </div>
     );
 }
@@ -41,7 +41,7 @@ function JournalName({ journal }) {
             {safeUrl(journal.url)
                 ? <ExtLink url={journal.url} className="block font-bold text-sm text-gray-900 no-underline hover:text-institutional-blue hover:underline">{journal.title}</ExtLink>
                 : <b className="block text-sm text-gray-900">{journal.title}</b>}
-            <span className="text-xs text-gray-500">{[journal.publisher, countryLabel(journal.country)].filter(Boolean).join(' · ')}</span>
+            <span className="text-xs text-sem-text-2">{[journal.publisher, countryLabel(journal.country)].filter(Boolean).join(' · ')}</span>
         </>
     );
 }
@@ -58,7 +58,7 @@ export default function JournalTable({ rows, sort, compare, onSort, onToggleComp
                     <tr>
                         <th scope="col" className={TH}><span className="sr-only">Comparar</span></th>
                         {COLUMNS.map(({ id, label }) => (
-                            <th key={label} scope="col" aria-sort={ariaSort(id)} className={`${TH} ${ariaSort(id) ? 'text-institutional-blue' : 'text-gray-500'}`}>
+                            <th key={label} scope="col" aria-sort={ariaSort(id)} className={`${TH} ${ariaSort(id) ? 'text-institutional-blue' : 'text-gray-700'}`}>
                                 {id
                                     ? (
                                         <button type="button" onClick={() => onSort(id)} className={`uppercase tracking-wider font-bold hover:text-institutional-blue rounded ${FOCUS}`}>
@@ -84,12 +84,12 @@ export default function JournalTable({ rows, sort, compare, onSort, onToggleComp
                                         disabled={!selected && full}
                                         title={!selected && full ? `Máximo ${MAX_COMPARE} revistas` : undefined}
                                         onChange={() => onToggleCompare(journal.id)}
-                                        className={`w-4 h-4 accent-institutional-blue cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`}
+                                        className={`w-[18px] h-[18px] accent-institutional-blue cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`}
                                     />
                                 </td>
                                 <td className={`${TD} min-w-[220px]`}><JournalName journal={journal} /></td>
                                 <td className={TD}><AffinityCell affinity={affinity} /></td>
-                                <td className={`${TD} tabular-nums whitespace-nowrap`}><QuartileBadge quartile={journal.quartile} /> {PUBLINDEX[journal.quartile]}</td>
+                                <td className={`${TD} tabular-nums whitespace-nowrap`}><QuartileBadge quartile={journal.quartile} /></td>
                                 <td className={`${TD} tabular-nums whitespace-nowrap`}>{formatSjr(journal.sjr)}</td>
                                 <td className={`${TD} tabular-nums whitespace-nowrap`}>{journal.h_index ?? '—'}</td>
                                 <td className={`${TD} tabular-nums whitespace-nowrap`}>{journal.weeks_to_publication ?? '—'}</td>
@@ -97,7 +97,7 @@ export default function JournalTable({ rows, sort, compare, onSort, onToggleComp
                                 <td className={TD}>{reviewLabel(journal.review)}</td>
                                 <td className={TD}>{journal.license || '—'}</td>
                                 <td className={TD}>
-                                    <span className={`inline-block text-[11.5px] font-semibold px-2 py-[3px] rounded-full whitespace-nowrap ${FIT_CLASSES[match.fit] || FIT_CLASSES.sector}`}>{FIT_LABELS[match.fit] || match.fit}</span>
+                                    <span className={`badge whitespace-nowrap ${FIT_CLASSES[match.fit] || FIT_CLASSES.sector}`}>{FIT_LABELS[match.fit] || match.fit}</span>
                                 </td>
                                 <td className={TD}><FormatLinks journal={journal} /></td>
                             </tr>

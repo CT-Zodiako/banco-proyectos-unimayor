@@ -1,25 +1,11 @@
+import { ChevronDown } from 'lucide-react';
+import AffinityRing from './AffinityRing';
 import { ExtLink, FavoriteButton, QuartileBadge, TemplateLinks } from './JournalLinks';
-import { BTN, BTN_PRIMARY, FOCUS, RING_COLORS } from './classes';
-import { AFFINITY_LABELS, PUBLINDEX, journalMeta, safeUrl } from '../../lib/publicar/display';
-import { AFFINITY_MAX, affinityLevel } from '../../lib/publicar/table';
+import { FOCUS } from './classes';
+import { AFFINITY_LABELS, journalMeta, safeUrl } from '../../lib/publicar/display';
+import { AFFINITY_MAX } from '../../lib/publicar/table';
 
-function AffinityRing({ total }) {
-    return (
-        <div
-            role="img"
-            aria-label={`Afinidad estimada ${total} %`}
-            className="w-[72px] h-[72px] rounded-full grid place-items-center"
-            style={{ background: `conic-gradient(${RING_COLORS[affinityLevel(total)]} ${total}%, #F3F4F6 0)` }}
-        >
-            <div className="w-[58px] h-[58px] rounded-full bg-white grid place-items-center text-center leading-none">
-                <span>
-                    <b className="block text-lg text-gray-900">{total}%</b>
-                    <span className="block mt-[3px] text-[9.5px] text-gray-500 uppercase tracking-wide">afinidad</span>
-                </span>
-            </div>
-        </div>
-    );
-}
+const MORE_LINK = 'btn btn-tertiary !min-h-[32px]';
 
 function Breakdown({ affinity }) {
     return (
@@ -32,7 +18,7 @@ function Breakdown({ affinity }) {
                         <i role="img" aria-label={`${value} de ${max}`} className="block h-2 rounded-full bg-gray-100 overflow-hidden">
                             <span className="block h-full bg-institutional-blue" style={{ width: `${Math.round((value / max) * 100)}%` }} />
                         </i>
-                        <em className="not-italic text-xs text-gray-500 text-right tabular-nums">{value}/{max}</em>
+                        <em className="not-italic text-xs text-sem-text-2 text-right tabular-nums">{value}/{max}</em>
                     </div>
                 );
             })}
@@ -77,42 +63,47 @@ function Assessment({ assessment }) {
     );
 }
 
-// One journal of the list view: affinity ring, "¿Por qué X %?" explanation, templates, instructions and links.
+// One journal of the list view: affinity ring with its word, quartile badge, "Ver por qué" explanation, the one
+// primary action (instructions for authors), secondary actions (templates, save) and a tertiary "Más información" row.
 export default function ResultItem({ row: { journal, affinity, assessment }, open }) {
-    const hasTemplates = (journal.templates || []).length > 0;
     return (
-        <article className="bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-blue-100 hover:shadow-md transition-shadow px-4 py-3.5 grid grid-cols-[72px_minmax(0,1fr)] md:grid-cols-[84px_minmax(0,1fr)_auto] gap-4 items-center">
+        <article className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:border-sem-area-line hover:shadow-md transition-shadow p-4 grid grid-cols-[84px_minmax(0,1fr)] md:grid-cols-[92px_minmax(0,1fr)_auto] gap-x-4 gap-y-3 items-start">
             <AffinityRing total={affinity.total} />
-            <div className="min-w-0">
-                <h3 className="m-0 mb-[3px] text-[15.5px] font-bold text-gray-900 flex flex-wrap items-center gap-2">
-                    {safeUrl(journal.url)
-                        ? <ExtLink url={journal.url} className="text-inherit no-underline hover:text-institutional-blue hover:underline">{journal.title}</ExtLink>
-                        : journal.title}
-                    <QuartileBadge quartile={journal.quartile} />
-                    <span className="text-xs font-semibold text-gray-600">Publindex {PUBLINDEX[journal.quartile]}</span>
-                </h3>
-                <div className="text-[13px] text-gray-500">{journalMeta(journal)}</div>
-                <details open={open} className="mt-1.5 text-[13px]">
-                    <summary className={`cursor-pointer text-institutional-blue font-semibold inline-block rounded-md ${FOCUS}`}>
-                        ¿Por qué {affinity.total} %?
-                        <span className="font-normal text-gray-500"> · cumple {assessment.meets.length} · no cumple {assessment.misses.length}</span>
-                    </summary>
-                    <Breakdown affinity={affinity} />
-                    <Assessment assessment={assessment} />
-                </details>
-            </div>
-            <div className="col-span-full md:col-span-1 flex flex-col gap-1.5 items-stretch md:min-w-[190px]">
-                <TemplateLinks journal={journal} />
-                <ExtLink url={journal.author_instructions_url} className={hasTemplates ? BTN : BTN_PRIMARY}>Instrucciones para autores</ExtLink>
-                <FavoriteButton journal={journal} />
-                <div className="flex flex-wrap justify-center gap-x-2 text-[12.5px] font-semibold">
-                    <ExtLink url={journal.aims_scope_url} className="no-underline hover:underline text-institutional-blue">Alcance</ExtLink>
-                    <ExtLink url={journal.url} className="no-underline hover:underline text-institutional-blue">Sitio</ExtLink>
-                    <ExtLink url={journal.doaj_url} className="no-underline hover:underline text-institutional-blue">DOAJ</ExtLink>
-                    <ExtLink url={journal.scimago_url} className="no-underline hover:underline text-institutional-blue">SCImago</ExtLink>
+            {/* Below md the ring sits beside the title and the rest takes the full width (max-md:contents). */}
+            <div className="min-w-0 max-md:contents">
+                <div className="min-w-0">
+                    <h3 className="m-0 mb-1 text-[16px] leading-snug font-bold text-gray-900 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                        {safeUrl(journal.url)
+                            ? <ExtLink url={journal.url} className="text-inherit no-underline hover:text-institutional-blue hover:underline rounded">{journal.title}</ExtLink>
+                            : journal.title}
+                        <QuartileBadge quartile={journal.quartile} />
+                    </h3>
+                    <div className="text-[13px] text-sem-text-2">{journalMeta(journal)}</div>
                 </div>
+                <div className="min-w-0 max-md:col-span-full">
+                    <div role="group" aria-label="Más información" className="flex flex-wrap items-center gap-x-0.5 text-[13px] md:mt-1.5">
+                        <span className="mr-1 font-semibold text-sem-text-2">Más información:</span>
+                        <ExtLink url={journal.aims_scope_url} className={MORE_LINK}>Alcance</ExtLink>
+                        <ExtLink url={journal.url} className={MORE_LINK}>Sitio</ExtLink>
+                        <ExtLink url={journal.doaj_url} className={MORE_LINK}>DOAJ</ExtLink>
+                        <ExtLink url={journal.scimago_url} className={MORE_LINK}>SCImago</ExtLink>
+                    </div>
+                    <details open={open} className="group mt-1.5 text-[13px]">
+                        <summary className={`inline-flex min-h-[32px] cursor-pointer list-none flex-wrap items-center gap-x-1.5 rounded-md py-1 text-[13.5px] font-semibold text-institutional-blue hover:text-blue-800 [&::-webkit-details-marker]:hidden ${FOCUS}`}>
+                            <span className="whitespace-nowrap underline underline-offset-[3px]">Ver por qué {affinity.total} % de afinidad</span>
+                            <span className="whitespace-nowrap font-normal text-sem-text-2">· cumple {assessment.meets.length} · no cumple {assessment.misses.length}</span>
+                            <ChevronDown size={15} aria-hidden="true" className="flex-none transition-transform group-open:rotate-180" />
+                        </summary>
+                        <Breakdown affinity={affinity} />
+                        <Assessment assessment={assessment} />
+                    </details>
+                </div>
+            </div>
+            <div className="col-span-full md:col-span-1 flex flex-col gap-2 items-stretch md:min-w-[200px]">
+                <ExtLink url={journal.author_instructions_url} className="btn btn-primary">Instrucciones para autores</ExtLink>
+                <TemplateLinks journal={journal} />
+                <FavoriteButton journal={journal} />
             </div>
         </article>
     );
 }
-

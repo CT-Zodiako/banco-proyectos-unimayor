@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, X } from 'lucide-react';
 import DataGate from '../components/DataGate';
 import EventCard from '../components/eventos/EventCard';
 import EventComparison from '../components/eventos/EventComparison';
 import EventFilters from '../components/eventos/EventFilters';
 import ProjectPanel from '../components/eventos/ProjectPanel';
+import DataStatus from '../components/publicar/DataStatus';
 import useEventResults from '../hooks/useEventResults';
 import { DATA_FILES } from '../lib/data-loader';
-import { comparisonKey, dataInfoText, dataStatusText, plural } from '../lib/eventos/display';
+import { comparisonKey, dataInfoText, dataStatusText, dataUpdatedText, eventFilterChips, plural } from '../lib/eventos/display';
 import { DEFAULT_STATE, MAX_COMPARISON, parseQuery, stateToQuery, toggleComparison } from '../lib/eventos/filters';
 
 const PAGE_TITLE = 'Buscador de eventos académicos · Banco de Proyectos · UNIMAYOR';
@@ -61,6 +63,7 @@ function EventosPage({ eventosData }) {
     const { today, affinityByEvent, counts, shown, noProjectEvents } = useEventResults({ events, project, state });
 
     const isFiltered = stateToQuery({ ...state, project: null, sort: DEFAULT_STATE.sort }) !== '';
+    const chips = eventFilterChips(state);
 
     function clearFilters() {
         go({ ...DEFAULT_STATE, topics: [], sort: state.sort, ...(state.project ? { project: state.project } : {}) });
@@ -76,45 +79,57 @@ function EventosPage({ eventosData }) {
         <div className="py-8 space-y-4">
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-5">
                 <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Banco de Proyectos</p>
-                    <h1 className="mt-1 mb-1.5 text-2xl max-md:text-[21px] leading-snug font-bold text-gray-900">Buscador de eventos académicos</h1>
-                    <p className="max-w-3xl text-[15px] text-gray-600">
+                    <p className="text-xs font-bold text-sem-text-2 uppercase tracking-wider">Banco de Proyectos</p>
+                    <h1 className="mt-1 mb-1.5 text-3xl max-md:text-[24px] leading-tight font-extrabold text-gray-900">Buscador de eventos académicos</h1>
+                    <p className="max-w-3xl text-[15px] text-gray-700">
                         Encuentre <strong>congresos con convocatoria</strong> para presentar su proyecto y <strong>eventos para asistir</strong>: talleres, charlas, ferias y hackatones.
                     </p>
                 </div>
-                <Link to="/proyectos" className="text-sm font-semibold text-institutional-blue whitespace-nowrap border border-blue-100 rounded-lg px-3.5 py-2 bg-white self-start hover:bg-blue-50">← Volver al banco de proyectos</Link>
+                <Link to="/proyectos" className="btn btn-secondary self-start focus-ring"><ArrowLeft size={16} aria-hidden="true" />Volver al banco de proyectos</Link>
             </div>
 
-            <p><Link to="/oportunidades" className="text-institutional-blue underline">Mis oportunidades guardadas →</Link></p>
+            <p><Link to="/oportunidades" className="link-action focus-ring rounded">Mis oportunidades guardadas →</Link></p>
 
-            <section aria-label="Estado de los datos" className="bg-white border-l-4 border-institutional-yellow rounded-r-xl px-3.5 py-2.5 text-[13.5px] text-gray-700 shadow-sm">
-                <strong>Estado de los datos</strong>
-                <p className="mt-1">{dataStatusText(generated)}</p>
-                <p className="mt-1">El listado se actualiza automáticamente cada semana con WikiCFP, ccf-deadlines y Devpost; si alguna fuente no responde, se conserva el listado anterior. La fecha indica cuándo se generó el listado, no cuándo se verificó cada evento. Confirme fechas y sede en el sitio oficial.</p>
-            </section>
+            <DataStatus updated={dataUpdatedText(generated)}>
+                <p>{dataStatusText(generated)}</p>
+                <p>El listado se actualiza automáticamente cada semana con WikiCFP, ccf-deadlines y Devpost; si alguna fuente no responde, se conserva el listado anterior. La fecha indica cuándo se generó el listado, no cuándo se verificó cada evento. Confirme fechas y sede en el sitio oficial.</p>
+            </DataStatus>
 
             {projectMissing && (
-                <p role="status" className="bg-white border-l-4 border-institutional-yellow rounded-r-xl px-3.5 py-2.5 text-[13.5px] text-gray-700 shadow-sm">No se encontró el proyecto</p>
+                <p role="status" className="rounded-xl border border-gray-200 border-l-[5px] border-l-institutional-yellow bg-sem-attention-bg px-4 py-3 text-sm text-institutional-dark">No se encontró el proyecto</p>
             )}
             {project && <ProjectPanel project={project} onShowAll={showAllEvents} />}
 
             <EventFilters state={state} hasProject={Boolean(project)} topics={knownTopics} counts={counts} onChange={update} searchRef={searchRef} />
 
-            <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600" aria-live="polite">
+            <div className="space-y-2.5">
+                <h2 aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
                     {shown.length
                         ? `${plural(shown.length, 'evento vigente', 'eventos vigentes')}${project ? ' afines al proyecto' : ''}`
                         : 'Sin resultados'}
-                </span>
-                {isFiltered && shown.length > 0 && (
-                    <button type="button" onClick={clearFilters} className="text-[13px] font-semibold text-institutional-blue underline rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow">Limpiar filtros</button>
+                </h2>
+                {chips.length > 0 && (
+                    <div role="group" aria-label="Filtros activos" className="flex flex-wrap items-center gap-2">
+                        <span className="mr-0.5 text-[13.5px] font-semibold text-gray-700">Filtros activos:</span>
+                        {chips.map((chip) => (
+                            <span key={chip.id} className="filter-chip">
+                                <span><small>{chip.group}:</small> {chip.text}</span>
+                                <button type="button" onClick={() => update(chip.patch)} aria-label={`Quitar filtro: ${chip.group}: ${chip.text}`}>
+                                    <X size={15} aria-hidden="true" />
+                                </button>
+                            </span>
+                        ))}
+                        {isFiltered && shown.length > 0 && (
+                            <button type="button" onClick={clearFilters} className="link-action focus-ring rounded">Limpiar filtros</button>
+                        )}
+                    </div>
                 )}
             </div>
 
             <EventComparison events={events} selected={selected} onClear={() => setSelected([])} />
 
             <section aria-label="Eventos encontrados">
-                <div className="grid gap-3">
+                <div className="grid gap-4">
                     {shown.map((event) => {
                         const key = comparisonKey(event);
                         return (
@@ -131,20 +146,20 @@ function EventosPage({ eventosData }) {
                     })}
                 </div>
                 {shown.length === 0 && !noProjectEvents && (
-                    <div className="text-center p-7 text-gray-500 border border-dashed border-gray-200 rounded-2xl bg-white">
+                    <div className="text-center p-7 text-sem-text-2 border border-dashed border-sem-control-line rounded-2xl bg-white">
                         <p className="mb-3">Ningún evento vigente cumple estos filtros.</p>
-                        <button type="button" onClick={clearFilters} className="px-4 py-2.5 rounded-lg border border-institutional-blue bg-white text-institutional-blue font-semibold hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow">Limpiar filtros</button>
+                        <button type="button" onClick={clearFilters} className="btn btn-secondary">Limpiar filtros</button>
                     </div>
                 )}
                 {noProjectEvents && (
-                    <div className="text-center p-7 text-gray-500 border border-dashed border-gray-200 rounded-2xl bg-white">
+                    <div className="text-center p-7 text-sem-text-2 border border-dashed border-sem-control-line rounded-2xl bg-white">
                         <p className="mb-3">Ningún evento vigente comparte temas con este proyecto.</p>
-                        <button type="button" onClick={showAllEvents} className="px-4 py-2.5 rounded-lg border border-institutional-blue bg-white text-institutional-blue font-semibold hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow">Ver todos los eventos</button>
+                        <button type="button" onClick={showAllEvents} className="btn btn-secondary">Ver todos los eventos</button>
                     </div>
                 )}
             </section>
 
-            <footer className="border-t border-gray-200 pt-4 text-[13px] text-gray-500 space-y-1.5">
+            <footer className="border-t border-gray-200 pt-4 text-[13px] text-sem-text-2 space-y-1.5">
                 <p>{dataInfoText(generated, sources)}</p>
                 <p>Las fechas se obtienen automáticamente y pueden cambiar: confírmelas siempre en el sitio oficial de cada evento. Banco de Proyectos · UNIMAYOR, Popayán.</p>
             </footer>

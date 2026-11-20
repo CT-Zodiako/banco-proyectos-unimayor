@@ -1,20 +1,20 @@
-import { FOCUS } from './classes';
+import { X } from 'lucide-react';
 import { filterChips } from '../../lib/publicar/display';
 
 // Removable chips of the active advanced filters, plus "Limpiar todo".
 export default function Chips({ advanced, onRemove, onClear }) {
     const chips = filterChips(advanced);
+    if (chips.length === 0) return null;
     return (
-        <div className="contents" aria-label="Filtros activos">
+        <div role="group" aria-label="Filtros activos" className="contents">
+            <span className="text-[13.5px] font-semibold text-gray-700">Filtros activos:</span>
             {chips.map(([key, label]) => (
-                <span key={key} className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 rounded-full py-[5px] pr-2 pl-3 text-[13px] font-semibold">
+                <span key={key} className="filter-chip">
                     {label}
-                    <button type="button" onClick={() => onRemove(key)} aria-label={`Quitar filtro ${label}`} className={`border-0 bg-blue-100 text-blue-700 w-[18px] h-[18px] rounded-full text-xs leading-none cursor-pointer ${FOCUS}`}>×</button>
+                    <button type="button" onClick={() => onRemove(key)} aria-label={`Quitar filtro ${label}`}><X size={15} aria-hidden="true" /></button>
                 </span>
             ))}
-            {chips.length > 0 && (
-                <button type="button" onClick={onClear} className={`border-0 bg-transparent text-institutional-blue text-[13px] font-semibold underline cursor-pointer rounded ${FOCUS}`}>Limpiar todo</button>
-            )}
+            <button type="button" onClick={onClear} className="link-action focus-ring rounded">Limpiar todo</button>
         </div>
     );
 }

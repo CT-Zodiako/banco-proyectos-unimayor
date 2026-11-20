@@ -1,18 +1,21 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
+import { Check, X } from 'lucide-react';
 import { BTN_SECONDARY, FOCUS } from './classes';
 import { numberOrNull, toggled } from '../../lib/publicar/display';
 import { PRESETS, applyPreset, makePreset } from '../../lib/publicar/table';
 
 const QUARTILE_PILLS = [['Q1', 'Q1 · A1'], ['Q2', 'Q2 · A2'], ['Q3', 'Q3 · B'], ['Q4', 'Q4 · C']];
 const FIT_PILLS = [['fuerte', 'Sector + tecnología'], ['tecnologia', 'Solo tecnología']];
-const SMALL_INPUT = 'w-full px-2.5 py-2 text-[13px] border border-gray-200 rounded-xl bg-white';
-const CHECK = 'flex items-center gap-1.5 py-[3px] text-[13.5px] text-gray-700 cursor-pointer';
-const CHECKBOX = `w-4 h-4 accent-institutional-blue ${FOCUS}`;
+const SMALL_INPUT = 'w-full h-10 px-2.5 text-[13px] border border-sem-control-line rounded-xl bg-white text-gray-900 placeholder:text-sem-text-2 placeholder:opacity-100';
+const CHECK = 'flex min-h-[32px] items-center gap-2 py-[3px] text-[13.5px] text-gray-700 cursor-pointer';
+const CHECKBOX = `w-[18px] h-[18px] accent-institutional-blue ${FOCUS}`;
 
-const Group = ({ legend, children }) => (
-    <fieldset className="border-0 border-t border-gray-100 m-0 py-3 min-w-0">
-        <legend className="float-left w-full p-0 mb-2 text-[11.5px] font-bold uppercase tracking-wider text-gray-400">{legend}</legend>
-        <div className="clear-both">{children}</div>
+// A filter group: bold title, then one line that says what it does.
+const Group = ({ legend, hint, children }) => (
+    <fieldset className="border-0 border-t border-gray-200 m-0 py-3 min-w-0">
+        <legend className="float-left w-full p-0 text-[14.5px] font-bold text-gray-900">{legend}</legend>
+        <p className="field-hint clear-both">{hint}</p>
+        <div>{children}</div>
     </fieldset>
 );
 
@@ -25,8 +28,9 @@ function Pills({ options, selected, onToggle }) {
                     type="button"
                     aria-pressed={selected.includes(value)}
                     onClick={() => onToggle(value)}
-                    className={`rounded-full border px-[11px] py-[5px] text-[13px] font-medium ${FOCUS} ${selected.includes(value) ? 'bg-institutional-blue border-institutional-blue text-white' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+                    className="chip chip-sm"
                 >
+                    <Check size={14} aria-hidden="true" className="chip-check flex-none" />
                     {label}
                 </button>
             ))}
@@ -51,7 +55,7 @@ function NumberField({ id, label, value, onChange, format, ...props }) {
         if (numberOrNull(text) !== value) setText(value === null ? '' : format(value));
     }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
     return (
-        <label className="flex flex-col gap-1 text-[12.5px] text-gray-600" htmlFor={id}>
+        <label className="flex flex-col gap-1 text-[12.5px] font-semibold text-gray-700" htmlFor={id}>
             {label}
             <input
                 id={id}
@@ -85,16 +89,16 @@ function Presets({ advanced, userPresets, onApply, onSave, onDelete }) {
             setError(failure.message);
         }
     }
-    const linkButton = `border-0 bg-transparent p-0 text-[12.5px] font-semibold text-institutional-blue cursor-pointer rounded ${FOCUS}`;
+    const linkButton = `link-action !min-h-[28px] !py-0.5 !text-[12.5px] ${FOCUS}`;
     return (
-        <div className="mt-3 text-[12.5px] text-gray-500 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span>Filtros guardados:</span>
+        <div className="mt-3 text-[12.5px] text-sem-text-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="font-semibold text-gray-700">Filtros guardados:</span>
             {items.map(({ preset, own }, index) => (
                 <Fragment key={`${own ? 'own' : 'built-in'}-${preset.id}`}>
                     <span className="inline-flex items-center gap-[3px]">
                         <button type="button" title="Aplicar este filtro guardado" onClick={() => onApply(preset)} className={linkButton}>{preset.label}</button>
                         {own && (
-                            <button type="button" aria-label={`Borrar el filtro guardado ${preset.label}`} onClick={() => onDelete(preset)} className={`border-0 bg-transparent px-0.5 text-[13px] text-gray-400 cursor-pointer rounded ${FOCUS}`}>×</button>
+                            <button type="button" aria-label={`Borrar el filtro guardado ${preset.label}`} onClick={() => onDelete(preset)} className={`grid h-6 w-6 cursor-pointer place-items-center rounded-full border-0 bg-transparent text-sem-text-2 hover:bg-gray-100 ${FOCUS}`}><X size={14} aria-hidden="true" /></button>
                         )}
                     </span>
                     {index < items.length - 1 && '·'}
@@ -119,10 +123,10 @@ function Presets({ advanced, userPresets, onApply, onSave, onDelete }) {
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                         placeholder="Nombre, p. ej. Mi grupo"
-                        className={`flex-1 min-w-[140px] px-2.5 py-[7px] text-[13px] border border-gray-200 rounded-lg ${FOCUS}`}
+                        className={`flex-1 min-w-[140px] h-9 px-2.5 text-[13px] border border-sem-control-line rounded-lg ${FOCUS}`}
                     />
-                    <button type="submit" className={`px-3 py-1.5 text-[13px] font-semibold rounded-lg border border-institutional-blue bg-institutional-blue text-white hover:bg-blue-800 ${FOCUS}`}>Guardar</button>
-                    <span role="alert" className="w-full text-orange-700">{error}</span>
+                    <button type="submit" className="btn btn-primary !min-h-[36px]">Guardar</button>
+                    <span role="alert" className="w-full text-sem-danger-fg">{error}</span>
                 </form>
             )}
         </div>
@@ -150,26 +154,26 @@ export default function FiltersPanel({ advanced: a, shown, userPresets, onChange
                 if (embedded) { event.preventDefault(); event.stopPropagation(); }
                 onClose();
             }}
-            className={embedded ? 'bg-white p-[18px] min-h-full' : 'bg-white border border-gray-200 rounded-3xl shadow-xl p-[18px] min-[1100px]:sticky min-[1100px]:top-4 min-[1100px]:max-h-[calc(100vh-32px)] overflow-y-auto max-[1099px]:order-first'}
+            className={embedded ? 'bg-white p-[18px] min-h-full' : 'bg-white border border-gray-200 rounded-2xl shadow-xl p-[18px] min-[1100px]:sticky min-[1100px]:top-4 min-[1100px]:max-h-[calc(100vh-32px)] overflow-y-auto max-[1099px]:order-first'}
         >
             <div className="flex items-center justify-between mb-1">
-                <h2 id="publicar-adv-title" className="m-0 text-[17px] font-bold text-gray-900">Filtros personalizados</h2>
-                <button ref={closeRef} type="button" aria-label="Cerrar filtros" onClick={onClose} className={`w-[30px] h-[30px] rounded-full bg-gray-100 text-base cursor-pointer ${FOCUS}`}>×</button>
+                <h2 id="publicar-adv-title" className="m-0 text-lg font-extrabold text-gray-900">Filtros personalizados</h2>
+                <button ref={closeRef} type="button" aria-label="Cerrar filtros" onClick={onClose} className={`grid h-8 w-8 cursor-pointer place-items-center rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 ${FOCUS}`}><X size={16} aria-hidden="true" /></button>
             </div>
-            <p className="m-0 mb-2 text-[13px] text-gray-500">Combine las variables que necesite; se aplican todas a la vez.</p>
+            <p className="m-0 mb-2 text-[13px] text-sem-text-2">Combine las variables que necesite; se aplican todas a la vez.</p>
 
-            <Group legend="Afinidad mínima">
+            <Group legend="Afinidad mínima" hint="Oculta las revistas con poco encaje con tu proyecto.">
                 <Range id="publicar-adv-affinity" label="Afinidad mínima" min={0} max={100} step={5} value={a.minAffinity}
                     onChange={(event) => onChange({ minAffinity: Number(event.target.value) })} output={a.minAffinity ? `${a.minAffinity} %` : 'Sin mínimo'} />
             </Group>
-            <Group legend="Cuartil · Publindex">
+            <Group legend="Cuartil · Publindex" hint="Q1 es el mejor cuartil; A1 a C es la categoría Publindex equivalente.">
                 <Pills options={QUARTILE_PILLS} selected={a.quartiles} onToggle={(value) => onChange({ quartiles: toggled(a.quartiles, value) })} />
             </Group>
-            <Group legend="Tiempo máximo a publicación">
+            <Group legend="Tiempo máximo a publicación" hint="Semanas típicas entre el envío y la publicación.">
                 <Range id="publicar-adv-weeks" label="Semanas máximas" min={4} max={52} step={2} value={a.maxWeeks ?? 52}
                     onChange={(event) => onChange({ maxWeeks: Number(event.target.value) >= 52 ? null : Number(event.target.value) })} output={a.maxWeeks === null ? 'Sin límite' : `${a.maxWeeks} semanas`} />
             </Group>
-            <Group legend="Idioma y región">
+            <Group legend="Idioma y región" hint="Idioma en que puedes enviar y país de la revista.">
                 <div className="grid grid-cols-2 gap-2">
                     <select aria-label="Idioma de envío" value={a.language} onChange={(event) => onChange({ language: event.target.value })} className={`${SMALL_INPUT} ${FOCUS}`}>
                         <option value="any">Cualquier idioma</option>
@@ -184,7 +188,7 @@ export default function FiltersPanel({ advanced: a, shown, userPresets, onChange
                     </select>
                 </div>
             </Group>
-            <Group legend="Calidad e impacto">
+            <Group legend="Calidad e impacto" hint="Valores mínimos de SJR e índice H.">
                 <div className="grid grid-cols-2 gap-2">
                     <NumberField id="publicar-adv-sjr" label="SJR mínimo" value={a.minSjr} format={(value) => value.toLocaleString('es-CO')}
                         onChange={(minSjr) => onChange({ minSjr })} type="text" inputMode="decimal" placeholder="Ej.: 0,20" />
@@ -192,18 +196,18 @@ export default function FiltersPanel({ advanced: a, shown, userPresets, onChange
                         onChange={(minH) => onChange({ minH })} type="number" min="0" step="1" inputMode="numeric" placeholder="Ej.: 10" />
                 </div>
             </Group>
-            <Group legend="Proceso editorial">
+            <Group legend="Proceso editorial" hint="Tipo de revisión por pares y licencia de uso.">
                 <label className={CHECK}><input type="checkbox" className={CHECKBOX} checked={a.reviews.includes('double')} onChange={(event) => setReview('double', event.target.checked)} /> Revisión doble ciego</label>
                 <label className={CHECK}><input type="checkbox" className={CHECKBOX} checked={a.reviews.includes('single') || a.reviews.includes('open')} onChange={(event) => setReview('single', event.target.checked)} /> Revisión simple ciego o abierta</label>
                 <label className={CHECK}><input type="checkbox" className={CHECKBOX} checked={a.ccBy} onChange={(event) => onChange({ ccBy: event.target.checked })} /> Solo licencia CC BY</label>
             </Group>
-            <Group legend="Encaje">
+            <Group legend="Encaje" hint="Qué tanto coincide la revista con el sector y la tecnología del proyecto.">
                 <Pills options={FIT_PILLS} selected={a.fits} onToggle={(value) => onChange({ fits: toggled(a.fits, value) })} />
             </Group>
 
             <div className="flex gap-2 mt-3">
-                <button type="button" onClick={onReset} className={`${BTN_SECONDARY} flex-1 !py-2.5`}>Restablecer</button>
-                <button type="button" onClick={onApply} className={`flex-1 text-sm font-semibold py-2.5 px-4 rounded-lg border border-institutional-blue bg-institutional-blue text-white hover:bg-blue-800 ${FOCUS}`}>
+                <button type="button" onClick={onReset} className={`${BTN_SECONDARY} flex-1`}>Restablecer</button>
+                <button type="button" onClick={onApply} className="btn btn-primary flex-1 !whitespace-normal">
                     Ver {shown} revista{shown === 1 ? '' : 's'}
                 </button>
             </div>

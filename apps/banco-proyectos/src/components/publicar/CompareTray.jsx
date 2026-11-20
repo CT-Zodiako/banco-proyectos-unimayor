@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
+import { X } from 'lucide-react';
 import { ExtLink, TemplateLinks } from './JournalLinks';
 import { FOCUS } from './classes';
 import { comparisonRows } from '../../lib/publicar/display';
 
-const LINK = 'mr-2.5 font-semibold whitespace-nowrap text-institutional-blue hover:underline';
+const LINK = 'link-action !min-h-[28px] !py-0.5 mr-1.5 whitespace-nowrap';
 const CELL = 'px-3 py-[7px] border-b border-gray-100';
 
 // Side-by-side comparison of up to three journals, fixed at the bottom of the page. It reports its height through
@@ -32,14 +33,14 @@ export default function CompareTray({ journals, affinityById, onRemove, onClear,
                     <h2 id="publicar-compare-title" className="m-0 text-[15px] font-bold text-gray-900">Comparando {journals.length} revista{journals.length > 1 ? 's' : ''}</h2>
                     <div className="flex items-center gap-3">
                         {embedded && (
-                            <button type="button" aria-expanded={!collapsed} aria-controls="publicar-compare-table" onClick={onToggleCollapsed} className={`text-[13px] font-semibold text-institutional-blue rounded ${FOCUS}`}>
+                            <button type="button" aria-expanded={!collapsed} aria-controls="publicar-compare-table" onClick={onToggleCollapsed} className={`link-action rounded ${FOCUS}`}>
                                 {collapsed ? 'Mostrar comparación' : 'Ocultar comparación'}
                             </button>
                         )}
-                        <button type="button" onClick={onClear} className={`text-[13px] font-semibold text-institutional-blue rounded ${FOCUS}`}>Quitar todas</button>
+                        <button type="button" onClick={onClear} className={`link-action rounded ${FOCUS}`}>Quitar todas</button>
                     </div>
                 </div>
-                {embedded && !hidden && <p className="m-0 mb-2 text-[12.5px] text-gray-600 md:hidden">Deslice la tabla hacia los lados para ver todas las revistas.</p>}
+                {embedded && !hidden && <p className="m-0 mb-2 text-[12.5px] text-sem-text-2 md:hidden">Deslice la tabla hacia los lados para ver todas las revistas.</p>}
                 <div id="publicar-compare-table" hidden={hidden} className="overflow-x-auto">
                     <div
                         role="table"
@@ -52,23 +53,23 @@ export default function CompareTray({ journals, affinityById, onRemove, onClear,
                             {journals.map((journal) => (
                                 <div key={journal.id} role="columnheader" className={`${CELL} font-bold text-gray-900 bg-blue-50 flex justify-between gap-2`}>
                                     <span>{journal.title}</span>
-                                    <button type="button" onClick={() => onRemove(journal.id)} aria-label={`Quitar ${journal.title} de la comparación`} className={`text-gray-500 text-[15px] leading-none rounded ${FOCUS}`}>×</button>
+                                    <button type="button" onClick={() => onRemove(journal.id)} aria-label={`Quitar ${journal.title} de la comparación`} className={`grid h-6 w-6 flex-none place-items-center rounded-full text-gray-700 hover:bg-blue-100 ${FOCUS}`}><X size={15} aria-hidden="true" /></button>
                                 </div>
                             ))}
                         </div>
                         {rows.map((row) => (
                             <div key={row.label} role="row" className="contents">
-                                <div role="rowheader" className={`${CELL} text-gray-500 bg-gray-50 font-semibold`}>{row.label}</div>
+                                <div role="rowheader" className={`${CELL} text-gray-700 bg-gray-50 font-semibold`}>{row.label}</div>
                                 {row.cells.map((cell, index) => (
                                     <div key={journals[index].id} role="cell" className={`${CELL} ${cell.best ? 'text-green-700 font-bold' : row.className === 'parts' ? 'text-gray-600' : ''}`}>{cell.text}</div>
                                 ))}
                             </div>
                         ))}
                         <div role="row" className="contents">
-                            <div role="rowheader" className={`${CELL} text-gray-500 bg-gray-50 font-semibold`}>Enlaces</div>
+                            <div role="rowheader" className={`${CELL} text-gray-700 bg-gray-50 font-semibold`}>Enlaces</div>
                             {journals.map((journal) => (
                                 <div key={journal.id} role="cell" className={`${CELL} flex flex-wrap items-center gap-y-1`}>
-                                    <TemplateLinks journal={journal} className={`inline-block mr-2.5 bg-institutional-blue text-white rounded-lg px-[9px] py-[3px] font-semibold whitespace-nowrap hover:bg-blue-800 ${FOCUS}`} />
+                                    <TemplateLinks journal={journal} className={`btn btn-secondary !min-h-[30px] !px-2.5 !text-[12.5px] mr-2 ${FOCUS}`} />
                                     <ExtLink url={journal.author_instructions_url} className={LINK}>Instrucciones para autores</ExtLink>
                                     <ExtLink url={journal.aims_scope_url} className={LINK}>Alcance</ExtLink>
                                     <ExtLink url={journal.url} className={LINK}>Sitio</ExtLink>

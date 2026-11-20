@@ -1,8 +1,10 @@
 /* Labels, text and link helpers of the journal finder components, ported from pipelines/donde-publicar/site/app.js so the
    React components stay presentational. The pure logic itself (filters, sort, affinity) is in table.js. */
+import { formatDate } from '../eventos/filters.js';
 import { ADVANCED_DEFAULTS, AFFINITY_MAX, compareBest } from './table.js';
 
 export const PUBLINDEX = { Q1: 'A1', Q2: 'A2', Q3: 'B', Q4: 'C' };
+export const QUARTILE_NOTES = { Q1: 'mejor cuartil', Q2: 'segundo cuartil', Q3: 'tercer cuartil', Q4: 'cuarto cuartil' };
 export const FIT_LABELS = { fuerte: 'Sector + tecnología', tecnologia: 'Tecnología', sector: 'Sector' };
 export const FIT_FILTER_LABELS = { fuerte: 'Sector + tecnología', tecnologia: 'Solo tecnología' };
 export const LANGUAGE_LABELS = {
@@ -173,3 +175,11 @@ export const dataSourcesText = (data) => {
     const s = data.sources;
     return `Datos generados el ${data.generated}: ${s.doaj_free_journals.toLocaleString('es-CO')} revistas de DOAJ sin APC ni otros cobros, de las cuales ${s.diamond_ranked_journals.toLocaleString('es-CO')} tienen cuartil en SCImago.`;
 };
+
+/** Tooltip of a quartile badge: what the quartile means and its Publindex category ("Q1 · mejor cuartil en SCImago · Publindex A1"). */
+export const quartileTip = (quartile) => (QUARTILE_NOTES[quartile]
+    ? `${quartile} · ${QUARTILE_NOTES[quartile]} en SCImago · Publindex ${PUBLINDEX[quartile]}`
+    : `Cuartil ${quartile} en SCImago`);
+
+/** Summary of the compact data line: when the catalog was updated. */
+export const dataUpdatedText = (data) => (data && data.generated ? `Datos actualizados el ${formatDate(data.generated)}` : 'Fecha de actualización no disponible');

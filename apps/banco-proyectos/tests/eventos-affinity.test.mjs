@@ -133,3 +133,14 @@ test('URL state without a project ignores the affinity sort and has no project k
     assert.equal(F.stateToQuery({ ...F.DEFAULT_STATE, project: null }), '');
     assert.equal(F.stateToQuery({ ...F.DEFAULT_STATE, sort: 'affinity' }), '');
 });
+
+test('affinityWord says "alta", "media" or "baja" with the same thresholds as the ring level (80 and 60)', () => {
+    assert.deepEqual(['high', 'mid', 'low'].map((level) => affinity.AFFINITY_WORDS[level]), ['alta', 'media', 'baja']);
+    assert.equal(affinity.affinityWord(100), 'alta');
+    assert.equal(affinity.affinityWord(80), 'alta');
+    assert.equal(affinity.affinityWord(79), 'media');
+    assert.equal(affinity.affinityWord(60), 'media');
+    assert.equal(affinity.affinityWord(59), 'baja');
+    assert.equal(affinity.affinityWord(0), 'baja');
+    for (const total of [0, 59, 60, 79, 80, 100]) assert.equal(affinity.affinityWord(total), affinity.AFFINITY_WORDS[affinity.affinityLevel(total)]);
+});

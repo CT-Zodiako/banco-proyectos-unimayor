@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    categoriesText, comparisonRows, compareSelectedText, countryLabel, dataSourcesText, filterChips, formatIssn, formatSjr, journalFacts,
+    categoriesText, comparisonRows, dataUpdatedText, quartileTip, compareSelectedText, countryLabel, dataSourcesText, filterChips, formatIssn, formatSjr, journalFacts,
     journalMeta, languageLabel, nextSort, numberOrNull, reviewLabel, safeUrl, templateHint, templateLinks, toggled,
 } from '../src/lib/publicar/display.js';
 import { ADVANCED_DEFAULTS } from '../src/lib/publicar/table.js';
@@ -147,4 +147,18 @@ test('the compare count and the data sources are worded in Spanish', () => {
     assert.equal(compareSelectedText(3), ' · 3 seleccionadas para comparar');
     assert.equal(dataSourcesText({ generated: '2026-11-10', sources: { doaj_free_journals: 14512, diamond_ranked_journals: 4223 } }),
         `Datos generados el 2026-11-10: ${(14512).toLocaleString('es-CO')} revistas de DOAJ sin APC ni otros cobros, de las cuales ${(4223).toLocaleString('es-CO')} tienen cuartil en SCImago.`);
+});
+
+test('the quartile badge tooltip says what the quartile means and its Publindex category', () => {
+    assert.equal(quartileTip('Q1'), 'Q1 · mejor cuartil en SCImago · Publindex A1');
+    assert.equal(quartileTip('Q2'), 'Q2 · segundo cuartil en SCImago · Publindex A2');
+    assert.equal(quartileTip('Q3'), 'Q3 · tercer cuartil en SCImago · Publindex B');
+    assert.equal(quartileTip('Q4'), 'Q4 · cuarto cuartil en SCImago · Publindex C');
+    assert.equal(quartileTip('Q9'), 'Cuartil Q9 en SCImago');
+});
+
+test('the compact data line says when the catalog was updated, with a fallback when the date is missing', () => {
+    assert.equal(dataUpdatedText({ generated: '2026-11-16' }), 'Datos actualizados el 16 nov 2026');
+    assert.equal(dataUpdatedText({}), 'Fecha de actualización no disponible');
+    assert.equal(dataUpdatedText(null), 'Fecha de actualización no disponible');
 });

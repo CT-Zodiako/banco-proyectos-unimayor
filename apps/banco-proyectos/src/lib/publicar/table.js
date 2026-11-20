@@ -37,10 +37,15 @@ export function makePreset(label, advanced) {
   return { id: `user-${normalize(name).replace(/[^a-z0-9]+/g, "-")}`, label: name, filters };
 }
 
-/** Ring color of an affinity total: "high" from 80, "mid" from 65, "low" below. */
+/** Level of an affinity total: "high" from 80, "mid" from 65, "low" below. */
+export const AFFINITY_THRESHOLDS = { high: 80, mid: 65 };
 export function affinityLevel(total) {
-  return total >= 80 ? "high" : total >= 65 ? "mid" : "low";
+  return total >= AFFINITY_THRESHOLDS.high ? "high" : total >= AFFINITY_THRESHOLDS.mid ? "mid" : "low";
 }
+
+/** The level in words, for the label next to the ring ("Afinidad alta"). */
+export const AFFINITY_WORDS = { high: "alta", mid: "media", low: "baja" };
+export const affinityWord = (total) => AFFINITY_WORDS[affinityLevel(total)];
 
 /** Review process categories of a DOAJ review string (a journal can declare several). */
 export function reviewTypes(review) {

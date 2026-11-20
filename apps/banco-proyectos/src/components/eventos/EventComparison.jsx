@@ -7,10 +7,10 @@ const EventComparison = ({ events, selected, onClear }) => {
     return (
         <section aria-labelledby="comparison-title" className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
             <div className="flex items-center justify-between gap-3">
-                <h2 id="comparison-title" className="m-0 text-[17px] font-bold text-gray-900">Comparar eventos</h2>
-                <button type="button" onClick={onClear} className="text-[13px] font-semibold text-institutional-blue underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded">Quitar todos</button>
+                <h2 id="comparison-title" className="m-0 text-[18px] font-extrabold text-gray-900">Comparar eventos</h2>
+                <button type="button" onClick={onClear} className="link-action focus-ring rounded">Quitar todos</button>
             </div>
-            <p className="my-2 text-[13px] text-gray-600">Seleccione hasta tres eventos. Los datos no informados aparecen como «No informado».</p>
+            <p className="my-2 text-[13px] text-sem-text-2">Seleccione hasta tres eventos. Los datos no informados aparecen como «No informado».</p>
             <div className="overflow-x-auto">
                 <table className="w-full min-w-[540px] border-collapse text-[13px]">
                     <caption className="sr-only">Comparación de eventos seleccionados</caption>

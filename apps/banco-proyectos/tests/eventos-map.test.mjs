@@ -3,7 +3,8 @@
 // get these values from pure functions in src/lib/eventos. Run: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { comparisonKey, comparisonRows, dataInfoText, dataStatusText, mapSearchUrl, modalityLabel, physicalLocation, safeUrl } from '../src/lib/eventos/display.js';
+import { comparisonKey, comparisonRows, dataInfoText, dataStatusText, dataUpdatedText, eventFilterChips, KIND_FILTER_LABELS, mapSearchUrl, modalityLabel, physicalLocation, safeUrl } from '../src/lib/eventos/display.js';
+import { DEFAULT_STATE } from '../src/lib/eventos/filters.js';
 import { favoriteLabel, favoriteSnapshot, toggleFavorite } from '../src/lib/eventos/favorites.js';
 import { addOpportunity } from '../src/lib/opportunities.js';
 
@@ -135,4 +136,36 @@ test('unreadable favorites make the button unavailable', () => {
     assert.equal(favoriteLabel(snapshot), 'Favoritos no disponibles');
     assert.deepEqual(favoriteSnapshot(null, 'ev1'), { available: false, saved: false });
     assert.equal(storage.value(), '{"not":"a list"}');
+});
+
+test('the compact data line says when the listing was updated, with a fallback when the date is missing', () => {
+    assert.equal(dataUpdatedText('2026-11-16'), 'Datos actualizados el 16 nov 2026');
+    assert.equal(dataUpdatedText(undefined), 'Fecha de actualización no disponible');
+    assert.equal(dataUpdatedText(''), 'Fecha de actualización no disponible');
+});
+
+test('the kind filter has one label per value, shared by the buttons and the chips', () => {
+    assert.deepEqual(KIND_FILTER_LABELS, { all: 'Todos', cfp: 'Convocatorias (presentar)', attend: 'Para asistir' });
+});
+
+test('active filter chips: none by default, one per applied filter, each with the patch that removes only it', () => {
+    assert.deepEqual(eventFilterChips(DEFAULT_STATE), []);
+    assert.deepEqual(eventFilterChips({ ...DEFAULT_STATE, project: 'proj_001', sort: 'start' }), []);
+
+    const state = {
+        ...DEFAULT_STATE, kind: 'cfp', query: ' iot ', modality: 'online', colombia: true, location: 'Popayán',
+        dateFrom: '2099-06-01', dateTo: '2099-07-31', topics: ['IoT', 'Robótica'],
+    };
+    const chips = eventFilterChips(state);
+    assert.deepEqual(chips.map(({ group, text }) => [group, text]), [
+        ['Tipo', 'Convocatorias (presentar)'], ['Búsqueda', 'iot'], ['Modalidad', 'En línea'], ['Ubicación', 'Solo Colombia'],
+        ['Ciudad o país', 'Popayán'], ['Inicio desde', '1 jun 2099'], ['Inicio hasta', '31 jul 2099'], ['Tema', 'IoT'], ['Tema', 'Robótica'],
+    ]);
+    assert.equal(new Set(chips.map((chip) => chip.id)).size, chips.length);
+    assert.deepEqual(chips.map((chip) => chip.patch), [
+        { kind: 'all' }, { query: '' }, { modality: 'all' }, { colombia: false }, { location: '' },
+        { dateFrom: '' }, { dateTo: '' }, { topics: ['Robótica'] }, { topics: ['IoT'] },
+    ]);
+    assert.equal(eventFilterChips({ ...DEFAULT_STATE, modality: 'presencial' })[0].text, 'Presencial');
+    assert.deepEqual(state.topics, ['IoT', 'Robótica']); // the state is not modified
 });

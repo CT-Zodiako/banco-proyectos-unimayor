@@ -5,6 +5,8 @@ import { AFFINITY_MAX } from './affinity.js';
 
 export const SOURCE_LABELS = { wikicfp: 'WikiCFP', ccfddl: 'CCF Deadlines', devpost: 'Devpost', manual: 'UNIMAYOR' };
 export const KIND_LABELS = { cfp: 'Convocatoria', attend: 'Para asistir' };
+export const KIND_FILTER_LABELS = { all: 'Todos', cfp: 'Convocatorias (presentar)', attend: 'Para asistir' };
+const MODALITY_LABELS = { online: 'En línea', presencial: 'Presencial' };
 export const SOON_DAYS = 14;
 export const AFFINITY_LABELS = { topics: 'Temas en común', keywords: 'Palabras clave', access: 'Acceso (Colombia o en línea)', time: 'Tiempo para preparar' };
 
@@ -101,4 +103,23 @@ export const dataStatusText = (generated) => (generated ? `Listado generado el $
 export function dataInfoText(generated, sources) {
     const summary = Object.entries(sources || {}).map(([key, n]) => `${SOURCE_LABELS[key] || key}: ${n}`).join(' · ');
     return `Datos actualizados el ${generated ? formatDate(generated) : '—'}${summary ? ` · Eventos por fuente: ${summary}` : ''}.`;
+}
+
+/** Summary of the compact data line: when the listing was updated. */
+export const dataUpdatedText = (generated) => (generated ? `Datos actualizados el ${formatDate(generated)}` : 'Fecha de actualización no disponible');
+
+/** Applied filters as removable chips: [{ id, group, text, patch }], where patch is what onChange needs to remove
+    just that filter. The project (?p) and the sort are not filters. */
+export function eventFilterChips(state) {
+    const chips = [];
+    const add = (id, group, text, patch) => chips.push({ id, group, text, patch });
+    if (state.kind !== 'all') add('kind', 'Tipo', KIND_FILTER_LABELS[state.kind], { kind: 'all' });
+    if (state.query.trim()) add('query', 'Búsqueda', state.query.trim(), { query: '' });
+    if (state.modality !== 'all') add('modality', 'Modalidad', MODALITY_LABELS[state.modality], { modality: 'all' });
+    if (state.colombia) add('colombia', 'Ubicación', 'Solo Colombia', { colombia: false });
+    if (state.location.trim()) add('location', 'Ciudad o país', state.location.trim(), { location: '' });
+    if (state.dateFrom) add('dateFrom', 'Inicio desde', formatDate(state.dateFrom), { dateFrom: '' });
+    if (state.dateTo) add('dateTo', 'Inicio hasta', formatDate(state.dateTo), { dateTo: '' });
+    for (const topic of state.topics) add(`topic-${topic}`, 'Tema', topic, { topics: state.topics.filter((t) => t !== topic) });
+    return chips;
 }

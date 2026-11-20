@@ -5,13 +5,15 @@ import Chips from '../components/publicar/Chips';
 import CompareTray from '../components/publicar/CompareTray';
 import FiltersPanel from '../components/publicar/FiltersPanel';
 import DataGate from '../components/DataGate';
+import DataStatus from '../components/publicar/DataStatus';
 import HelpView from '../components/publicar/HelpView';
-import JournalResults, { AffinityNote } from '../components/publicar/JournalResults';
+import JournalResults, { AffinityNote, ResultsLegend } from '../components/publicar/JournalResults';
 import JournalToolbar from '../components/publicar/JournalToolbar';
-import { FOCUS, INPUT, NOTE } from '../components/publicar/classes';
+import { FOCUS } from '../components/publicar/classes';
 import useJournalFinder from '../hooks/useJournalFinder';
 import { DATA_FILES } from '../lib/data-loader';
 import { requestedProjectId } from '../lib/publicar/project';
+import { dataUpdatedText } from '../lib/publicar/display';
 import { ADVANCED_DEFAULTS, dataStatus } from '../lib/publicar/table';
 
 const PAGE_TITLE = '¿Dónde publicar este proyecto? · Banco de Proyectos · UNIMAYOR';
@@ -19,13 +21,13 @@ const TABS = [['project', 'Revistas del proyecto'], ['catalog', 'Catálogo compl
 
 function ProjectPicker({ projects, onSelect }) {
     return (
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-[18px] max-w-[720px]">
-            <label htmlFor="publicar-picker-select" className="block text-[13px] font-semibold text-gray-600 mb-1.5">Proyecto</label>
-            <select id="publicar-picker-select" value="" onChange={(event) => onSelect(event.target.value)} className={`w-full ${INPUT}`}>
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-[18px] max-w-[720px]">
+            <label htmlFor="publicar-picker-select" className="field-label mb-1.5">Proyecto</label>
+            <select id="publicar-picker-select" value="" onChange={(event) => onSelect(event.target.value)} className="field-select !h-11 w-full">
                 <option value="">Seleccione un proyecto…</option>
                 {projects.map((project) => <option key={project.id} value={project.id}>{project.number}. {project.title}</option>)}
             </select>
-            <p className="mt-2 mb-0 text-[13px] text-gray-500">También puede abrir esta página desde el botón «¿Dónde publicar este proyecto?» de cada proyecto del banco.</p>
+            <p className="mt-2 mb-0 text-[13px] text-sem-text-2">También puede abrir esta página desde el botón «¿Dónde publicar este proyecto?» de cada proyecto del banco.</p>
         </div>
     );
 }
@@ -68,33 +70,32 @@ function DondePublicarPage({ publicarData }) {
                         aria-controls={`publicar-view-${id}`}
                         aria-selected={tab === id}
                         onClick={() => setTab(id)}
-                        className={`px-3.5 py-2.5 -mb-px text-sm font-semibold whitespace-nowrap border-b-[3px] ${FOCUS} ${tab === id ? 'text-institutional-blue border-institutional-blue' : 'text-gray-500 border-transparent hover:text-gray-700'}`}
+                        className={`px-3.5 py-2.5 -mb-px text-sm font-semibold whitespace-nowrap border-b-[3px] ${FOCUS} ${tab === id ? 'text-institutional-blue border-institutional-blue' : 'text-sem-text-2 border-transparent hover:text-gray-900'}`}
                     >
                         {label}
                     </button>
                 ))}
             </div>
 
-            <p><Link to="/oportunidades" className="text-institutional-blue underline">Mis oportunidades guardadas →</Link></p>
+            <p><Link to="/oportunidades" className="link-action focus-ring rounded">Mis oportunidades guardadas →</Link></p>
 
-            <section aria-label="Estado de los datos" className={NOTE}>
-                <strong>Estado de los datos</strong>
-                <p className="mt-1">{dataStatus(publicarData)}</p>
-                <p className="mt-1">El catálogo se actualiza automáticamente cada semana con una descarga nueva de DOAJ; la fecha de DOAJ indica cuándo se descargó. SCImago publica su ranking una vez al año: la edición indica el año del ranking usado. Confirme costos, requisitos y cuartil en las fuentes oficiales.</p>
-            </section>
+            <DataStatus updated={dataUpdatedText(publicarData)} source="DOAJ y SCImago">
+                <p>{dataStatus(publicarData)}</p>
+                <p>El catálogo se actualiza automáticamente cada semana con una descarga nueva de DOAJ; la fecha de DOAJ indica cuándo se descargó. SCImago publica su ranking una vez al año: la edición indica el año del ranking usado. Confirme costos, requisitos y cuartil en las fuentes oficiales.</p>
+            </DataStatus>
 
             <section id="publicar-view-project" role="tabpanel" aria-labelledby="publicar-tab-project" hidden={tab !== 'project'} className="space-y-4">
-                <div className="bg-white border border-gray-100 rounded-2xl shadow-sm px-5 py-4 flex flex-wrap items-center gap-3.5">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex flex-wrap items-center gap-3.5">
                     <div className="w-[52px] h-[52px] rounded-2xl bg-blue-50 grid place-items-center text-[26px] flex-shrink-0" aria-hidden="true">{project ? project.emoji || '📁' : '🔎'}</div>
                     <div className="min-w-0">
-                        <p className="m-0 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        <p className="m-0 text-xs font-bold text-sem-text-2 uppercase tracking-wider">
                             {project ? `¿Dónde publicar? · Proyecto ${project.number} · ${project.area} · ${project.level}` : '¿Dónde publicar?'}
                         </p>
                         <h1 className="mt-0.5 mb-0 text-xl leading-snug font-bold text-gray-900">{project ? project.title : 'Elija un proyecto'}</h1>
                     </div>
                     <Link
                         to={project ? `/proyecto/${encodeURIComponent(project.id)}` : '/proyectos'}
-                        className={`md:ml-auto text-sm font-semibold text-institutional-blue whitespace-nowrap border border-blue-100 rounded-lg px-3.5 py-2 bg-white hover:bg-blue-50 ${FOCUS}`}
+                        className={`btn btn-secondary md:ml-auto ${FOCUS}`}
                     >
                         {project ? '← Volver al proyecto' : '← Volver al banco de proyectos'}
                     </Link>
@@ -117,7 +118,7 @@ function DondePublicarPage({ publicarData }) {
                             toggleRef={finder.toggleButtonRef}
                         />
 
-                        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                        <div className="flex flex-wrap items-center gap-2 text-[14.5px] text-gray-700">
                             <span ref={finder.countRef} aria-live="polite">
                                 <b>{visible.length}</b> de {rows.length} revistas{finder.compareText}
                             </span>
@@ -125,7 +126,8 @@ function DondePublicarPage({ publicarData }) {
                         </div>
 
                         <div className={`grid grid-cols-1 gap-5 items-start ${finder.panelOpen ? 'min-[1100px]:grid-cols-[minmax(0,1fr)_380px]' : ''}`}>
-                            <section aria-label="Revistas sugeridas">
+                            <section aria-label="Revistas sugeridas" className="min-w-0">
+                                <ResultsLegend className="mb-3" />
                                 <JournalResults rows={visible} mode={finder.mode} sort={finder.sort} onSort={finder.setSort} compare={compare} onToggleCompare={finder.toggleCompared} />
                                 <AffinityNote className="mt-3.5" />
                             </section>
@@ -167,7 +169,7 @@ function DondePublicarPage({ publicarData }) {
                 />
             )}
 
-            <footer className="border-t border-gray-200 pt-4 text-[13px] text-gray-500">
+            <footer className="border-t border-gray-200 pt-4 text-[13px] text-sem-text-2">
                 <p>Datos: <a href="https://doaj.org/" target="_blank" rel="noopener noreferrer" className="text-institutional-blue underline">DOAJ</a> y <a href="https://www.scimagojr.com/" target="_blank" rel="noopener noreferrer" className="text-institutional-blue underline">SCImago Journal &amp; Country Rank</a>. Banco de Proyectos · UNIMAYOR, Popayán.</p>
             </footer>
         </div>
