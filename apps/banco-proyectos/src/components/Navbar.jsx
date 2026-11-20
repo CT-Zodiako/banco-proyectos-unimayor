@@ -22,7 +22,7 @@ const Navbar = () => {
     return (
         <header className="bg-institutional-blue text-white shadow-md sticky top-0 z-50">
             <nav aria-label="Principal">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-20 flex flex-wrap items-stretch justify-between gap-x-6">
+                <div className="page-container min-h-20 flex flex-wrap items-stretch justify-between gap-x-6">
                     <Link
                         to="/"
                         aria-current={pathname === '/' ? 'page' : undefined}

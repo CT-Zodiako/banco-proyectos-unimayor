@@ -83,7 +83,7 @@ const Home = () => {
             </section>
 
             {/* Main tools */}
-            <section aria-labelledby="home-tools" className="px-4">
+            <section aria-labelledby="home-tools">
                 <h2 id="home-tools" className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <Compass className="text-institutional-blue" aria-hidden="true" />
                     ¿Qué quieres hacer?
@@ -109,14 +109,14 @@ const Home = () => {
             </section>
 
             {/* Metrics Section */}
-            <section aria-labelledby="home-metrics" className="px-4">
+            <section aria-labelledby="home-metrics">
                 <h2 id="home-metrics" className="text-2xl font-bold text-gray-900">El banco en cifras</h2>
                 <p className="mt-1 mb-6 text-[15px] text-sem-text-2">Cuánto contiene el catálogo hoy, contado desde los datos de los proyectos.</p>
                 <MetricsSection metrics={metrics} />
             </section>
 
             {/* Institutional Info */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-4">
                     <div className="w-12 h-12 bg-sem-area-bg rounded-xl flex items-center justify-center text-institutional-blue mb-4" aria-hidden="true">
                         <BookOpen size={24} />

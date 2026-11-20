@@ -28,7 +28,7 @@ export default function CompareTray({ journals, affinityById, onRemove, onClear,
     const hidden = embedded && collapsed;
     return (
         <aside ref={trayRef} aria-label="Comparación de revistas" className={embedded ? 'bg-white border-t border-gray-200 shadow-xl max-h-[55vh] overflow-y-auto' : 'fixed inset-x-0 bottom-0 z-20 bg-white border-t border-gray-200 shadow-xl max-h-[50vh] overflow-y-auto'}>
-            <div className={embedded ? `px-5 max-[760px]:px-3 ${hidden ? 'py-2.5' : 'pt-3.5 pb-4'}` : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3.5 pb-[18px]'}>
+            <div className={embedded ? `px-5 max-[760px]:px-3 ${hidden ? 'py-2.5' : 'pt-3.5 pb-4'}` : 'page-container pt-3.5 pb-[18px]'}>
                 <div className={`flex items-center justify-between gap-3 ${hidden ? '' : 'mb-2.5'}`}>
                     <h2 id="publicar-compare-title" className="m-0 text-[15px] font-bold text-gray-900">Comparando {journals.length} revista{journals.length > 1 ? 's' : ''}</h2>
                     <div className="flex items-center gap-3">

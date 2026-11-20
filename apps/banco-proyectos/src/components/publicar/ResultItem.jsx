@@ -44,7 +44,7 @@ const H4 = ({ children }) => <h4 className="m-0 mb-1 text-xs font-bold uppercase
 // What the journal meets and misses for the project, in words, plus recommendations.
 function Assessment({ assessment }) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-[18px] gap-y-2.5 mt-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-[18px] gap-y-2.5 mt-3 min-[1536px]:mt-2">
             <div>
                 <H4>Cumple ({assessment.meets.length})</H4>
                 <Items list={assessment.meets} className="[&_span]:text-green-700" mark="✓" />
@@ -94,8 +94,11 @@ export default function ResultItem({ row: { journal, affinity, assessment }, ope
                             <span className="whitespace-nowrap font-normal text-sem-text-2">· cumple {assessment.meets.length} · no cumple {assessment.misses.length}</span>
                             <ChevronDown size={15} aria-hidden="true" className="flex-none transition-transform group-open:rotate-180" />
                         </summary>
-                        <Breakdown affinity={affinity} />
-                        <Assessment assessment={assessment} />
+                        {/* From 1536px the score breakdown and the assessment sit side by side instead of stretching over the full width. */}
+                        <div className="min-[1536px]:grid min-[1536px]:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] min-[1536px]:gap-x-10 min-[1536px]:items-start">
+                            <Breakdown affinity={affinity} />
+                            <Assessment assessment={assessment} />
+                        </div>
                     </details>
                 </div>
             </div>

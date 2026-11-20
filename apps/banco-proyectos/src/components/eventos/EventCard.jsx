@@ -81,7 +81,7 @@ const EventCard = ({ event, affinity, today, selected, compareFull, onToggleComp
     const sourceLabel = isCfp ? 'Ver convocatoria' : 'Ver evento';
     const KindIcon = isCfp ? FileText : Users;
     return (
-        <article className="flex flex-col gap-3.5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:border-sem-area-line hover:shadow-md">
+        <article className="flex flex-col gap-3.5 min-[1536px]:grid min-[1536px]:grid-cols-[minmax(0,1fr)_auto] min-[1536px]:gap-x-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:border-sem-area-line hover:shadow-md">
             <div className="flex gap-4">
                 {affinity && <AffinityRing total={affinity.total} level={affinityLevel(affinity.total)} thresholds={AFFINITY_THRESHOLDS} />}
                 <div className="min-w-0 flex-1">
@@ -128,7 +128,7 @@ const EventCard = ({ event, affinity, today, selected, compareFull, onToggleComp
                     {affinity && <AffinityDetails event={event} affinity={affinity} today={today} />}
                 </div>
             </div>
-            <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3.5">
+            <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3.5 min-[1536px]:mt-0 min-[1536px]:w-[210px] min-[1536px]:flex-col min-[1536px]:items-stretch min-[1536px]:border-l min-[1536px]:border-t-0 min-[1536px]:pl-8 min-[1536px]:pt-0">
                 {sourceUrl && (
                     <a
                         href={sourceUrl}
@@ -151,7 +151,7 @@ const EventCard = ({ event, affinity, today, selected, compareFull, onToggleComp
                 >
                     {selected ? 'Quitar de comparación' : 'Comparar'}
                 </button>
-                <span className="text-[13px] text-sem-text-2 sm:ml-auto">Fuente: {SOURCE_LABELS[event.source] || event.source}</span>
+                <span className="text-[13px] text-sem-text-2 sm:ml-auto min-[1536px]:ml-0">Fuente: {SOURCE_LABELS[event.source] || event.source}</span>
             </div>
         </article>
     );

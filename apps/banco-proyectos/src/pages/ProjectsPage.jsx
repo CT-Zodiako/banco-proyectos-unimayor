@@ -134,7 +134,7 @@ const ProjectsPage = () => {
     const one = filtered.length === 1;
 
     return (
-        <div className="py-8 px-4 max-w-7xl mx-auto">
+        <div className="py-8">
             <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-extrabold leading-tight text-gray-900 mb-1.5">Explorar proyectos</h1>
@@ -217,7 +217,7 @@ const ProjectsPage = () => {
                     <CardLegend />
 
                     {items.length > 0 ? (
-                        <div className="grid grid-cols-1 min-[1101px]:grid-cols-2 gap-5">
+                        <div className="grid grid-cols-1 min-[1101px]:grid-cols-2 min-[1700px]:grid-cols-3 gap-5">
                             {items.map((project) => <ProjectCard key={project.id} project={project} />)}
                         </div>
                     ) : (

@@ -44,6 +44,16 @@
 }
 
 @layer components {
+  /* ONE shared page container (Navbar, <main>, footer, floating compare tray) so header, content and footer
+     always share the same left and right edges. Widths include the side padding (border-box):
+       < 1536px   fluid up to 1280px (max-w-7xl, as before)
+       >= 1536px  1536px
+       >= 1920px  1760px: the hard cap, 3440px ultra-wide monitors keep intentional side margins.
+     Side padding grows with the screen: 16 / 24 / 32 / 40px (base / sm / lg / 2xl). */
+  .page-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 2xl:px-10 min-[1536px]:max-w-[96rem] min-[1920px]:max-w-[110rem];
+  }
+
   .metric-card {
     @apply p-6 rounded-xl border border-gray-100 bg-white hover:shadow-lg transition-all duration-300;
   }

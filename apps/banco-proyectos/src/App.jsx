@@ -36,7 +36,7 @@ const LINK = 'hover:text-institutional-yellow hover:underline underline-offset-4
 
 const Footer = () => (
     <footer className="bg-institutional-dark text-white pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="page-container grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="space-y-4">
                 <div className="bg-white rounded-xl p-2 inline-block">
                     <img src={logo} alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" className="h-24 w-auto" />
@@ -94,7 +94,7 @@ function App() {
                 <SkipLink />
                 <TapTips />
                 <Navbar />
-                <main id="contenido" tabIndex={-1} className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+                <main id="contenido" tabIndex={-1} className="flex-grow page-container">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/proyectos" element={<ProjectsPage />} />
