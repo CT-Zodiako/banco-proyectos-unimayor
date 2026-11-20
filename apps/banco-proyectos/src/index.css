@@ -217,6 +217,18 @@
      to win over the .border utilities of the cards. */
   .type-chip { background-color: var(--tn-bg); color: var(--tn-fg); box-shadow: inset 0 0 0 1.5px var(--tn-line); }
   .hue-card.hue-card { border-top: 4px solid var(--tn-solid); background-image: linear-gradient(180deg, var(--tn-bg), rgb(255 255 255 / 0) 96px); }
+  /* Left edge in the hue of the page (tone class sets --tn-*): the optional project hint card of /eventos. */
+  .hue-edge.hue-edge { border-left: 5px solid var(--tn-solid); background-color: var(--tn-bg); }
+
+  /* Page header card shared by /eventos and /donde-publicar (PageHeader): icon tile + text on the left, actions on the
+     right (back button, saved link) that wrap below the text on narrow screens. */
+  .page-header { @apply flex flex-wrap items-start gap-x-4 gap-y-3 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm; }
+  .page-header-main { @apply flex min-w-0 flex-1 basis-[320px] items-start gap-3.5; }
+  .page-header-icon { @apply grid h-[52px] w-[52px] flex-none place-items-center rounded-2xl text-[26px]; }
+  .page-header-eyebrow { @apply m-0 text-xs font-bold uppercase tracking-wider text-sem-text-2; }
+  .page-header-title { @apply m-0 mt-0.5 text-2xl font-extrabold leading-tight text-gray-900 max-md:text-[22px]; }
+  .page-header-desc { @apply m-0 mt-1.5 max-w-3xl text-[15px] text-gray-700; }
+  .page-header-actions { @apply flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 min-[900px]:ml-auto min-[900px]:justify-end; }
   .tone-box { @apply rounded-[10px] px-2.5 py-2; border: 1px solid var(--tn-line); background-color: var(--tn-bg); color: var(--tn-fg); }
   .nav-dot { @apply inline-block h-[9px] w-[9px] rounded-full; background-color: var(--tn-line); box-shadow: 0 0 0 2px rgb(255 255 255 / 0.18); }
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 // Shown when /eventos has no project: the list works without one (every event), and picking a project is optional.
 // It only reports the choice up through onSelect(projectId); the page decides what the URL becomes.
 const ProjectHint = ({ projects, onSelect }) => (
-    <section aria-labelledby="project-hint-title" className="rounded-2xl border border-gray-200 border-l-[5px] border-l-institutional-blue bg-white px-5 py-3.5 shadow-sm">
+    <section aria-labelledby="project-hint-title" className="hue-edge tn-events rounded-2xl border border-gray-200 p-5 shadow-sm">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2.5">
             <div className="min-w-0 flex-1 basis-[280px]">
                 <p id="project-hint-title" className="m-0 text-[15px] font-bold text-gray-900">Elige un proyecto para ordenar los eventos por afinidad</p>

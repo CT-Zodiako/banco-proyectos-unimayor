@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, X } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, CalendarDays, X } from 'lucide-react';
 import DataGate from '../components/DataGate';
+import PageHeader from '../components/PageHeader';
 import ShareSearchButton from '../components/ShareSearchButton';
 import EventCard from '../components/eventos/EventCard';
 import EventComparison from '../components/eventos/EventComparison';
@@ -107,19 +108,16 @@ function EventosPage({ eventosData }) {
     }
 
     return (
-        <div className="py-8 space-y-4">
-            <div className="hue-card tn-events rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm flex flex-col md:flex-row md:justify-between md:items-start gap-5">
-                <div>
-                    <p className="text-xs font-bold text-sem-text-2 uppercase tracking-wider">Banco de Proyectos</p>
-                    <h1 className="mt-1 mb-1.5 text-3xl max-md:text-[24px] leading-tight font-extrabold text-gray-900">Buscador de eventos académicos</h1>
-                    <p className="max-w-3xl text-[15px] text-gray-700">
-                        Encuentre <strong>congresos con convocatoria</strong> para presentar su proyecto y <strong>eventos para asistir</strong>: talleres, charlas, ferias y hackatones.
-                    </p>
-                </div>
-                <Link to="/proyectos" className="btn btn-secondary self-start focus-ring"><ArrowLeft size={16} aria-hidden="true" />Volver al banco de proyectos</Link>
-            </div>
-
-            <p><Link to="/oportunidades" className="link-action focus-ring rounded">Mis oportunidades guardadas →</Link></p>
+        <div className="py-6 space-y-4">
+            <PageHeader
+                hue="events"
+                icon={<CalendarDays size={28} strokeWidth={2} />}
+                eyebrow="Banco de Proyectos"
+                title="Buscador de eventos académicos"
+                back={{ to: '/proyectos', children: <><ArrowLeft size={16} aria-hidden="true" />Volver al banco de proyectos</> }}
+            >
+                Encuentre <strong>congresos con convocatoria</strong> para presentar su proyecto y <strong>eventos para asistir</strong>: talleres, charlas, ferias y hackatones.
+            </PageHeader>
 
             <DataStatus updated={dataUpdatedText(generated)}>
                 <p>{dataStatusText(generated)}</p>

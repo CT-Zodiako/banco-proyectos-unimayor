@@ -5,6 +5,7 @@ import Chips from '../components/publicar/Chips';
 import CompareTray from '../components/publicar/CompareTray';
 import FiltersPanel from '../components/publicar/FiltersPanel';
 import DataGate from '../components/DataGate';
+import PageHeader from '../components/PageHeader';
 import ShareSearchButton from '../components/ShareSearchButton';
 import DataStatus from '../components/publicar/DataStatus';
 import HelpView from '../components/publicar/HelpView';
@@ -108,20 +109,19 @@ function DondePublicarPage({ publicarData }) {
     const selectProject = (id) => navigate({ search: projectsById.has(id) ? `?p=${encodeURIComponent(id)}` : '' }, { replace: true });
 
     return (
-        <div className="py-4 space-y-4" style={{ paddingBottom: trayVisible ? trayHeight : undefined }}>
-            <div className="hue-card tn-journals border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex flex-wrap items-center gap-3.5">
-                <div className="type-chip w-[52px] h-[52px] rounded-2xl grid place-items-center text-[26px] flex-shrink-0" aria-hidden="true">{project ? project.emoji || '📁' : '🔎'}</div>
-                <div className="min-w-0">
-                    <p className="m-0 text-xs font-bold text-sem-text-2 uppercase tracking-wider">
-                        {project ? `¿Dónde publicar? · Proyecto ${project.number} · ${project.area} · ${project.level}` : 'Revistas de acceso abierto diamante'}
-                    </p>
-                    <h1 className="mt-0.5 mb-0 text-xl leading-snug font-bold text-gray-900">{project ? project.title : '¿Dónde publicar?'}</h1>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 md:ml-auto">
-                    {project && <Link to={`/proyecto/${encodeURIComponent(project.id)}`} className={`btn btn-secondary ${FOCUS}`}>← Volver al proyecto</Link>}
-                    <Link to="/oportunidades" className="link-action focus-ring rounded">Mis oportunidades guardadas →</Link>
-                </div>
-            </div>
+        <div className="py-6 space-y-4" style={{ paddingBottom: trayVisible ? trayHeight : undefined }}>
+            <PageHeader
+                hue="journals"
+                icon={project ? project.emoji || '📁' : '🔎'}
+                eyebrow={project ? `¿Dónde publicar? · Proyecto ${project.number} · ${project.area} · ${project.level}` : 'Revistas de acceso abierto diamante'}
+                title={project ? project.title : '¿Dónde publicar?'}
+                back={project ? { to: `/proyecto/${encodeURIComponent(project.id)}`, children: '← Volver al proyecto' } : null}
+            />
+
+            <DataStatus updated={dataUpdatedText(publicarData)} source="DOAJ y SCImago">
+                <p>{dataStatus(publicarData)}</p>
+                <p>El catálogo se actualiza automáticamente cada semana con una descarga nueva de DOAJ; la fecha de DOAJ indica cuándo se descargó. SCImago publica su ranking una vez al año: la edición indica el año del ranking usado. Confirme costos, requisitos y cuartil en las fuentes oficiales.</p>
+            </DataStatus>
 
             <div role="tablist" aria-label="Secciones" onKeyDown={onTabKeyDown} className="tab-bar">
                 {TABS.map(([id, label, description]) => (
@@ -141,11 +141,6 @@ function DondePublicarPage({ publicarData }) {
                     </button>
                 ))}
             </div>
-
-            <DataStatus updated={dataUpdatedText(publicarData)} source="DOAJ y SCImago">
-                <p>{dataStatus(publicarData)}</p>
-                <p>El catálogo se actualiza automáticamente cada semana con una descarga nueva de DOAJ; la fecha de DOAJ indica cuándo se descargó. SCImago publica su ranking una vez al año: la edición indica el año del ranking usado. Confirme costos, requisitos y cuartil en las fuentes oficiales.</p>
-            </DataStatus>
 
             <section id="publicar-view-project" role="tabpanel" aria-labelledby="publicar-tab-project" hidden={tab !== 'project'} className="space-y-4">
                 {!project && <ProjectEmptyState projects={projects} onSelect={selectProject} onOpenCatalog={() => setTab('catalog')} />}
