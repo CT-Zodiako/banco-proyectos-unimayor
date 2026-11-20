@@ -1,5 +1,5 @@
 // Usage: node scripts/export-projects.mjs <output.json>
-// Writes every project of the bank (original 100 + new areas) as JSON, the input of apps/donde-publicar.
+// Writes every project of the bank (original 100 + new areas) as JSON, the input of pipelines/donde-publicar.
 import { writeFileSync } from 'node:fs';
 import { projects } from '../src/data/projects/index.js';
 

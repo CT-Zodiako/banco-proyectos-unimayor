@@ -21,7 +21,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 EDITION = re.compile(r"Total Docs\. \((\d{4})\)")
 # Vite copies public/ to the site root, so the React app fetches these files at runtime from /data/. The generated data
 # stays committed and deploy needs no Python.
-DATA_DIR = ROOT.parent / "banco-proyectos" / "public" / "data"
+DATA_DIR = ROOT.parents[1] / "apps" / "banco-proyectos" / "public" / "data"
 DEFAULT_OUT = DATA_DIR / "publicar-data.json"
 DEFAULT_CATALOG_OUT = DATA_DIR / "publicar-catalog.json"
 

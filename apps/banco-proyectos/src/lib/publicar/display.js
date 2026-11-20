@@ -1,4 +1,4 @@
-/* Labels, text and link helpers of the journal finder components, ported from apps/donde-publicar/site/app.js so the
+/* Labels, text and link helpers of the journal finder components, ported from pipelines/donde-publicar/site/app.js so the
    React components stay presentational. The pure logic itself (filters, sort, affinity) is in table.js. */
 import { ADVANCED_DEFAULTS, AFFINITY_MAX, compareBest } from './table.js';
 

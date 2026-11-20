@@ -1,5 +1,5 @@
 /* Pure logic of the journal finder: filtering, sorting, the compare selection, the affinity estimate and its
-   assessment, saved-filter presets. Ported from apps/donde-publicar/site/table.js (the page no longer loads it as a
+   assessment, saved-filter presets. Ported from pipelines/donde-publicar/site/table.js (the page no longer loads it as a
    script); the React components only render what these functions return. */
 
 export const QUARTILE_RANK = { Q1: 1, Q2: 2, Q3: 3, Q4: 4 };

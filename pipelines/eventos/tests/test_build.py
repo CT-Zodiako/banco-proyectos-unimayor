@@ -152,7 +152,7 @@ class OfflineBuildTest(unittest.TestCase):
 
 class DefaultOutputTest(unittest.TestCase):
     def test_default_output_is_the_json_file_read_by_the_react_app(self):
-        expected = pathlib.Path(__file__).resolve().parent.parent.parent / "banco-proyectos" / "public" / "data" / "eventos.json"
+        expected = pathlib.Path(__file__).resolve().parents[3] / "apps" / "banco-proyectos" / "public" / "data" / "eventos.json"
         self.assertEqual(build.DEFAULT_OUT, expected)
 
 

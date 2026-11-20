@@ -1,4 +1,4 @@
-// The committed event data (written by apps/eventos/pipeline/build.py) is what the React page reads.
+// The committed event data (written by pipelines/eventos/pipeline/build.py) is what the React page reads.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';

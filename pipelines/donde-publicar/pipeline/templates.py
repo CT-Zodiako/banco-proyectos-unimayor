@@ -6,7 +6,7 @@ Strict rules (a wrong template is worse than none):
   * it is hosted on the journal's own registered domain (or the instructions page's),
   * when crawling, the URL answers 200 with a non-HTML content type.
 
-Usage (network; from apps/donde-publicar, after `python3 -E -m pipeline.build`):
+Usage (network; from pipelines/donde-publicar, after `python3 -E -m pipeline.build`):
     python3 -E -m pipeline.templates            # writes data/templates.json, then rebuild
 """
 
@@ -26,7 +26,7 @@ import urllib.request
 from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-DEFAULT_DATA = ROOT.parent / "banco-proyectos" / "public" / "data" / "publicar-data.json"
+DEFAULT_DATA = ROOT.parents[1] / "apps" / "banco-proyectos" / "public" / "data" / "publicar-data.json"
 EXTENSIONS = {".docx": "Word", ".dotx": "Word", ".doc": "Word", ".dot": "Word", ".tex": "LaTeX", ".zip": None}
 NAME_WORDS = ("template", "plantilla")
 SECOND_LEVEL = {"ac", "co", "com", "edu", "gov", "gob", "org", "net", "mil", "nic", "res"}

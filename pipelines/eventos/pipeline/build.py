@@ -4,7 +4,7 @@ Also adds the bank project profiles (topics, keywords) from ../donde-publicar/da
 
 Downloads are saved under data/raw/ (not versioned); --offline rebuilds from those saved files.
 
-Usage (from apps/eventos):
+Usage (from pipelines/eventos):
     python3 -E -m pipeline.build              # download (about 4-5 minutes, WikiCFP asks 5 s between pages)
     python3 -E -m pipeline.build --offline    # rebuild from data/raw/
     python3 -E -m pipeline.build --require-all-sources   # weekly job: keep the old data if any source fails
@@ -24,7 +24,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUBLIC_SOURCES = ("wikicfp", "ccfddl", "devpost")
 # Vite copies public/ to the site root, so the React app fetches this file at runtime from /data/eventos.json. The
 # generated data stays committed and deploy needs no Python.
-DEFAULT_OUT = ROOT.parent / "banco-proyectos" / "public" / "data" / "eventos.json"
+DEFAULT_OUT = ROOT.parents[1] / "apps" / "banco-proyectos" / "public" / "data" / "eventos.json"
 
 
 def main(argv=None):

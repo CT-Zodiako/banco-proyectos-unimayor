@@ -1,5 +1,5 @@
 // Tests for src/lib/publicar/table.js (pure logic of the journal finder: filters, sort, compare, affinity, assessment).
-// Ported from apps/donde-publicar/tests/table.test.cjs, which loaded the page script site/table.js. Run: npm test
+// Ported from pipelines/donde-publicar/tests/table.test.cjs, which loaded the page script site/table.js. Run: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from '../src/lib/publicar/table.js';

@@ -19,8 +19,8 @@ __pycache__/
 apps/banco-proyectos/temp_docx_extract*/
 
 # donde-publicar: DOAJ download (the weekly workflow downloads it again). The SCImago CSV in
-# apps/donde-publicar/data/raw/scimago/ is versioned: SCImago blocks scripted downloads, so it is replaced by hand yearly.
-apps/donde-publicar/data/raw/doaj/
+# pipelines/donde-publicar/data/raw/scimago/ is versioned: SCImago blocks scripted downloads, so it is replaced by hand yearly.
+pipelines/donde-publicar/data/raw/doaj/
 
 # eventos: cached downloads of the public sources (regenerate with python3 -E -m pipeline.build)
-apps/eventos/data/raw/
+pipelines/eventos/data/raw/

@@ -78,7 +78,7 @@ class ProjectProfilesTest(unittest.TestCase):
 
 
 class RealProjectsFileTest(unittest.TestCase):
-    """The bank export read by the build by default (apps/donde-publicar/data/projects.json)."""
+    """The bank export read by the build by default (pipelines/donde-publicar/data/projects.json)."""
 
     @classmethod
     def setUpClass(cls):

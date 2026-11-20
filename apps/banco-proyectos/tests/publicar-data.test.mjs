@@ -1,4 +1,4 @@
-// The committed journal data (written by apps/donde-publicar/pipeline/build.py) is what the React page reads.
+// The committed journal data (written by pipelines/donde-publicar/pipeline/build.py) is what the React page reads.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

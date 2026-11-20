@@ -1,5 +1,5 @@
 // Text, labels and link helpers of the journal finder components. Ported from the helpers of
-// apps/donde-publicar/site/app.js, which built the DOM directly; the React components now get these values from
+// pipelines/donde-publicar/site/app.js, which built the DOM directly; the React components now get these values from
 // pure functions in src/lib/publicar. Run: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

@@ -1,5 +1,5 @@
 // Tests for the display helpers of the event cards: map link, modality, comparison table, data status and favorites.
-// Ported from apps/eventos/tests/map.test.cjs, which rendered the page in a fake DOM; the React components now
+// Ported from pipelines/eventos/tests/map.test.cjs, which rendered the page in a fake DOM; the React components now
 // get these values from pure functions in src/lib/eventos. Run: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

@@ -1,5 +1,5 @@
 /* Project → events cross: estimated affinity (0–100) of an event for a bank project, and the ranking built on it.
-   Ported from apps/eventos/site/filters.js. The estimate is never an acceptance probability. */
+   Ported from pipelines/eventos/site/filters.js. The estimate is never an acceptance probability. */
 import { daysLeft, isExpired, normalize, SORT_VALUES } from './filters.js';
 
 export const AFFINITY_MAX = { topics: 60, keywords: 20, access: 10, time: 10 };

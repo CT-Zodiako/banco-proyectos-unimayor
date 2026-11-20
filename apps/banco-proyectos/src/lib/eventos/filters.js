@@ -1,5 +1,5 @@
 /* Pure logic for the event finder: expiry, filtering, sorting, topic counts and the URL filter state.
-   Ported from apps/eventos/site/filters.js. Dates are ISO "YYYY-MM-DD" strings (or null), so plain string
+   Ported from pipelines/eventos/site/filters.js. Dates are ISO "YYYY-MM-DD" strings (or null), so plain string
    comparison orders them. */
 
 const KINDS = ['all', 'cfp', 'attend'];

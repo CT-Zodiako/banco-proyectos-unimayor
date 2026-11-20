@@ -1,6 +1,6 @@
 """Project profiles for the project → events cross: topics and keywords of each bank project.
 
-Input is the bank export apps/donde-publicar/data/projects.json (refreshed with `npm run export:projects` in
+Input is the bank export pipelines/donde-publicar/data/projects.json (refreshed with `npm run export:projects` in
 apps/banco-proyectos). Output follows "Project cross" in odd/tasks/eventos.md.
 
 Every rule works on accent-free lower case text (see fold).

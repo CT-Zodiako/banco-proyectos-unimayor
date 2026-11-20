@@ -168,7 +168,7 @@ class ReadJournalsTests(unittest.TestCase):
             self.assertEqual(tp.read_journals(path), [{"id": "7", "title": "Agro Engineering"}])
 
     def test_default_input_is_the_data_file_of_the_react_app(self):
-        expected = pathlib.Path(__file__).resolve().parent.parent.parent / "banco-proyectos" / "public" / "data" / "publicar-data.json"
+        expected = pathlib.Path(__file__).resolve().parents[3] / "apps" / "banco-proyectos" / "public" / "data" / "publicar-data.json"
         self.assertEqual(tp.DEFAULT_DATA, expected)
 
 

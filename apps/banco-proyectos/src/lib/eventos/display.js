@@ -1,5 +1,5 @@
 /* Text and link helpers for the event cards, the comparison table and the data status.
-   Ported from apps/eventos/site/app.js so the React components stay presentational. */
+   Ported from pipelines/eventos/site/app.js so the React components stay presentational. */
 import { daysLeft, formatDate, formatRange } from './filters.js';
 import { AFFINITY_MAX } from './affinity.js';
 

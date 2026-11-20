@@ -19,8 +19,8 @@ the router redirects it to `/eventos?p=<project id>` with the same project prese
 
 | Path | Purpose |
 |---|---|
-| `../banco-proyectos/public/data/eventos.json` | The generated data the page fetches at runtime from `/data/eventos.json` (committed) |
-| `../banco-proyectos/src/pages/Eventos.jsx` | The page; its components are in `src/components/eventos/` and its pure logic (filters, affinity, map links, favorites) in `src/lib/eventos/` |
+| `../../apps/banco-proyectos/public/data/eventos.json` | The generated data the page fetches at runtime from `/data/eventos.json` (committed) |
+| `../../apps/banco-proyectos/src/pages/Eventos.jsx` | The page; its components are in `src/components/eventos/` and its pure logic (filters, affinity, map links, favorites) in `src/lib/eventos/` |
 | `pipeline/eventos.py` | Pure logic: source parsers, topic tagging, manual file validation, dedupe, expiry, output |
 | `pipeline/sources.py` | Downloads (urllib, curl fallback on TLS errors) and the `data/raw/` cache |
 | `pipeline/projects.py` | Project profiles (topics, keywords) for the project → events cross |
@@ -90,7 +90,7 @@ Learning, Robótica, Sistemas Ciberfísicos, Desarrollo de Software, Videojuegos
 
 ## Commands
 
-From `apps/eventos`:
+From `pipelines/eventos`:
 
 ```bash
 python3 -E -m pipeline.build                  # download all sources (about 4-5 minutes), write eventos.json
@@ -234,11 +234,11 @@ Events are refreshed automatically every Monday, and on demand from **Run workfl
 `.github/workflows/actualizar-datos.yml` (see the root README). It runs the tests and
 `python3 -E -m pipeline.build --require-all-sources`, and commits `apps/banco-proyectos/public/data/eventos.json` to master only when it succeeds;
 otherwise the page keeps the previous events. The workflow also runs the page-logic tests
-(`node --test "../banco-proyectos/tests/eventos-*.test.mjs"`) before and after the build.
+(`node --test "../../apps/banco-proyectos/tests/eventos-*.test.mjs"`) before and after the build.
 
 To refresh by hand (for example after editing `data/manual-events.json`, or to check a change before pushing):
 
-1. `cd apps/eventos`
+1. `cd pipelines/eventos`
 2. Update `data/manual-events.json` if there are new local events. If the bank projects changed, run
    `npm run export:projects` in `apps/banco-proyectos` first.
 3. `python3 -E -m pipeline.build` (needs network; about 4-5 minutes).
@@ -249,7 +249,7 @@ To refresh by hand (for example after editing `data/manual-events.json`, or to c
 ## Preview locally
 
 ```bash
-cd ../banco-proyectos
+cd ../../apps/banco-proyectos
 npm run dev
 # open http://localhost:5173/eventos (or /eventos?p=proj_001)
 ```

@@ -27,9 +27,9 @@ instructions, DOAJ and SCImago.
 
 | Path | Purpose |
 |---|---|
-| `../banco-proyectos/public/data/publicar-data.json` | Generated data the page fetches at runtime from `/data/publicar-data.json`: projects and the journals suggested for them (committed) |
-| `../banco-proyectos/public/data/publicar-catalog.json` | Generated catalog of every ranked diamond journal; the "Catálogo completo" tab loads it on demand (committed) |
-| `../banco-proyectos/src/pages/DondePublicar.jsx` | The page; its components are in `src/components/publicar/` and its pure logic (`table.js`: filters, affinity, assessment, saved filters; `display.js`, `project.js`, `presets.js`, `favorites.js`) in `src/lib/publicar/` |
+| `../../apps/banco-proyectos/public/data/publicar-data.json` | Generated data the page fetches at runtime from `/data/publicar-data.json`: projects and the journals suggested for them (committed) |
+| `../../apps/banco-proyectos/public/data/publicar-catalog.json` | Generated catalog of every ranked diamond journal; the "Catálogo completo" tab loads it on demand (committed) |
+| `../../apps/banco-proyectos/src/pages/DondePublicar.jsx` | The page; its components are in `src/components/publicar/` and its pure logic (`table.js`: filters, affinity, assessment, saved filters; `display.js`, `project.js`, `presets.js`, `favorites.js`) in `src/lib/publicar/` |
 | `pipeline/donde_publicar.py` | Loading, filtering, joining and matching logic |
 | `pipeline/build.py` | Command that generates `publicar-data.json` and `publicar-catalog.json` |
 | `tests/` | Pipeline tests (Python `unittest`); the tests of the page logic are `apps/banco-proyectos/tests/publicar-*.test.mjs` |
@@ -45,7 +45,7 @@ root README). It downloads DOAJ but reuses the versioned SCImago CSV, so step 3 
 when SCImago publishes a new ranking. Run the steps by hand only to check a change locally.
 
 1. **Projects**: exported from the project bank in this repository (all areas):
-   `cd ../banco-proyectos && npm run export:projects` writes `data/projects.json`.
+   `cd ../../apps/banco-proyectos && npm run export:projects` writes `data/projects.json`.
 2. **DOAJ**: `curl -L -o data/raw/doaj/journals.csv https://doaj.org/csv`
 3. **SCImago**: SCImago blocks automated downloads. Open
    <https://www.scimagojr.com/journalrank.php>, click **Download data** and save the file as
@@ -55,7 +55,7 @@ when SCImago publishes a new ranking. Run the steps by hand only to check a chan
 ```bash
 python3 -E -m pipeline.build          # writes publicar-data.json and publicar-catalog.json in apps/banco-proyectos/public/data
 python3 -I -m unittest discover -s tests -t .
-(cd ../banco-proyectos && npm test)   # page logic (publicar-*.test.mjs) and the committed data
+(cd ../../apps/banco-proyectos && npm test)   # page logic (publicar-*.test.mjs) and the committed data
 ```
 
 The generated JSON is committed and bundled by Vite, so deploying needs no Python. `pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths, and
@@ -83,7 +83,7 @@ Matching is automatic: always read the journal's aims & scope and confirm fees b
 ## Preview locally
 
 ```bash
-cd ../banco-proyectos
+cd ../../apps/banco-proyectos
 npm run dev
 # open http://localhost:5173/donde-publicar?p=proj_001
 ```

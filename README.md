@@ -1,16 +1,17 @@
 # UNIMAYOR research search tools
 
 Monorepo for the search tools of the Laboratorio de Física y Sistemas Embebidos,
-Institución Universitaria Colegio Mayor del Cauca.
+Institución Universitaria Colegio Mayor del Cauca. Web apps live in `apps/` and data pipelines in `pipelines/`.
 
-| App | Path | What it does | Stack |
+| Tool | Path | What it does | Stack |
 |---|---|---|---|
 | Project bank | [`apps/banco-proyectos`](apps/banco-proyectos) | Catalog of 236 projects in 23 areas (the original 100 IoT projects plus new areas), filters by area and sector, project detail; also hosts the journal finder and the event finder as React routes | React 18, Vite 5, Tailwind 3, React Router, deployed on Railway |
-| Where to publish | [`apps/donde-publicar`](apps/donde-publicar) | Indexed (SCImago Q1–Q4), no-APC, free-to-read journals (DOAJ) for each project | React route `/donde-publicar` in the project bank (`src/pages/DondePublicar.jsx`); Python 3 pipeline that only generates JSON data in `apps/banco-proyectos/public/data` |
-| Event finder | [`apps/eventos`](apps/eventos) | Calls for papers and events to attend (WikiCFP, ccf-deadlines, Devpost and a manual file of local events) | React route `/eventos` in the project bank (`src/pages/Eventos.jsx`); Python 3 pipeline that only generates JSON data in `apps/banco-proyectos/public/data` |
+| Where to publish | [`pipelines/donde-publicar`](pipelines/donde-publicar) | Indexed (SCImago Q1–Q4), no-APC, free-to-read journals (DOAJ) for each project | React route `/donde-publicar` in the project bank (`src/pages/DondePublicar.jsx`); Python 3 pipeline that only generates JSON data in `apps/banco-proyectos/public/data` |
+| Event finder | [`pipelines/eventos`](pipelines/eventos) | Calls for papers and events to attend (WikiCFP, ccf-deadlines, Devpost and a manual file of local events) | React route `/eventos` in the project bank (`src/pages/Eventos.jsx`); Python 3 pipeline that only generates JSON data in `apps/banco-proyectos/public/data` |
 
-All three front ends are React and ship in the project bank build. `apps/donde-publicar` and `apps/eventos` only hold
-the Python data pipelines (and their tests and inputs); the generated JSON is committed.
+All three front ends are React and ship in the project bank build (`apps/`). The data pipelines live in `pipelines/`:
+`pipelines/donde-publicar` and `pipelines/eventos` only hold the Python data pipelines (and their tests and inputs) and
+generate the JSON into `apps/banco-proyectos/public/data`; the generated JSON is committed.
 
 ## Project bank
 
@@ -73,14 +74,14 @@ JSON data of the journal finder and the event finder every Monday at 09:00 UTC (
 
 Each run:
 
-1. Exports the bank projects to `apps/donde-publicar/data/projects.json`.
+1. Exports the bank projects to `pipelines/donde-publicar/data/projects.json`.
 2. Journals: runs the Python tests and the page-logic tests (`publicar-*.test.mjs`), downloads DOAJ, rebuilds
    `publicar-data.json` and `publicar-catalog.json` with the SCImago CSV stored in the repository, and checks them with
    `publicar-data.test.mjs`.
 3. Events: runs the Python tests and the page-logic tests (`eventos-*.test.mjs`), rebuilds `eventos.json` with
    `--require-all-sources` (WikiCFP, ccf-deadlines, Devpost and the manual file), and checks it with
    `eventos-data.test.mjs`.
-4. Commits whatever was refreshed (`apps/donde-publicar/data/projects.json` and the three JSON files in
+4. Commits whatever was refreshed (`pipelines/donde-publicar/data/projects.json` and the three JSON files in
    `apps/banco-proyectos/public/data`) to `master` (`chore(data): refresh journals and events <date>`), which makes
    Railway redeploy.
 
@@ -89,35 +90,35 @@ the owner. A source outage never publishes an emptier catalog: the journal build
 and the event build refuses to write when any public source fails.
 
 **Once a year, update SCImago by hand.** SCImago blocks scripted downloads and publishes a new ranking yearly.
-Download it as described in [`apps/donde-publicar/README.md`](apps/donde-publicar/README.md#regenerate-the-data),
-replace `apps/donde-publicar/data/raw/scimago/scimagojr.csv`, commit it, and run the workflow. The journal page shows
+Download it as described in [`pipelines/donde-publicar/README.md`](pipelines/donde-publicar/README.md#regenerate-the-data),
+replace `pipelines/donde-publicar/data/raw/scimago/scimagojr.csv`, commit it, and run the workflow. The journal page shows
 the dates in use ("DOAJ: 2026-11-09 · SCImago: edición 2025").
 
 ## Where to publish
 
-See [`apps/donde-publicar/README.md`](apps/donde-publicar/README.md). Run its commands from that folder:
+See [`pipelines/donde-publicar/README.md`](pipelines/donde-publicar/README.md). Run its commands from that folder:
 
 ```bash
-cd apps/donde-publicar
+cd pipelines/donde-publicar
 python3 -I -m unittest discover -s tests -t .
 python3 -E -m pipeline.build      # writes publicar-data.json and publicar-catalog.json in apps/banco-proyectos/public/data
 ```
 
-The DOAJ download in `apps/donde-publicar/data/raw/doaj/` is not versioned. The SCImago CSV in
-`apps/donde-publicar/data/raw/scimago/` is versioned so the weekly workflow can use it.
+The DOAJ download in `pipelines/donde-publicar/data/raw/doaj/` is not versioned. The SCImago CSV in
+`pipelines/donde-publicar/data/raw/scimago/` is versioned so the weekly workflow can use it.
 
 ## Event finder
 
-See [`apps/eventos/README.md`](apps/eventos/README.md). Run its commands from that folder:
+See [`pipelines/eventos/README.md`](pipelines/eventos/README.md). Run its commands from that folder:
 
 ```bash
-cd apps/eventos
+cd pipelines/eventos
 python3 -I -m unittest discover -s tests -t .
 python3 -E -m pipeline.build      # downloads the sources (about 4-5 minutes) and writes apps/banco-proyectos/public/data/eventos.json
 ```
 
-Local Colombian events go in `apps/eventos/data/manual-events.json`. Downloads are cached in
-`apps/eventos/data/raw/` (not versioned).
+Local Colombian events go in `pipelines/eventos/data/manual-events.json`. Downloads are cached in
+`pipelines/eventos/data/raw/` (not versioned).
 
 ## Repository notes
 
