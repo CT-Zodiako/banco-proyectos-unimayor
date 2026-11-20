@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "chosen": "01-refinado-fiel.html",
+  "handoffs": {
+    "01-refinado-fiel.html": {
+      "status": "sent",
+      "queued": false,
+      "sentAt": "2026-11-20T15:11:07.554Z",
+      "startedAt": null,
+      "implementedAt": null,
+      "feature": "odd/tasks/mejora-visual.md"
+    }
+  }
+}
