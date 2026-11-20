@@ -1,25 +1,23 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import publicarData from '../data/publicar-data.json';
 import CatalogView from '../components/publicar/CatalogView';
 import Chips from '../components/publicar/Chips';
 import CompareTray from '../components/publicar/CompareTray';
 import FiltersPanel from '../components/publicar/FiltersPanel';
+import DataGate from '../components/DataGate';
 import HelpView from '../components/publicar/HelpView';
 import JournalResults, { AffinityNote } from '../components/publicar/JournalResults';
 import JournalToolbar from '../components/publicar/JournalToolbar';
 import { FOCUS, INPUT, NOTE } from '../components/publicar/classes';
 import useJournalFinder from '../hooks/useJournalFinder';
+import { DATA_FILES } from '../lib/data-loader';
 import { requestedProjectId } from '../lib/publicar/project';
 import { ADVANCED_DEFAULTS, dataStatus } from '../lib/publicar/table';
 
-const { projects, journals, themes } = publicarData;
-const projectsById = new Map(projects.map((project) => [project.id, project]));
-const journalsById = new Map(journals.map((journal) => [journal.id, journal]));
 const PAGE_TITLE = '¿Dónde publicar este proyecto? · Banco de Proyectos · UNIMAYOR';
 const TABS = [['project', 'Revistas del proyecto'], ['catalog', 'Catálogo completo'], ['help', 'Cómo leer esta página']];
 
-function ProjectPicker({ onSelect }) {
+function ProjectPicker({ projects, onSelect }) {
     return (
         <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-[18px] max-w-[720px]">
             <label htmlFor="publicar-picker-select" className="block text-[13px] font-semibold text-gray-600 mb-1.5">Proyecto</label>
@@ -35,7 +33,10 @@ function ProjectPicker({ onSelect }) {
 // Journals for one project, chosen with ?p=<project id> (or the picker). With no valid project it shows the picker.
 // Design 04: list ranked by estimated affinity with a custom filters panel; design 02: comparison table.
 // Filters, sort and the compare selection are page state; the project is in the URL so a link can be shared.
-export default function DondePublicar() {
+function DondePublicarPage({ publicarData }) {
+    const { projects, journals, themes } = publicarData;
+    const projectsById = useMemo(() => new Map(projects.map((item) => [item.id, item])), [projects]);
+    const journalsById = useMemo(() => new Map(journals.map((journal) => [journal.id, journal])), [journals]);
     const { search, hash } = useLocation();
     const navigate = useNavigate();
     const project = projectsById.get(requestedProjectId(search, hash)) || null;
@@ -99,7 +100,7 @@ export default function DondePublicar() {
                     </Link>
                 </div>
 
-                {!project && <ProjectPicker onSelect={selectProject} />}
+                {!project && <ProjectPicker projects={projects} onSelect={selectProject} />}
 
                 {project && (
                     <div className="space-y-2.5">
@@ -171,4 +172,9 @@ export default function DondePublicar() {
             </footer>
         </div>
     );
+}
+
+// The journal data is a static file downloaded when the page opens (the project panel shares the same download).
+export default function DondePublicar() {
+    return <DataGate file={DATA_FILES.publicar} what="las revistas" rows={5}>{(data) => <DondePublicarPage publicarData={data} />}</DataGate>;
 }

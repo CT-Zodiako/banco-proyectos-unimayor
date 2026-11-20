@@ -1,29 +1,30 @@
 import { useCallback, useEffect, useState } from 'react';
+import { loadData } from '../lib/data-loader';
 
 const loaded = new Map();
 
-// Downloads a data module with a dynamic import the first time `enabled` is true (the journal data is ~2.4 MB, the
-// events ~280 KB) and keeps it for the rest of the session. loader() must resolve to the module (its default is the
-// data). Returns { status: 'idle' | 'loading' | 'ready' | 'error', data, retry }.
-export default function useLazyData(key, loader, enabled) {
-    const [state, setState] = useState(() => (loaded.has(key) ? { status: 'ready', data: loaded.get(key) } : { status: 'idle', data: null }));
+// Downloads a data file (public/data/<file>, see lib/data-loader.js) the first time `enabled` is true and keeps it for
+// the rest of the session. The loader shares one download between the page and the project panel and forgets a failed
+// one, so retry() downloads again. Returns { status: 'idle' | 'loading' | 'ready' | 'error', data, retry }.
+export default function useLazyData(file, enabled) {
+    const [state, setState] = useState(() => (loaded.has(file) ? { status: 'ready', data: loaded.get(file) } : { status: 'idle', data: null }));
     const [attempt, setAttempt] = useState(0);
 
     useEffect(() => {
-        if (!enabled || loaded.has(key)) return undefined;
+        if (!enabled || loaded.has(file)) return undefined;
         let cancelled = false;
         setState({ status: 'loading', data: null });
-        loader()
-            .then((module) => {
-                loaded.set(key, module.default);
-                if (!cancelled) setState({ status: 'ready', data: module.default });
+        loadData(file)
+            .then((data) => {
+                loaded.set(file, data);
+                if (!cancelled) setState({ status: 'ready', data });
             })
             .catch(() => { if (!cancelled) setState({ status: 'error', data: null }); });
         return () => { cancelled = true; };
-    }, [enabled, key, loader, attempt]);
+    }, [enabled, file, attempt]);
 
     const retry = useCallback(() => setAttempt((count) => count + 1), []);
-    // Another component may have loaded the module while this one was idle.
-    if (state.status !== 'ready' && loaded.has(key)) return { status: 'ready', data: loaded.get(key), retry };
+    // Another component may have loaded the file while this one was idle.
+    if (state.status !== 'ready' && loaded.has(file)) return { status: 'ready', data: loaded.get(file), retry };
     return { ...state, retry };
 }

@@ -26,7 +26,7 @@ import urllib.request
 from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-DEFAULT_DATA = ROOT.parent / "banco-proyectos" / "src" / "data" / "publicar-data.json"
+DEFAULT_DATA = ROOT.parent / "banco-proyectos" / "public" / "data" / "publicar-data.json"
 EXTENSIONS = {".docx": "Word", ".dotx": "Word", ".doc": "Word", ".dot": "Word", ".tex": "LaTeX", ".zip": None}
 NAME_WORDS = ("template", "plantilla")
 SECOND_LEVEL = {"ac", "co", "com", "edu", "gov", "gob", "org", "net", "mil", "nic", "res"}
@@ -214,7 +214,7 @@ def _check_journal_page(journal, timeout):
 
 
 def read_journals(path):
-    """The journals of the JSON file written by pipeline.build (apps/banco-proyectos/src/data/publicar-data.json)."""
+    """The journals of the JSON file written by pipeline.build (apps/banco-proyectos/public/data/publicar-data.json)."""
     return json.loads(path.read_text(encoding="utf-8"))["journals"]
 
 

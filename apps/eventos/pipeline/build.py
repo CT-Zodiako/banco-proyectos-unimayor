@@ -1,4 +1,4 @@
-"""Build apps/banco-proyectos/src/data/eventos.json from WikiCFP, ccf-deadlines, Devpost and data/manual-events.json.
+"""Build apps/banco-proyectos/public/data/eventos.json from WikiCFP, ccf-deadlines, Devpost and data/manual-events.json.
 
 Also adds the bank project profiles (topics, keywords) from ../donde-publicar/data/projects.json.
 
@@ -22,8 +22,9 @@ from pipeline import sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUBLIC_SOURCES = ("wikicfp", "ccfddl", "devpost")
-# The React app imports this file at build time, so the generated data stays committed and deploy needs no Python.
-DEFAULT_OUT = ROOT.parent / "banco-proyectos" / "src" / "data" / "eventos.json"
+# Vite copies public/ to the site root, so the React app fetches this file at runtime from /data/eventos.json. The
+# generated data stays committed and deploy needs no Python.
+DEFAULT_OUT = ROOT.parent / "banco-proyectos" / "public" / "data" / "eventos.json"
 
 
 def main(argv=None):

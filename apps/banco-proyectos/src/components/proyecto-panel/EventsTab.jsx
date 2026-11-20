@@ -9,6 +9,7 @@ import PanelSkeleton from './PanelSkeleton';
 import useEventResults from '../../hooks/useEventResults';
 import useLazyData from '../../hooks/useLazyData';
 import useMediaQuery from '../../hooks/useMediaQuery';
+import { DATA_FILES } from '../../lib/data-loader';
 import { comparisonKey, dataStatusText, plural } from '../../lib/eventos/display';
 import { DEFAULT_STATE, MAX_COMPARISON, stateToQuery, toggleComparison } from '../../lib/eventos/filters';
 import { nextShown, panelFullUrl } from '../../lib/project-panel';
@@ -16,7 +17,6 @@ import { nextShown, panelFullUrl } from '../../lib/project-panel';
 const PAGE_SIZE = 6;
 const MORE_SIZE = 10;
 const INITIAL_STATE = { ...DEFAULT_STATE, sort: 'affinity' };
-const loadEventData = () => import('../../data/eventos.json');
 
 function EventsLoaded({ data, project, onMeta }) {
     const dataProject = useMemo(() => data.projects.find((candidate) => candidate.id === project.id) || null, [data, project.id]);
@@ -111,7 +111,7 @@ function EventsLoaded({ data, project, onMeta }) {
 }
 
 export default function EventsTab({ project, onMeta }) {
-    const { status, data, retry } = useLazyData('eventos-data', loadEventData, true);
+    const { status, data, retry } = useLazyData(DATA_FILES.eventos, true);
     if (status === 'error') return <LoadError what="los eventos" onRetry={retry} />;
     if (status !== 'ready') return <PanelSkeleton rows={3} />;
     return <EventsLoaded data={data} project={project} onMeta={onMeta} />;

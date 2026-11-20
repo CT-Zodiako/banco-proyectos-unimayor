@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import useLazyData from '../../hooks/useLazyData';
+import { DATA_FILES } from '../../lib/data-loader';
 import { ExtLink, FavoriteButton, QuartileBadge } from './JournalLinks';
 import { FOCUS, INPUT } from './classes';
 import { categoriesText, countryLabel, journalFacts, languageLabel } from '../../lib/publicar/display';
@@ -41,23 +43,14 @@ function JournalCard({ journal }) {
 }
 
 // Every diamond open access journal with a SCImago quartile. The list (a few MB of JSON) is downloaded the first time
-// the tab is opened, as the old page did with catalog.js.
+// the tab is opened (a static file shared through lib/data-loader.js).
 export default function CatalogView({ active }) {
-    const [catalog, setCatalog] = useState(null);
-    const [failed, setFailed] = useState(false);
     const [query, setQuery] = useState('');
     const [quartile, setQuartile] = useState('all');
     const [spanish, setSpanish] = useState(false);
     const [shown, setShown] = useState(PAGE_SIZE);
-
-    useEffect(() => {
-        if (!active || catalog || failed) return undefined;
-        let cancelled = false;
-        import('../../data/publicar-catalog.json')
-            .then((module) => { if (!cancelled) setCatalog(module.default); })
-            .catch(() => { if (!cancelled) setFailed(true); });
-        return () => { cancelled = true; };
-    }, [active, catalog, failed]);
+    const { status, data: catalog, retry } = useLazyData(DATA_FILES.catalog, active);
+    const failed = status === 'error';
 
     const rows = useMemo(
         () => (catalog ? filterRows(catalog.map((journal) => ({ match: { fit: 'all' }, journal })), { query, quartile, spanish }) : []),
@@ -103,6 +96,7 @@ export default function CatalogView({ active }) {
                     Acepta español
                 </label>
                 <span className="md:ml-auto text-[13px] text-gray-500" aria-live="polite">{count}</span>
+                {failed && <button type="button" onClick={retry} className={`px-3 py-2 rounded-lg border border-institutional-blue bg-white text-institutional-blue text-[13px] font-semibold hover:bg-blue-50 ${FOCUS}`}>Reintentar</button>}
             </div>
             <div className="grid gap-3">
                 {rows.slice(0, shown).map(({ journal }) => <JournalCard key={journal.id} journal={journal} />)}

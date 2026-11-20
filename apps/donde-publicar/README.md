@@ -27,8 +27,8 @@ instructions, DOAJ and SCImago.
 
 | Path | Purpose |
 |---|---|
-| `../banco-proyectos/src/data/publicar-data.json` | Generated data the page imports: projects and the journals suggested for them (committed) |
-| `../banco-proyectos/src/data/publicar-catalog.json` | Generated catalog of every ranked diamond journal; the "Catálogo completo" tab loads it on demand (committed) |
+| `../banco-proyectos/public/data/publicar-data.json` | Generated data the page fetches at runtime from `/data/publicar-data.json`: projects and the journals suggested for them (committed) |
+| `../banco-proyectos/public/data/publicar-catalog.json` | Generated catalog of every ranked diamond journal; the "Catálogo completo" tab loads it on demand (committed) |
 | `../banco-proyectos/src/pages/DondePublicar.jsx` | The page; its components are in `src/components/publicar/` and its pure logic (`table.js`: filters, affinity, assessment, saved filters; `display.js`, `project.js`, `presets.js`, `favorites.js`) in `src/lib/publicar/` |
 | `pipeline/donde_publicar.py` | Loading, filtering, joining and matching logic |
 | `pipeline/build.py` | Command that generates `publicar-data.json` and `publicar-catalog.json` |
@@ -53,7 +53,7 @@ when SCImago publishes a new ranking. Run the steps by hand only to check a chan
 4. Build and test:
 
 ```bash
-python3 -E -m pipeline.build          # writes publicar-data.json and publicar-catalog.json in apps/banco-proyectos/src/data
+python3 -E -m pipeline.build          # writes publicar-data.json and publicar-catalog.json in apps/banco-proyectos/public/data
 python3 -I -m unittest discover -s tests -t .
 (cd ../banco-proyectos && npm test)   # page logic (publicar-*.test.mjs) and the committed data
 ```
@@ -106,7 +106,7 @@ the user's saved filters live in the browser's localStorage under `donde-publica
 The project page (`/proyecto/<id>`) also shows these journals in a slide-over panel (`?panel=revistas`, tab "Revistas";
 `src/components/proyecto-panel/`) without leaving the project. The panel reuses the list, table, filters sheet and compare
 tray of this page (`src/components/publicar/`, `src/hooks/useJournalFinder.js`, `src/lib/publicar/`) and downloads
-`publicar-data.json` with a dynamic import the first time it is opened; its "Abrir en la página completa" link goes to
+`/data/publicar-data.json` (shared with the page, see `src/lib/data-loader.js`) the first time it is opened; its "Abrir en la página completa" link goes to
 `/donde-publicar?p=<project id>`, and this page keeps working as before.
 
 ## Downloadable templates

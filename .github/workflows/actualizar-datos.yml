@@ -58,7 +58,7 @@ jobs:
 
       - name: Keep the previous journal data
         if: steps.revistas.outcome == 'failure'
-        run: git restore apps/banco-proyectos/src/data/publicar-data.json apps/banco-proyectos/src/data/publicar-catalog.json
+        run: git restore apps/banco-proyectos/public/data/publicar-data.json apps/banco-proyectos/public/data/publicar-catalog.json
 
       - name: Events (WikiCFP, ccf-deadlines, Devpost, manual file)
         id: eventos
@@ -72,11 +72,11 @@ jobs:
 
       - name: Keep the previous event data
         if: steps.eventos.outcome == 'failure'
-        run: git restore apps/banco-proyectos/src/data/eventos.json
+        run: git restore apps/banco-proyectos/public/data/eventos.json
 
       - name: Commit and push the refreshed data
         run: |
-          git add apps/donde-publicar/data/projects.json apps/banco-proyectos/src/data/publicar-data.json apps/banco-proyectos/src/data/publicar-catalog.json apps/banco-proyectos/src/data/eventos.json
+          git add apps/donde-publicar/data/projects.json apps/banco-proyectos/public/data/publicar-data.json apps/banco-proyectos/public/data/publicar-catalog.json apps/banco-proyectos/public/data/eventos.json
           if git diff --cached --quiet; then
             echo "No data changed."
             exit 0

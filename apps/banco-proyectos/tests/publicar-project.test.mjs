@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { projectRows, requestedProjectId, visibleRows } from '../src/lib/publicar/project.js';
 import { ADVANCED_DEFAULTS, affinity, assessment } from '../src/lib/publicar/table.js';
 
-const data = JSON.parse(readFileSync(new URL('../src/data/publicar-data.json', import.meta.url), 'utf8'));
+const data = JSON.parse(readFileSync(new URL('../public/data/publicar-data.json', import.meta.url), 'utf8'));
 const journalsById = new Map(data.journals.map((journal) => [journal.id, journal]));
 const project = data.projects[0];
 

@@ -4,7 +4,30 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    # Text assets are compressed on the fly: the finder data is a few MB of JSON that gzip shrinks about 10x.
+    gzip on;
+    gzip_comp_level 6;
+    gzip_min_length 1024;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_types application/json application/javascript text/javascript text/css text/plain image/svg+xml;
+
+    # Vite file names carry a content hash, so they never change: cache them for a year.
+    location /assets/ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    # The weekly refresh replaces these files under the same name: the browser keeps a copy but revalidates it
+    # (ETag) every time. A missing file is a real 404, never the single page app HTML.
+    location /data/ {
+        try_files $uri =404;
+        add_header Cache-Control "no-cache";
+    }
+
+    # The single page app: the HTML always revalidates so a new deploy is picked up with its new hashed assets.
     location / {
         try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-cache";
     }
 }

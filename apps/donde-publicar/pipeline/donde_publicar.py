@@ -516,5 +516,5 @@ def normalize_project(raw):
 
 
 def render_json(payload):
-    """The payload as a JSON file the React app imports (apps/banco-proyectos/src/data/publicar-*.json)."""
+    """The payload as a JSON file the React app fetches (apps/banco-proyectos/public/data/publicar-*.json)."""
     return json.dumps(payload, ensure_ascii=False) + "\n"

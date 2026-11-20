@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 
-const file = new URL('../src/data/eventos.json', import.meta.url);
+const file = new URL('../public/data/eventos.json', import.meta.url);
 const data = JSON.parse(readFileSync(file, 'utf8'));
 
 test('the event data is plain JSON with the payload keys the page reads', () => {

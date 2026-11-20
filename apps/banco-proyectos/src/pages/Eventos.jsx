@@ -1,21 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import eventosData from '../data/eventos.json';
+import DataGate from '../components/DataGate';
 import EventCard from '../components/eventos/EventCard';
 import EventComparison from '../components/eventos/EventComparison';
 import EventFilters from '../components/eventos/EventFilters';
 import ProjectPanel from '../components/eventos/ProjectPanel';
 import useEventResults from '../hooks/useEventResults';
+import { DATA_FILES } from '../lib/data-loader';
 import { comparisonKey, dataInfoText, dataStatusText, plural } from '../lib/eventos/display';
 import { DEFAULT_STATE, MAX_COMPARISON, parseQuery, stateToQuery, toggleComparison } from '../lib/eventos/filters';
 
-const { events, topics: knownTopics, projects, generated, sources } = eventosData;
-const projectsById = new Map(projects.map((project) => [project.id, project]));
 const PAGE_TITLE = 'Buscador de eventos académicos · Banco de Proyectos · UNIMAYOR';
 
 // Filters live in the URL (?p, kind, tema, modalidad, co, q, orden, desde, hasta, lugar), so a search can be shared.
 // With ?p=<project id> only the events sharing a topic with that project are listed, ranked by estimated affinity.
-export default function Eventos() {
+function EventosPage({ eventosData }) {
+    const { events, topics: knownTopics, projects, generated, sources } = eventosData;
+    const projectsById = useMemo(() => new Map(projects.map((item) => [item.id, item])), [projects]);
     const { search } = useLocation();
     const navigate = useNavigate();
     const [selected, setSelected] = useState([]);
@@ -25,7 +26,7 @@ export default function Eventos() {
     const requested = useMemo(() => {
         const parsed = parseQuery(search);
         return { ...parsed, topics: parsed.topics.filter((topic) => knownTopics.includes(topic)) };
-    }, [search]);
+    }, [search, knownTopics]);
     const project = (requested.project && projectsById.get(requested.project)) || null;
     // An unknown project id is dropped, and so is the affinity sort that needs a project.
     const state = useMemo(() => {
@@ -149,4 +150,9 @@ export default function Eventos() {
             </footer>
         </div>
     );
+}
+
+// The event data is a static file downloaded when the page opens (the project panel shares the same download).
+export default function Eventos() {
+    return <DataGate file={DATA_FILES.eventos} what="los eventos" rows={5}>{(data) => <EventosPage eventosData={data} />}</DataGate>;
 }

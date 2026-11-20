@@ -103,7 +103,7 @@ class BuildTest(unittest.TestCase):
 
 class DefaultOutputTest(unittest.TestCase):
     def test_default_outputs_are_the_json_files_read_by_the_react_app(self):
-        data_dir = pathlib.Path(__file__).resolve().parent.parent.parent / "banco-proyectos" / "src" / "data"
+        data_dir = pathlib.Path(__file__).resolve().parent.parent.parent / "banco-proyectos" / "public" / "data"
         self.assertEqual(build.DEFAULT_OUT, data_dir / "publicar-data.json")
         self.assertEqual(build.DEFAULT_CATALOG_OUT, data_dir / "publicar-catalog.json")
 

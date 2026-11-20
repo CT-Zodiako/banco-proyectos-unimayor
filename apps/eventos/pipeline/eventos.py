@@ -515,5 +515,5 @@ def build_payload(events, sources, today, projects=()):
 
 
 def render_json(payload):
-    """The payload as the JSON file the React app imports (apps/banco-proyectos/src/data/eventos.json)."""
+    """The payload as the JSON file the React app fetches (apps/banco-proyectos/public/data/eventos.json)."""
     return json.dumps(payload, ensure_ascii=False) + "\n"

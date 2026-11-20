@@ -1,8 +1,8 @@
-"""Build the JSON files read by the React app (apps/banco-proyectos/src/data) from the project bundle, the DOAJ CSV
+"""Build the JSON files read by the React app (apps/banco-proyectos/public/data) from the project bundle, the DOAJ CSV
 and the SCImago CSV.
 
 publicar-data.json holds the projects and the journals suggested for them; publicar-catalog.json holds every
-diamond open access journal with a SCImago quartile (loaded on demand by the catalog tab).
+diamond open access journal with a SCImago quartile (fetched on demand by the catalog tab).
 
 Usage (from the repository root):
     python3 -E -m pipeline.build
@@ -19,8 +19,9 @@ from pipeline import donde_publicar as dp
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 EDITION = re.compile(r"Total Docs\. \((\d{4})\)")
-# The React app imports these files at build time, so the generated data stays committed and deploy needs no Python.
-DATA_DIR = ROOT.parent / "banco-proyectos" / "src" / "data"
+# Vite copies public/ to the site root, so the React app fetches these files at runtime from /data/. The generated data
+# stays committed and deploy needs no Python.
+DATA_DIR = ROOT.parent / "banco-proyectos" / "public" / "data"
 DEFAULT_OUT = DATA_DIR / "publicar-data.json"
 DEFAULT_CATALOG_OUT = DATA_DIR / "publicar-catalog.json"
 

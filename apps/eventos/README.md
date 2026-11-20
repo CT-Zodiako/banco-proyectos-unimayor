@@ -7,7 +7,7 @@ React page (a route of the project bank) that lists academic events where studen
 - **Eventos para asistir** (`kind: "attend"`): hackathons, talks, workshops and fairs.
 
 Events come from public sources plus a hand-curated file for local Colombian events. A pipeline downloads them,
-tags them with the bank's topic areas, removes duplicates and expired events, and writes `apps/banco-proyectos/src/data/eventos.json`. The page
+tags them with the bank's topic areas, removes duplicates and expired events, and writes `apps/banco-proyectos/public/data/eventos.json`. The page
 hides expired events by itself, so a file that is a few weeks old still shows only open events.
 
 The page lives in the project bank, `apps/banco-proyectos`, at the route `/eventos` (`src/pages/Eventos.jsx`), and
@@ -19,7 +19,7 @@ the router redirects it to `/eventos?p=<project id>` with the same project prese
 
 | Path | Purpose |
 |---|---|
-| `../banco-proyectos/src/data/eventos.json` | The generated data the page imports (committed) |
+| `../banco-proyectos/public/data/eventos.json` | The generated data the page fetches at runtime from `/data/eventos.json` (committed) |
 | `../banco-proyectos/src/pages/Eventos.jsx` | The page; its components are in `src/components/eventos/` and its pure logic (filters, affinity, map links, favorites) in `src/lib/eventos/` |
 | `pipeline/eventos.py` | Pure logic: source parsers, topic tagging, manual file validation, dedupe, expiry, output |
 | `pipeline/sources.py` | Downloads (urllib, curl fallback on TLS errors) and the `data/raw/` cache |
@@ -105,7 +105,7 @@ counts as 0 events; with `--require-all-sources` the build prints
 `error: --require-all-sources: <sources> failed; eventos.json was not written` and exits with code 1, keeping the
 previous `eventos.json`.
 
-The build prints one line, e.g. `wikicfp=316 ccfddl=88 devpost=47 manual=2 events=453 projects=210 out=…/banco-proyectos/src/data/eventos.json`.
+The build prints one line, e.g. `wikicfp=316 ccfddl=88 devpost=47 manual=2 events=453 projects=210 out=…/banco-proyectos/public/data/eventos.json`.
 When a source fails, the build prints `warning: <source> failed: …`, reports 0 for it and writes the file with
 the others. It exits with code 1 without writing `eventos.json` when every public source fails, or when the
 manual file is missing or invalid (`error: data/manual-events.json: entry 1: "kind" must be "cfp" or "attend"`),
@@ -232,7 +232,7 @@ Rules (`pipeline/projects.py`; all matching is on lower case, accent-free text):
 
 Events are refreshed automatically every Monday, and on demand from **Run workflow**, by
 `.github/workflows/actualizar-datos.yml` (see the root README). It runs the tests and
-`python3 -E -m pipeline.build --require-all-sources`, and commits `apps/banco-proyectos/src/data/eventos.json` to master only when it succeeds;
+`python3 -E -m pipeline.build --require-all-sources`, and commits `apps/banco-proyectos/public/data/eventos.json` to master only when it succeeds;
 otherwise the page keeps the previous events. The workflow also runs the page-logic tests
 (`node --test "../banco-proyectos/tests/eventos-*.test.mjs"`) before and after the build.
 
@@ -244,7 +244,7 @@ To refresh by hand (for example after editing `data/manual-events.json`, or to c
 3. `python3 -E -m pipeline.build` (needs network; about 4-5 minutes).
 4. `python3 -I -m unittest discover -s tests -t .`
 5. Open the page (see below) and check a few events.
-6. Commit `apps/banco-proyectos/src/data/eventos.json` (and the manual file) and push to master; Railway redeploys the project bank.
+6. Commit `apps/banco-proyectos/public/data/eventos.json` (and the manual file) and push to master; Railway redeploys the project bank.
 
 ## Preview locally
 

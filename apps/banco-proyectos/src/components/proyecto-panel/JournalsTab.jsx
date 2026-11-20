@@ -10,13 +10,12 @@ import { EscapeCard, LoadError, NoData } from './PanelParts';
 import PanelSkeleton from './PanelSkeleton';
 import useJournalFinder from '../../hooks/useJournalFinder';
 import useLazyData from '../../hooks/useLazyData';
+import { DATA_FILES } from '../../lib/data-loader';
 import { nextShown, panelFullUrl } from '../../lib/project-panel';
 import { ADVANCED_DEFAULTS, dataStatus } from '../../lib/publicar/table';
 
 const PAGE_SIZE = 8;
 const MORE_SIZE = 10;
-// The journal data (publicar-data.json, ~2.4 MB) is only downloaded the first time this tab is shown.
-const loadJournalData = () => import('../../data/publicar-data.json');
 
 function JournalsLoaded({ data, project, active, slots, onMeta }) {
     const journalsById = useMemo(() => new Map(data.journals.map((journal) => [journal.id, journal])), [data]);
@@ -112,7 +111,7 @@ function JournalsLoaded({ data, project, active, slots, onMeta }) {
 }
 
 export default function JournalsTab({ project, active, slots, onMeta }) {
-    const { status, data, retry } = useLazyData('publicar-data', loadJournalData, true);
+    const { status, data, retry } = useLazyData(DATA_FILES.publicar, true);
     if (status === 'error') return <LoadError what="las revistas" onRetry={retry} />;
     if (status !== 'ready') return <PanelSkeleton />;
     return <JournalsLoaded data={data} project={project} active={active} slots={slots} onMeta={onMeta} />;
