@@ -134,7 +134,7 @@ describe('/eventos: event card', () => {
         expect(within(card).getByText('Popayán, Colombia')).toBeTruthy();
 
         const primary = within(card).getByRole('link', { name: /^Ver convocatoria: Congreso IoT Cauca 2099/ });
-        expect(primary.classList.contains('btn-primary')).toBe(true);
+        expect(primary.classList.contains('btn-events')).toBe(true); // T13: the events hue replaces the blue primary
         expect(primary.getAttribute('href')).toBe('https://example.org/iot-cauca');
         expect(primary.textContent).toBe('Ver convocatoria');
 
@@ -184,7 +184,7 @@ describe('/eventos: event card', () => {
         expect(attention(null)).toEqual([]);
     });
 
-    it('with a project, the affinity is a single blue ring plus the words alta, media or baja, and a link to see why', async () => {
+    it('with a project, the affinity is a ring plus the words alta, media or baja, and a link to see why', async () => {
         await openEventos(`/eventos?p=${PROJECT_ID}`);
         const card = cardOf('Congreso IoT Cauca 2099');
         const ring = within(card).getByRole('img', { name: /^Afinidad estimada \d+ %$/ });
@@ -259,7 +259,7 @@ describe('/donde-publicar: data status', () => {
         expect(legend.compareDocumentPosition(within(results).getAllByRole('article')[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
-    it('a result row shows the affinity as a blue ring with its word, a readable quartile badge and the actions', async () => {
+    it('a result row shows the affinity as a ring with its word, a readable quartile badge and the actions', async () => {
         await open();
         const user = userEvent.setup();
         const results = screen.getByRole('region', { name: 'Revistas sugeridas' });
@@ -280,7 +280,7 @@ describe('/donde-publicar: data status', () => {
         expect(row.querySelector('.bg-\\[\\#c27c0e\\]')).toBeNull();
 
         const instructions = within(row).getByRole('link', { name: 'Instrucciones para autores' });
-        expect(instructions.classList.contains('btn-primary')).toBe(true);
+        expect(instructions.classList.contains('btn-journals')).toBe(true); // T13: the journals hue replaces the blue primary
         const save = within(row).getByRole('button', { name: 'Guardar Journal of Smart Farming en mis oportunidades' });
         expect(save.classList.contains('btn-secondary')).toBe(true);
         const more = within(row).getByRole('group', { name: 'Más información' });

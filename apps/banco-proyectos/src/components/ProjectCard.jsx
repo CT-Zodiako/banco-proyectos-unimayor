@@ -85,12 +85,12 @@ const ProjectCard = ({ project }) => {
                     </li>
                 </ul>
                 <div className="flex flex-wrap gap-2">
-                    <Link to={eventsForProjectUrl(project.id)} className="btn btn-secondary" data-tip="Congresos y convocatorias afines a este proyecto">
-                        <CalendarDays size={15} aria-hidden="true" />
+                    <Link to={eventsForProjectUrl(project.id)} className="btn btn-events" data-tip="Congresos y convocatorias afines a este proyecto">
+                        <span className="type-ico" aria-hidden="true"><CalendarDays size={14} /></span>
                         Ver eventos<span className="sr-only">{forProject}</span>
                     </Link>
-                    <Link to={wherePublishUrl(project.id)} className="btn btn-secondary" data-tip="Revistas donde podrías publicar este proyecto">
-                        <BookOpen size={15} aria-hidden="true" />
+                    <Link to={wherePublishUrl(project.id)} className="btn btn-journals" data-tip="Revistas donde podrías publicar este proyecto">
+                        <span className="type-ico" aria-hidden="true"><BookOpen size={14} /></span>
                         Dónde publicar<span className="sr-only">{forProject}</span>
                     </Link>
                 </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BTN, DOWNLOAD, FOCUS } from './classes';
+import { BTN, DOWNLOAD, FOCUS, TONE_CLASS } from './classes';
 import { PUBLINDEX, quartileTip, safeUrl, templateLinks } from '../../lib/publicar/display';
 import { favoriteLabel, favoriteSnapshot, toggleFavorite } from '../../lib/publicar/favorites';
 
@@ -13,12 +13,13 @@ export function ExtLink({ url, children, className = '', ...rest }) {
     return href ? <a href={href} target="_blank" rel="noopener noreferrer" className={`${className} ${FOCUS}`} {...rest}>{children}</a> : null;
 }
 
-// Quartile as text plus 1 to 4 bars (more bars = better quartile) and the Publindex category; no color of its own.
+// Quartile as text plus 1 to 4 bars (more bars = better quartile) and the Publindex category, in the hue of its
+// quartile (Q1 green, Q2 indigo, Q3 amber, Q4 rose); the text and the bars say it too, never the color alone.
 // The tooltip says what the quartile means; the page legend says it in words too.
 export function QuartileBadge({ quartile, showPublindex = true }) {
     const rank = Number(String(quartile).slice(1));
     return (
-        <span className="qb" data-tip={quartileTip(quartile)}>
+        <span className={`qb ${TONE_CLASS[quartile.toLowerCase()] || ''}`} data-tip={quartileTip(quartile)}>
             <span className="qb-bars" aria-hidden="true">
                 {[1, 2, 3, 4].map((n) => <i key={n} className={n <= 5 - rank ? 'on' : ''} />)}
             </span>

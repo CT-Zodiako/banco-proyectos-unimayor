@@ -1,7 +1,8 @@
 import { ExtLink, QuartileBadge, TemplateLinks } from './JournalLinks';
-import { FIT_CLASSES, FOCUS } from './classes';
+import { BadgeCell } from './JournalBadges';
+import { AFFINITY_CLASS, FIT_CLASSES, FOCUS } from './classes';
 import { FIT_LABELS, affinityParts, countryLabel, formatSjr, languageLabel, reviewLabel, safeUrl } from '../../lib/publicar/display';
-import { MAX_COMPARE, affinityWord } from '../../lib/publicar/table';
+import { MAX_COMPARE, affinityLevel, affinityWord } from '../../lib/publicar/table';
 
 const COLUMNS = [
     { id: 'title', label: 'Revista' }, { id: 'affinity', label: 'Afinidad' }, { id: 'quartile', label: 'Cuartil · Publindex' },
@@ -13,14 +14,16 @@ const TD = 'px-3 py-[11px] border-b border-gray-100 text-gray-700 align-middle g
 const LINK = 'link-action !min-h-[28px] !py-0.5 !text-[12.5px]';
 const DOWNLOAD = 'btn btn-secondary !min-h-[30px] max-w-[160px] overflow-hidden text-ellipsis !px-2.5 !text-[12.5px]';
 
+// Number, bar and word share the hue of the level (alta green, media amber, baja rose); the word says it in text.
 function AffinityCell({ affinity }) {
+    const tone = AFFINITY_CLASS[affinityLevel(affinity.total)];
     return (
-        <div className="flex items-center gap-2 whitespace-nowrap tabular-nums" title={`Afinidad estimada: ${affinityParts(affinity)}`}>
-            <b className="min-w-[38px] text-sm text-gray-900">{affinity.total} %</b>
+        <div className={`${tone} flex items-center gap-2 whitespace-nowrap tabular-nums`} title={`Afinidad estimada: ${affinityParts(affinity)}`}>
+            <b className="min-w-[38px] text-sm text-[color:var(--tn-fg)]">{affinity.total} %</b>
             <i aria-hidden="true" className="block w-11 h-1.5 rounded-full bg-gray-200 overflow-hidden">
-                <span className="block h-full rounded-full bg-institutional-blue" style={{ width: `${affinity.total}%` }} />
+                <span className="block h-full rounded-full bg-[color:var(--tn-solid)]" style={{ width: `${affinity.total}%` }} />
             </i>
-            <span className="text-[13px] font-semibold text-gray-700">{affinityWord(affinity.total)}</span>
+            <span className={`aff-word aff-word-inline ${tone}`}>{affinityWord(affinity.total)}</span>
         </div>
     );
 }
@@ -92,10 +95,10 @@ export default function JournalTable({ rows, sort, compare, onSort, onToggleComp
                                 <td className={`${TD} tabular-nums whitespace-nowrap`}><QuartileBadge quartile={journal.quartile} /></td>
                                 <td className={`${TD} tabular-nums whitespace-nowrap`}>{formatSjr(journal.sjr)}</td>
                                 <td className={`${TD} tabular-nums whitespace-nowrap`}>{journal.h_index ?? '—'}</td>
-                                <td className={`${TD} tabular-nums whitespace-nowrap`}>{journal.weeks_to_publication ?? '—'}</td>
+                                <td className={`${TD} whitespace-nowrap`}><BadgeCell journal={journal} id="speed" /></td>
                                 <td className={TD}>{(journal.languages || []).map(languageLabel).join(', ')}</td>
-                                <td className={TD}>{reviewLabel(journal.review)}</td>
-                                <td className={TD}>{journal.license || '—'}</td>
+                                <td className={`${TD} whitespace-nowrap`}><BadgeCell journal={journal} id="review" fallback={reviewLabel(journal.review)} /></td>
+                                <td className={`${TD} whitespace-nowrap`}><BadgeCell journal={journal} id="license" /></td>
                                 <td className={TD}>
                                     <span className={`badge whitespace-nowrap ${FIT_CLASSES[match.fit] || FIT_CLASSES.sector}`}>{FIT_LABELS[match.fit] || match.fit}</span>
                                 </td>

@@ -27,6 +27,83 @@
   --sem-blue-soft: #DBEAFE;     /* blue-100 */
 }
 
+/* palette:begin (generated from src/lib/palette.js: see the note there) */
+:root {
+  --tone-journals-bg: #F0FDFA;
+  --tone-journals-fg: #134E4A;
+  --tone-journals-line: #5EEAD4;
+  --tone-journals-solid: #0F766E;
+  --tone-events-bg: #FAF5FF;
+  --tone-events-fg: #581C87;
+  --tone-events-line: #D8B4FE;
+  --tone-events-solid: #7E22CE;
+  --tone-events2-bg: #EDE9FE;
+  --tone-events2-fg: #4C1D95;
+  --tone-events2-line: #C4B5FD;
+  --tone-events2-solid: #6D28D9;
+  --tone-q1-bg: #DCFCE7;
+  --tone-q1-fg: #14532D;
+  --tone-q1-line: #86EFAC;
+  --tone-q1-solid: #15803D;
+  --tone-q2-bg: #E0E7FF;
+  --tone-q2-fg: #312E81;
+  --tone-q2-line: #A5B4FC;
+  --tone-q2-solid: #4F46E5;
+  --tone-q3-bg: #FEF3C7;
+  --tone-q3-fg: #78350F;
+  --tone-q3-line: #FCD34D;
+  --tone-q3-solid: #B45309;
+  --tone-q4-bg: #FFE4E6;
+  --tone-q4-fg: #881337;
+  --tone-q4-line: #FDA4AF;
+  --tone-q4-solid: #BE123C;
+  --tone-good-bg: #DCFCE7;
+  --tone-good-fg: #14532D;
+  --tone-good-line: #86EFAC;
+  --tone-good-solid: #15803D;
+  --tone-fair-bg: #FEF3C7;
+  --tone-fair-fg: #78350F;
+  --tone-fair-line: #FCD34D;
+  --tone-fair-solid: #B45309;
+  --tone-low-bg: #FFE4E6;
+  --tone-low-fg: #881337;
+  --tone-low-line: #FDA4AF;
+  --tone-low-solid: #BE123C;
+  --tone-lang-bg: #DBEAFE;
+  --tone-lang-fg: #1E3A8A;
+  --tone-lang-line: #93C5FD;
+  --tone-lang-solid: #1D4ED8;
+  --tone-review-bg: #F1F5F9;
+  --tone-review-fg: #334155;
+  --tone-review-line: #CBD5E1;
+  --tone-review-solid: #475569;
+  --btn-journals-from: #0F766E;
+  --btn-journals-to: #115E59;
+  --btn-journals-hover-from: #115E59;
+  --btn-journals-hover-to: #134E4A;
+  --btn-journals-soft-text: #F0FDFA;
+  --btn-journals-glow: 17 94 89;
+  --btn-events-from: #7E22CE;
+  --btn-events-to: #6B21A8;
+  --btn-events-hover-from: #6B21A8;
+  --btn-events-hover-to: #581C87;
+  --btn-events-soft-text: #FAF5FF;
+  --btn-events-glow: 107 33 168;
+}
+.tn-journals { --tn-bg: var(--tone-journals-bg); --tn-fg: var(--tone-journals-fg); --tn-line: var(--tone-journals-line); --tn-solid: var(--tone-journals-solid); }
+.tn-events { --tn-bg: var(--tone-events-bg); --tn-fg: var(--tone-events-fg); --tn-line: var(--tone-events-line); --tn-solid: var(--tone-events-solid); }
+.tn-events2 { --tn-bg: var(--tone-events2-bg); --tn-fg: var(--tone-events2-fg); --tn-line: var(--tone-events2-line); --tn-solid: var(--tone-events2-solid); }
+.tn-q1 { --tn-bg: var(--tone-q1-bg); --tn-fg: var(--tone-q1-fg); --tn-line: var(--tone-q1-line); --tn-solid: var(--tone-q1-solid); }
+.tn-q2 { --tn-bg: var(--tone-q2-bg); --tn-fg: var(--tone-q2-fg); --tn-line: var(--tone-q2-line); --tn-solid: var(--tone-q2-solid); }
+.tn-q3 { --tn-bg: var(--tone-q3-bg); --tn-fg: var(--tone-q3-fg); --tn-line: var(--tone-q3-line); --tn-solid: var(--tone-q3-solid); }
+.tn-q4 { --tn-bg: var(--tone-q4-bg); --tn-fg: var(--tone-q4-fg); --tn-line: var(--tone-q4-line); --tn-solid: var(--tone-q4-solid); }
+.tn-good { --tn-bg: var(--tone-good-bg); --tn-fg: var(--tone-good-fg); --tn-line: var(--tone-good-line); --tn-solid: var(--tone-good-solid); }
+.tn-fair { --tn-bg: var(--tone-fair-bg); --tn-fg: var(--tone-fair-fg); --tn-line: var(--tone-fair-line); --tn-solid: var(--tone-fair-solid); }
+.tn-low { --tn-bg: var(--tone-low-bg); --tn-fg: var(--tone-low-fg); --tn-line: var(--tone-low-line); --tn-solid: var(--tone-low-solid); }
+.tn-lang { --tn-bg: var(--tone-lang-bg); --tn-fg: var(--tone-lang-fg); --tn-line: var(--tone-lang-line); --tn-solid: var(--tone-lang-solid); }
+.tn-review { --tn-bg: var(--tone-review-bg); --tn-fg: var(--tone-review-fg); --tn-line: var(--tone-review-line); --tn-solid: var(--tone-review-solid); }
+/* palette:end */
+
 @layer base {
   body {
     @apply antialiased;
@@ -72,6 +149,11 @@
   }
   .badge-area { @apply border-sem-area-line bg-sem-area-bg font-bold text-sem-area-fg; }
   .badge-sector { @apply border-gray-200 bg-sem-sector-bg text-sem-sector-fg; }
+  /* Soft colored badge: set the tone with a tn-* class (palette.js): tint, dark text, line. */
+  .badge-tone { border-color: var(--tn-line); background-color: var(--tn-bg); color: var(--tn-fg); }
+  /* Events badges: «Convocatoria» is the filled purple, «Para asistir» the light tint of the same hue. */
+  .badge-events { border-color: var(--btn-events-to); background-color: var(--btn-events-to); color: #fff; font-weight: 700; }
+  .badge-events-soft { border-color: var(--tone-events2-line); background-color: var(--tone-events2-bg); color: var(--tone-events2-fg); }
   .badge-level { @apply border-gray-200 bg-sem-level-bg text-sem-level-fg; }
   .badge-new {
     @apply rounded-full border-institutional-yellow bg-institutional-yellow px-2 py-0.5 text-[11.5px] font-extrabold uppercase tracking-wide text-institutional-dark;
@@ -93,6 +175,51 @@
   .btn-lg { @apply min-h-[44px] px-5 text-[15px]; }
   .btn:disabled, .btn[aria-disabled="true"] { @apply cursor-not-allowed border-gray-200 bg-gray-100 text-gray-600; }
 
+  /* ── T13: one hue per tool. «Dónde publicar» is teal (journals), «Ver eventos» purple (events). The hex values live in
+     src/lib/palette.js (variables written by tailwind.config.js). A type button is a gradient (lighter on top), white
+     text (>= 4.5:1 on every stop), an inner highlight, a soft shadow of its own hue, an icon in a translucent circle
+     (.type-ico) and a lift on hover / press on active. Tabs, selected pills, card headers and badges use the same
+     variables, so a hue means the same thing everywhere. ── */
+  .btn-journals, .tab-pill-journals, .tab-journals {
+    --hue-from: var(--btn-journals-from); --hue-to: var(--btn-journals-to);
+    --hue-hover-from: var(--btn-journals-hover-from); --hue-hover-to: var(--btn-journals-hover-to);
+    --hue-glow: var(--btn-journals-glow); --hue-soft-text: var(--btn-journals-soft-text);
+    --hue-tint: var(--tone-journals-bg); --hue-fg: var(--tone-journals-fg); --hue-solid: var(--tone-journals-solid);
+  }
+  .btn-events, .tab-pill-events, .tab-events {
+    --hue-from: var(--btn-events-from); --hue-to: var(--btn-events-to);
+    --hue-hover-from: var(--btn-events-hover-from); --hue-hover-to: var(--btn-events-hover-to);
+    --hue-glow: var(--btn-events-glow); --hue-soft-text: var(--btn-events-soft-text);
+    --hue-tint: var(--tone-events-bg); --hue-fg: var(--tone-events-fg); --hue-solid: var(--tone-events-solid);
+  }
+  .btn-journals, .btn-events {
+    @apply border-transparent text-white;
+    background-color: var(--hue-to);
+    background-image: linear-gradient(180deg, var(--hue-from), var(--hue-to));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 1px 2px rgb(var(--hue-glow) / 0.35), 0 6px 14px -6px rgb(var(--hue-glow) / 0.55);
+    transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
+  }
+  .btn-journals:hover, .btn-events:hover {
+    background-color: var(--hue-hover-to);
+    background-image: linear-gradient(180deg, var(--hue-hover-from), var(--hue-hover-to));
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 2px 4px rgb(var(--hue-glow) / 0.4), 0 10px 18px -6px rgb(var(--hue-glow) / 0.6);
+  }
+  .btn-journals:active, .btn-events:active { transform: translateY(0); box-shadow: inset 0 2px 5px rgb(0 0 0 / 0.3); }
+  /* Icon of a type button: a translucent circle over the gradient. */
+  .type-ico {
+    @apply grid h-[22px] w-[22px] flex-none place-items-center rounded-full;
+    background: rgb(255 255 255 / 0.2);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3);
+  }
+  .btn-lg .type-ico { @apply h-6 w-6; }
+  /* Soft variants (a tone class sets --tn-*): icon circle and card header tint. The top border needs the doubled class
+     to win over the .border utilities of the cards. */
+  .type-chip { background-color: var(--tn-bg); color: var(--tn-fg); box-shadow: inset 0 0 0 1.5px var(--tn-line); }
+  .hue-card.hue-card { border-top: 4px solid var(--tn-solid); background-image: linear-gradient(180deg, var(--tn-bg), rgb(255 255 255 / 0) 96px); }
+  .tone-box { @apply rounded-[10px] px-2.5 py-2; border: 1px solid var(--tn-line); background-color: var(--tn-bg); color: var(--tn-fg); }
+  .nav-dot { @apply inline-block h-[9px] w-[9px] rounded-full; background-color: var(--tn-line); box-shadow: 0 0 0 2px rgb(255 255 255 / 0.18); }
+
   /* ── Chips: default / hover / selected (aria-pressed) / disabled ── */
   .chip {
     @apply inline-flex min-h-[36px] cursor-pointer items-center gap-[7px] rounded-full border border-sem-control-line bg-white px-[13px] text-[13.5px] font-semibold text-gray-700 transition-colors;
@@ -108,6 +235,10 @@
   .chip .chip-check { @apply hidden; }
   .chip[aria-pressed="true"] .chip-check { @apply block; }
   .chip-sm { @apply min-h-[32px] px-[11px] text-[13px]; }
+  /* Chip with a hue (quartiles): a swatch always, the tint when pressed; the text and the check stay (set the tone with tn-*). */
+  .chip-dot { @apply block h-2.5 w-2.5 flex-none rounded-[3px]; background-color: var(--tn-solid); }
+  .chip-tone:hover { border-color: var(--tn-solid); background-color: var(--tn-bg); color: var(--tn-fg); }
+  .chip-tone[aria-pressed="true"], .chip-tone[aria-pressed="true"]:hover { border-color: var(--tn-solid); background-color: var(--tn-bg); color: var(--tn-fg); box-shadow: inset 0 0 0 1px var(--tn-solid); }
 
   /* Applied filter (removable) */
   .filter-chip {
@@ -170,6 +301,10 @@
   .seg > button[aria-pressed="true"] { @apply bg-institutional-blue text-white; }
   .seg > button:focus-visible { outline: 2px solid var(--blue-primary); outline-offset: -4px; }
   .seg > button[aria-pressed="true"]:focus-visible { outline-color: var(--yellow-accent); }
+  /* Segment with a hue (catalog quartile): a colored bar under it always, the tint when pressed. */
+  .seg > button.seg-tone { box-shadow: inset 0 -3px 0 var(--tn-solid); }
+  .seg > button.seg-tone:hover { background-color: var(--tn-bg); color: var(--tn-fg); }
+  .seg > button.seg-tone[aria-pressed="true"] { background-color: var(--tn-bg); color: var(--tn-fg); font-weight: 800; box-shadow: inset 0 -5px 0 var(--tn-solid); }
 
   /* Section tabs with a one-line description (Dónde publicar; also the aria-pressed type selector of Eventos): a segmented bar, selected = filled blue, unselected = bordered. */
   .tab-bar { @apply grid grid-cols-1 gap-2 min-[700px]:grid-cols-3; }
@@ -181,30 +316,55 @@
   .tab-pill-label { @apply text-[15px] font-bold leading-snug; }
   .tab-pill-desc { @apply text-[13px] font-normal leading-snug text-sem-text-2; }
   .tab-pill[aria-selected="true"] .tab-pill-desc, .tab-pill[aria-pressed="true"] .tab-pill-desc { @apply text-blue-100; }
+  /* Section tabs of Dónde publicar (teal) and the type selector of Eventos (purple): the selected one is the gradient of its hue. */
+  .tab-pill-journals:hover, .tab-pill-events:hover { border-color: var(--hue-solid); background-color: var(--hue-tint); }
+  .tab-pill-journals[aria-selected="true"], .tab-pill-journals[aria-pressed="true"], .tab-pill-events[aria-selected="true"], .tab-pill-events[aria-pressed="true"] {
+    border-color: var(--hue-to); color: #fff; background-color: var(--hue-to);
+    background-image: linear-gradient(180deg, var(--hue-from), var(--hue-to));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 6px 14px -8px rgb(var(--hue-glow) / 0.6);
+  }
+  .tab-pill-journals[aria-selected="true"] .tab-pill-desc, .tab-pill-journals[aria-pressed="true"] .tab-pill-desc,
+  .tab-pill-events[aria-selected="true"] .tab-pill-desc, .tab-pill-events[aria-pressed="true"] .tab-pill-desc { color: var(--hue-soft-text); }
+  /* Tabs of the project slide-over: text and bottom bar in the hue of the tab, tinted when selected. */
+  .tab-journals, .tab-events { color: #374151; border-bottom-color: transparent; border-radius: 10px 10px 0 0; transition: background-color 0.15s, color 0.15s; }
+  .tab-journals:hover, .tab-events:hover { color: var(--hue-fg); background-color: var(--hue-tint); }
+  .tab-journals[aria-selected="true"], .tab-events[aria-selected="true"] {
+    color: var(--hue-fg); border-bottom-color: var(--hue-solid);
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0), var(--hue-tint));
+  }
+  .tab-count { background-color: #F3F4F6; color: #374151; }
+  .tab-journals[aria-selected="true"] .tab-count, .tab-events[aria-selected="true"] .tab-count { background-color: var(--hue-solid); color: #fff; }
   .tab-pill:focus-visible { outline: 2px solid var(--blue-primary); outline-offset: 2px; }
   .tab-pill[aria-selected="true"]:focus-visible, .tab-pill[aria-pressed="true"]:focus-visible { outline-color: var(--blue-primary); box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--yellow-accent); }
 
-  /* Quartile badge: text plus 1 to 4 filled bars (more bars = better quartile); no color of its own. */
+  /* Quartile badge: text plus 1 to 4 filled bars (more bars = better quartile) in the hue of its quartile (tn-q1 green,
+     tn-q2 indigo, tn-q3 amber, tn-q4 rose; dark text on the tint, the bars use the solid color). Without a tone it is neutral. */
   .qb {
-    @apply relative inline-flex items-center gap-2 whitespace-nowrap rounded-md border border-gray-700 bg-white px-2 py-0.5 text-[12.5px] font-bold leading-snug text-institutional-dark;
+    @apply relative inline-flex items-center gap-2 whitespace-nowrap rounded-md border px-2 py-0.5 text-[12.5px] font-bold leading-snug;
+    border-color: var(--tn-line, #374151); background-color: var(--tn-bg, #fff); color: var(--tn-fg, #0F172A);
   }
   .qb-bars { @apply inline-flex items-end gap-0.5; }
-  .qb-bars > i { @apply block w-[5px] rounded-[1px] border-[1.5px] border-gray-700; }
+  .qb-bars > i { @apply block w-[5px] rounded-[1px] border-[1.5px]; border-color: var(--tn-solid, #374151); }
   .qb-bars > i:nth-child(1) { height: 6px; }
   .qb-bars > i:nth-child(2) { height: 9px; }
   .qb-bars > i:nth-child(3) { height: 12px; }
   .qb-bars > i:nth-child(4) { height: 15px; }
-  .qb-bars > i.on { @apply bg-gray-700; }
-  .qb small { @apply text-[12.5px] font-medium text-sem-text-2; }
+  .qb-bars > i.on { background-color: var(--tn-solid, #374151); }
+  .qb small { @apply text-[12.5px] font-medium; color: var(--tn-fg, #4B5563); }
 
-  /* Affinity: one blue ring (--v = 0 to 100); the level is said in words next to it. */
+  /* Affinity: a ring (--v = 0 to 100), the number and the word in the hue of the level (aff-high green, aff-mid amber,
+     aff-low rose, set with tn-good / tn-fair / tn-low); the level is always said in words as well. */
   .aff-ring {
     --v: 0;
     @apply grid h-[68px] w-[68px] flex-none place-items-center rounded-full;
-    background: conic-gradient(var(--blue-primary) calc(var(--v) * 1%), #E5E7EB 0);
+    background: conic-gradient(var(--tn-solid, var(--blue-primary)) calc(var(--v) * 1%), #E5E7EB 0);
   }
-  .aff-ring > div { @apply grid h-[54px] w-[54px] place-items-center rounded-full bg-white text-[17px] font-extrabold leading-none text-gray-900; }
-  .aff-word { @apply max-w-[84px] text-center text-[12.5px] font-bold leading-tight text-gray-900; }
+  .aff-ring > div { @apply grid h-[54px] w-[54px] place-items-center rounded-full bg-white text-[17px] font-extrabold leading-none; color: var(--tn-fg, #111827); }
+  .aff-word {
+    @apply max-w-[84px] rounded-lg border px-1.5 py-0.5 text-center text-[12.5px] font-bold leading-tight;
+    border-color: var(--tn-line, transparent); background-color: var(--tn-bg, transparent); color: var(--tn-fg, #111827);
+  }
+  .aff-word-inline { @apply max-w-none whitespace-nowrap; }
 
   /* Pagination */
   .page-btn {

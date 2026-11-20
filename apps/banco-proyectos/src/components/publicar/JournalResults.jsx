@@ -1,24 +1,62 @@
+import { CheckCircle2, XCircle } from 'lucide-react';
+import { JournalBadge } from './JournalBadges';
 import JournalTable from './JournalTable';
 import { QuartileBadge } from './JournalLinks';
 import ResultItem from './ResultItem';
-import { BTN_SECONDARY, NOTE } from './classes';
-import { nextSort } from '../../lib/publicar/display';
+import { AFFINITY_CLASS, BTN_SECONDARY, NOTE } from './classes';
+import { WEEKS_FAST, WEEKS_MEDIUM, journalBadges, nextSort } from '../../lib/publicar/display';
 import { AFFINITY_THRESHOLDS } from '../../lib/publicar/table';
 
-// One line above the results: what the affinity words and the quartile mean (same badge and ring as the rows).
+// Sample badges of the legend: built with the same function as the results, so they always look the same.
+const SAMPLE = { languages: ['Spanish'], review: 'Double anonymous peer review', license: 'CC BY' };
+const sample = (id, weeks = 6) => journalBadges({ ...SAMPLE, weeks_to_publication: weeks }).find((badge) => badge.id === id);
+const SPEED_SAMPLES = [sample('speed', WEEKS_FAST), sample('speed', WEEKS_MEDIUM), sample('speed', WEEKS_MEDIUM + 4)];
+
+function LegendRow({ label, children }) {
+    return (
+        <div className="flex flex-wrap items-center gap-x-[18px] gap-y-2">
+            <span className="w-full font-bold text-gray-900 sm:w-auto sm:min-w-[88px]">{label}</span>
+            {children}
+        </div>
+    );
+}
+const Item = ({ children }) => <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">{children}</span>;
+
+// Above the results: what every color means, with the same ring, badges and quartile as the rows. Each swatch has its
+// words next to it, so color is never the only signal.
 export function ResultsLegend({ className = '' }) {
     const { high, mid } = AFFINITY_THRESHOLDS;
+    const ring = (level, value) => (
+        <span className={`aff-ring ${AFFINITY_CLASS[level]} !h-6 !w-6`} style={{ '--v': value }} aria-hidden="true"><i className="block h-[14px] w-[14px] rounded-full bg-white" /></span>
+    );
     return (
-        <aside aria-label="Cómo leer los resultados" className={`flex flex-wrap items-center gap-x-[18px] gap-y-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-[13px] text-gray-700 shadow-sm ${className}`}>
+        <aside aria-label="Cómo leer los resultados" className={`grid gap-2.5 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-[13px] text-gray-700 shadow-sm ${className}`}>
             <b className="text-[13.5px] text-gray-900">Cómo leer los resultados</b>
-            <span className="inline-flex flex-wrap items-center gap-x-2">
-                <span className="aff-ring !h-6 !w-6" style={{ '--v': 70 }} aria-hidden="true"><i className="block h-[14px] w-[14px] rounded-full bg-white" /></span>
-                <span><b className="text-gray-900">Afinidad</b>: encaje con tu proyecto; <b>alta</b> {high} % o más, <b>media</b> {mid} a {high - 1} %, <b>baja</b> menos de {mid} %</span>
-            </span>
-            <span className="inline-flex flex-wrap items-center gap-x-2">
-                <QuartileBadge quartile="Q1" showPublindex={false} />
-                <span><b className="text-gray-900">Cuartil</b>: Q1 es el mejor cuartil y Q4 el cuarto</span>
-            </span>
+            <LegendRow label="Afinidad">
+                <span>encaje con tu proyecto:</span>
+                <Item>{ring('high', 90)}<span><b className="text-gray-900">alta</b> {high} % o más</span></Item>
+                <Item>{ring('mid', 70)}<span><b className="text-gray-900">media</b> {mid} a {high - 1} %</span></Item>
+                <Item>{ring('low', 40)}<span><b className="text-gray-900">baja</b> menos de {mid} %</span></Item>
+            </LegendRow>
+            <LegendRow label="Cuartil">
+                {['Q1', 'Q2', 'Q3', 'Q4'].map((quartile) => <QuartileBadge key={quartile} quartile={quartile} />)}
+                <span>Q1 es el mejor cuartil y Q4 el cuarto (con su categoría Publindex)</span>
+            </LegendRow>
+            <LegendRow label="Etiquetas">
+                <Item><JournalBadge badge={sample('free')} />sin APC ni otros cobros</Item>
+                <Item><JournalBadge badge={sample('spanish')} />envío en español</Item>
+                <Item><JournalBadge badge={sample('review')} />tipo de revisión</Item>
+                <Item><JournalBadge badge={sample('license')} />licencia de uso</Item>
+            </LegendRow>
+            <LegendRow label="Publicación">
+                <Item><JournalBadge badge={SPEED_SAMPLES[0]} /><span>{WEEKS_FAST} semanas o menos</span></Item>
+                <Item><JournalBadge badge={SPEED_SAMPLES[1]} /><span>hasta {WEEKS_MEDIUM} semanas</span></Item>
+                <Item><JournalBadge badge={SPEED_SAMPLES[2]} /><span>más de {WEEKS_MEDIUM} semanas</span></Item>
+            </LegendRow>
+            <LegendRow label="Requisitos">
+                <Item><span className="badge badge-tone tn-good"><CheckCircle2 size={14} aria-hidden="true" className="flex-none" />Cumple</span>lo que la revista pide y el proyecto tiene</Item>
+                <Item><span className="badge badge-tone tn-low"><XCircle size={14} aria-hidden="true" className="flex-none" />No cumple</span>lo que falta</Item>
+            </LegendRow>
         </aside>
     );
 }

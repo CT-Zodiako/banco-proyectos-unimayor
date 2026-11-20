@@ -22,8 +22,8 @@ describe('Home: tools and metrics', () => {
         expect(cards).toHaveLength(3);
         const expected = [
             ['Explorar proyectos', '/proyectos', /Filtra por área, nivel y sector/, 'btn btn-primary'],
-            ['Buscar eventos', EVENTS_URL, /Congresos y convocatorias/, 'btn btn-secondary'],
-            ['Dónde publicar', PUBLISH_URL, /Revistas de acceso abierto/, 'btn btn-secondary'],
+            ['Buscar eventos', EVENTS_URL, /Congresos y convocatorias/, 'btn btn-events'], // T13: own hue instead of btn-secondary
+            ['Dónde publicar', PUBLISH_URL, /Revistas de acceso abierto/, 'btn btn-journals'],
         ];
         expected.forEach(([name, href, description, classes], index) => {
             const link = within(cards[index]).getByRole('link', { name });
@@ -112,11 +112,12 @@ describe('ProjectDetail: sections, metrics and actions', () => {
         expect(items[1].getAttribute('data-tip')).toMatch(/Software: .*\(lenguajes, plataformas, librerías\)/);
     });
 
-    it('has the panel buttons as primary actions and the full-page links as secondary ones', async () => {
+    it('has the panel buttons and the page links in the hue of their tool', async () => {
         await open(`/proyecto/${PROJECT_ID}`);
         await screen.findByRole('heading', { level: 1 });
-        for (const name of ['Ver las revistas aquí', 'Ver los eventos aquí']) {
-            expect(screen.getByRole('button', { name }).className).toContain('btn-primary');
+        // T13: the two panel buttons take the hue of their tool (journals teal, events purple) instead of the blue primary.
+        for (const [name, hue] of [['Ver las revistas aquí', 'btn-journals'], ['Ver los eventos aquí', 'btn-events']]) {
+            expect(screen.getByRole('button', { name }).className).toContain(hue);
         }
         const events = screen.getAllByRole('link', { name: '¿A qué eventos ir?' });
         const publish = screen.getAllByRole('link', { name: '¿Dónde publicar este proyecto?' });
@@ -124,7 +125,8 @@ describe('ProjectDetail: sections, metrics and actions', () => {
         expect(publish).toHaveLength(1);
         expect(events[0].getAttribute('href')).toBe(eventsForProjectUrl(PROJECT_ID));
         expect(publish[0].getAttribute('href')).toBe(wherePublishUrl(PROJECT_ID));
-        for (const link of [events[0], publish[0]]) expect(link.className).toContain('btn-secondary');
+        expect(events[0].className).toContain('btn-events'); // T13: the two page links wear their tool's hue too
+        expect(publish[0].className).toContain('btn-journals');
         expect(screen.getByRole('link', { name: /Volver a la lista/ }).getAttribute('href')).toMatch(/^\/proyectos/);
     });
 

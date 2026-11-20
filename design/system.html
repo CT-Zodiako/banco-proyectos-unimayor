@@ -70,6 +70,21 @@
       font-size: 12.5px;
       font-weight: 600;
     }
+    .tones i {
+      display: inline-block;
+      width: 31%;
+      height: 44px;
+      margin-right: 2%;
+    }
+    .tbtn {
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font: inherit;
+      font-weight: 600;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / .3), 0 6px 14px -6px var(--glow);
+    }
     .focus {
       outline: 2px solid #FFC107;
       outline-offset: 2px;
@@ -108,6 +123,45 @@
         <div><i style="background:#1E40AF"></i><code>#1E40AF</code><br><small>--sem-blue-hover</small></div>
     </div>
 
+    <h2>Tonos con significado (T13)</h2>
+    <p>Fuente única: <code>apps/banco-proyectos/src/lib/palette.js</code> (copia generada en <code>index.css</code>, comprobada por <code>tests/palette.test.mjs</code>). Cada tarjeta muestra fondo, texto y color sólido, y la razón de contraste texto/fondo (AA ≥ 4.5:1).</p>
+    <div class="grid tones" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        <div><i style="background:#F0FDFA;border-color:#5EEAD4"></i><i style="background:#134E4A"></i><i style="background:#0F766E"></i><code>.tn-journals</code><br><small>Dónde publicar: botón, pestaña, encabezado de tarjeta, insignia de búsqueda; licencia (CC BY)</small><br><small>#F0FDFA · #134E4A · #0F766E · texto/fondo 9.09:1</small></div>
+        <div><i style="background:#FAF5FF;border-color:#D8B4FE"></i><i style="background:#581C87"></i><i style="background:#7E22CE"></i><code>.tn-events</code><br><small>Ver eventos: botón, pestaña, encabezado de tarjeta, insignia de búsqueda</small><br><small>#FAF5FF · #581C87 · #7E22CE · texto/fondo 10.14:1</small></div>
+        <div><i style="background:#EDE9FE;border-color:#C4B5FD"></i><i style="background:#4C1D95"></i><i style="background:#6D28D9"></i><code>.tn-events2</code><br><small>«Para asistir» (tinte claro del mismo violeta; «Convocatoria» es el violeta relleno)</small><br><small>#EDE9FE · #4C1D95 · #6D28D9 · texto/fondo 9.23:1</small></div>
+        <div><i style="background:#DCFCE7;border-color:#86EFAC"></i><i style="background:#14532D"></i><i style="background:#15803D"></i><code>.tn-q1</code><br><small>Cuartil Q1 · Publindex A1 (mejor)</small><br><small>#DCFCE7 · #14532D · #15803D · texto/fondo 8.30:1</small></div>
+        <div><i style="background:#E0E7FF;border-color:#A5B4FC"></i><i style="background:#312E81"></i><i style="background:#4F46E5"></i><code>.tn-q2</code><br><small>Cuartil Q2 · Publindex A2</small><br><small>#E0E7FF · #312E81 · #4F46E5 · texto/fondo 9.27:1</small></div>
+        <div><i style="background:#FEF3C7;border-color:#FCD34D"></i><i style="background:#78350F"></i><i style="background:#B45309"></i><code>.tn-q3</code><br><small>Cuartil Q3 · Publindex B</small><br><small>#FEF3C7 · #78350F · #B45309 · texto/fondo 8.15:1</small></div>
+        <div><i style="background:#FFE4E6;border-color:#FDA4AF"></i><i style="background:#881337"></i><i style="background:#BE123C"></i><code>.tn-q4</code><br><small>Cuartil Q4 · Publindex C</small><br><small>#FFE4E6 · #881337 · #BE123C · texto/fondo 7.97:1</small></div>
+        <div><i style="background:#DCFCE7;border-color:#86EFAC"></i><i style="background:#14532D"></i><i style="background:#15803D"></i><code>.tn-good</code><br><small>Extremo favorable de una escala: afinidad alta, publicación rápida, «Sin costo», «Cumple»</small><br><small>#DCFCE7 · #14532D · #15803D · texto/fondo 8.30:1</small></div>
+        <div><i style="background:#FEF3C7;border-color:#FCD34D"></i><i style="background:#78350F"></i><i style="background:#B45309"></i><code>.tn-fair</code><br><small>Punto medio: afinidad media, publicación media</small><br><small>#FEF3C7 · #78350F · #B45309 · texto/fondo 8.15:1</small></div>
+        <div><i style="background:#FFE4E6;border-color:#FDA4AF"></i><i style="background:#881337"></i><i style="background:#BE123C"></i><code>.tn-low</code><br><small>Extremo desfavorable: afinidad baja, publicación lenta, «No cumple»</small><br><small>#FFE4E6 · #881337 · #BE123C · texto/fondo 7.97:1</small></div>
+        <div><i style="background:#DBEAFE;border-color:#93C5FD"></i><i style="background:#1E3A8A"></i><i style="background:#1D4ED8"></i><code>.tn-lang</code><br><small>La revista acepta español</small><br><small>#DBEAFE · #1E3A8A · #1D4ED8 · texto/fondo 8.49:1</small></div>
+        <div><i style="background:#F1F5F9;border-color:#CBD5E1"></i><i style="background:#334155"></i><i style="background:#475569"></i><code>.tn-review</code><br><small>Tipo de revisión por pares (doble ciego, simple ciego, abierta…)</small><br><small>#F1F5F9 · #334155 · #475569 · texto/fondo 9.45:1</small></div>
+    </div>
+
+    <h2>Botones por herramienta</h2>
+    <div class="card">
+      <p>
+        <button class="tbtn" style="--glow:rgb(107 33 168 / .55);background:linear-gradient(180deg,#7E22CE,#6B21A8)">📅 Ver eventos</button>
+        <button class="tbtn" style="--glow:rgb(17 94 89 / .55);background:linear-gradient(180deg,#0F766E,#115E59)">📖 Dónde publicar</button>
+        <button class="tbtn focus" style="--glow:rgb(17 94 89 / .55);background:linear-gradient(180deg,#0F766E,#115E59)">Con foco: 2 px amarillo + 2 px azul</button>
+      </p>
+      <p>
+        <span class="badge" style="background:#DCFCE7;border-color:#86EFAC;color:#14532D">Q1 · A1</span>
+        <span class="badge" style="background:#E0E7FF;border-color:#A5B4FC;color:#312E81">Q2 · A2</span>
+        <span class="badge" style="background:#FEF3C7;border-color:#FCD34D;color:#78350F">Q3 · B</span>
+        <span class="badge" style="background:#FFE4E6;border-color:#FDA4AF;color:#881337">Q4 · C</span>
+        <span class="badge" style="background:#DCFCE7;border-color:#86EFAC;color:#14532D">Sin costo</span>
+        <span class="badge" style="background:#DBEAFE;border-color:#93C5FD;color:#1E3A8A">Acepta español</span>
+        <span class="badge" style="background:#F1F5F9;border-color:#CBD5E1;color:#334155">Doble ciego</span>
+        <span class="badge" style="background:#F0FDFA;border-color:#5EEAD4;color:#134E4A">CC BY</span>
+        <span class="badge" style="background:#6B21A8;border-color:#6B21A8;color:#fff">Convocatoria</span>
+        <span class="badge" style="background:#EDE9FE;border-color:#C4B5FD;color:#4C1D95">Para asistir</span>
+      </p>
+      <small>Degradado vertical (más claro arriba), texto blanco ≥ 4.5:1 en cada tope: «Dónde publicar» #0F766E → #115E59 (5.47 / 7.58:1), «Ver eventos» #7E22CE → #6B21A8 (6.98 / 8.72:1). Hover: tope más oscuro y elevación de 1 px; activo: sombra interior. El color nunca va solo: cada insignia lleva texto, icono o barras.</small>
+    </div>
+
     <h2>Significado del color</h2>
     <table>
       <tr><th>Color</th><th>Significa</th></tr>
@@ -115,7 +169,13 @@
       <tr><td>Gris</td><td>Sector y metadatos (categorías, conteos, ayudas)</td></tr>
       <tr><td>Puntos naranja</td><td>Nivel de dificultad (siempre con la palabra)</td></tr>
       <tr><td>Amarillo</td><td>Nuevo, atención y foco de teclado</td></tr>
-      <tr><td>Verde</td><td>Éxito</td></tr>
+      <tr><td>Verde azulado</td><td>Dónde publicar (botón, pestaña) y licencia de la revista</td></tr>
+      <tr><td>Violeta</td><td>Ver eventos (botón, pestaña) y tipo de evento (Convocatoria, Para asistir)</td></tr>
+      <tr><td>Verde, ámbar, rosa</td><td>Extremo favorable, medio y desfavorable de una escala: afinidad alta/media/baja, publicación rápida/media/lenta, Sin costo, Cumple / No cumple</td></tr>
+      <tr><td>Verde, índigo, ámbar, rosa</td><td>Cuartil Q1, Q2, Q3, Q4 (con la categoría Publindex A1, A2, B, C)</td></tr>
+      <tr><td>Azul (insignia)</td><td>Acepta español</td></tr>
+      <tr><td>Gris azulado</td><td>Tipo de revisión por pares</td></tr>
+      <tr><td>Verde</td><td>Éxito (datos al día)</td></tr>
       <tr><td>Rojo</td><td>Error</td></tr>
     </table>
 
@@ -132,7 +192,7 @@
         <button style="background:white;color:#00428A;border:1px solid #00428A">Acción secundaria</button>
         <button class="focus">Con foco: 2 px amarillo + 2 px azul</button>
       </p>
-      <small>Clases: <code>.badge-area</code>, <code>.badge-sector</code>, <code>.badge-level</code>, <code>.badge-new</code>, <code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-tertiary</code>, <code>.chip</code>, <code>.filter-chip</code>, <code>.field-*</code>, <code>.data-status</code>, <code>.qb</code>, <code>.aff-ring</code>, <code>[data-tip]</code>, <code>.skip-link</code>.</small>
+      <small>Clases: <code>.badge-area</code>, <code>.badge-sector</code>, <code>.badge-level</code>, <code>.badge-new</code>, <code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-tertiary</code>, <code>.chip</code>, <code>.filter-chip</code>, <code>.field-*</code>, <code>.data-status</code>, <code>.qb</code>, <code>.aff-ring</code>, <code>.tn-*</code>, <code>.badge-tone</code>, <code>.btn-journals</code>, <code>.btn-events</code>, <code>.type-ico</code>, <code>.hue-card</code>, <code>.chip-tone</code>, <code>.seg-tone</code>, <code>.tab-pill-journals</code>, <code>.tab-pill-events</code>, <code>[data-tip]</code>, <code>.skip-link</code>.</small>
     </div>
 
     <h2>Contraste AA en uso</h2>
@@ -146,6 +206,9 @@
       <tr><td><code>#15803D</code> sobre <code>#F0FDF4</code></td><td>4.79:1</td></tr>
       <tr><td><code>#B91C1C</code> sobre <code>#FEF2F2</code></td><td>5.91:1</td></tr>
       <tr><td><code>#9CA3AF</code> sobre <code>#0F172A</code></td><td>7.03:1</td></tr>
+      <tr><td>Insignias de tono: texto sobre su tinte (los 12 tonos)</td><td>7.97 a 10.14:1</td></tr>
+      <tr><td>Texto blanco sobre cada tope de los botones y pestañas (con hover)</td><td>5.47 a 10.88:1</td></tr>
+      <tr><td>Marcas gráficas sólidas (anillo, barras) sobre blanco (mínimo 3:1)</td><td>5.02 a 7.58:1</td></tr>
       <tr><td>Bordes de controles <code>#6B7280</code> sobre <code>#FFFFFF</code> (no texto, mínimo 3:1)</td><td>4.83:1</td></tr>
     </table>
 

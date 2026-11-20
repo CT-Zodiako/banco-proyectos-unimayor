@@ -86,7 +86,7 @@ const EventCard = ({ event, affinity, today, selected, compareFull, onToggleComp
                 {affinity && <AffinityRing total={affinity.total} level={affinityLevel(affinity.total)} thresholds={AFFINITY_THRESHOLDS} />}
                 <div className="min-w-0 flex-1">
                     <div className="mb-2 flex flex-wrap items-center gap-1.5">
-                        <span className={`badge ${isCfp ? 'badge-area' : 'badge-sector'}`}>
+                        <span className={`badge ${isCfp ? 'badge-events' : 'badge-events-soft'}`}>
                             <KindIcon size={15} aria-hidden="true" className="flex-none" />
                             {KIND_LABELS[event.kind] || event.kind}
                         </span>
@@ -135,7 +135,7 @@ const EventCard = ({ event, affinity, today, selected, compareFull, onToggleComp
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`${sourceLabel}: ${event.title} (se abre en una pestaña nueva)`}
-                        className="btn btn-primary"
+                        className="btn btn-events"
                     >
                         {sourceLabel}
                     </a>

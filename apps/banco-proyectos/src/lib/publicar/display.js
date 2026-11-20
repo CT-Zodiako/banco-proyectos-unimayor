@@ -1,7 +1,7 @@
 /* Labels, text and link helpers of the journal finder components, ported from pipelines/donde-publicar/site/app.js so the
    React components stay presentational. The pure logic itself (filters, sort, affinity) is in table.js. */
 import { formatDate } from '../eventos/filters.js';
-import { ADVANCED_DEFAULTS, AFFINITY_MAX, compareBest } from './table.js';
+import { ADVANCED_DEFAULTS, AFFINITY_MAX, affinityLevel, compareBest } from './table.js';
 
 export const PUBLINDEX = { Q1: 'A1', Q2: 'A2', Q3: 'B', Q4: 'C' };
 export const QUARTILE_NOTES = { Q1: 'mejor cuartil', Q2: 'segundo cuartil', Q3: 'tercer cuartil', Q4: 'cuarto cuartil' };
@@ -87,6 +87,50 @@ export function templateLinks(journal) {
             ariaLabel: `Descargar ${label} de ${journal.title} (${name})`,
         }];
     });
+}
+
+/* Speed of publication: 8 weeks or less is fast, up to 16 medium, more is slow. They are the first two steps of the
+   time score of the affinity (table.js timePoints), so the badge and the score agree; no data is invented. */
+export const WEEKS_FAST = 8;
+export const WEEKS_MEDIUM = 16;
+export const SPEED_WORDS = { fast: 'rápida', mid: 'media', slow: 'lenta' };
+const SPEED_TONES = { fast: 'good', mid: 'fair', slow: 'low' };
+
+/** 'fast' | 'mid' | 'slow' for the weeks to publication, null when the journal does not say. */
+export function speedLevel(weeks) {
+    if (weeks === null || weeks === undefined || Number.isNaN(Number(weeks))) return null;
+    return weeks <= WEEKS_FAST ? 'fast' : weeks <= WEEKS_MEDIUM ? 'mid' : 'slow';
+}
+
+/** The colored badges of a journal, at most five and in this order: free (every journal of the data is DOAJ without
+    APC), accepts Spanish, review type, speed, license. A fact the data does not have gives no badge. `tone` is a key of
+    src/lib/palette.js TONES; the component adds the icon (by id) and the classes. */
+export function journalBadges(journal) {
+    const badges = [{ id: 'free', label: 'Sin costo', tone: 'good', tip: 'Sin costo: DOAJ indica que la revista no cobra APC ni otros cargos a los autores' }];
+    if ((journal.languages || []).includes('Spanish')) badges.push({ id: 'spanish', label: 'Acepta español', tone: 'lang', tip: 'Acepta artículos escritos en español' });
+    const review = reviewLabel(journal.review);
+    if (review !== 'No especificada') badges.push({ id: 'review', label: review, tone: 'review', tip: `Tipo de revisión por pares: ${review.toLowerCase()}` });
+    const speed = speedLevel(journal.weeks_to_publication);
+    if (speed) {
+        const word = SPEED_WORDS[speed];
+        badges.push({
+            id: 'speed', label: `${journal.weeks_to_publication} semanas`, tone: SPEED_TONES[speed], word, level: speed,
+            tip: `Publicación ${word}: ${journal.weeks_to_publication} semanas típicas entre el envío y la publicación (rápida hasta ${WEEKS_FAST}, media hasta ${WEEKS_MEDIUM}, lenta más de ${WEEKS_MEDIUM})`,
+        });
+    }
+    if (journal.license) badges.push({ id: 'license', label: journal.license, tone: 'journals', tip: `Licencia de uso de los artículos: ${journal.license}` });
+    return badges;
+}
+
+/** Country and languages of a list result (weeks, review and license are badges now). */
+export const journalPlace = (journal) => [countryLabel(journal.country), (journal.languages || []).map(languageLabel).join(', ')].filter(Boolean).join(' · ');
+
+/** Palette tone of a comparison cell that has one (quartile, affinity, weeks), else null. Keys of palette.js TONES. */
+export function comparisonTone(label, text) {
+    if (label === 'Cuartil · Publindex' && /^Q[1-4]/.test(text)) return text.slice(0, 2).toLowerCase();
+    if (label === 'Afinidad estimada' && /^\d+ %$/.test(text)) return { high: 'good', mid: 'fair', low: 'low' }[affinityLevel(parseInt(text, 10))];
+    if (label === 'Semanas a publicación') return { fast: 'good', mid: 'fair', slow: 'low' }[speedLevel(text === '—' ? null : Number(text))] || null;
+    return null;
 }
 
 export function affinityParts(affinity) {

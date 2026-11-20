@@ -4,7 +4,8 @@ import { BTN_SECONDARY, FOCUS } from './classes';
 import { numberOrNull, toggled } from '../../lib/publicar/display';
 import { PRESETS, applyPreset, makePreset } from '../../lib/publicar/table';
 
-const QUARTILE_PILLS = [['Q1', 'Q1 · A1'], ['Q2', 'Q2 · A2'], ['Q3', 'Q3 · B'], ['Q4', 'Q4 · C']];
+// The quartile chips wear the hue of their quartile (a small swatch always, the tint when pressed); the text and the check stay.
+const QUARTILE_PILLS = [['Q1', 'Q1 · A1', 'chip-tone tn-q1'], ['Q2', 'Q2 · A2', 'chip-tone tn-q2'], ['Q3', 'Q3 · B', 'chip-tone tn-q3'], ['Q4', 'Q4 · C', 'chip-tone tn-q4']];
 const FIT_PILLS = [['fuerte', 'Sector + tecnología'], ['tecnologia', 'Solo tecnología']];
 const SMALL_INPUT = 'w-full h-10 px-2.5 text-[13px] border border-sem-control-line rounded-xl bg-white text-gray-900 placeholder:text-sem-text-2 placeholder:opacity-100';
 const CHECK = 'flex min-h-[32px] items-center gap-2 py-[3px] text-[13.5px] text-gray-700 cursor-pointer';
@@ -22,15 +23,16 @@ const Group = ({ legend, hint, children }) => (
 function Pills({ options, selected, onToggle }) {
     return (
         <div className="flex flex-wrap gap-1.5">
-            {options.map(([value, label]) => (
+            {options.map(([value, label, tone]) => (
                 <button
                     key={value}
                     type="button"
                     aria-pressed={selected.includes(value)}
                     onClick={() => onToggle(value)}
-                    className="chip chip-sm"
+                    className={`chip chip-sm ${tone || ''}`}
                 >
                     <Check size={14} aria-hidden="true" className="chip-check flex-none" />
+                    {tone && <span className="chip-dot" aria-hidden="true" />}
                     {label}
                 </button>
             ))}

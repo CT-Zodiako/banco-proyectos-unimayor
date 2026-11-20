@@ -7,18 +7,19 @@ import { useProjects } from '../hooks/useProjects';
 import { areaTags, buildAreaFacets } from '../lib/catalog';
 import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
 
-// The three main tools. The first is the primary action of the page; the others are secondary.
+// The three main tools. The first is the primary action of the page (blue); events and journals have their own hue
+// (purple and teal, as everywhere else); `tone` colors the card header and the icon circle.
 const TOOLS = [
     {
         key: 'proyectos', to: '/proyectos', Icon: Layers, title: 'Catálogo de proyectos', action: 'Explorar proyectos', primary: true,
         text: 'Filtra por área, nivel y sector y abre el detalle de cada proyecto.',
     },
     {
-        key: 'eventos', to: EVENTS_URL, Icon: CalendarDays, title: 'Eventos académicos', action: 'Buscar eventos', primary: false,
+        key: 'eventos', to: EVENTS_URL, Icon: CalendarDays, title: 'Eventos académicos', action: 'Buscar eventos', primary: false, button: 'btn-events', tone: 'tn-events',
         text: 'Congresos y convocatorias afines a tu proyecto, ordenados por afinidad.',
     },
     {
-        key: 'revistas', to: PUBLISH_URL, Icon: BookOpen, title: 'Revistas para publicar', action: 'Dónde publicar', primary: false,
+        key: 'revistas', to: PUBLISH_URL, Icon: BookOpen, title: 'Revistas para publicar', action: 'Dónde publicar', primary: false, button: 'btn-journals', tone: 'tn-journals',
         text: 'Revistas de acceso abierto sin cobro a autores, con filtros y comparación.',
     },
 ];
@@ -90,15 +91,16 @@ const Home = () => {
                 </h2>
                 <p className="mt-1 mb-6 text-[15px] text-sem-text-2">Tres herramientas para elegir un proyecto y decidir dónde presentarlo.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {TOOLS.map(({ key, to, Icon, title, action, text, primary }) => (
-                        <article key={key} aria-labelledby={`tool-${key}`} className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-                            <span className="grid h-11 w-11 place-items-center rounded-xl border border-sem-area-line bg-sem-area-bg text-sem-area-fg" aria-hidden="true">
+                    {TOOLS.map(({ key, to, Icon, title, action, text, primary, button, tone }) => (
+                        <article key={key} aria-labelledby={`tool-${key}`} className={`flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm ${tone ? `hue-card ${tone}` : 'border-t-4 border-t-institutional-blue'}`}>
+                            <span className={`grid h-11 w-11 place-items-center rounded-xl ${tone ? `type-chip ${tone}` : 'border border-sem-area-line bg-sem-area-bg text-sem-area-fg'}`} aria-hidden="true">
                                 <Icon size={22} />
                             </span>
                             <h3 id={`tool-${key}`} className="text-lg font-bold text-gray-900">{title}</h3>
                             <p className="text-[14.5px] leading-normal text-sem-text-2">{text}</p>
                             <div className="mt-auto pt-1">
-                                <Link to={to} className={`btn btn-lg ${primary ? 'btn-primary' : 'btn-secondary'}`}>
+                                <Link to={to} className={`btn btn-lg ${button || (primary ? 'btn-primary' : 'btn-secondary')}`}>
+                                    {button && <span className="type-ico" aria-hidden="true"><Icon size={16} /></span>}
                                     {action}
                                     <ArrowRight size={16} aria-hidden="true" />
                                 </Link>

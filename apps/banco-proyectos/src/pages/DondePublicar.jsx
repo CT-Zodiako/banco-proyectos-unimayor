@@ -109,8 +109,8 @@ function DondePublicarPage({ publicarData }) {
 
     return (
         <div className="py-4 space-y-4" style={{ paddingBottom: trayVisible ? trayHeight : undefined }}>
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex flex-wrap items-center gap-3.5">
-                <div className="w-[52px] h-[52px] rounded-2xl bg-blue-50 grid place-items-center text-[26px] flex-shrink-0" aria-hidden="true">{project ? project.emoji || '📁' : '🔎'}</div>
+            <div className="hue-card tn-journals border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex flex-wrap items-center gap-3.5">
+                <div className="type-chip w-[52px] h-[52px] rounded-2xl grid place-items-center text-[26px] flex-shrink-0" aria-hidden="true">{project ? project.emoji || '📁' : '🔎'}</div>
                 <div className="min-w-0">
                     <p className="m-0 text-xs font-bold text-sem-text-2 uppercase tracking-wider">
                         {project ? `¿Dónde publicar? · Proyecto ${project.number} · ${project.area} · ${project.level}` : 'Revistas de acceso abierto diamante'}
@@ -134,7 +134,7 @@ function DondePublicarPage({ publicarData }) {
                         aria-selected={tab === id}
                         tabIndex={tab === id ? 0 : -1}
                         onClick={() => setTab(id)}
-                        className={`tab-pill ${FOCUS}`}
+                        className={`tab-pill tab-pill-journals ${FOCUS}`}
                     >
                         <span className="tab-pill-label">{label}</span>
                         <span className="tab-pill-desc">{description}</span>

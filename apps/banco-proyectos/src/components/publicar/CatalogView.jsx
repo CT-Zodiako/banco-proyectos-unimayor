@@ -2,13 +2,17 @@ import { useEffect, useMemo, useState } from 'react';
 import useLazyData from '../../hooks/useLazyData';
 import { DATA_FILES } from '../../lib/data-loader';
 import { Search } from 'lucide-react';
+import { JournalBadges } from './JournalBadges';
 import { ExtLink, FavoriteButton, QuartileBadge } from './JournalLinks';
-import { FOCUS } from './classes';
+import { FOCUS, TONE_CLASS } from './classes';
 import { categoriesText, countryLabel, journalFacts, languageLabel } from '../../lib/publicar/display';
 import { filterRows } from '../../lib/publicar/table';
 
 const PAGE_SIZE = 15;
-const QUARTILE_OPTIONS = [['all', 'Todos'], ['Q1', 'Q1'], ['Q2', 'Q2'], ['Q3', 'Q3'], ['Q4', 'Q4']];
+// The quartile selector shows each quartile's hue (a colored bar; the tint when pressed), and the text stays.
+const QUARTILE_OPTIONS = [['all', 'Todos', ''], ['Q1', 'Q1', 'seg-tone tn-q1'], ['Q2', 'Q2', 'seg-tone tn-q2'], ['Q3', 'Q3', 'seg-tone tn-q3'], ['Q4', 'Q4', 'seg-tone tn-q4']];
+// Review, weeks and license are badges in the row below the title, so the fact sheet does not repeat them.
+const BADGE_FACTS = new Set(['Revisión', 'Semanas a publicación', 'Licencia']);
 const MORE_LINK = 'btn btn-tertiary !min-h-[32px]';
 
 function JournalCard({ journal }) {
@@ -16,14 +20,15 @@ function JournalCard({ journal }) {
     const meta = [journal.publisher, countryLabel(journal.country), languages && `Idiomas: ${languages}`].filter(Boolean).join(' · ');
     const categories = categoriesText(journal);
     return (
-        <article className="bg-white border border-gray-200 rounded-2xl shadow-sm px-4 py-3.5">
+        <article className={`${TONE_CLASS[journal.quartile.toLowerCase()] || ''} bg-white border border-gray-200 border-l-4 border-l-[color:var(--tn-solid)] rounded-2xl shadow-sm px-4 py-3.5`}>
             <header className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                 <QuartileBadge quartile={journal.quartile} />
                 <h3 className="m-0 text-base font-bold text-gray-900">{journal.title}</h3>
             </header>
             <p className="mt-1.5 mb-2 text-[13px] text-sem-text-2">{meta}</p>
+            <JournalBadges journal={journal} className="mb-2.5" />
             <dl className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-x-3.5 gap-y-1.5 m-0 mb-2">
-                {journalFacts(journal).map(([label, value]) => (
+                {journalFacts(journal).filter(([label]) => !BADGE_FACTS.has(label)).map(([label, value]) => (
                     <div key={label} className="text-[13px]">
                         <dt className="text-sem-text-2 text-[11.5px] uppercase tracking-wide">{label}</dt>
                         <dd className="m-0 font-semibold text-gray-900">{value}</dd>
@@ -32,7 +37,7 @@ function JournalCard({ journal }) {
             </dl>
             {categories && <div className="text-xs text-sem-text-2">{categories}</div>}
             <div role="group" aria-label={`Enlaces de ${journal.title}`} className="mt-3 flex flex-wrap items-center gap-2">
-                <ExtLink url={journal.url} className="btn btn-primary">Sitio de la revista</ExtLink>
+                <ExtLink url={journal.url} className="btn btn-journals">Sitio de la revista</ExtLink>
                 <ExtLink url={journal.author_instructions_url} className="btn btn-secondary">Instrucciones para autores</ExtLink>
                 <FavoriteButton journal={journal} />
                 <span role="group" aria-label="Más información" className="flex flex-wrap items-center gap-x-0.5 text-[13px]">
@@ -98,8 +103,8 @@ export default function CatalogView({ active, initialQuery = '', request = null 
                 <div>
                     <span className="field-label mb-1">Cuartil</span>
                     <div role="group" aria-label="Cuartil del catálogo" className="seg [&>button]:min-h-[42px]">
-                        {QUARTILE_OPTIONS.map(([value, label]) => (
-                            <button key={value} type="button" aria-pressed={quartile === value} onClick={() => change(setQuartile)(value)}>
+                        {QUARTILE_OPTIONS.map(([value, label, tone]) => (
+                            <button key={value} type="button" aria-pressed={quartile === value} onClick={() => change(setQuartile)(value)} className={tone || undefined}>
                                 {label}
                             </button>
                         ))}

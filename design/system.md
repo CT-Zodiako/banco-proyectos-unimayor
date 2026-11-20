@@ -4,6 +4,7 @@ Captured from the project sources (read only). Primary app: `apps/banco-proyecto
 Updated after the visual refinement (`odd/tasks/mejora-visual.md`, T2-T4, direction `design/mejora-visual/01-refinado-fiel.html`):
 same identity (institutional blue, yellow, Inter, white cards), one meaning per color, shared component classes in
 `apps/banco-proyectos/src/index.css` instead of per-page class strings.
+Updated again for T13 (user request L15: «los botones de dónde publicar y ver eventos con color, y la información relevante con un color — Q1 uno, Q2 otro»): the earlier neutral quartile and single-blue affinity ring were deliberately reversed, see «Meaning hues» below.
 Tailwind v3 default palette values are listed only for the utility classes the app actually uses
 (found by scanning `apps/banco-proyectos/src/**/*.jsx`).
 
@@ -42,18 +43,65 @@ Tailwind v3 default palette values are listed only for the utility classes the a
 | `--sem-blue-hover` | `#1E40AF` | Hover of primary actions (blue-800), defined in `:root` |
 | `--sem-blue-soft` | `#DBEAFE` | Soft blue (blue-100), defined in `:root` |
 
+### Meaning hues (T13; source: `apps/banco-proyectos/src/lib/palette.js`)
+
+One JS file holds every hex value of the hues that carry a meaning, the button gradients, the contrast helper (`contrastRatio`) and the list of every pair that must reach AA (`AA_PAIRS`). `src/index.css` holds a generated copy between `/* palette:begin */` and `/* palette:end */` (the `--tone-<name>-<part>` and `--btn-<name>-*` variables and one `.tn-<name>` class per tone, which sets `--tn-bg`, `--tn-fg`, `--tn-line`, `--tn-solid`); `tests/palette.test.mjs` fails when that copy is out of date and when any pair is below its minimum. `tailwind.config.js` exposes the tones as utilities (`bg-tone-q1-bg`, `text-tone-q1-fg`, `border-tone-q1-line`, `bg-tone-q1-solid`) that read the same variables. A tone is a soft badge: dark text (`fg`) on a light tint (`bg`) with a `line` border, plus a `solid` color for graphic marks (rings, bars, swatches, quartile chips). Refresh the CSS copy with `node -e "import('./src/lib/palette.js').then((m) => console.log(m.paletteCss()))"` in `apps/banco-proyectos`.
+
+| Tone class | Means | bg (tint) | fg (text) | line | solid (marks) | fg on bg | fg on white | solid on white |
+|---|---|---|---|---|---|---|---|---|
+| `.tn-journals` | «Dónde publicar»: button, tab, card header, search badge, and the license badge (CC BY) | `#F0FDFA` | `#134E4A` | `#5EEAD4` | `#0F766E` | 9.09:1 | 9.48:1 | 5.47:1 |
+| `.tn-events` | «Ver eventos»: button, tab, card header, search badge | `#FAF5FF` | `#581C87` | `#D8B4FE` | `#7E22CE` | 10.14:1 | 10.88:1 | 6.98:1 |
+| `.tn-events2` | «Para asistir» badge (light tint of the same purple; «Convocatoria» is the filled purple) | `#EDE9FE` | `#4C1D95` | `#C4B5FD` | `#6D28D9` | 9.23:1 | 10.95:1 | 7.10:1 |
+| `.tn-q1` | Quartile Q1 · Publindex A1 (best) | `#DCFCE7` | `#14532D` | `#86EFAC` | `#15803D` | 8.30:1 | 9.11:1 | 5.02:1 |
+| `.tn-q2` | Quartile Q2 · Publindex A2 | `#E0E7FF` | `#312E81` | `#A5B4FC` | `#4F46E5` | 9.27:1 | 11.42:1 | 6.29:1 |
+| `.tn-q3` | Quartile Q3 · Publindex B | `#FEF3C7` | `#78350F` | `#FCD34D` | `#B45309` | 8.15:1 | 9.07:1 | 5.02:1 |
+| `.tn-q4` | Quartile Q4 · Publindex C | `#FFE4E6` | `#881337` | `#FDA4AF` | `#BE123C` | 7.97:1 | 9.57:1 | 6.29:1 |
+| `.tn-good` | Favorable end of a scale: affinity alta, speed rápida, «Sin costo», «Cumple» | `#DCFCE7` | `#14532D` | `#86EFAC` | `#15803D` | 8.30:1 | 9.11:1 | 5.02:1 |
+| `.tn-fair` | Middle of a scale: affinity media, speed media | `#FEF3C7` | `#78350F` | `#FCD34D` | `#B45309` | 8.15:1 | 9.07:1 | 5.02:1 |
+| `.tn-low` | Unfavorable end of a scale: affinity baja, speed lenta, «No cumple» | `#FFE4E6` | `#881337` | `#FDA4AF` | `#BE123C` | 7.97:1 | 9.57:1 | 6.29:1 |
+| `.tn-lang` | The journal accepts Spanish | `#DBEAFE` | `#1E3A8A` | `#93C5FD` | `#1D4ED8` | 8.49:1 | 10.36:1 | 6.70:1 |
+| `.tn-review` | Peer-review type (doble ciego, simple ciego, abierta…) | `#F1F5F9` | `#334155` | `#CBD5E1` | `#475569` | 9.45:1 | 10.35:1 | 7.58:1 |
+
+Type buttons (white text on a vertical gradient, lighter on top; the hover stops are darker):
+
+| Button / tab | Top stop | Bottom stop | Hover top | Hover bottom | White text on each stop (min) | Selected-tab description on top stop |
+|---|---|---|---|---|---|---|
+| `.btn-journals` / `.tab-pill-journals` | `#0F766E` | `#115E59` | `#115E59` | `#134E4A` | 5.47 / 7.58 / 7.58 / 9.48 | `#F0FDFA` 5.25:1 |
+| `.btn-events` / `.tab-pill-events` | `#7E22CE` | `#6B21A8` | `#6B21A8` | `#581C87` | 6.98 / 8.72 / 8.72 / 10.88 | `#FAF5FF` 6.51:1 |
+
+`.btn-journals` and `.btn-events` add an inner highlight (`inset 0 1px 0 rgb(255 255 255 / .3)`), a soft shadow of their own hue (`0 6px 14px -6px` at 55 % of the bottom stop), an icon in a translucent white circle (`.type-ico`), a 1px lift on hover, a pressed (inset) shadow on `:active` and the shared 2px yellow + 2px blue focus ring. «Dónde publicar» is teal because it is the journals tool; «Ver eventos» is purple because it is the events tool; both are far from the blue primary (`#00428A`), from each other, and from the amber used for attention.
+
+Scales (a hue is the same wherever the scale appears):
+
+| Scale | Green (`good` / `q1`) | Amber (`fair` / `q3`) | Rose (`low` / `q4`) | Other |
+|---|---|---|---|---|
+| Quartile (SCImago · Publindex) | Q1 · A1 | Q3 · B | Q4 · C | Q2 · A2 indigo (`q2`); bars say it too: 4 bars (Q1) to 1 bar (Q4) |
+| Affinity (journals 80 / 65, events 80 / 60) | alta | media | baja | ring, number and word share the hue |
+| Speed of publication (`weeks_to_publication`) | rápida: 8 weeks or less | media: up to 16 | lenta: more than 16 | thresholds are the first two steps of the time score in `src/lib/publicar/table.js`; no badge when the journal has no weeks |
+| Requirements | Cumple (✓) | | No cumple (✗) | |
+
+Other soft badges of a journal (at most five per result, one tidy row, each with an icon and a tip): «Sin costo» (`good`; every journal of the data is DOAJ without APC), «Acepta español» (`lang`, only when `languages` has Spanish), review type (`review`, only when specified), «N semanas · rápida/media/lenta» (speed), license (`journals`). A fact the data does not have gives no badge. Publindex (A1, A2, B, C) is derived 1:1 from the quartile, so it shares the quartile hue and sits inside the quartile badge.
+
+Events: «Convocatoria» is the filled purple (`.badge-events`, white on `#6B21A8`), «Para asistir» the light tint of the same hue (`.badge-events-soft`, `.tn-events2`), «cierra hoy / pronto» stays amber (`.badge-attn`), «Ver convocatoria» / «Ver evento» is `.btn-events`.
+
 ### Meaning of color (one color, one meaning)
 
 | Color | Means | Where |
 |---|---|---|
-| Blue (`#00428A`, `#EFF6FF`) | Area and actions: links, primary and secondary buttons, selected chips, affinity ring, info banners | Area badge, `.btn`, `.chip[aria-pressed]`, `.filter-chip`, `.aff-ring`, nav |
+| Blue (`#00428A`, `#EFF6FF`) | Area and actions: links, primary and secondary buttons, selected chips, info banners | Area badge, `.btn`, `.chip[aria-pressed]`, `.filter-chip`, nav |
+| Teal (`.tn-journals`, `.btn-journals`) | The journals tool, «Dónde publicar», and the license of a journal | Button, tab, tab-pill, card header, global-search badge, `CC BY` badge, nav dot |
+| Purple (`.tn-events`, `.btn-events`) | The events tool, «Ver eventos», event type | Button, tab, type selector of /eventos, card header, `Convocatoria` / `Para asistir`, nav dot |
+| Green / amber / rose (`good` / `fair` / `low`) | Favorable / middle / unfavorable end of a scale: affinity, speed, requirements; «Sin costo» is green | `.aff-ring`, `.aff-word`, speed badge, `Cumple` / `No cumple` boxes |
+| Green, indigo, amber, rose (`q1`..`q4`) | Quartile Q1 to Q4 (best to last) | `.qb`, quartile chips and segments, left edge of a journal row |
+| Blue badge (`.tn-lang`) | The journal accepts Spanish | `Acepta español` |
+| Slate (`.tn-review`) | Peer-review type | `Doble ciego`, `Simple ciego`, `Abierta` |
 | Gray (`#F3F4F6`, `#374151`, `#4B5563`) | Sector and metadata: categories, counts, helper text, table headers | Sector badge, `.count-pill`, `.field-hint`, tables of the project page |
 | Orange dots (`#C2410C`) | Difficulty level only (1 to 3 filled dots, always with the words) | `.level-dots`, level badge |
 | Yellow (`#FFC107`, `#FFF8E1`) | New, attention (closing soon) and keyboard focus | `.badge-new`, `.badge-attn`, focus ring, hero button |
-| Green (`#15803D`, `#F0FDF4`) | Success: data up to date, strong fit | `.data-status-dot`, fit "fuerte" |
+| Green (`#15803D`, `#F0FDF4`) | Success: data up to date, strong fit (the same green as the favorable end of the scales) | `.data-status-dot`, fit "fuerte" |
 | Red (`#B91C1C`, `#FEF2F2`) | Error | `ErrorNote` in `src/pages/Opportunities.jsx` |
 
-Color is never the only signal: badges carry an icon and a word (visually hidden prefix "Área: ", "Sector: ", "Nivel N de 3: "), level is dots plus words, quartile is text plus bars, affinity is a number plus "alta/media/baja", selected chips show a check, errors carry an icon and text.
+Color is never the only signal: badges carry an icon and a word (visually hidden prefix "Área: ", "Sector: ", "Nivel N de 3: "), level is dots plus words, quartile is text plus bars (and the Publindex category), affinity is a number plus "alta/media/baja", speed has its own icon (rayo, reloj, reloj de arena) plus the word, requirements carry ✓ and ✗, selected chips show a check, type buttons carry an icon and their name, errors carry an icon and text. Every badge has a tooltip (`data-tip`) and the same words are in the legend «Cómo leer los resultados» and in «Qué significa cada color» of «Cómo leer esta página» (swatch + meaning).
 
 ### AA contrast pairs in use (WCAG 2.x, computed from the hex values)
 
@@ -74,6 +122,15 @@ Color is never the only signal: badges carry an icon and a word (visually hidden
 | `#B91C1C` on `#FEF2F2` | 5.91:1 | Error text |
 | `#9CA3AF` on `#0F172A` | 7.03:1 | Footer text |
 | `#FFFFFF` on `#1E40AF` | 8.72:1 | Primary button hover |
+
+T13 pairs (all computed from `src/lib/palette.js` and checked by `tests/palette.test.mjs`): the tone table above lists, for each tone, `fg` on `bg` (4.5:1 needed, 7.97 to 10.14), `fg` on white and `solid` on white (3:1 needed for graphic marks, 5.02 to 7.58); the button table lists white on every gradient stop (5.47 to 10.88). Extra pairs:
+
+| Foreground on background | Ratio | Used for |
+|---|---|---|
+| `#FFFFFF` on `#6B21A8` | 8.72:1 | `.badge-events` («Convocatoria») |
+| `#FFFFFF` on `#0F766E` / `#7E22CE` | 5.47 / 6.98:1 | Count of the selected tab in the project slide-over |
+| `#F0FDFA` on `#0F766E` / `#FAF5FF` on `#7E22CE` | 5.25 / 6.51:1 | Description inside a selected tab-pill |
+| `#5EEAD4` / `#D8B4FE` on `#00428A` | 6.61 / 5.53:1 | Hue dots of the navbar (graphic) |
 
 `#FFC107` on white is 1.63:1: yellow is never used as text or as the only border on white; it is a fill with dark or blue text, or the focus ring paired with blue.
 
@@ -138,8 +195,16 @@ Shared classes; the pages only combine them. Pages that use each one are in the 
 | `.link-action` | Underlined blue text action, min height 32px | Cards, panels, /oportunidades |
 | `.data-status` (`.data-status-dot`, `.data-status-more`, `.data-status-body`) | One line "Datos actualizados el …" that opens to the full text (native `<details>`) | /eventos, /donde-publicar |
 | `.seg` | Segmented control (one button `aria-pressed`) | Lista/Tabla, event type, quartile |
-| `.qb` (`.qb-bars`) | Quartile badge: text + 1 to 4 bars, `gray-700` border, no color of its own | /donde-publicar |
-| `.aff-ring` | 68px blue conic ring (`--v` 0-100), number inside, word beside (`.aff-word`) | /donde-publicar, project panel |
+| `.qb` (`.qb-bars`) | Quartile badge: text + 1 to 4 bars in the hue of its tone (`tn-q1` green .. `tn-q4` rose: tint background, dark text, `solid` bars); neutral without a tone | /donde-publicar (rows, table, catalog, compare tray, legend, help) |
+| `.aff-ring` / `.aff-word` (`.aff-word-inline`) | 68px conic ring (`--v` 0-100) in the `solid` of its level (`aff-high tn-good`, `aff-mid tn-fair`, `aff-low tn-low`), number in its `fg`, word as a soft pill | /donde-publicar, /eventos, project panel |
+| `.tn-<tone>` | Sets `--tn-bg`, `--tn-fg`, `--tn-line`, `--tn-solid` (generated from `palette.js`); read by `.badge-tone`, `.qb`, `.aff-*`, `.chip-tone`, `.seg-tone`, `.type-chip`, `.hue-card`, `.tone-box`, `.nav-dot` | Everywhere a hue carries a meaning |
+| `.badge-tone` | Soft badge of a tone (tint, `line` border, `fg` text) | Journal badges, legend, search badges, compare tray |
+| `.badge-events` / `.badge-events-soft` | Filled purple («Convocatoria») and light purple («Para asistir») | /eventos, project panel |
+| `.btn-journals` / `.btn-events` (+ `.btn`, `.btn-lg`) | Type buttons: gradient, inner highlight, colored shadow, `.type-ico` icon circle, hover lift, pressed shadow | Project card, project page, Home, opportunity cards, journal row and catalog card (journals), event card (events) |
+| `.type-chip` / `.hue-card` / `.tone-box` | Tinted icon circle; card with a 4px top border and a light tint in the tone; tinted box (Cumple / No cumple) | Home cards, opportunity cards, page headers of /donde-publicar and /eventos, journal assessment |
+| `.chip-tone` (+ `.chip-dot`) / `.seg-tone` | Quartile chip and catalog quartile segment: swatch or bar of the hue always, tint when pressed; text, check and `aria-pressed` stay | Custom filters, catalog |
+| `.tab-pill-journals` / `.tab-pill-events` / `.tab-journals` / `.tab-events` (`.tab-count`) | Selected tab-pill = gradient of the hue; slide-over tabs = text and bottom bar in the hue, tinted when selected | /donde-publicar, /eventos type selector, project slide-over |
+| `.nav-dot` | 9px dot in the `line` color of the tone before «Eventos académicos» and «Dónde publicar» (decorative, `aria-hidden`) | Navbar |
 | `.page-btn` | Pagination button, `aria-current="page"` = blue fill | /proyectos |
 | `[data-tip]` | Tooltip (`::after`, `institutional.dark`, white 12.5px). Hover and keyboard focus; hidden on touch and below 960px, so the same meaning is always also written as text | Cards, project page metrics, rings |
 | `.skip-link` | Visually hidden until focused; then a white button (top left, `z-[100]`) "Saltar al contenido" | `src/App.jsx` (first focusable element) |
@@ -148,18 +213,20 @@ Shared classes; the pages only combine them. Pages that use each one are in the 
 
 Specific compositions:
 
-- **Project card** (`src/components/ProjectCard.jsx`): white, `rounded-2xl`, `gray-200` border, lift on hover; 52px emoji tile; title 18px bold; "Problema" 2 lines; badges row area → new → sector → level; footer list "Datos del proyecto" (Hardware N, Software N, duration; tooltips `Hardware: N componentes físicos (placas, sensores, actuadores)`); actions "Ver eventos" / "Dónde publicar" (secondary).
-- **Project page** (`src/pages/ProjectDetail.jsx`): back link (tertiary) and two secondary links; same badges as the card above the `h1`; list "Datos del proyecto" with Hardware, Software, Duración, Presupuesto (icon tile + label + value + tooltip); the two cards of `OpportunityCards` (primary "Ver las revistas aquí" / "Ver los eventos aquí" that open the slide-over, link "Abrir página completa …"); sections `h2` Hardware necesario, Software y plataformas, Pasos de implementación, Objetivos, Impacto real, Referencias, each with a one-line helper; tables with `caption` and `scope`, neutral gray header, category as sector badge.
-- **Home** (`src/pages/Home.jsx`, `src/components/MetricsSection.jsx`): blue gradient hero with yellow accent (text white / `blue-50`, no opacity trick; reduced motion draws it at its final place); "¿Qué quieres hacer?" with three entry cards (Explorar proyectos primary, Buscar eventos and Dónde publicar secondary); "El banco en cifras" with four labelled metrics counted from the data (Proyectos, Áreas tecnológicas, Sectores de aplicación, Áreas nuevas este semestre).
+- **Project card** (`src/components/ProjectCard.jsx`): white, `rounded-2xl`, `gray-200` border, lift on hover; 52px emoji tile; title 18px bold; "Problema" 2 lines; badges row area → new → sector → level; footer list "Datos del proyecto" (Hardware N, Software N, duration; tooltips `Hardware: N componentes físicos (placas, sensores, actuadores)`); actions "Ver eventos" (`.btn-events`, purple) / "Dónde publicar" (`.btn-journals`, teal), each with its icon circle.
+- **Project page** (`src/pages/ProjectDetail.jsx`): back link (tertiary) and the two type buttons (`.btn-events` «¿A qué eventos ir?», `.btn-journals` «¿Dónde publicar este proyecto?»); same badges as the card above the `h1`; list "Datos del proyecto" with Hardware, Software, Duración, Presupuesto (icon tile + label + value + tooltip); the two cards of `OpportunityCards` (each with a tinted header in its hue: `.btn-journals` "Ver las revistas aquí" / `.btn-events` "Ver los eventos aquí" that open the slide-over, link "Abrir página completa …"); sections `h2` Hardware necesario, Software y plataformas, Pasos de implementación, Objetivos, Impacto real, Referencias, each with a one-line helper; tables with `caption` and `scope`, neutral gray header, category as sector badge.
+- **Home** (`src/pages/Home.jsx`, `src/components/MetricsSection.jsx`): blue gradient hero with yellow accent (text white / `blue-50`, no opacity trick; reduced motion draws it at its final place); "¿Qué quieres hacer?" with three entry cards (Explorar proyectos primary blue; Buscar eventos `.btn-events` and Dónde publicar `.btn-journals`, each card with a tinted header and icon circle in its hue); "El banco en cifras" with four labelled metrics counted from the data (Proyectos, Áreas tecnológicas, Sectores de aplicación, Áreas nuevas este semestre).
 - **Footer / layout** (`src/App.jsx`, `src/components/Navbar.jsx`): `header` (sticky, contains `nav` "Principal"), one `main#contenido`, one `footer` with `h2` headings; footer text is `gray-400` on `institutional.dark`.
 - **Motion**: `fadeIn` 0.5s (opacity + translateY 10px) in `index.css`; framer-motion entrances check `useReducedMotion`; `prefers-reduced-motion: reduce` removes transitions and animations globally.
 
 ## Event and journal pages (React)
 
-Sources: `apps/banco-proyectos/src/pages/Eventos.jsx`, `apps/banco-proyectos/src/pages/DondePublicar.jsx`, and the components in `apps/banco-proyectos/src/components/eventos/` and `apps/banco-proyectos/src/components/publicar/`. Both pages are routes of the project bank (`/eventos`, `/donde-publicar`), use the shared classes above and have no stylesheet of their own. Journal fit and class strings live in `src/components/publicar/classes.js` (`FIT_CLASSES`: strong = green tint, technology = `badge-area`, sector = `badge-sector`). The old quartile colors (`#1b7f3b`, `#2f6fd0`, `#c27c0e`, `#8a5a9e`) are no longer used: quartile is `.qb` (text + bars).
+Sources: `apps/banco-proyectos/src/pages/Eventos.jsx`, `apps/banco-proyectos/src/pages/DondePublicar.jsx`, and the components in `apps/banco-proyectos/src/components/eventos/` and `apps/banco-proyectos/src/components/publicar/`. Both pages are routes of the project bank (`/eventos`, `/donde-publicar`), use the shared classes above and have no stylesheet of their own. Journal fit and class strings live in `src/components/publicar/classes.js` (`FIT_CLASSES`: strong = green tint, technology = `badge-area`, sector = `badge-sector`). The old quartile colors (`#1b7f3b`, `#2f6fd0`, `#c27c0e`, `#8a5a9e`; white text on `#c27c0e` was 3.40:1) are not used. T13 reversed the neutral quartile of T3 on the user's request: quartile is `.qb` (text + bars + Publindex) in four AA-safe hues (dark text on a light tint), see «Meaning hues».
+- Journal result (`ResultItem.jsx`): left edge and quartile badge in the quartile hue; ring, number and word in the affinity hue; one row of at most five soft badges (`JournalBadges.jsx`: Sin costo, Acepta español, review type, speed, license); «Cumple» (green) and «No cumple» (rose) boxes with ✓ / ✗; primary action «Instrucciones para autores» is `.btn-journals`. The table view (`JournalTable.jsx`) and the compare tray color the same cells; the catalog (`CatalogView.jsx`) has the quartile selector with its hues and the same badge row.
+- Legend and help: «Cómo leer los resultados» (above the results) shows a swatch and its words for affinity (3 levels), quartile (Q1..Q4 with Publindex), Sin costo / Acepta español / review / license, speed (3 levels) and Cumple / No cumple; «Cómo leer esta página» has the card «Qué significa cada color» with every swatch and its meaning, including the two type buttons.
 
 - Event filters and cards: white backgrounds, `rounded-2xl`, `gray-200` border, small shadow; selected `.seg` options and `.chip`s use institutional blue with white text.
-- Event tags: `.badge-area` for calls, `.badge-sector` for attendance and online, `.badge-attn` for closing soon.
+- Event tags: `.badge-events` (filled purple) for «Convocatoria», `.badge-events-soft` (light purple) for «Para asistir», `.badge-sector` for online, `.badge-attn` (amber) for closing soon; the primary action is `.btn-events`; the type selector of /eventos uses `.tab-pill-events`; the section tabs of /donde-publicar use `.tab-pill-journals`.
 - Layout: inherits the app shell (`max-w-7xl`, horizontal padding 16px, 24px from `sm`, 32px from `lg`); cards and filters stack on small screens. No page scrolls horizontally at 390px.
 - Focus: the shared 2px yellow + 2px blue ring.
 - Spacing: Tailwind scale plus a few arbitrary values (`text-[13.5px]`, `p-[18px]`) in the components above.

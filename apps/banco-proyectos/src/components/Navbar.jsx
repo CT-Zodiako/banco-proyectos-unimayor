@@ -4,11 +4,12 @@ import logo from '../assets/logo.png';
 import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
 
 // `match` lists the paths that belong to each item, so the item stays marked on its sub-pages too
-// (a project page belongs to "Proyectos").
+// (a project page belongs to "Proyectos"). `tone` adds the hue dot of the two tools (the same teal and purple as their
+// buttons, light enough for the blue bar); the text always stays.
 const ITEMS = [
     { to: '/proyectos', label: 'Proyectos', match: ['/proyectos', '/proyecto'] },
-    { to: EVENTS_URL, label: 'Eventos académicos', match: [EVENTS_URL] },
-    { to: PUBLISH_URL, label: 'Dónde publicar', match: [PUBLISH_URL] },
+    { to: EVENTS_URL, label: 'Eventos académicos', match: [EVENTS_URL], tone: 'tn-events' },
+    { to: PUBLISH_URL, label: 'Dónde publicar', match: [PUBLISH_URL], tone: 'tn-journals' },
     { to: '/oportunidades', label: 'Mis oportunidades', match: ['/oportunidades'] },
 ];
 
@@ -39,7 +40,7 @@ const Navbar = () => {
                     </Link>
 
                     <ul className="flex flex-wrap items-stretch gap-1 text-[15px]">
-                        {ITEMS.map(({ to, label, match }) => {
+                        {ITEMS.map(({ to, label, match, tone }) => {
                             const current = isOn(pathname, match);
                             return (
                                 <li key={to} className="flex">
@@ -50,6 +51,7 @@ const Navbar = () => {
                                             ? 'font-bold border-b-white bg-white/10'
                                             : 'font-medium hover:text-institutional-yellow'}`}
                                     >
+                                        {tone && <span className={`nav-dot ${tone} mr-2 flex-none`} aria-hidden="true" />}
                                         {label}
                                     </Link>
                                 </li>

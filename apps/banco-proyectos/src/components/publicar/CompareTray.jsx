@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { ExtLink, TemplateLinks } from './JournalLinks';
-import { FOCUS } from './classes';
-import { comparisonRows } from '../../lib/publicar/display';
+import { FOCUS, TONE_CLASS } from './classes';
+import { comparisonRows, comparisonTone } from '../../lib/publicar/display';
 
 const LINK = 'link-action !min-h-[28px] !py-0.5 mr-1.5 whitespace-nowrap';
 const CELL = 'px-3 py-[7px] border-b border-gray-100';
@@ -60,9 +60,15 @@ export default function CompareTray({ journals, affinityById, onRemove, onClear,
                         {rows.map((row) => (
                             <div key={row.label} role="row" className="contents">
                                 <div role="rowheader" className={`${CELL} text-gray-700 bg-gray-50 font-semibold`}>{row.label}</div>
-                                {row.cells.map((cell, index) => (
-                                    <div key={journals[index].id} role="cell" className={`${CELL} ${cell.best ? 'text-green-700 font-bold' : row.className === 'parts' ? 'text-gray-600' : ''}`}>{cell.text}</div>
-                                ))}
+                                {row.cells.map((cell, index) => {
+                                    // Quartile, affinity and speed cells carry their hue as a soft badge; the text stays the same.
+                                    const tone = comparisonTone(row.label, cell.text);
+                                    return (
+                                        <div key={journals[index].id} role="cell" className={`${CELL} ${cell.best ? 'text-green-700 font-bold' : row.className === 'parts' ? 'text-gray-600' : ''}`}>
+                                            {tone ? <span className={`badge badge-tone ${TONE_CLASS[tone]} ${cell.best ? '!font-extrabold' : ''}`}>{cell.text}</span> : cell.text}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ))}
                         <div role="row" className="contents">

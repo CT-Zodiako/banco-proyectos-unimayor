@@ -56,7 +56,7 @@ const EventFilters = ({ state, hasProject, topics, counts, kindTotals, onChange,
                                 aria-labelledby={`kind-${value}-label`}
                                 aria-describedby={`kind-${value}-desc kind-${value}-count`}
                                 onClick={() => onChange({ kind: value })}
-                                className="tab-pill focus-ring"
+                                className="tab-pill tab-pill-events focus-ring"
                             >
                                 <span className="flex w-full items-baseline justify-between gap-3">
                                     <span id={`kind-${value}-label`} className="tab-pill-label">{label}</span>

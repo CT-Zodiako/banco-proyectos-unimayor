@@ -11,3 +11,10 @@ export const BTN_PRIMARY = 'btn btn-primary';
 export const BTN_SECONDARY = 'btn btn-secondary';
 export const DOWNLOAD = 'btn btn-secondary';
 export const LINK = 'link-action';
+// Palette tones (src/lib/palette.js) as full class names, so Tailwind finds them: one hue = one meaning.
+export const TONE_CLASS = {
+    journals: 'tn-journals', events: 'tn-events', events2: 'tn-events2', q1: 'tn-q1', q2: 'tn-q2', q3: 'tn-q3', q4: 'tn-q4',
+    good: 'tn-good', fair: 'tn-fair', low: 'tn-low', lang: 'tn-lang', review: 'tn-review',
+};
+// Affinity level (alta / media / baja) on the ring and on the word: green, amber, rose.
+export const AFFINITY_CLASS = { high: 'aff-high tn-good', mid: 'aff-mid tn-fair', low: 'aff-low tn-low' };

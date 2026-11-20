@@ -1,3 +1,9 @@
+import { TONES } from './src/lib/palette.js';
+
+// Utilities for the meaning hues (bg-tone-q1-bg, text-tone-q1-fg, border-tone-q1-line, bg-tone-q1-solid ...). The hex
+// values live in src/lib/palette.js and reach the page as the :root variables of src/index.css (generated block).
+const toneColors = Object.fromEntries(Object.keys(TONES).map((name) => [name, Object.fromEntries(['bg', 'fg', 'line', 'solid'].map((part) => [part, `var(--tone-${name}-${part})`]))]));
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -20,6 +26,7 @@ export default {
                 },
                 // Semantic tokens (design/mejora-visual/04-componentes.html): one color, one meaning.
                 // Values live in src/index.css (:root) so the shared component classes and these utilities agree.
+                tone: toneColors,
                 sem: {
                     'area-bg': 'var(--sem-area-bg)',
                     'area-fg': 'var(--sem-area-fg)',

@@ -69,18 +69,18 @@ const ProjectDetail = () => {
                 <div className="flex flex-wrap gap-2">
                     <Link
                         to={eventsForProjectUrl(project.id)}
-                        className="btn btn-secondary btn-lg !whitespace-normal text-center"
+                        className="btn btn-events btn-lg !whitespace-normal text-center"
                         data-tip="Congresos y convocatorias afines a este proyecto"
                     >
-                        <CalendarDays size={18} aria-hidden="true" />
+                        <span className="type-ico" aria-hidden="true"><CalendarDays size={16} /></span>
                         ¿A qué eventos ir?
                     </Link>
                     <Link
                         to={wherePublishUrl(project.id)}
-                        className="btn btn-secondary btn-lg !whitespace-normal text-center"
+                        className="btn btn-journals btn-lg !whitespace-normal text-center"
                         data-tip="Revistas donde podrías publicar este proyecto"
                     >
-                        <BookOpen size={18} aria-hidden="true" />
+                        <span className="type-ico" aria-hidden="true"><BookOpen size={16} /></span>
                         ¿Dónde publicar este proyecto?
                     </Link>
                 </div>

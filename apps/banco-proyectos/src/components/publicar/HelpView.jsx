@@ -1,5 +1,8 @@
-import { dataSourcesText, QUARTILE_NOTES } from '../../lib/publicar/display';
+import { BookOpen, CalendarDays, CheckCircle2, XCircle } from 'lucide-react';
+import { JournalBadge } from './JournalBadges';
 import { QuartileBadge } from './JournalLinks';
+import { AFFINITY_CLASS } from './classes';
+import { WEEKS_FAST, WEEKS_MEDIUM, dataSourcesText, journalBadges, QUARTILE_NOTES } from '../../lib/publicar/display';
 import { AFFINITY_THRESHOLDS } from '../../lib/publicar/table';
 
 const CARD = 'bg-white border border-gray-200 rounded-2xl shadow-sm px-[18px] py-4 [&_li]:mb-1.5 [&_a]:text-institutional-blue [&_a]:underline';
@@ -7,6 +10,48 @@ const H2 = 'mt-0 mb-2 text-lg font-extrabold text-gray-900';
 const EXTERNAL = { target: '_blank', rel: 'noopener' };
 
 const QUARTILES = [['Q1', 'A1'], ['Q2', 'A2'], ['Q3', 'B'], ['Q4', 'C']];
+
+const SAMPLE = { languages: ['Spanish'], review: 'Double anonymous peer review', license: 'CC BY' };
+const sample = (id, weeks = 6) => journalBadges({ ...SAMPLE, weeks_to_publication: weeks }).find((badge) => badge.id === id);
+const { high, mid } = AFFINITY_THRESHOLDS;
+
+// One row of «Qué significa cada color»: the swatch (the same badge the results use) and its meaning in words.
+function ColorRow({ children, text }) {
+    return (
+        <li className="m-0 grid grid-cols-[minmax(0,22rem)_minmax(0,1fr)] items-center gap-x-3 gap-y-1 !mb-0 border-b border-gray-100 py-2 last:border-b-0 max-[560px]:grid-cols-1">
+            <span className="flex flex-wrap items-center gap-1.5">{children}</span>
+            <span>{text}</span>
+        </li>
+    );
+}
+const AffinitySwatch = ({ level, word }) => <span className={`aff-word aff-word-inline ${AFFINITY_CLASS[level]}`}>Afinidad {word}</span>;
+
+// Every color of the page with its swatch and meaning. One hue = one meaning; the text of each badge says it too.
+function ColorsCard() {
+    return (
+        <div className={`${CARD} col-span-full`}>
+            <h2 className={H2}>Qué significa cada color</h2>
+            <p className="mt-0 text-[13.5px] text-gray-700">Cada color tiene un solo significado y siempre va con una palabra, un icono o barras: no hace falta distinguir colores para entender los resultados.</p>
+            <ul className="m-0 list-none p-0 text-[13.5px] [&_a]:no-underline">
+                <ColorRow text="Los botones de las dos herramientas: revistas en verde azulado, eventos en violeta."><span className="badge badge-tone tn-journals" data-hue="journals"><BookOpen size={14} aria-hidden="true" className="flex-none" />Dónde publicar</span><span className="badge badge-tone tn-events" data-hue="events"><CalendarDays size={14} aria-hidden="true" className="flex-none" />Ver eventos</span></ColorRow>
+                <ColorRow text="Cuartil de SCImago, del mejor al cuarto, con su categoría Publindex: Q1 verde (A1), Q2 índigo (A2), Q3 ámbar (B) y Q4 rosa (C). Las barras también lo dicen: más barras, mejor cuartil.">
+                    {QUARTILES.map(([quartile]) => <QuartileBadge key={quartile} quartile={quartile} showPublindex={false} />)}
+                </ColorRow>
+                <ColorRow text={`Afinidad con el proyecto: alta ${high} % o más (verde), media de ${mid} a ${high - 1} % (ámbar) y baja menos de ${mid} % (rosa). El anillo, el número y la palabra comparten color.`}>
+                    <AffinitySwatch level="high" word="alta" /><AffinitySwatch level="mid" word="media" /><AffinitySwatch level="low" word="baja" />
+                </ColorRow>
+                <ColorRow text="Sin costo (verde): DOAJ indica que la revista no cobra APC ni otros cargos a los autores."><JournalBadge badge={sample('free')} /></ColorRow>
+                <ColorRow text="Acepta español (azul): puedes enviar el artículo en español."><JournalBadge badge={sample('spanish')} /></ColorRow>
+                <ColorRow text="Tipo de revisión por pares (gris azulado): doble ciego, simple ciego, abierta o editorial."><JournalBadge badge={sample('review')} /></ColorRow>
+                <ColorRow text={`Velocidad de publicación: rápida ${WEEKS_FAST} semanas o menos (verde), media hasta ${WEEKS_MEDIUM} (ámbar) y lenta más de ${WEEKS_MEDIUM} (rosa).`}>
+                    <JournalBadge badge={sample('speed', WEEKS_FAST)} /><JournalBadge badge={sample('speed', WEEKS_MEDIUM)} /><JournalBadge badge={sample('speed', WEEKS_MEDIUM + 4)} />
+                </ColorRow>
+                <ColorRow text="Licencia de uso de los artículos (verde azulado), por ejemplo CC BY."><JournalBadge badge={sample('license')} /></ColorRow>
+                <ColorRow text="Cumple (verde) y No cumple (rosa): lo que la revista pide frente a lo que el proyecto tiene; llevan ✓ y ✗."><span className="badge badge-tone tn-good"><CheckCircle2 size={14} aria-hidden="true" className="flex-none" />Cumple</span><span className="badge badge-tone tn-low"><XCircle size={14} aria-hidden="true" className="flex-none" />No cumple</span></ColorRow>
+            </ul>
+        </div>
+    );
+}
 
 // "Cómo leer esta página": what the journals are, how quartiles map to Publindex, how they are chosen and what the
 // affinity means.
@@ -59,6 +104,7 @@ export default function HelpView({ data }) {
                         <li><strong>Región (10):</strong> revista iberoamericana (10) u otra (5).</li>
                     </ul>
                 </div>
+                <ColorsCard />
                 <div className={`${CARD} border-l-4 border-l-institutional-yellow`}>
                     <h2 className={H2}>Antes de enviar un artículo</h2>
                     <ul className="pl-5 list-disc">

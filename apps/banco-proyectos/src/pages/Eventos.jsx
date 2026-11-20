@@ -108,7 +108,7 @@ function EventosPage({ eventosData }) {
 
     return (
         <div className="py-8 space-y-4">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-5">
+            <div className="hue-card tn-events rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm flex flex-col md:flex-row md:justify-between md:items-start gap-5">
                 <div>
                     <p className="text-xs font-bold text-sem-text-2 uppercase tracking-wider">Banco de Proyectos</p>
                     <h1 className="mt-1 mb-1.5 text-3xl max-md:text-[24px] leading-tight font-extrabold text-gray-900">Buscador de eventos académicos</h1>

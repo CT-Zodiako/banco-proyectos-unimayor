@@ -16,8 +16,8 @@ import { nextTrapIndex } from '../lib/project-panel';
 const TITLE = 'Buscar en todo el sitio';
 const BADGES = {
     project: { className: 'badge badge-area', Icon: Layers },
-    event: { className: 'badge badge-sector', Icon: CalendarDays },
-    journal: { className: 'badge badge-level', Icon: BookOpen },
+    event: { className: 'badge badge-tone tn-events', Icon: CalendarDays },
+    journal: { className: 'badge badge-tone tn-journals', Icon: BookOpen },
 };
 const OPTION = 'flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left';
 const ROW_ACTIVE = 'bg-blue-50 shadow-[inset_3px_0_0_0_#00428A]';

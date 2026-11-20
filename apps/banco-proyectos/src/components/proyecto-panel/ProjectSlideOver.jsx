@@ -3,11 +3,14 @@ import { createPortal } from 'react-dom';
 import { EscapeLink } from './PanelParts';
 import EventsTab from './EventsTab';
 import JournalsTab from './JournalsTab';
+import { BookOpen, CalendarDays } from 'lucide-react';
 import { BTN, FOCUS } from '../publicar/classes';
 import { focusables } from '../../lib/focusables';
 import { PANEL_TABS, nextTab, nextTrapIndex, panelFullUrl } from '../../lib/project-panel';
 
 const TAB_LABELS = { revistas: 'Revistas', eventos: 'Eventos' };
+// Each tab has the hue of its tool (teal journals, purple events) and an icon; the label and the count stay.
+const TAB_STYLES = { revistas: { className: 'tab-journals', Icon: BookOpen }, eventos: { className: 'tab-events', Icon: CalendarDays } };
 // Slide-over of the project page (design 02): the journals and events of the project without leaving it.
 // mode "push": wide screens, the page shifts left (class on <body>, see index.css) and stays usable.
 // mode "modal": "Ampliar" or a screen of up to 1100 px; a scrim covers the page, the rest of the app is inert, the
@@ -122,6 +125,7 @@ export default function ProjectSlideOver({ project, tab, mode, expanded, onExpan
                         {PANEL_TABS.map((id) => {
                             const selected = tab === id;
                             const count = meta[id] && meta[id].count;
+                            const { className: hue, Icon } = TAB_STYLES[id];
                             return (
                                 <button
                                     key={id}
@@ -132,10 +136,11 @@ export default function ProjectSlideOver({ project, tab, mode, expanded, onExpan
                                     aria-selected={selected}
                                     tabIndex={selected ? 0 : -1}
                                     onClick={() => onSelectTab(id)}
-                                    className={`px-4 py-3 -mb-px min-h-11 text-[15px] max-[760px]:text-sm max-[760px]:px-3 font-semibold whitespace-nowrap border-b-[3px] ${FOCUS} focus-visible:-outline-offset-[3px] ${selected ? 'text-institutional-blue border-institutional-blue' : 'text-gray-600 border-transparent hover:text-institutional-blue'}`}
+                                    className={`${hue} inline-flex items-center gap-2 px-4 py-3 -mb-px min-h-11 text-[15px] max-[760px]:text-sm max-[760px]:px-3 font-semibold whitespace-nowrap border-b-[3px] ${FOCUS} focus-visible:-outline-offset-[3px]`}
                                 >
+                                    <Icon size={16} aria-hidden="true" className="flex-none" />
                                     {TAB_LABELS[id]}
-                                    {typeof count === 'number' && <span className={`ml-1.5 inline-block rounded-full px-2 py-px text-xs font-bold ${selected ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>{count}</span>}
+                                    {typeof count === 'number' && <span className="tab-count ml-0.5 inline-block rounded-full px-2 py-px text-xs font-bold">{count}</span>}
                                 </button>
                             );
                         })}
