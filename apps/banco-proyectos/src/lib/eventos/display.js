@@ -2,6 +2,7 @@
    Ported from pipelines/eventos/site/app.js so the React components stay presentational. */
 import { daysLeft, formatDate, formatRange } from './filters.js';
 import { AFFINITY_MAX } from './affinity.js';
+import { formatDmy } from './dates.js';
 
 export const SOURCE_LABELS = { wikicfp: 'WikiCFP', ccfddl: 'CCF Deadlines', devpost: 'Devpost', manual: 'UNIMAYOR' };
 export const KIND_LABELS = { cfp: 'Convocatoria', attend: 'Para asistir' };
@@ -123,8 +124,8 @@ export function eventFilterChips(state) {
     if (state.modality !== 'all') add('modality', 'Modalidad', MODALITY_LABELS[state.modality], { modality: 'all' });
     if (state.colombia) add('colombia', 'Ubicación', 'Solo Colombia', { colombia: false });
     if (state.location.trim()) add('location', 'Ciudad o país', state.location.trim(), { location: '' });
-    if (state.dateFrom) add('dateFrom', 'Inicio desde', formatDate(state.dateFrom), { dateFrom: '' });
-    if (state.dateTo) add('dateTo', 'Inicio hasta', formatDate(state.dateTo), { dateTo: '' });
+    if (state.dateFrom) add('dateFrom', 'Inicio desde', formatDmy(state.dateFrom), { dateFrom: '' });
+    if (state.dateTo) add('dateTo', 'Inicio hasta', formatDmy(state.dateTo), { dateTo: '' });
     for (const topic of state.topics) add(`topic-${topic}`, 'Tema', topic, { topics: state.topics.filter((t) => t !== topic) });
     return chips;
 }

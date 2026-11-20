@@ -120,6 +120,8 @@
   .field-input {
     @apply h-11 w-full rounded-xl border border-sem-control-line bg-white pl-10 pr-3.5 text-[14.5px] text-gray-900 placeholder:text-sem-text-2 placeholder:opacity-100;
   }
+  .field-error { @apply mb-0 mt-1.5 text-[13px] font-semibold text-sem-danger-fg; }
+  .field-input[aria-invalid='true'] { @apply border-sem-danger-fg; }
   .field-select { @apply h-10 rounded-xl border border-sem-control-line bg-white pl-3 pr-8 text-sm text-gray-900; }
   .field-textarea {
     @apply w-full rounded-xl border border-sem-control-line bg-white px-3.5 py-2.5 text-[14.5px] text-gray-900 placeholder:text-sem-text-2 placeholder:opacity-100;

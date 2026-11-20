@@ -159,7 +159,7 @@ test('active filter chips: none by default, one per applied filter, each with th
     const chips = eventFilterChips(state);
     assert.deepEqual(chips.map(({ group, text }) => [group, text]), [
         ['Tipo', 'Convocatorias (presentar)'], ['Búsqueda', 'iot'], ['Modalidad', 'En línea'], ['Ubicación', 'Solo Colombia'],
-        ['Ciudad o país', 'Popayán'], ['Inicio desde', '1 jun 2099'], ['Inicio hasta', '31 jul 2099'], ['Tema', 'IoT'], ['Tema', 'Robótica'],
+        ['Ciudad o país', 'Popayán'], ['Inicio desde', '01/06/2099'], ['Inicio hasta', '31/07/2099'], ['Tema', 'IoT'], ['Tema', 'Robótica'],
     ]);
     assert.equal(new Set(chips.map((chip) => chip.id)).size, chips.length);
     assert.deepEqual(chips.map((chip) => chip.patch), [

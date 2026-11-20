@@ -38,7 +38,7 @@ describe('/eventos: data status', () => {
 });
 
 describe('/eventos: filters grouped in labeled sections', () => {
-    it('explains each section with a one-line helper and keeps the date controls as type="date" with a visible label', async () => {
+    it('explains each section with a one-line helper and keeps the two date controls with a visible label (Spanish dd/mm/aaaa text fields, T8)', async () => {
         await openEventos();
         const filters = screen.getByRole('search', { name: 'Filtros de eventos' });
         expect(within(filters).getByRole('heading', { level: 2, name: 'Filtros' })).toBeTruthy();
@@ -51,7 +51,7 @@ describe('/eventos: filters grouped in labeled sections', () => {
 
         for (const [label, id] of [['Inicio desde', 'date-from'], ['Inicio hasta', 'date-to']]) {
             const input = within(filters).getByLabelText(label);
-            expect(input.type).toBe('date');
+            expect(input.type).toBe('text');
             expect(input.id).toBe(id);
             const labelEl = filters.querySelector(`label[for="${id}"]`);
             expect(labelEl.classList.contains('sr-only')).toBe(false); // visible, not hidden
@@ -67,7 +67,7 @@ describe('/eventos: filters grouped in labeled sections', () => {
 
     it('the date inputs still filter by start date and write the URL', async () => {
         await openEventos();
-        fireEvent.change(screen.getByLabelText('Inicio desde'), { target: { value: '2099-07-01' } });
+        fireEvent.change(screen.getByLabelText('Inicio desde'), { target: { value: '01/07/2099' } });
         await waitFor(() => expect(window.location.search).toBe('?desde=2099-07-01'));
         const titles = within(screen.getByRole('region', { name: 'Eventos encontrados' })).getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
         expect(titles.sort()).toEqual(['Feria IoT y Robótica 2099', 'Simposio de Ciberseguridad 2099']);
@@ -116,8 +116,8 @@ describe('/eventos: active filters', () => {
         await openEventos('/eventos?desde=2099-07-01');
         const active = screen.getByRole('group', { name: 'Filtros activos' });
         expect(within(active).getByText('Inicio desde:')).toBeTruthy();
-        expect(within(active).getByText('1 jul 2099')).toBeTruthy();
-        await userEvent.setup().click(within(active).getByRole('button', { name: 'Quitar filtro: Inicio desde: 1 jul 2099' }));
+        expect(within(active).getByText('01/07/2099')).toBeTruthy();
+        await userEvent.setup().click(within(active).getByRole('button', { name: 'Quitar filtro: Inicio desde: 01/07/2099' }));
         await waitFor(() => expect(window.location.search).toBe(''));
     });
 });

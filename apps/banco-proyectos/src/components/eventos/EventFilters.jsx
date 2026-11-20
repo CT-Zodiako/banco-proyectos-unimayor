@@ -1,4 +1,6 @@
 import { Check, MapPin, Search } from 'lucide-react';
+import DateField from './DateField';
+import { isValidRange } from '../../lib/eventos/dates';
 import { KIND_FILTER_DESCRIPTIONS, KIND_FILTER_LABELS, eventFilterChips, plural } from '../../lib/eventos/display';
 import { activeCountLabel } from '../../lib/catalog';
 
@@ -21,6 +23,7 @@ const Field = ({ id, label, children }) => (
 // Filter panel of the event finder. It holds no state: every change goes up through onChange(patch).
 const EventFilters = ({ state, hasProject, topics, counts, kindTotals, onChange, searchRef }) => {
     const activeCount = eventFilterChips(state).length;
+    const rangeOk = isValidRange(state.dateFrom, state.dateTo);
     return (
         <section role="search" aria-label="Filtros de eventos" className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
@@ -120,14 +123,14 @@ const EventFilters = ({ state, hasProject, topics, counts, kindTotals, onChange,
                 </Section>
 
                 <Section title="Fechas" hint="Se filtra por la fecha de inicio del evento. Si usas este filtro, se excluyen los eventos sin fecha de inicio." className={kindTotals ? 'md:col-span-2 xl:col-span-1' : 'col-span-full'}>
-                    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(140px,100%),1fr))] gap-3">
-                        <Field id="date-from" label="Inicio desde">
-                            <input id="date-from" type="date" value={state.dateFrom} onChange={(event) => onChange({ dateFrom: event.target.value })} className="field-input !h-10 !pl-3" />
-                        </Field>
-                        <Field id="date-to" label="Inicio hasta">
-                            <input id="date-to" type="date" value={state.dateTo} onChange={(event) => onChange({ dateTo: event.target.value })} className="field-input !h-10 !pl-3" />
-                        </Field>
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(190px,100%),1fr))] gap-3">
+                        <DateField id="date-from" label="Inicio desde" value={state.dateFrom} onChange={(dateFrom) => onChange({ dateFrom })} describedBy={`date-help${rangeOk ? '' : ' date-range-error'}`} />
+                        <DateField id="date-to" label="Inicio hasta" value={state.dateTo} onChange={(dateTo) => onChange({ dateTo })} describedBy={`date-help${rangeOk ? '' : ' date-range-error'}`} />
                     </div>
+                    <p id="date-help" className="field-hint !mb-0 mt-2">Escribe la fecha como dd/mm/aaaa, por ejemplo 15/03/2027</p>
+                    {!rangeOk && (
+                        <p id="date-range-error" role="alert" className="field-error">«Inicio desde» es posterior a «Inicio hasta»: no hay fechas en ese rango. Cambia una de las dos.</p>
+                    )}
                 </Section>
             </div>
 
