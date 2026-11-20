@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { eventosFixture, publicarFixture } from './fixtures.js';
 
@@ -24,12 +24,20 @@ export function mockDataFetch(respond = (path, response) => response) {
 }
 
 /** Renders the real <App/> (its router, routes and lazy pages) at `url` ("/eventos?kind=cfp#x"). The app modules are
-    loaded again for each call so the data cache (src/lib/data-loader.js, src/hooks/useLazyData.js) starts empty. */
-export async function renderApp(url) {
+    loaded again for each call so the data cache (src/lib/data-loader.js, src/hooks/useLazyData.js,
+    src/lib/projects-loader.js) starts empty.
+    By default the light projects index (what the catalog, Home and the search read) is already downloaded
+    (`preloadProjects`; the full data is only downloaded by the project page itself) and the call returns once the page chunk of
+    the route has loaded (`settle`: no route skeleton left), so a test reads the page as it did before the code was split.
+    Pass `{ settle: false, preloadProjects: false }` to look at the loading states themselves. */
+export async function renderApp(url, { settle = true, preloadProjects = true } = {}) {
     window.history.replaceState({}, '', url);
     vi.resetModules();
     const { default: App } = await import('../../src/App.jsx');
-    return render(<App />);
+    if (preloadProjects) await (await import('../../src/lib/projects-loader.js')).loadProjectsIndex();
+    const result = render(<App />);
+    if (settle) await waitFor(() => { if (document.querySelector('[data-route-loading]')) throw new Error('page still loading'); });
+    return result;
 }
 
 /** A promise settled from the outside, for a download the test finishes when it chooses. */

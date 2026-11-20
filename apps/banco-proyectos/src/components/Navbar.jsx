@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import GlobalSearch from './GlobalSearch';
 import logo from '../assets/logo.png';
 import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
+import { prefetchRoute } from '../lib/routeChunks';
 
 // `match` lists the paths that belong to each item, so the item stays marked on its sub-pages too
 // (a project page belongs to "Proyectos"). `tone` adds the hue dot of the two tools (the same teal and purple as their
@@ -30,7 +31,7 @@ const Navbar = () => {
                         className={`flex min-w-0 items-center gap-3 py-2 rounded min-[1536px]:gap-4 ${FOCUS}`}
                     >
                         <div className="bg-white p-1 rounded-sm flex-none">
-                            <img src={logo} alt="" className="h-10 w-auto max-w-none" />
+                            <img src={logo} alt="" width="421" height="391" decoding="async" className="h-10 w-auto max-w-none" />
                         </div>
                         <div className="flex min-w-0 flex-col">
                             <span title="Institución Universitaria Colegio Mayor del Cauca" className="min-[1280px]:truncate text-[15px] sm:text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
@@ -47,6 +48,9 @@ const Navbar = () => {
                                     <Link
                                         to={to}
                                         aria-current={current ? 'page' : undefined}
+                                        onMouseEnter={() => prefetchRoute(to)}
+                                        onFocus={() => prefetchRoute(to)}
+                                        onTouchStart={() => prefetchRoute(to)}
                                         className={`flex items-center min-h-[44px] px-3.5 min-[1024px]:max-[1535px]:px-2.5 border-y-4 border-transparent transition-colors focus-visible:-outline-offset-4 ${FOCUS} ${current
                                             ? 'font-bold border-b-white bg-white/10'
                                             : 'font-medium hover:text-institutional-yellow'}`}

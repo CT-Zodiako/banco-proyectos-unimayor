@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BookOpen, CalendarDays, Layers, Search, X } from 'lucide-react';
 import useLazyData from '../hooks/useLazyData';
-import { useProjects } from '../hooks/useProjects';
+import { useProjectsIndex } from '../hooks/useProjects';
 import { DATA_FILES } from '../lib/data-loader';
 import { localIsoDate } from '../lib/eventos/filters';
 import { focusables } from '../lib/focusables';
@@ -25,7 +25,8 @@ const ROW_ACTIVE = 'bg-blue-50 shadow-[inset_3px_0_0_0_#00428A]';
 const isPending = (state) => state.status === 'idle' || state.status === 'loading';
 const plural = (n) => `${n} ${n === 1 ? 'resultado' : 'resultados'}`;
 
-function failureText(eventsFailed, journalsFailed) {
+function failureText(eventsFailed, journalsFailed, projectsFailed) {
+    if (projectsFailed) return 'No se pudieron cargar los proyectos.';
     if (eventsFailed && journalsFailed) return 'No se pudieron cargar los eventos ni las revistas. Se muestran solo proyectos.';
     if (eventsFailed) return 'No se pudieron cargar los eventos. Se muestran proyectos y revistas.';
     if (journalsFailed) return 'No se pudieron cargar las revistas. Se muestran proyectos y eventos.';
@@ -51,7 +52,8 @@ export default function GlobalSearchDialog({ onClose }) {
     const listId = `${ids}-list`;
     const [query, setQuery] = useState('');
     const [active, setActive] = useState(0);
-    const { projects } = useProjects();
+    const projectsState = useProjectsIndex();
+    const { projects } = projectsState;
     const events = useLazyData(DATA_FILES.eventos, true);
     const journals = useLazyData(DATA_FILES.catalog, true);
     const today = useMemo(() => localIsoDate(new Date()), []);
@@ -77,7 +79,8 @@ export default function GlobalSearchDialog({ onClose }) {
 
     const text = query.trim();
     const groups = useMemo(() => searchAll(indexes, text), [indexes, text]);
-    const pending = isPending(events) || isPending(journals);
+    const projectsFailed = projectsState.status === 'error';
+    const pending = projectsState.loading || isPending(events) || isPending(journals);
     const eventsFailed = events.status === 'error';
     const journalsFailed = journals.status === 'error';
 
@@ -133,11 +136,14 @@ export default function GlobalSearchDialog({ onClose }) {
     };
 
     const retry = () => {
+        if (projectsFailed) projectsState.retry();
         if (eventsFailed) events.retry();
         if (journalsFailed) journals.retry();
     };
 
-    const message = pending ? 'Cargando eventos y revistas…' : failureText(eventsFailed, journalsFailed);
+    let message = failureText(eventsFailed, journalsFailed, projectsFailed);
+    if (projectsState.loading) message = 'Cargando proyectos…';
+    else if (isPending(events) || isPending(journals)) message = 'Cargando eventos y revistas…';
 
     return createPortal(
         <div
@@ -188,7 +194,7 @@ export default function GlobalSearchDialog({ onClose }) {
                             {message && <p>{message}</p>}
                             {!pending && text && <p>{plural(resultCount(groups))}</p>}
                         </div>
-                        {!pending && (eventsFailed || journalsFailed) && (
+                        {!pending && (projectsFailed || eventsFailed || journalsFailed) && (
                             <button type="button" onClick={retry} className="btn btn-tertiary !min-h-[32px]">Reintentar</button>
                         )}
                     </div>

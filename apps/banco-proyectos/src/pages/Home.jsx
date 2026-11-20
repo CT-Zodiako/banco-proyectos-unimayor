@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { m, useReducedMotion } from 'framer-motion';
 import { ArrowRight, BookOpen, CalendarDays, Compass, Layers, Users } from 'lucide-react';
 import MetricsSection from '../components/MetricsSection';
-import { useProjects } from '../hooks/useProjects';
+import { LoadError } from '../components/proyecto-panel/PanelParts';
+import { useProjectsIndex } from '../hooks/useProjects';
+import useNearViewport from '../hooks/useNearViewport';
 import { areaTags, buildAreaFacets } from '../lib/catalog';
 import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
 
@@ -25,15 +27,15 @@ const TOOLS = [
 ];
 
 const Home = () => {
-    const { projects } = useProjects();
+    // The figures count the projects (the light index, a separate chunk): it is only downloaded when the figures come near the screen.
+    const [metricsRef, nearMetrics] = useNearViewport();
+    const { projects, error, retry } = useProjectsIndex({ enabled: nearMetrics });
     const reduceMotion = useReducedMotion();
     // With reduced motion the text is drawn at its final place from the first frame (no fade, no slide).
     const enter = (initial) => (reduceMotion ? false : initial);
 
     const metrics = useMemo(() => {
-        if (!projects || projects.length === 0) {
-            return { projects: 0, areas: 0, sectors: 0, newAreas: 0 };
-        }
+        if (projects.length === 0) return null;
         const uniqueAreas = new Set(projects.flatMap(areaTags));
         const uniqueSectors = new Set(projects.map(p => p.sector).filter(Boolean));
         const newAreas = buildAreaFacets(projects).flatMap((family) => family.areas).filter((area) => area.isNew).length;
@@ -56,22 +58,22 @@ const Home = () => {
                 </div>
 
                 <div className="relative z-10 px-6 sm:px-8 md:px-16 max-w-2xl text-white space-y-6">
-                    <motion.h1
+                    <m.h1
                         initial={enter({ opacity: 0, x: -20 })}
                         animate={{ opacity: 1, x: 0 }}
                         className="text-4xl md:text-5xl font-extrabold leading-tight"
                     >
                         Banco de Proyectos <span className="text-institutional-yellow">Académicos</span>
-                    </motion.h1>
-                    <motion.p
+                    </m.h1>
+                    <m.p
                         initial={enter({ opacity: 0, x: -20 })}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 }}
                         className="text-lg text-blue-50 leading-relaxed"
                     >
                         Explora las iniciativas tecnológicas, desarrollos de IoT y sistemas embebidos creados por nuestra comunidad académica.
-                    </motion.p>
-                    <motion.div
+                    </m.p>
+                    <m.div
                         initial={enter({ opacity: 0, y: 20 })}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
@@ -79,7 +81,7 @@ const Home = () => {
                         <Link to="/proyectos" className="bg-institutional-yellow text-institutional-blue px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:bg-yellow-300 transition-all inline-block focus-ring">
                             Ver Catálogo de Proyectos
                         </Link>
-                    </motion.div>
+                    </m.div>
                 </div>
             </section>
 
@@ -111,9 +113,10 @@ const Home = () => {
             </section>
 
             {/* Metrics Section */}
-            <section aria-labelledby="home-metrics">
+            <section aria-labelledby="home-metrics" ref={metricsRef}>
                 <h2 id="home-metrics" className="text-2xl font-bold text-gray-900">El banco en cifras</h2>
                 <p className="mt-1 mb-6 text-[15px] text-sem-text-2">Cuánto contiene el catálogo hoy, contado desde los datos de los proyectos.</p>
+                {error && <div className="mb-4"><LoadError what="las cifras" onRetry={retry} /></div>}
                 <MetricsSection metrics={metrics} />
             </section>
 

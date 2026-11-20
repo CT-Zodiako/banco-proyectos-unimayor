@@ -6,12 +6,18 @@ import {
     ExternalLink, Globe, BookOpen, CalendarDays, Code
 } from 'lucide-react';
 import OpportunityCards from '../components/proyecto-panel/OpportunityCards';
-import ProjectSlideOver from '../components/proyecto-panel/ProjectSlideOver';
+import PageSkeleton from '../components/PageSkeleton';
+import { DialogLoader } from '../components/RouteLoader';
+import { lazyRoute } from '../lib/lazyRoute';
+import { LoadError } from '../components/proyecto-panel/PanelParts';
 import { LevelDots } from '../components/ProjectCard';
 import { useProjects } from '../hooks/useProjects';
 import useProjectPanel from '../hooks/useProjectPanel';
 import { isNewProject, levelRank } from '../lib/catalog';
 import { wherePublishUrl, eventsForProjectUrl, savedCatalogUrl } from '../lib/links';
+
+// The slide-over (and the events and journals tabs inside it) downloads the first time a panel opens.
+const ProjectSlideOver = lazyRoute(() => import('../components/proyecto-panel/ProjectSlideOver'));
 
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
@@ -30,14 +36,13 @@ const TABLE_HEAD = 'bg-gray-100 border-b border-gray-200 text-xs font-extrabold 
 
 const ProjectDetail = () => {
     const { id } = useParams();
-    const { projects, loading } = useProjects();
+    const { projects, loading, error, retry } = useProjects();
     const panel = useProjectPanel();
 
     const project = projects?.find(p => p.id === id);
 
-    if (loading) {
-        return <div className="py-20 text-center font-bold" role="status">Cargando detalles del proyecto...</div>;
-    }
+    if (error) return <div className="py-8"><LoadError what="el proyecto" onRetry={retry} /></div>;
+    if (loading) return <PageSkeleton what="el proyecto" />;
 
     if (!project) {
         return (
@@ -340,15 +345,17 @@ const ProjectDetail = () => {
             </div>
 
             {panel.tab && (
-                <ProjectSlideOver
-                    project={project}
-                    tab={panel.tab}
-                    mode={panel.mode}
-                    expanded={panel.expanded}
-                    onExpandedChange={panel.setExpanded}
-                    onSelectTab={panel.select}
-                    onClose={panel.close}
-                />
+                <DialogLoader what="el panel" onClose={panel.close}>
+                    <ProjectSlideOver
+                        project={project}
+                        tab={panel.tab}
+                        mode={panel.mode}
+                        expanded={panel.expanded}
+                        onExpandedChange={panel.setExpanded}
+                        onSelectTab={panel.select}
+                        onClose={panel.close}
+                    />
+                </DialogLoader>
             )}
         </div>
     );

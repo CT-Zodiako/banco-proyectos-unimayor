@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import useLazyData from '../../hooks/useLazyData';
 import { DATA_FILES } from '../../lib/data-loader';
 import { Search } from 'lucide-react';
+import PanelSkeleton from '../proyecto-panel/PanelSkeleton';
 import { JournalBadges } from './JournalBadges';
 import { ExtLink, FavoriteButton, QuartileBadge } from './JournalLinks';
 import { FOCUS, TONE_CLASS } from './classes';
@@ -118,6 +119,7 @@ export default function CatalogView({ active, initialQuery = '', request = null 
                 {failed && <button type="button" onClick={retry} className="btn btn-secondary">Reintentar</button>}
             </div>
             <div className="grid gap-3">
+                {status === 'loading' && <PanelSkeleton rows={4} />}
                 {rows.slice(0, shown).map(({ journal }) => <JournalCard key={journal.id} journal={journal} />)}
                 {catalog && rows.length === 0 && (
                     <p className="text-center p-7 text-sem-text-2 border border-dashed border-sem-control-line rounded-2xl bg-white">Sin resultados para esta búsqueda.</p>

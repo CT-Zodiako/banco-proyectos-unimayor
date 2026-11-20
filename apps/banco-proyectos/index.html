@@ -7,7 +7,10 @@
     <title>Banco de Proyectos IoT - UNIMAYOR</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- The font stylesheet does not block the first paint: it loads as print-only CSS and applies once it arrives
+         (display=swap shows the page in the fallback font meanwhile). Without scripts the <noscript> link loads it normally. -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
   </head>
   <body class="bg-institutional-light text-institutional-dark font-inter">
     <div id="root"></div>

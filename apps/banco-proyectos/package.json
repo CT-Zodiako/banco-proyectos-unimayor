@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/build-projects-index.mjs",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx,mjs,cjs --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -12,6 +13,7 @@
     "test:unit": "node --test \"tests/*.test.mjs\"",
     "test:dom": "vitest run",
     "check:area": "node scripts/check-area.mjs",
+    "build:projects-index": "node scripts/build-projects-index.mjs",
     "export:projects": "node scripts/export-projects.mjs ../../pipelines/donde-publicar/data/projects.json"
   },
   "dependencies": {

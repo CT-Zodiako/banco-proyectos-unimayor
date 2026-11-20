@@ -34,7 +34,8 @@ async function openApp(url = '/proyectos', override) {
     await renderApp(url);
     return user;
 }
-const openWithButton = async (user) => { await user.click(opener()); return combobox(); };
+// The dialog is a lazy chunk (T16): it is there once its code has downloaded.
+const openWithButton = async (user) => { await user.click(opener()); await screen.findByRole('dialog', { name: BUTTON }); return combobox(); };
 const search = async (user, text) => { const input = combobox(); await user.clear(input); await user.type(input, text); return input; };
 const loaded = () => waitFor(() => expect(within(dialog()).queryByText('Cargando eventos y revistas…')).toBeNull());
 
@@ -88,21 +89,21 @@ describe('opening', () => {
     it('Ctrl+K and Cmd+K open it from anywhere, even from a text field', async () => {
         const user = await openApp();
         await user.keyboard('{Control>}k{/Control}');
-        expect(dialog()).toBeTruthy();
+        expect(await screen.findByRole('dialog', { name: BUTTON })).toBeTruthy();
         await user.keyboard('{Escape}');
         expect(screen.queryByRole('dialog')).toBeNull();
         await user.keyboard('{Meta>}k{/Meta}');
-        expect(dialog()).toBeTruthy();
+        expect(await screen.findByRole('dialog', { name: BUTTON })).toBeTruthy();
         await user.keyboard('{Escape}');
         await user.click(screen.getAllByRole('searchbox')[0]);
         await user.keyboard('{Control>}k{/Control}');
-        expect(dialog()).toBeTruthy();
+        expect(await screen.findByRole('dialog', { name: BUTTON })).toBeTruthy();
     });
 
     it('«/» opens it when the focus is not in a field, and types the slash when it is', async () => {
         const user = await openApp();
         await user.keyboard('/');
-        expect(dialog()).toBeTruthy();
+        expect(await screen.findByRole('dialog', { name: BUTTON })).toBeTruthy();
         expect(combobox().value).toBe('');
         await user.keyboard('{Escape}');
 
@@ -131,6 +132,7 @@ describe('opening', () => {
         fireEvent.keyDown(document.body, { key: '/', altKey: true });
         expect(screen.queryByRole('dialog')).toBeNull();
         await user.click(screen.getByRole('button', { name: 'Proponer proyecto' }));
+        await screen.findByRole('dialog', { name: 'Proponer proyecto' }); // a lazy chunk (T16)
         await user.keyboard('{Control>}k{/Control}');
         expect(screen.getAllByRole('dialog')).toHaveLength(1);
         expect(screen.getByRole('dialog', { name: 'Proponer proyecto' })).toBeTruthy();
@@ -147,6 +149,7 @@ describe('opening', () => {
         render(<App />, { container: host });
         const user = userEvent.setup();
         await user.click(opener());
+        await screen.findByRole('dialog', { name: BUTTON });
         expect(host.hasAttribute('inert')).toBe(true);
         expect(document.body.style.overflow).toBe('hidden');
         await user.keyboard('{Escape}');
@@ -406,7 +409,7 @@ describe('choosing a result', () => {
         await search(user, 'zzzz');
         await user.keyboard('{Enter}');
         expect(route()).toBe('/oportunidades');
-        expect(dialog()).toBeTruthy();
+        expect(await screen.findByRole('dialog', { name: BUTTON })).toBeTruthy();
     });
 });
 
@@ -459,6 +462,7 @@ describe('closing', () => {
     it('Esc with nothing focused (opened with «/») leaves the focus on the Buscar button', async () => {
         const user = await openApp();
         await user.keyboard('/');
+        await screen.findByRole('dialog', { name: BUTTON }); // a lazy chunk (T16): Esc has to find the dialog open
         await user.keyboard('{Escape}');
         expect(document.activeElement).toBe(opener());
     });

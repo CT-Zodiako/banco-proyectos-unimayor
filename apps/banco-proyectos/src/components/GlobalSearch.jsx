@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
-import GlobalSearchDialog from './GlobalSearchDialog';
+import { DialogLoader } from './RouteLoader';
+import { lazyRoute } from '../lib/lazyRoute';
 import { shortcutHint } from '../lib/globalSearch';
+
+// The dialog (and the search code behind it) is its own chunk, downloaded the first time the button is reached.
+const GlobalSearchDialog = lazyRoute(() => import('./GlobalSearchDialog'));
 
 const FIELDS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
 const isTyping = (target) => target instanceof HTMLElement
@@ -12,7 +16,7 @@ const otherModalOpen = () => document.querySelector('[role="dialog"][aria-modal=
 const platform = () => (typeof navigator === 'undefined' ? '' : navigator.userAgentData?.platform || navigator.platform || '');
 
 // «Buscar» button of the navbar plus its shortcuts (Ctrl/Cmd+K anywhere, «/» outside text fields). The dialog is only
-// mounted while it is open, so the events and journals it needs are not downloaded before the first time.
+// mounted while it is open, so the projects, events and journals it needs are not downloaded before the first time.
 export default function GlobalSearch() {
     const [open, setOpen] = useState(false);
     const [hint] = useState(() => shortcutHint(platform()));
@@ -69,6 +73,9 @@ export default function GlobalSearch() {
                 ref={buttonRef}
                 type="button"
                 onClick={show}
+                onMouseEnter={GlobalSearchDialog.prefetch}
+                onFocus={GlobalSearchDialog.prefetch}
+                onTouchStart={GlobalSearchDialog.prefetch}
                 aria-label="Buscar en todo el sitio"
                 aria-haspopup="dialog"
                 aria-keyshortcuts="Control+K Meta+K"
@@ -78,7 +85,7 @@ export default function GlobalSearch() {
                 <span className="hidden md:inline min-[1024px]:max-[1535px]:sr-only">Buscar</span>
                 <kbd aria-hidden="true" className="hidden rounded border border-white/40 px-1.5 py-px font-sans text-xs font-semibold text-white/90 md:inline">{hint}</kbd>
             </button>
-            {open && <GlobalSearchDialog onClose={close} />}
+            {open && <DialogLoader what="la búsqueda" onClose={() => close()}><GlobalSearchDialog onClose={close} /></DialogLoader>}
         </>
     );
 }

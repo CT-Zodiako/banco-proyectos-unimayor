@@ -1,8 +1,9 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { m, useReducedMotion } from 'framer-motion';
 import { BookOpen, Briefcase, CalendarDays, Clock, Code, Cpu, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { isNewProject, levelRank, splitProjectTitle } from '../lib/catalog';
 import { wherePublishUrl, eventsForProjectUrl } from '../lib/links';
+import { prefetchProject } from '../lib/routeChunks';
 
 const problemOf = (descripcion) =>
     descripcion.split(/\n\n|\n/).find((p) => p.toLowerCase().startsWith('problema:'))?.replace(/problema:\s*/i, '') || descripcion;
@@ -22,11 +23,12 @@ const ProjectCard = ({ project }) => {
     const rank = levelRank(project.nivel);
     const titleId = `project-title-${project.id}`;
     const forProject = ` del proyecto ${number ?? title}`;
-    const hardware = project.hardware.length;
-    const software = project.software.length;
+    // The catalog gives light entries (counts); a full project also works.
+    const hardware = project.hardwareCount ?? project.hardware.length;
+    const software = project.softwareCount ?? project.software.length;
 
     return (
-        <motion.article
+        <m.article
             aria-labelledby={titleId}
             initial={reduceMotion ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -40,7 +42,7 @@ const ProjectCard = ({ project }) => {
                 <div className="min-w-0">
                     {number !== null && <p className="text-[12.5px] font-semibold text-sem-text-2">Proyecto {number}</p>}
                     <h3 id={titleId} className="mt-px text-[18px] leading-[1.3] font-bold text-gray-900 line-clamp-3">
-                        <Link to={`/proyecto/${project.id}`} className="hover:text-institutional-blue hover:underline hover:underline-offset-[3px] focus-ring rounded">
+                        <Link to={`/proyecto/${project.id}`} onMouseEnter={prefetchProject} onFocus={prefetchProject} className="hover:text-institutional-blue hover:underline hover:underline-offset-[3px] focus-ring rounded">
                             {title}
                         </Link>
                     </h3>
@@ -95,7 +97,7 @@ const ProjectCard = ({ project }) => {
                     </Link>
                 </div>
             </div>
-        </motion.article>
+        </m.article>
     );
 };
 

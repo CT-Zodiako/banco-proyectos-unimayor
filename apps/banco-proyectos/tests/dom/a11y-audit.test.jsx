@@ -177,7 +177,8 @@ describe('/proyectos: «Proponer proyecto» dialog', () => {
         await open('/proyectos', 'Explorar proyectos');
         const opener = screen.getByRole('button', { name: 'Proponer proyecto' });
         await user.click(opener);
-        return { user, opener, dialog: screen.getByRole('dialog', { name: 'Proponer proyecto' }) };
+        // the dialog is a lazy chunk: it appears once its code has downloaded
+        return { user, opener, dialog: await screen.findByRole('dialog', { name: 'Proponer proyecto' }) };
     };
 
     it('is a modal dialog named by its title, with the focus inside and a closing button with a name', async () => {
@@ -212,7 +213,7 @@ describe('/proyectos: «Proponer proyecto» dialog', () => {
         expect(screen.queryByRole('dialog')).toBeNull();
         expect(document.activeElement).toBe(opener);
         await user.click(opener);
-        await user.click(screen.getByRole('button', { name: 'Cancelar' }));
+        await user.click(await screen.findByRole('button', { name: 'Cancelar' }));
         expect(screen.queryByRole('dialog')).toBeNull();
         expect(document.activeElement).toBe(opener);
     });

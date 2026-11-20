@@ -1,22 +1,20 @@
-import { lazy, Suspense } from 'react';
+import { LazyMotion, domAnimation } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
 import TapTips from './components/TapTips';
 import Home from './pages/Home';
+import RouteLoader from './components/RouteLoader';
 import ProjectsPage from './pages/ProjectsPage';
-import ProjectDetail from './pages/ProjectDetail';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Opportunities from './pages/Opportunities';
+import { ROUTE_PAGES } from './lib/routeChunks';
 import LegacyRedirect from './components/LegacyRedirect';
 import logo from './assets/logo.png';
 import { EVENTS_URL, LEGACY_EVENTS_PATH, LEGACY_PUBLISH_PATH, PUBLISH_URL } from './lib/links';
 import { Mail, Globe, MapPin } from 'lucide-react';
 
-// The event and journal data (hundreds of KB to a few MB of JSON) is only downloaded when each finder is opened.
-const Eventos = lazy(() => import('./pages/Eventos'));
-const DondePublicar = lazy(() => import('./pages/DondePublicar'));
+// Every page but Home and the shell of /proyectos (title, summary, loading state; its results are a chunk) is its own chunk (src/lib/routeChunks.js), downloaded when its route opens. The event and journal
+// data (hundreds of KB to a few MB of JSON) is only downloaded when each finder is opened.
+const { Proyecto, Acerca, Contacto, Oportunidades, Eventos, DondePublicar } = ROUTE_PAGES;
 
 // First stop of the keyboard: moves the focus to <main> without changing the URL (no #hash is added).
 const SkipLink = () => (
@@ -39,7 +37,7 @@ const Footer = () => (
         <div className="page-container grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="space-y-4">
                 <div className="bg-white rounded-xl p-2 inline-block">
-                    <img src={logo} alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" className="h-24 w-auto" />
+                    <img src={logo} alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" width="421" height="391" loading="lazy" decoding="async" className="h-24 w-auto" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-200">UNIMAYOR</h2>
                 <p className="text-gray-400 text-sm leading-relaxed">
@@ -86,36 +84,40 @@ const Footer = () => (
     </footer>
 );
 
+// LazyMotion + the `m` components (Home, the figures, the project cards) load only the animation features the app uses
+// (animate, hover) instead of the whole library.
 function App() {
     return (
-        <Router>
-            <ScrollToTop />
-            <div className="min-h-screen flex flex-col bg-institutional-light">
-                <SkipLink />
-                <TapTips />
-                <Navbar />
-                <main id="contenido" tabIndex={-1} className="flex-grow page-container">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/proyectos" element={<ProjectsPage />} />
-                        <Route path="/proyecto/:id" element={<ProjectDetail />} />
-                        <Route path="/acerca" element={<About />} />
-                        <Route path="/contacto" element={<Contact />} />
-                        <Route path="/oportunidades" element={<Opportunities />} />
-                        <Route path={EVENTS_URL} element={<Suspense fallback={<div className="py-20 text-center text-sem-text-2" role="status">Cargando eventos…</div>}><Eventos /></Suspense>} />
-                        <Route path={LEGACY_EVENTS_PATH} element={<LegacyRedirect to={EVENTS_URL} />} />
-                        <Route path={PUBLISH_URL} element={<Suspense fallback={<div className="py-20 text-center text-sem-text-2" role="status">Cargando revistas…</div>}><DondePublicar /></Suspense>} />
-                        <Route path={LEGACY_PUBLISH_PATH} element={<LegacyRedirect to={PUBLISH_URL} />} />
-                        <Route path="*" element={<div className="py-20 text-center space-y-4">
-                            <h1 className="text-3xl font-extrabold text-gray-900">Página no encontrada</h1>
-                            <p className="text-gray-700">La dirección no existe en el banco de proyectos.</p>
-                            <Link to="/" className="btn btn-primary btn-lg">Ir al inicio</Link>
-                        </div>} />
-                    </Routes>
-                </main>
-                <Footer />
-            </div>
-        </Router>
+        <LazyMotion features={domAnimation}>
+            <Router>
+                <ScrollToTop />
+                <div className="min-h-screen flex flex-col bg-institutional-light">
+                    <SkipLink />
+                    <TapTips />
+                    <Navbar />
+                    <main id="contenido" tabIndex={-1} className="flex-grow page-container">
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/proyectos" element={<ProjectsPage />} />
+                            <Route path="/proyecto/:id" element={<RouteLoader what="el proyecto"><Proyecto /></RouteLoader>} />
+                            <Route path="/acerca" element={<RouteLoader what="la página"><Acerca /></RouteLoader>} />
+                            <Route path="/contacto" element={<RouteLoader what="la página"><Contacto /></RouteLoader>} />
+                            <Route path="/oportunidades" element={<RouteLoader what="sus oportunidades"><Oportunidades /></RouteLoader>} />
+                            <Route path={EVENTS_URL} element={<RouteLoader what="los eventos"><Eventos /></RouteLoader>} />
+                            <Route path={LEGACY_EVENTS_PATH} element={<LegacyRedirect to={EVENTS_URL} />} />
+                            <Route path={PUBLISH_URL} element={<RouteLoader what="las revistas"><DondePublicar /></RouteLoader>} />
+                            <Route path={LEGACY_PUBLISH_PATH} element={<LegacyRedirect to={PUBLISH_URL} />} />
+                            <Route path="*" element={<div className="py-20 text-center space-y-4">
+                                <h1 className="text-3xl font-extrabold text-gray-900">Página no encontrada</h1>
+                                <p className="text-gray-700">La dirección no existe en el banco de proyectos.</p>
+                                <Link to="/" className="btn btn-primary btn-lg">Ir al inicio</Link>
+                            </div>} />
+                        </Routes>
+                    </main>
+                    <Footer />
+                </div>
+            </Router>
+        </LazyMotion>
     );
 }
 
