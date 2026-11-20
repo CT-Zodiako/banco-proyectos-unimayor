@@ -1,30 +1,33 @@
 # Eventos — academic event finder for the UNIMAYOR project bank
 
-Static page that lists academic events where students of the project bank can take part. It covers two kinds:
+React page (a route of the project bank) that lists academic events where students of the project bank can take part. It covers two kinds:
 
 - **Congresos con convocatoria** (`kind: "cfp"`): conferences with an open call for papers, where a student can
   submit and present a project.
 - **Eventos para asistir** (`kind: "attend"`): hackathons, talks, workshops and fairs.
 
 Events come from public sources plus a hand-curated file for local Colombian events. A pipeline downloads them,
-tags them with the bank's topic areas, removes duplicates and expired events, and writes `site/data.js`. The page
+tags them with the bank's topic areas, removes duplicates and expired events, and writes `apps/banco-proyectos/src/data/eventos.json`. The page
 hides expired events by itself, so a file that is a few weeks old still shows only open events.
 
-The project bank serves it at `/eventos/index.html` (its `predev`/`prebuild` copy `site/` into
-`apps/banco-proyectos/public/eventos/`, without `sample-data.js`) and links to it from the navbar and footer.
+The page lives in the project bank, `apps/banco-proyectos`, at the route `/eventos` (`src/pages/Eventos.jsx`), and
+links to it from the navbar and footer. The generated JSON is committed and bundled by Vite, so deploying needs no
+Python, and no sample data ships with the app. The old static URL `/eventos/index.html?p=<project id>` still works:
+the router redirects it to `/eventos?p=<project id>` with the same project preselected.
 
 ## Layout
 
 | Path | Purpose |
 |---|---|
-| `site/` | The page (`index.html`, `app.js`, `filters.js`, `styles.css`) and the generated `data.js` |
+| `../banco-proyectos/src/data/eventos.json` | The generated data the page imports (committed) |
+| `../banco-proyectos/src/pages/Eventos.jsx` | The page; its components are in `src/components/eventos/` and its pure logic (filters, affinity, map links, favorites) in `src/lib/eventos/` |
 | `pipeline/eventos.py` | Pure logic: source parsers, topic tagging, manual file validation, dedupe, expiry, output |
 | `pipeline/sources.py` | Downloads (urllib, curl fallback on TLS errors) and the `data/raw/` cache |
 | `pipeline/projects.py` | Project profiles (topics, keywords) for the project → events cross |
-| `pipeline/build.py` | Command that generates `site/data.js` |
+| `pipeline/build.py` | Command that generates `eventos.json` |
 | `data/manual-events.json` | Hand-curated events (Colombian congresses, talks, fairs) |
 | `data/raw/` | Saved downloads used by `--offline` (not versioned) |
-| `tests/` | Pipeline tests (Python `unittest`) with small saved source pages in `tests/fixtures/` |
+| `tests/` | Pipeline tests (Python `unittest`) with small saved source pages in `tests/fixtures/`; the tests of the page logic are `apps/banco-proyectos/tests/eventos-*.test.mjs` |
 | `odd/tasks/eventos.md` | Feature specification, event schema and decision log (repository root) |
 
 ## Sources
@@ -83,14 +86,14 @@ Learning, Robótica, Sistemas Ciberfísicos, Desarrollo de Software, Videojuegos
 - **Expiry** (same rule as the page): a `cfp` event is expired when its deadline (else its end date, else its
   start date) is before today; an `attend` event when its end date (else its start date) is before today. An event
   that ends or closes today is still shown. Events with no date at all are left out.
-- `sources` in `data.js` counts the events of each source that made it into the file, after dedupe and expiry.
+- `sources` in `eventos.json` counts the events of each source that made it into the file, after dedupe and expiry.
 
 ## Commands
 
 From `apps/eventos`:
 
 ```bash
-python3 -E -m pipeline.build                  # download all sources (about 4-5 minutes), write site/data.js
+python3 -E -m pipeline.build                  # download all sources (about 4-5 minutes), write eventos.json
 python3 -E -m pipeline.build --offline        # rebuild from the downloads saved in data/raw/
 python3 -E -m pipeline.build --require-all-sources  # as the weekly workflow: write nothing if any source fails
 python3 -I -m unittest discover -s tests -t . # tests
@@ -99,12 +102,12 @@ python3 -I -m unittest discover -s tests -t . # tests
 Options: `--manual`, `--projects`, `--raw`, `--out` override paths; `--wikicfp-pages N` (default 5), `--timeout SECONDS`
 (default 30), `--today YYYY-MM-DD` (expiry date, for tests). By default a public source that fails as a whole
 counts as 0 events; with `--require-all-sources` the build prints
-`error: --require-all-sources: <sources> failed; site/data.js was not written` and exits with code 1, keeping the
-previous `site/data.js`.
+`error: --require-all-sources: <sources> failed; eventos.json was not written` and exits with code 1, keeping the
+previous `eventos.json`.
 
-The build prints one line, e.g. `wikicfp=316 ccfddl=88 devpost=47 manual=2 events=453 projects=210 out=…/site/data.js`.
+The build prints one line, e.g. `wikicfp=316 ccfddl=88 devpost=47 manual=2 events=453 projects=210 out=…/banco-proyectos/src/data/eventos.json`.
 When a source fails, the build prints `warning: <source> failed: …`, reports 0 for it and writes the file with
-the others. It exits with code 1 without writing `site/data.js` when every public source fails, or when the
+the others. It exits with code 1 without writing `eventos.json` when every public source fails, or when the
 manual file is missing or invalid (`error: data/manual-events.json: entry 1: "kind" must be "cfp" or "attend"`),
 or when the projects file is invalid (`error: …/projects.json: entry 0: "titulo" is required`). A missing projects
 file only prints `warning: missing projects file …; writing projects: []` and the events are still written.
@@ -150,7 +153,7 @@ that no public source lists. Check dates on the official site before adding an e
 | `notes` | no | Free text for maintainers; not published |
 
 Any other field, an unknown topic or an invalid date stops the build with an error that names the entry index
-(counted from 0). Expired entries are left out of `data.js` automatically; delete them from the file when you
+(counted from 0). Expired entries are left out of `eventos.json` automatically; delete them from the file when you
 see them.
 
 ## Search and comparison
@@ -163,7 +166,7 @@ Events with a published physical location include a link to a Google Maps search
 
 ## Affinity on the page
 
-With `?p=<project id>` (the bank's "¿A qué eventos ir?" button), `site/filters.js` (`affinity`, `rankForProject`)
+With `?p=<project id>` (the bank's "¿A qué eventos ir?" button), `src/lib/eventos/affinity.js` (`affinity`, `rankForProject`)
 shows only events sharing at least one topic with the project, ranked by an estimated affinity from 0 to 100:
 shared topics 60 (shared / project topics), keyword hits in the event title or name 20 (whole words, 10 each),
 Colombia or online 10, time to prepare 10 (cfp deadline ≥ 21 days 10, 7–20 days 5, < 7 days 0, no deadline 5;
@@ -172,10 +175,10 @@ it is not an acceptance probability. The other filters still apply on top, and a
 
 ## Project profiles (project → events)
 
-The project bank links each project to `/eventos/?p=<project id>`, which ranks events by estimated affinity with
+The project bank links each project to `/eventos?p=<project id>`, which ranks events by estimated affinity with
 that project (contract: "Project cross" in `odd/tasks/eventos.md`). The build reads the bank projects from
 `../donde-publicar/data/projects.json` (option `--projects`; refresh it with `npm run export:projects` in
-`apps/banco-proyectos`) and writes `window.EVENTOS.projects`, sorted by project number:
+`apps/banco-proyectos`) and writes the `projects` list of `eventos.json`, sorted by project number:
 
 ```json
 {"id": "proj_001", "title": "Sistema de Monitoreo Agrícola Distribuido con MQTT", "emoji": "🌾",
@@ -224,8 +227,9 @@ Rules (`pipeline/projects.py`; all matching is on lower case, accent-free text):
 
 Events are refreshed automatically every Monday, and on demand from **Run workflow**, by
 `.github/workflows/actualizar-datos.yml` (see the root README). It runs the tests and
-`python3 -E -m pipeline.build --require-all-sources`, and commits `site/data.js` to master only when it succeeds;
-otherwise the page keeps the previous events.
+`python3 -E -m pipeline.build --require-all-sources`, and commits `apps/banco-proyectos/src/data/eventos.json` to master only when it succeeds;
+otherwise the page keeps the previous events. The workflow also runs the page-logic tests
+(`node --test "../banco-proyectos/tests/eventos-*.test.mjs"`) before and after the build.
 
 To refresh by hand (for example after editing `data/manual-events.json`, or to check a change before pushing):
 
@@ -235,11 +239,15 @@ To refresh by hand (for example after editing `data/manual-events.json`, or to c
 3. `python3 -E -m pipeline.build` (needs network; about 4-5 minutes).
 4. `python3 -I -m unittest discover -s tests -t .`
 5. Open the page (see below) and check a few events.
-6. Commit `site/data.js` (and the manual file) and push to master; Railway redeploys the project bank.
+6. Commit `apps/banco-proyectos/src/data/eventos.json` (and the manual file) and push to master; Railway redeploys the project bank.
 
 ## Preview locally
 
 ```bash
-python3 -I -m http.server 8766 --bind 127.0.0.1 --directory site
-# open http://127.0.0.1:8766/
+cd ../banco-proyectos
+npm run dev
+# open http://localhost:5173/eventos (or /eventos?p=proj_001)
 ```
+
+Tests of the page logic: `npm test` in `apps/banco-proyectos` (`tests/eventos-filters.test.mjs`,
+`eventos-affinity.test.mjs`, `eventos-map.test.mjs` and `eventos-data.test.mjs`, which checks the committed data).

@@ -10,9 +10,9 @@ function storage(initial = null) {
 const event = { type: 'event', id: 'e1', title: 'Congreso', url: 'https://example.org' };
 const journal = { type: 'journal', id: 'e1', title: 'Revista', url: 'https://example.org' };
 
-test('all three applications use the same local storage contract', () => {
+test('the applications that still ship a copy use the same local storage contract', () => {
   const canonical = readFileSync(new URL('../src/lib/opportunities.js', import.meta.url), 'utf8');
-  for (const path of ['../../eventos/site/opportunities.js', '../../donde-publicar/site/opportunities.js']) {
+  for (const path of ['../../donde-publicar/site/opportunities.js']) {
     assert.equal(readFileSync(new URL(path, import.meta.url), 'utf8'), canonical);
   }
 });

@@ -19,7 +19,7 @@ class OfflineBuildTest(unittest.TestCase):
         self.tmp = pathlib.Path(tempfile.mkdtemp())
         self.raw = self.tmp / "raw"
         self.manual = self.tmp / "manual-events.json"
-        self.out = self.tmp / "site" / "data.js"
+        self.out = self.tmp / "data" / "eventos.json"
         self.manual.write_text(json.dumps([CICI]), encoding="utf-8")
         self.projects = self.tmp / "projects.json"
         shutil.copy(FIXTURES / "projects.json", self.projects)
@@ -48,9 +48,8 @@ class OfflineBuildTest(unittest.TestCase):
 
     def payload(self):
         text = self.out.read_text(encoding="utf-8")
-        self.assertTrue(text.startswith("window.EVENTOS = "))
-        self.assertTrue(text.endswith(";\n"))
-        return json.loads(text[len("window.EVENTOS = "):-2])
+        self.assertTrue(text.endswith("}\n"))
+        return json.loads(text)
 
     def test_all_sources_merged_filtered_and_sorted(self):
         self.cache()
@@ -86,7 +85,7 @@ class OfflineBuildTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertEqual(stdout, "")
         self.assertIn("warning: devpost failed:", stderr)
-        self.assertTrue(stderr.endswith("error: --require-all-sources: devpost failed; site/data.js was not written\n"))
+        self.assertTrue(stderr.endswith("error: --require-all-sources: devpost failed; eventos.json was not written\n"))
         self.assertEqual(self.out.read_text(encoding="utf-8"), "previous\n")
 
     def test_require_all_sources_writes_when_every_source_answers(self):
@@ -101,7 +100,7 @@ class OfflineBuildTest(unittest.TestCase):
         code, stdout, stderr = self.run_build()
         self.assertEqual(code, 1)
         self.assertEqual(stdout, "")
-        self.assertTrue(stderr.endswith("error: every public source failed; site/data.js was not written\n"))
+        self.assertTrue(stderr.endswith("error: every public source failed; eventos.json was not written\n"))
         self.assertFalse(self.out.exists())
 
     def test_invalid_manual_file_exits_non_zero_without_writing(self):
@@ -149,6 +148,12 @@ class OfflineBuildTest(unittest.TestCase):
         self.assertEqual(stdout, "")
         self.assertEqual(stderr, f'error: {self.projects}: entry 0: "titulo" is required\n')
         self.assertFalse(self.out.exists())
+
+
+class DefaultOutputTest(unittest.TestCase):
+    def test_default_output_is_the_json_file_read_by_the_react_app(self):
+        expected = pathlib.Path(__file__).resolve().parent.parent.parent / "banco-proyectos" / "src" / "data" / "eventos.json"
+        self.assertEqual(build.DEFAULT_OUT, expected)
 
 
 class SeedManualFileTest(unittest.TestCase):

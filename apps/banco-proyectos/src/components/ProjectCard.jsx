@@ -55,13 +55,13 @@ const ProjectCard = ({ project }) => {
                     <span>{project.duracion}</span>
                 </div>
                 <div className="flex gap-3">
-                    <a
-                        href={eventsForProjectUrl(project.id)}
+                    <Link
+                        to={eventsForProjectUrl(project.id)}
                         className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"
                     >
                         <CalendarDays size={14} aria-hidden="true" />
                         Eventos
-                    </a>
+                    </Link>
                     <a
                         href={wherePublishUrl(project.id)}
                         className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"

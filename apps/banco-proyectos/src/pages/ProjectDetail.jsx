@@ -36,13 +36,13 @@ const ProjectDetail = () => {
                 </Link>
 
                 <div className="flex flex-wrap gap-3">
-                    <a
-                        href={eventsForProjectUrl(project.id)}
+                    <Link
+                        to={eventsForProjectUrl(project.id)}
                         className="bg-white hover:bg-blue-50 text-institutional-blue px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2 border border-institutional-blue/30 transform hover:-translate-y-0.5"
                     >
                         <CalendarDays size={18} aria-hidden="true" />
                         ¿A qué eventos ir?
-                    </a>
+                    </Link>
                     <a
                         href={wherePublishUrl(project.id)}
                         className="bg-institutional-yellow hover:bg-yellow-400 text-institutional-blue px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2 border border-yellow-300 transform hover:-translate-y-0.5"
@@ -290,13 +290,13 @@ const ProjectDetail = () => {
                                 <BookOpen size={16} aria-hidden="true" />
                                 ¿Dónde publicar este proyecto?
                             </a>
-                            <a
-                                href={eventsForProjectUrl(project.id)}
+                            <Link
+                                to={eventsForProjectUrl(project.id)}
                                 className="w-full py-2.5 px-4 bg-white hover:bg-blue-50 text-institutional-blue border border-institutional-blue/30 rounded-xl font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2"
                             >
                                 <CalendarDays size={16} aria-hidden="true" />
                                 ¿A qué eventos ir?
-                            </a>
+                            </Link>
                         </div>
                     </section>
 

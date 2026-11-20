@@ -141,7 +141,7 @@ class OutputTest(unittest.TestCase):
         d = event(id="d", title="D 2027", kind="attend", start="2026-11-02", end="2026-11-09")
         self.assertEqual([e["id"] for e in ev.sort_events([a, b, c, d])], ["c", "d", "b", "a"])
 
-    def test_data_js_is_one_assignment_with_the_payload(self):
+    def test_json_file_is_the_payload_alone(self):
         payload = ev.build_payload([event(id="m", source="manual", deadline="2026-11-01")],
                                    {"wikicfp": 0, "ccfddl": 0, "devpost": 0, "manual": 1}, TODAY)
         self.assertEqual(payload["generated"], "2026-10-31")
@@ -149,10 +149,11 @@ class OutputTest(unittest.TestCase):
                                              "Machine Learning", "Robótica", "Sistemas Ciberfísicos",
                                              "Desarrollo de Software", "Videojuegos", "Salud y Bioingeniería",
                                              "Big Data"])
-        text = ev.render_data_js(payload)
-        self.assertTrue(text.startswith("window.EVENTOS = {"))
-        self.assertTrue(text.endswith("};\n"))
-        self.assertEqual(json.loads(text[len("window.EVENTOS = "):-2]), payload)
+        text = ev.render_json(payload)
+        self.assertTrue(text.startswith("{"))
+        self.assertTrue(text.endswith("}\n"))
+        self.assertNotIn("window.", text)
+        self.assertEqual(json.loads(text), payload)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Build site/data.js from WikiCFP, ccf-deadlines, Devpost and data/manual-events.json.
+"""Build apps/banco-proyectos/src/data/eventos.json from WikiCFP, ccf-deadlines, Devpost and data/manual-events.json.
 
 Also adds the bank project profiles (topics, keywords) from ../donde-publicar/data/projects.json.
 
@@ -22,6 +22,8 @@ from pipeline import sources
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUBLIC_SOURCES = ("wikicfp", "ccfddl", "devpost")
+# The React app imports this file at build time, so the generated data stays committed and deploy needs no Python.
+DEFAULT_OUT = ROOT.parent / "banco-proyectos" / "src" / "data" / "eventos.json"
 
 
 def main(argv=None):
@@ -30,7 +32,7 @@ def main(argv=None):
     parser.add_argument("--projects", default=ROOT.parent / "donde-publicar/data/projects.json",
                         type=pathlib.Path, help="bank projects export (npm run export:projects)")
     parser.add_argument("--raw", default=ROOT / "data/raw", type=pathlib.Path, help="download cache")
-    parser.add_argument("--out", default=ROOT / "site/data.js", type=pathlib.Path)
+    parser.add_argument("--out", default=DEFAULT_OUT, type=pathlib.Path)
     parser.add_argument("--offline", action="store_true", help="read data/raw/ instead of downloading")
     parser.add_argument("--require-all-sources", action="store_true",
                         help="exit 1 without writing when any public source fails (default: count it as 0)")
@@ -79,10 +81,10 @@ def main(argv=None):
             print(f"warning: {name} failed: {error}", file=sys.stderr)
             failed.append(name)
     if len(failed) == len(PUBLIC_SOURCES):
-        print("error: every public source failed; site/data.js was not written", file=sys.stderr)
+        print(f"error: every public source failed; {args.out.name} was not written", file=sys.stderr)
         return 1
     if failed and args.require_all_sources:
-        print(f"error: --require-all-sources: {', '.join(failed)} failed; site/data.js was not written",
+        print(f"error: --require-all-sources: {', '.join(failed)} failed; {args.out.name} was not written",
               file=sys.stderr)
         return 1
 
@@ -91,7 +93,7 @@ def main(argv=None):
     for event in events:
         counts[event["source"]] += 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(ev.render_data_js(ev.build_payload(events, counts, today, projects)), encoding="utf-8")
+    args.out.write_text(ev.render_json(ev.build_payload(events, counts, today, projects)), encoding="utf-8")
     print(" ".join(f"{name}={count}" for name, count in counts.items())
           + f" events={len(events)} projects={len(projects)} out={args.out}")
     return 0

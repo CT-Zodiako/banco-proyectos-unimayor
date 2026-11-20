@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
@@ -7,9 +8,13 @@ import ProjectDetail from './pages/ProjectDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Opportunities from './pages/Opportunities';
+import LegacyRedirect from './components/LegacyRedirect';
 import logo from './assets/logo.png';
-import { EVENTS_URL } from './lib/links';
+import { EVENTS_URL, LEGACY_EVENTS_PATH } from './lib/links';
 import { Mail, Globe, MapPin } from 'lucide-react';
+
+// The event data (a few hundred KB of JSON) is only downloaded when the event finder is opened.
+const Eventos = lazy(() => import('./pages/Eventos'));
 
 const Footer = () => (
     <footer className="bg-institutional-dark text-white pt-16 pb-8">
@@ -29,7 +34,7 @@ const Footer = () => (
                 <ul className="space-y-2 text-sm text-gray-400">
                     <li><Link to="/" className="hover:text-institutional-yellow transition-colors">Inicio</Link></li>
                     <li><Link to="/proyectos" className="hover:text-institutional-yellow transition-colors">Catálogo de Proyectos</Link></li>
-                    <li><a href={EVENTS_URL} className="hover:text-institutional-yellow transition-colors">Eventos Académicos</a></li>
+                    <li><Link to={EVENTS_URL} className="hover:text-institutional-yellow transition-colors">Eventos Académicos</Link></li>
                     <li><Link to="/acerca" className="hover:text-institutional-yellow transition-colors">Sobre el Banco</Link></li>
                     <li><Link to="/contacto" className="hover:text-institutional-yellow transition-colors">Contacto</Link></li>
                 </ul>
@@ -76,6 +81,8 @@ function App() {
                         <Route path="/acerca" element={<About />} />
                         <Route path="/contacto" element={<Contact />} />
                         <Route path="/oportunidades" element={<Opportunities />} />
+                        <Route path={EVENTS_URL} element={<Suspense fallback={<div className="py-20 text-center text-gray-500" role="status">Cargando eventos…</div>}><Eventos /></Suspense>} />
+                        <Route path={LEGACY_EVENTS_PATH} element={<LegacyRedirect to={EVENTS_URL} />} />
                         <Route path="*" element={<div className="py-20 text-center">Página no encontrada</div>} />
                     </Routes>
                 </main>

@@ -3,8 +3,12 @@
 export const wherePublishUrl = (projectId) =>
     `/donde-publicar/index.html?p=${encodeURIComponent(projectId)}`;
 
-// Event finder (apps/eventos), served by this app under /eventos/.
-export const EVENTS_URL = '/eventos/index.html';
+// Event finder: a route of this app (src/pages/Eventos.jsx).
+export const EVENTS_URL = '/eventos';
+
+// URL of the old static page. Links and bookmarks to it keep working: the router redirects it to EVENTS_URL
+// with the same query, so ?p=<project id> still preselects the project.
+export const LEGACY_EVENTS_PATH = '/eventos/index.html';
 
 // Event finder with the events ranked by affinity with one project.
 export const eventsForProjectUrl = (projectId) =>
