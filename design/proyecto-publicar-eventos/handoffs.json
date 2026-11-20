@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "chosen": "02-panel-lateral.html",
+  "handoffs": {
+    "02-panel-lateral.html": {
+      "status": "in_progress",
+      "queued": false,
+      "sentAt": "2026-11-20T02:59:43.186Z",
+      "startedAt": "2026-11-20T02:59:43.207Z",
+      "implementedAt": null,
+      "note": "Plan: feature doc + writer implementing slide-over panel in ProjectDetail"
+    }
+  }
+}
