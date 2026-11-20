@@ -40,3 +40,25 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Project page slide-over (src/components/proyecto-panel). On wide screens it pushes the page: the app root makes room
+   for the panel while it is open (body.project-panel-push, set by ProjectSlideOver) and keeps the project visible. */
+@media (min-width: 1101px) {
+  body.project-panel-push #root {
+    padding-right: min(760px, 100vw);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #root {
+    transition: padding-right 0.25s;
+  }
+
+  .project-panel-slide {
+    animation: project-panel-in 0.22s ease-out;
+  }
+
+  @keyframes project-panel-in {
+    from { transform: translateX(40px); opacity: 0.4; }
+  }
+}

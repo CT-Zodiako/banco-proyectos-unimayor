@@ -103,6 +103,12 @@ single page app. When a project is selected, the header link goes back to `/proy
 the page with the project picker. "Guardar" uses the shared "Mis oportunidades" store (`src/lib/opportunities.js`), and
 the user's saved filters live in the browser's localStorage under `donde-publicar.presets.v1`.
 
+The project page (`/proyecto/<id>`) also shows these journals in a slide-over panel (`?panel=revistas`, tab "Revistas";
+`src/components/proyecto-panel/`) without leaving the project. The panel reuses the list, table, filters sheet and compare
+tray of this page (`src/components/publicar/`, `src/hooks/useJournalFinder.js`, `src/lib/publicar/`) and downloads
+`publicar-data.json` with a dynamic import the first time it is opened; its "Abrir en la página completa" link goes to
+`/donde-publicar?p=<project id>`, and this page keeps working as before.
+
 ## Downloadable templates
 
 `python3 -E -m pipeline.templates` (network, ~1–2 minutes) reads each journal's instructions-for-authors page and

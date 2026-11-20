@@ -175,6 +175,11 @@ it is not an acceptance probability. The other filters still apply on top, and a
 
 ## Project profiles (project → events)
 
+The project page (`/proyecto/<id>`) also lists these events in a slide-over panel (`?panel=eventos`, tab "Eventos";
+`src/components/proyecto-panel/`) that reuses the event filters, cards and comparison (`src/components/eventos/`,
+`src/hooks/useEventResults.js`, `src/lib/eventos/`) with the project preselected; its "Abrir en la página completa" link
+goes to `/eventos?p=<project id>`, and the `/eventos` page is unchanged.
+
 The project bank links each project to `/eventos?p=<project id>`, which ranks events by estimated affinity with
 that project (contract: "Project cross" in `odd/tasks/eventos.md`). The build reads the bank projects from
 `../donde-publicar/data/projects.json` (option `--projects`; refresh it with `npm run export:projects` in

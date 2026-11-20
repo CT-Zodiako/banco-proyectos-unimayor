@@ -131,7 +131,9 @@ function Presets({ advanced, userPresets, onApply, onSave, onDelete }) {
 
 // Side panel with every advanced filter at once (all are combined with AND) and the saved filters.
 // It holds no filter state: every change goes up through onChange(patch).
-export default function FiltersPanel({ advanced: a, shown, userPresets, onChange, onReset, onApplyPreset, onSavePreset, onDeletePreset, onClose, onApply }) {
+// embedded: the project panel shows it as a full-height sheet inside the panel instead of a sticky card, and Escape
+// closes only the sheet (the panel stays open).
+export default function FiltersPanel({ advanced: a, shown, userPresets, onChange, onReset, onApplyPreset, onSavePreset, onDeletePreset, onClose, onApply, embedded = false }) {
     const closeRef = useRef(null);
     useEffect(() => { closeRef.current?.focus(); }, []);
     const setReview = (kind, checked) => {
@@ -143,8 +145,12 @@ export default function FiltersPanel({ advanced: a, shown, userPresets, onChange
         <aside
             id="publicar-adv-panel"
             aria-labelledby="publicar-adv-title"
-            onKeyDown={(event) => { if (event.key === 'Escape') onClose(); }}
-            className="bg-white border border-gray-200 rounded-3xl shadow-xl p-[18px] min-[1100px]:sticky min-[1100px]:top-4 min-[1100px]:max-h-[calc(100vh-32px)] overflow-y-auto max-[1099px]:order-first"
+            onKeyDown={(event) => {
+                if (event.key !== 'Escape') return;
+                if (embedded) { event.preventDefault(); event.stopPropagation(); }
+                onClose();
+            }}
+            className={embedded ? 'bg-white p-[18px] min-h-full' : 'bg-white border border-gray-200 rounded-3xl shadow-xl p-[18px] min-[1100px]:sticky min-[1100px]:top-4 min-[1100px]:max-h-[calc(100vh-32px)] overflow-y-auto max-[1099px]:order-first'}
         >
             <div className="flex items-center justify-between mb-1">
                 <h2 id="publicar-adv-title" className="m-0 text-[17px] font-bold text-gray-900">Filtros personalizados</h2>

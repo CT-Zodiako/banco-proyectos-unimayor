@@ -5,9 +5,9 @@ import EventCard from '../components/eventos/EventCard';
 import EventComparison from '../components/eventos/EventComparison';
 import EventFilters from '../components/eventos/EventFilters';
 import ProjectPanel from '../components/eventos/ProjectPanel';
-import { rankForProject } from '../lib/eventos/affinity';
+import useEventResults from '../hooks/useEventResults';
 import { comparisonKey, dataInfoText, dataStatusText, plural } from '../lib/eventos/display';
-import { DEFAULT_STATE, MAX_COMPARISON, filterEvents, localIsoDate, parseQuery, sortEvents, stateToQuery, toggleComparison, topicCounts } from '../lib/eventos/filters';
+import { DEFAULT_STATE, MAX_COMPARISON, parseQuery, stateToQuery, toggleComparison } from '../lib/eventos/filters';
 
 const { events, topics: knownTopics, projects, generated, sources } = eventosData;
 const projectsById = new Map(projects.map((project) => [project.id, project]));
@@ -18,7 +18,6 @@ const PAGE_TITLE = 'Buscador de eventos académicos · Banco de Proyectos · UNI
 export default function Eventos() {
     const { search } = useLocation();
     const navigate = useNavigate();
-    const today = useMemo(() => localIsoDate(new Date()), []);
     const [selected, setSelected] = useState([]);
     const [projectMissing, setProjectMissing] = useState(false);
     const searchRef = useRef(null);
@@ -58,23 +57,9 @@ export default function Eventos() {
         return () => { document.title = 'Banco de Proyectos IoT - UNIMAYOR'; };
     }, [project]);
 
-    const ranked = useMemo(() => (project ? rankForProject(events, project, today) : []), [project, today]);
-    const affinityByEvent = useMemo(() => new Map(ranked.map((item) => [item.event, item.affinity])), [ranked]);
-    const baseEvents = useMemo(() => (project ? ranked.map((item) => item.event) : events), [project, ranked]);
-
-    // Counts follow every other filter, so each pill tells how many results selecting it would add.
-    const counts = useMemo(
-        () => topicCounts(filterEvents(baseEvents, { ...state, topics: [], today })),
-        [baseEvents, state, today],
-    );
-    const shown = useMemo(() => {
-        // Ranked events are already in affinity order; filterEvents keeps the order it receives.
-        const filtered = filterEvents(baseEvents, { ...state, today });
-        return state.sort === 'affinity' ? filtered : sortEvents(filtered, state.sort);
-    }, [baseEvents, state, today]);
+    const { today, affinityByEvent, counts, shown, noProjectEvents } = useEventResults({ events, project, state });
 
     const isFiltered = stateToQuery({ ...state, project: null, sort: DEFAULT_STATE.sort }) !== '';
-    const noProjectEvents = Boolean(project) && ranked.length === 0;
 
     function clearFilters() {
         go({ ...DEFAULT_STATE, topics: [], sort: state.sort, ...(state.project ? { project: state.project } : {}) });

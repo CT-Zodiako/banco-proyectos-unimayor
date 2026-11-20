@@ -27,7 +27,10 @@ Projects are stored in `src/data/mockProjects.js` (original 100) and `src/data/p
 (`src/data/publicar-data.json`, `publicar-catalog.json` and `eventos.json`). Each project links to both: "¿Dónde publicar este
 proyecto?" (`/donde-publicar?p=<id>`) and "¿A qué eventos ir?" (`/eventos?p=<id>`, events ranked by
 estimated affinity with the project). The old URLs `/donde-publicar/index.html?p=<id>` and `/eventos/index.html?p=<id>`
-still work: the router redirects them to the new routes keeping the same project preselected. Deployment: see Railway
+still work: the router redirects them to the new routes keeping the same project preselected. The project page also
+opens both finders in a slide-over panel (Revistas | Eventos tabs, `?panel=revistas|eventos`, `src/components/proyecto-panel/`)
+that reuses the same components and logic with the project preselected, so the project can be read without leaving it;
+"Abrir en la página completa" in the panel goes to the two pages above, which are unchanged. Deployment: see Railway
 deployment below.
 
 ## Saved opportunities

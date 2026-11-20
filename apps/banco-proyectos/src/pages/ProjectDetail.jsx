@@ -5,12 +5,16 @@ import {
     Target, ListChecks,
     ExternalLink, Globe, BookOpen, CalendarDays
 } from 'lucide-react';
+import OpportunityCards from '../components/proyecto-panel/OpportunityCards';
+import ProjectSlideOver from '../components/proyecto-panel/ProjectSlideOver';
 import { useProjects } from '../hooks/useProjects';
+import useProjectPanel from '../hooks/useProjectPanel';
 import { wherePublishUrl, eventsForProjectUrl, savedCatalogUrl } from '../lib/links';
 
 const ProjectDetail = () => {
     const { id } = useParams();
     const { projects, loading } = useProjects();
+    const panel = useProjectPanel();
 
     const project = projects?.find(p => p.id === id);
 
@@ -112,6 +116,8 @@ const ProjectDetail = () => {
                     </div>
                 ))}
             </div>
+
+            <OpportunityCards projectId={project.id} openTab={panel.tab} onOpen={panel.open} />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-gray-100">
                 {/* Left Column - Tech details */}
@@ -316,6 +322,17 @@ const ProjectDetail = () => {
                 </div>
             </div>
 
+            {panel.tab && (
+                <ProjectSlideOver
+                    project={project}
+                    tab={panel.tab}
+                    mode={panel.mode}
+                    expanded={panel.expanded}
+                    onExpandedChange={panel.setExpanded}
+                    onSelectTab={panel.select}
+                    onClose={panel.close}
+                />
+            )}
         </div>
     );
 };
