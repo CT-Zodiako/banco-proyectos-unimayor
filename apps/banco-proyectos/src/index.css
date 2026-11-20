@@ -31,6 +31,16 @@
   body {
     @apply antialiased;
   }
+
+  /* Visible focus for everything that can be focused and has no class of its own (zero specificity on purpose:
+     the component classes below and the utilities of each component win over it). 2px yellow + 2px blue ring. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--yellow-accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--blue-primary);
+  }
+  /* The main landmark takes the focus from the skip link; it is not a control, so it shows no ring. */
+  main:focus { outline: none; box-shadow: none; }
 }
 
 @layer components {
@@ -111,6 +121,9 @@
     @apply h-11 w-full rounded-xl border border-sem-control-line bg-white pl-10 pr-3.5 text-[14.5px] text-gray-900 placeholder:text-sem-text-2 placeholder:opacity-100;
   }
   .field-select { @apply h-10 rounded-xl border border-sem-control-line bg-white pl-3 pr-8 text-sm text-gray-900; }
+  .field-textarea {
+    @apply w-full rounded-xl border border-sem-control-line bg-white px-3.5 py-2.5 text-[14.5px] text-gray-900 placeholder:text-sem-text-2 placeholder:opacity-100;
+  }
   .link-action {
     @apply min-h-[32px] cursor-pointer border-0 bg-transparent px-1 py-1.5 text-[13.5px] font-semibold text-institutional-blue underline underline-offset-[3px] hover:text-blue-800;
   }
@@ -185,10 +198,21 @@
     [data-tip]::after, [data-tip]:hover::after, [data-tip]:focus-visible::after { display: none; }
   }
 
+  /* Skip link: hidden until it takes the keyboard focus (first stop of every page), then a white button on top. */
+  .skip-link {
+    @apply sr-only;
+  }
+  .skip-link:focus {
+    @apply not-sr-only fixed left-3 top-3 z-[100] rounded-lg bg-white px-4 py-2.5 text-sm font-bold text-institutional-blue no-underline shadow-lg;
+    outline: 2px solid var(--yellow-accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--blue-primary), 0 10px 15px -3px rgb(0 0 0 / 0.2);
+  }
+
   /* Visible focus: 2px yellow ring plus 2px blue ring (blue shows on white, yellow on the blue menu) */
   .focus-ring:focus-visible,
   .btn:focus-visible, .chip:focus-visible, .filter-chip button:focus-visible, .link-action:focus-visible,
-  .field-input:focus-visible, .field-select:focus-visible, .page-btn:focus-visible {
+  .field-input:focus-visible, .field-select:focus-visible, .field-textarea:focus-visible, .page-btn:focus-visible {
     outline: 2px solid var(--yellow-accent);
     outline-offset: 2px;
     box-shadow: 0 0 0 2px var(--blue-primary);

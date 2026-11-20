@@ -1,15 +1,32 @@
 import { Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
-    ChevronLeft, Clock, DollarSign, Cpu, Layers,
+    ChevronLeft, Clock, DollarSign, Cpu, Layers, Briefcase,
     Target, ListChecks,
-    ExternalLink, Globe, BookOpen, CalendarDays
+    ExternalLink, Globe, BookOpen, CalendarDays, Code
 } from 'lucide-react';
 import OpportunityCards from '../components/proyecto-panel/OpportunityCards';
 import ProjectSlideOver from '../components/proyecto-panel/ProjectSlideOver';
+import { LevelDots } from '../components/ProjectCard';
 import { useProjects } from '../hooks/useProjects';
 import useProjectPanel from '../hooks/useProjectPanel';
+import { isNewProject, levelRank } from '../lib/catalog';
 import { wherePublishUrl, eventsForProjectUrl, savedCatalogUrl } from '../lib/links';
+
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+// Section title with one line that says what the section is for. The id labels the <section>.
+const SectionHeading = ({ id, Icon, title, help }) => (
+    <div className="mb-4">
+        <h2 id={id} className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <Icon size={20} className="text-gray-700 flex-none" aria-hidden="true" />
+            {title}
+        </h2>
+        <p className="mt-1 text-[13.5px] text-sem-text-2">{help}</p>
+    </div>
+);
+
+const TABLE_HEAD = 'bg-gray-100 border-b border-gray-200 text-xs font-extrabold uppercase tracking-wider text-gray-900';
 
 const ProjectDetail = () => {
     const { id } = useParams();
@@ -19,37 +36,49 @@ const ProjectDetail = () => {
     const project = projects?.find(p => p.id === id);
 
     if (loading) {
-        return <div className="py-20 text-center font-bold">Cargando detalles del proyecto...</div>;
+        return <div className="py-20 text-center font-bold" role="status">Cargando detalles del proyecto...</div>;
     }
 
     if (!project) {
         return (
             <div className="py-20 text-center">
-                <h2 className="text-2xl font-bold">Proyecto no encontrado</h2>
-                <Link to={savedCatalogUrl()} className="text-institutional-blue mt-4 inline-block">Volver al catálogo</Link>
+                <h1 className="text-2xl font-bold">Proyecto no encontrado</h1>
+                <Link to={savedCatalogUrl()} className="btn btn-secondary mt-4">Volver al catálogo</Link>
             </div>
         );
     }
 
+    const rank = levelRank(project.nivel);
+    const hardware = project.hardware.length;
+    const software = project.software.length;
+    const stats = [
+        { label: 'Hardware', value: plural(hardware, 'componente', 'componentes'), icon: Cpu, tip: `Hardware: ${plural(hardware, 'componente físico', 'componentes físicos')} (placas, sensores, actuadores)` },
+        { label: 'Software', value: plural(software, 'herramienta', 'herramientas'), icon: Code, tip: `Software: ${plural(software, 'herramienta', 'herramientas')} (lenguajes, plataformas, librerías)` },
+        { label: 'Duración', value: project.duracion, icon: Clock, tip: `Duración estimada: ${project.duracion}` },
+        { label: 'Presupuesto', value: project.presupuesto, icon: DollarSign, tip: `Presupuesto estimado: ${project.presupuesto}` },
+    ];
+
     return (
         <div className="py-8 px-4 max-w-5xl mx-auto space-y-8 pb-20">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <Link to={savedCatalogUrl()} className="flex items-center gap-2 text-gray-500 hover:text-institutional-blue transition-colors font-medium">
-                    <ChevronLeft size={20} />
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                <Link to={savedCatalogUrl()} className="btn btn-tertiary btn-lg -ml-2 !text-gray-700 hover:!text-institutional-blue">
+                    <ChevronLeft size={20} aria-hidden="true" />
                     Volver a la lista
                 </Link>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2">
                     <Link
                         to={eventsForProjectUrl(project.id)}
-                        className="bg-white hover:bg-blue-50 text-institutional-blue px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2 border border-institutional-blue/30 transform hover:-translate-y-0.5"
+                        className="btn btn-secondary btn-lg !whitespace-normal text-center"
+                        data-tip="Congresos y convocatorias afines a este proyecto"
                     >
                         <CalendarDays size={18} aria-hidden="true" />
                         ¿A qué eventos ir?
                     </Link>
                     <Link
                         to={wherePublishUrl(project.id)}
-                        className="bg-institutional-yellow hover:bg-yellow-400 text-institutional-blue px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2 border border-yellow-300 transform hover:-translate-y-0.5"
+                        className="btn btn-secondary btn-lg !whitespace-normal text-center"
+                        data-tip="Revistas donde podrías publicar este proyecto"
                     >
                         <BookOpen size={18} aria-hidden="true" />
                         ¿Dónde publicar este proyecto?
@@ -58,15 +87,29 @@ const ProjectDetail = () => {
             </div>
 
             <div className="space-y-4">
-                <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-widest">
-                    <span className="text-institutional-blue">{project.area}</span>
-                    <span className="text-gray-300">•</span>
-                    <span className="text-green-600">{project.sector}</span>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">
-                    {project.titulo}
-                </h1>
-                <div className="space-y-6 pt-4">
+                <header className="space-y-3">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="badge badge-area" data-tip="Área: la línea técnica del proyecto">
+                            <Layers size={15} aria-hidden="true" className="flex-none" />
+                            <span className="sr-only">Área: </span>{project.area}
+                        </span>
+                        {isNewProject(project) && (
+                            <span className="badge badge-new" data-tip="Nuevo: proyecto incorporado este semestre">Nuevo</span>
+                        )}
+                        <span className="badge badge-sector" data-tip="Sector: dónde se aplica">
+                            <Briefcase size={15} aria-hidden="true" className="flex-none" />
+                            <span className="sr-only">Sector: </span>{project.sector}
+                        </span>
+                        <span className="badge badge-level" data-tip={`Nivel ${rank} de 3: ${project.nivel}`}>
+                            <LevelDots rank={rank} />
+                            <span className="sr-only">Nivel {rank} de 3: </span>{project.nivel}
+                        </span>
+                    </div>
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight break-words">
+                        {project.titulo}
+                    </h1>
+                </header>
+                <div className="space-y-6 pt-2">
                     {project.descripcion.split(/\n\n|\n/).map((paragraph, idx) => {
                         const trimmed = paragraph.trim();
                         if (!trimmed) return null;
@@ -80,10 +123,10 @@ const ProjectDetail = () => {
                             return (
                                 <div key={idx} className="space-y-2">
                                     <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest flex items-center gap-2">
-                                        <div className="w-1 h-4 bg-institutional-blue rounded-full"></div>
+                                        <span className="block w-1 h-4 bg-institutional-blue rounded-full" aria-hidden="true"></span>
                                         {label}
                                     </h2>
-                                    <p className="text-lg text-gray-600 leading-relaxed">
+                                    <p className="text-lg text-gray-700 leading-relaxed">
                                         {text}
                                     </p>
                                 </div>
@@ -91,7 +134,7 @@ const ProjectDetail = () => {
                         }
 
                         return (
-                            <p key={idx} className="text-lg text-gray-600 leading-relaxed">
+                            <p key={idx} className="text-lg text-gray-700 leading-relaxed">
                                 {trimmed}
                             </p>
                         );
@@ -99,64 +142,59 @@ const ProjectDetail = () => {
                 </div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                    { label: 'Duración', value: project.duracion, icon: Clock, color: 'text-blue-500', bg: 'bg-blue-50' },
-                    { label: 'Presupuesto', value: project.presupuesto, icon: DollarSign, color: 'text-green-500', bg: 'bg-green-50' },
-                    { label: 'Hardware', value: `${project.hardware.length} ítems`, icon: Cpu, color: 'text-orange-500', bg: 'bg-orange-50' },
-                    { label: 'Software', value: `${project.software.length} herramientas`, icon: Layers, color: 'text-purple-500', bg: 'bg-purple-50' },
-                ].map((stat, i) => (
-                    <div key={i} className="flex flex-col gap-2 p-4 rounded-2xl border border-gray-100 bg-white shadow-xs">
-                        <stat.icon className={stat.color} size={24} />
-                        <div>
-                            <span className="block text-[10px] font-bold uppercase text-gray-400 tracking-wider font-inter">{stat.label}</span>
-                            <span className="text-sm font-bold text-gray-800">{stat.value}</span>
+            {/* Key figures: same words as the legend of the catalog cards */}
+            <ul aria-label="Datos del proyecto" className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {stats.map(({ label, value, icon: Icon, tip }) => (
+                    <li key={label} data-tip={tip} className="flex flex-col lg:flex-row items-start gap-3 p-4 rounded-2xl border border-gray-200 bg-white shadow-sm">
+                        <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-gray-200 bg-sem-sector-bg text-sem-sector-fg" aria-hidden="true">
+                            <Icon size={20} />
+                        </span>
+                        <div className="min-w-0">
+                            <span data-metric-label className="block text-[13px] font-semibold text-sem-text-2">{label}</span>
+                            <span data-metric-value className="block text-[15px] font-bold leading-snug text-gray-900">{value}</span>
                         </div>
-                    </div>
+                    </li>
                 ))}
-            </div>
+            </ul>
 
             <OpportunityCards projectId={project.id} openTab={panel.tab} onOpen={panel.open} />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-gray-200">
                 {/* Left Column - Tech details */}
-                <div className="md:col-span-2 space-y-10">
+                <div className="md:col-span-2 min-w-0 space-y-10">
                     {/* Hardware Necesario - Tabla */}
-                    <section>
-                        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <Cpu size={20} className="text-orange-500" />
-                            Hardware Necesario
-                        </h3>
-                        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-xs">
+                    <section aria-labelledby="sec-hardware">
+                        <SectionHeading id="sec-hardware" Icon={Cpu} title="Hardware necesario" help="Componentes físicos que necesitas: placas, sensores y actuadores, con su función." />
+                        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
                             <table className="w-full text-left border-collapse">
+                                <caption className="sr-only">Componentes de hardware del proyecto</caption>
                                 <thead>
-                                    <tr className="bg-orange-50/70 border-b border-gray-200 text-xs font-extrabold uppercase tracking-wider text-orange-900">
-                                        <th className="py-3 px-4 w-12 text-center">#</th>
-                                        <th className="py-3 px-4">Componente</th>
-                                        <th className="py-3 px-4">Categoría</th>
-                                        <th className="py-3 px-4">Función / Especificación</th>
+                                    <tr className={TABLE_HEAD}>
+                                        <th scope="col" className="py-3 px-4 w-12 text-center">#</th>
+                                        <th scope="col" className="py-3 px-4">Componente</th>
+                                        <th scope="col" className="py-3 px-4">Categoría</th>
+                                        <th scope="col" className="py-3 px-4">Función / Especificación</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100 text-sm">
                                     {project.hardware_tabla ? (
                                         project.hardware_tabla.map((item, i) => (
-                                            <tr key={i} className="hover:bg-orange-50/20 transition-colors">
-                                                <td className="py-3 px-4 text-center font-bold text-orange-600 text-xs">{i + 1}</td>
-                                                <td className="py-3 px-4 font-semibold text-gray-800">{item.componente}</td>
-                                                <td className="py-3 px-4 text-xs font-medium text-orange-900">
-                                                    <span className="inline-block px-2.5 py-1 bg-orange-100/70 rounded-md">
+                                            <tr key={i} className="hover:bg-gray-50 transition-colors">
+                                                <td className="py-3 px-4 text-center font-bold text-sem-text-2 text-xs">{i + 1}</td>
+                                                <td className="py-3 px-4 font-semibold text-gray-900">{item.componente}</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="badge badge-sector">
                                                         {item.categoria || 'Hardware'}
                                                     </span>
                                                 </td>
-                                                <td className="py-3 px-4 text-xs text-gray-600 font-normal leading-relaxed">{item.funcion || '-'}</td>
+                                                <td className="py-3 px-4 text-[13px] text-gray-700 font-normal leading-relaxed">{item.funcion || '-'}</td>
                                             </tr>
                                         ))
                                     ) : (
                                         project.hardware.map((item, i) => (
-                                            <tr key={i} className="hover:bg-orange-50/20 transition-colors">
-                                                <td className="py-3 px-4 text-center font-bold text-orange-600 text-xs">{i + 1}</td>
-                                                <td className="py-3 px-4 font-semibold text-gray-800" colSpan={3}>{item}</td>
+                                            <tr key={i} className="hover:bg-gray-50 transition-colors">
+                                                <td className="py-3 px-4 text-center font-bold text-sem-text-2 text-xs">{i + 1}</td>
+                                                <td className="py-3 px-4 font-semibold text-gray-900" colSpan={3}>{item}</td>
                                             </tr>
                                         ))
                                     )}
@@ -166,40 +204,38 @@ const ProjectDetail = () => {
                     </section>
 
                     {/* Software y Plataformas - Tabla */}
-                    <section>
-                        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <Layers size={20} className="text-purple-500" />
-                            Software y Plataformas
-                        </h3>
-                        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-xs">
+                    <section aria-labelledby="sec-software">
+                        <SectionHeading id="sec-software" Icon={Layers} title="Software y plataformas" help="Herramientas, lenguajes y plataformas que se usan, con su tipo y su uso." />
+                        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
                             <table className="w-full text-left border-collapse">
+                                <caption className="sr-only">Herramientas de software del proyecto</caption>
                                 <thead>
-                                    <tr className="bg-purple-50/70 border-b border-gray-200 text-xs font-extrabold uppercase tracking-wider text-purple-900">
-                                        <th className="py-3 px-4 w-12 text-center">#</th>
-                                        <th className="py-3 px-4">Herramienta</th>
-                                        <th className="py-3 px-4">Tipo</th>
-                                        <th className="py-3 px-4">Descripción / Uso</th>
+                                    <tr className={TABLE_HEAD}>
+                                        <th scope="col" className="py-3 px-4 w-12 text-center">#</th>
+                                        <th scope="col" className="py-3 px-4">Herramienta</th>
+                                        <th scope="col" className="py-3 px-4">Tipo</th>
+                                        <th scope="col" className="py-3 px-4">Descripción / Uso</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100 text-sm">
                                     {project.software_tabla ? (
                                         project.software_tabla.map((item, i) => (
-                                            <tr key={i} className="hover:bg-purple-50/20 transition-colors">
-                                                <td className="py-3 px-4 text-center font-bold text-purple-600 text-xs">{i + 1}</td>
-                                                <td className="py-3 px-4 font-semibold text-gray-800">{item.herramienta}</td>
-                                                <td className="py-3 px-4 text-xs font-medium text-purple-900">
-                                                    <span className="inline-block px-2.5 py-1 bg-purple-100/70 rounded-md">
+                                            <tr key={i} className="hover:bg-gray-50 transition-colors">
+                                                <td className="py-3 px-4 text-center font-bold text-sem-text-2 text-xs">{i + 1}</td>
+                                                <td className="py-3 px-4 font-semibold text-gray-900">{item.herramienta}</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="badge badge-sector">
                                                         {item.tipo || 'Software'}
                                                     </span>
                                                 </td>
-                                                <td className="py-3 px-4 text-xs text-gray-600 font-normal leading-relaxed">{item.descripcion || '-'}</td>
+                                                <td className="py-3 px-4 text-[13px] text-gray-700 font-normal leading-relaxed">{item.descripcion || '-'}</td>
                                             </tr>
                                         ))
                                     ) : (
                                         project.software.map((item, i) => (
-                                            <tr key={i} className="hover:bg-purple-50/20 transition-colors">
-                                                <td className="py-3 px-4 text-center font-bold text-purple-600 text-xs">{i + 1}</td>
-                                                <td className="py-3 px-4 font-semibold text-gray-800" colSpan={3}>{item}</td>
+                                            <tr key={i} className="hover:bg-gray-50 transition-colors">
+                                                <td className="py-3 px-4 text-center font-bold text-sem-text-2 text-xs">{i + 1}</td>
+                                                <td className="py-3 px-4 font-semibold text-gray-900" colSpan={3}>{item}</td>
                                             </tr>
                                         ))
                                     )}
@@ -208,31 +244,25 @@ const ProjectDetail = () => {
                         </div>
                     </section>
 
-                    <section>
-                        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <ListChecks size={20} className="text-blue-500" />
-                            Pasos de Implementación
-                        </h3>
-                        <div className="space-y-3">
+                    <section aria-labelledby="sec-pasos">
+                        <SectionHeading id="sec-pasos" Icon={ListChecks} title="Pasos de implementación" help="El orden sugerido para construir el proyecto, paso a paso." />
+                        <ol className="space-y-3">
                             {project.pasos.map((paso, i) => (
-                                <div key={i} className="flex items-start gap-4 p-4 bg-white border border-gray-50 rounded-xl shadow-xs">
-                                    <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                                <li key={i} className="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                    <span className="flex-shrink-0 w-6 h-6 bg-institutional-blue text-white rounded-full flex items-center justify-center text-xs font-bold" aria-hidden="true">
                                         {i + 1}
                                     </span>
-                                    <span className="text-gray-700 text-sm font-medium">{paso}</span>
-                                </div>
+                                    <span className="text-gray-900 text-sm font-medium"><span className="sr-only">Paso {i + 1}: </span>{paso}</span>
+                                </li>
                             ))}
-                        </div>
+                        </ol>
                     </section>
                 </div>
 
                 {/* Right Column - Goals & Apps */}
-                <div className="space-y-10">
-                    <section className="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <Target size={20} className="text-institutional-blue" />
-                            Objetivos
-                        </h3>
+                <div className="min-w-0 space-y-10">
+                    <section aria-labelledby="sec-objetivos" className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                        <SectionHeading id="sec-objetivos" Icon={Target} title="Objetivos" help="Qué busca lograr el proyecto." />
                         <ul className="space-y-2">
                             {project.objetivos.map((obj, i) => {
                                 if (obj.includes("Objetivo General")) {
@@ -242,7 +272,7 @@ const ProjectDetail = () => {
                                             <li className="text-sm font-bold text-gray-900 mt-4 first:mt-0">
                                                 🎯 Objetivo general
                                             </li>
-                                            <li className="text-sm text-gray-600 leading-relaxed ml-4">
+                                            <li className="text-sm text-gray-700 leading-relaxed ml-4">
                                                 • {text}
                                             </li>
                                         </Fragment>
@@ -259,14 +289,14 @@ const ProjectDetail = () => {
 
                                 if (obj.startsWith("•")) {
                                     return (
-                                        <li key={i} className="text-sm text-gray-600 leading-relaxed ml-4">
+                                        <li key={i} className="text-sm text-gray-700 leading-relaxed ml-4">
                                             {obj}
                                         </li>
                                     );
                                 }
 
                                 return (
-                                    <li key={i} className="text-sm text-gray-600 leading-relaxed">
+                                    <li key={i} className="text-sm text-gray-700 leading-relaxed">
                                         {obj}
                                     </li>
                                 );
@@ -274,45 +304,32 @@ const ProjectDetail = () => {
                         </ul>
                     </section>
 
-                    <section className="bg-institutional-blue p-6 rounded-2xl text-white shadow-sm space-y-4">
-                        <h3 className="text-lg font-bold flex items-center gap-2">
-                            <Globe size={20} className="text-institutional-yellow" />
-                            Impacto Real
-                        </h3>
-                        <ul className="space-y-3 opacity-90">
+                    <section aria-labelledby="sec-impacto" className="bg-institutional-blue p-6 rounded-2xl text-white shadow-sm">
+                        <div className="mb-4">
+                            <h2 id="sec-impacto" className="text-lg font-bold flex items-center gap-2">
+                                <Globe size={20} className="text-institutional-yellow flex-none" aria-hidden="true" />
+                                Impacto real
+                            </h2>
+                            <p className="mt-1 text-[13.5px] text-blue-100">Dónde puede aplicarse lo que se construye.</p>
+                        </div>
+                        <ul className="space-y-3">
                             {project.aplicaciones.map((app, i) => (
-                                <li key={i} className="flex items-start gap-2 text-sm font-light">
-                                    <div className="w-1.5 h-1.5 bg-institutional-yellow rounded-full mt-1.5 flex-shrink-0" />
+                                <li key={i} className="flex items-start gap-2 text-sm">
+                                    <div className="w-1.5 h-1.5 bg-institutional-yellow rounded-full mt-1.5 flex-shrink-0" aria-hidden="true" />
                                     {app}
                                 </li>
                             ))}
                         </ul>
-
-                        <div className="pt-2 space-y-2">
-                            <Link
-                                to={wherePublishUrl(project.id)}
-                                className="w-full py-2.5 px-4 bg-institutional-yellow hover:bg-yellow-400 text-institutional-blue rounded-xl font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2"
-                            >
-                                <BookOpen size={16} aria-hidden="true" />
-                                ¿Dónde publicar este proyecto?
-                            </Link>
-                            <Link
-                                to={eventsForProjectUrl(project.id)}
-                                className="w-full py-2.5 px-4 bg-white hover:bg-blue-50 text-institutional-blue border border-institutional-blue/30 rounded-xl font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2"
-                            >
-                                <CalendarDays size={16} aria-hidden="true" />
-                                ¿A qué eventos ir?
-                            </Link>
-                        </div>
                     </section>
 
                     {project.referencias.length > 0 && (
-                        <section className="p-4 border-2 border-dashed border-gray-100 rounded-2xl">
-                            <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-widest">Referencias</h3>
+                        <section aria-labelledby="sec-referencias" className="p-4 border-2 border-dashed border-gray-300 rounded-2xl">
+                            <h2 id="sec-referencias" className="text-sm font-bold text-gray-900 uppercase tracking-widest">Referencias</h2>
+                            <p className="mt-1 mb-3 text-[13px] text-sem-text-2">Fuentes para profundizar.</p>
                             <div className="space-y-2">
                                 {project.referencias.map((ref, i) => (
-                                    <a key={i} href={ref.url} className="flex items-center gap-2 text-institutional-blue hover:underline text-sm font-medium">
-                                        <ExternalLink size={14} />
+                                    <a key={i} href={ref.url} className="flex items-center gap-2 text-institutional-blue underline underline-offset-[3px] hover:text-blue-800 text-sm font-medium">
+                                        <ExternalLink size={14} aria-hidden="true" className="flex-none" />
                                         {ref.nombre}
                                     </a>
                                 ))}

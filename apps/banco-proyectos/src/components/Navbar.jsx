@@ -19,43 +19,45 @@ const Navbar = () => {
     const { pathname } = useLocation();
 
     return (
-        <nav aria-label="Principal" className="bg-institutional-blue text-white shadow-md sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-20 flex flex-wrap items-stretch justify-between gap-x-6">
-                <Link
-                    to="/"
-                    aria-label="Ir al inicio"
-                    aria-current={pathname === '/' ? 'page' : undefined}
-                    className={`flex items-center gap-4 py-2 rounded ${FOCUS}`}
-                >
-                    <div className="bg-white p-1 rounded-sm">
-                        <img src={logo} alt="UNIMAYOR Logo" className="h-10 w-auto" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-[15px] sm:text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
-                        <span className="text-sm font-light opacity-90">Laboratorio de Física y Sistemas Embebidos</span>
-                    </div>
-                </Link>
+        <header className="bg-institutional-blue text-white shadow-md sticky top-0 z-50">
+            <nav aria-label="Principal">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-20 flex flex-wrap items-stretch justify-between gap-x-6">
+                    <Link
+                        to="/"
+                        aria-label="Ir al inicio"
+                        aria-current={pathname === '/' ? 'page' : undefined}
+                        className={`flex items-center gap-4 py-2 rounded ${FOCUS}`}
+                    >
+                        <div className="bg-white p-1 rounded-sm">
+                            <img src={logo} alt="UNIMAYOR Logo" className="h-10 w-auto" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-[15px] sm:text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
+                            <span className="text-sm font-light opacity-90">Laboratorio de Física y Sistemas Embebidos</span>
+                        </div>
+                    </Link>
 
-                <ul className="flex flex-wrap items-stretch gap-1 text-[15px]">
-                    {ITEMS.map(({ to, label, match }) => {
-                        const current = isOn(pathname, match);
-                        return (
-                            <li key={to} className="flex">
-                                <Link
-                                    to={to}
-                                    aria-current={current ? 'page' : undefined}
-                                    className={`flex items-center min-h-[44px] px-3.5 border-y-4 border-transparent transition-colors focus-visible:-outline-offset-4 ${FOCUS} ${current
-                                        ? 'font-bold border-b-white bg-white/10'
-                                        : 'font-medium hover:text-institutional-yellow'}`}
-                                >
-                                    {label}
-                                </Link>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </div>
-        </nav>
+                    <ul className="flex flex-wrap items-stretch gap-1 text-[15px]">
+                        {ITEMS.map(({ to, label, match }) => {
+                            const current = isOn(pathname, match);
+                            return (
+                                <li key={to} className="flex">
+                                    <Link
+                                        to={to}
+                                        aria-current={current ? 'page' : undefined}
+                                        className={`flex items-center min-h-[44px] px-3.5 border-y-4 border-transparent transition-colors focus-visible:-outline-offset-4 ${FOCUS} ${current
+                                            ? 'font-bold border-b-white bg-white/10'
+                                            : 'font-medium hover:text-institutional-yellow'}`}
+                                    >
+                                        {label}
+                                    </Link>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+            </nav>
+        </header>
     );
 };
 

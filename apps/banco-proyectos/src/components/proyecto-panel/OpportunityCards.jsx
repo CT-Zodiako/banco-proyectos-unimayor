@@ -45,7 +45,7 @@ export default function OpportunityCards({ projectId, openTab, onOpen }) {
                         >
                             {open}
                         </button>
-                        <Link to={panelFullUrl(tab, projectId)} className="text-[13px] font-semibold text-institutional-blue underline rounded focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-institutional-yellow">{full}</Link>
+                        <Link to={panelFullUrl(tab, projectId)} className="link-action">{full}</Link>
                     </div>
                 </section>
             ))}
