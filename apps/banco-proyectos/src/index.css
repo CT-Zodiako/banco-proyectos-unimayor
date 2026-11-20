@@ -159,6 +159,19 @@
   .seg > button:focus-visible { outline: 2px solid var(--blue-primary); outline-offset: -4px; }
   .seg > button[aria-pressed="true"]:focus-visible { outline-color: var(--yellow-accent); }
 
+  /* Section tabs with a one-line description (Dónde publicar): a segmented bar, selected = filled blue, unselected = bordered. */
+  .tab-bar { @apply grid grid-cols-1 gap-2 min-[700px]:grid-cols-3; }
+  .tab-pill {
+    @apply flex min-h-[60px] cursor-pointer flex-col items-start justify-center gap-0.5 rounded-xl border border-sem-control-line bg-white px-4 py-2.5 text-left text-gray-900 transition-colors;
+  }
+  .tab-pill:hover { @apply border-institutional-blue bg-sem-area-bg; }
+  .tab-pill[aria-selected="true"] { @apply border-institutional-blue bg-institutional-blue text-white; }
+  .tab-pill-label { @apply text-[15px] font-bold leading-snug; }
+  .tab-pill-desc { @apply text-[13px] font-normal leading-snug text-sem-text-2; }
+  .tab-pill[aria-selected="true"] .tab-pill-desc { @apply text-blue-100; }
+  .tab-pill:focus-visible { outline: 2px solid var(--blue-primary); outline-offset: 2px; }
+  .tab-pill[aria-selected="true"]:focus-visible { outline-color: var(--blue-primary); box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--yellow-accent); }
+
   /* Quartile badge: text plus 1 to 4 filled bars (more bars = better quartile); no color of its own. */
   .qb {
     @apply relative inline-flex items-center gap-2 whitespace-nowrap rounded-md border border-gray-700 bg-white px-2 py-0.5 text-[12.5px] font-bold leading-snug text-institutional-dark;

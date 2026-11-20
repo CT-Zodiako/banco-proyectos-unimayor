@@ -13,11 +13,35 @@ import { FOCUS } from '../components/publicar/classes';
 import useJournalFinder from '../hooks/useJournalFinder';
 import { DATA_FILES } from '../lib/data-loader';
 import { requestedProjectId } from '../lib/publicar/project';
+import { nextTabId } from '../lib/publicar/tabs';
 import { dataUpdatedText } from '../lib/publicar/display';
 import { ADVANCED_DEFAULTS, dataStatus } from '../lib/publicar/table';
 
 const PAGE_TITLE = '¿Dónde publicar este proyecto? · Banco de Proyectos · UNIMAYOR';
-const TABS = [['project', 'Revistas del proyecto'], ['catalog', 'Catálogo completo'], ['help', 'Cómo leer esta página']];
+const TABS = [
+    ['project', 'Revistas del proyecto', 'Ordenadas por afinidad con tu proyecto'],
+    ['catalog', 'Catálogo completo', 'Todas las revistas, sin elegir proyecto'],
+    ['help', 'Cómo leer esta página', 'Qué significan afinidad y cuartil'],
+];
+const TAB_IDS = TABS.map(([id]) => id);
+
+// Project tab without a project: say what it needs and offer both ways out (pick a project, or browse the catalog).
+function ProjectEmptyState({ projects, onSelect, onOpenCatalog }) {
+    return (
+        <div className="space-y-4">
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-6 max-w-[720px]">
+                <div className="w-[52px] h-[52px] rounded-2xl bg-blue-50 grid place-items-center text-[26px]" aria-hidden="true">🔎</div>
+                <h2 className="mt-3 mb-1.5 text-lg font-bold text-gray-900">Elige un proyecto para ver las revistas ordenadas por afinidad</h2>
+                <p className="m-0 text-[14.5px] text-gray-700">Cada revista se compara con el sector y la tecnología de un proyecto del banco. Si todavía no tienes uno, puedes explorar todas las revistas en el catálogo completo.</p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                    <Link to="/proyectos" className={`btn btn-primary btn-lg ${FOCUS}`}>Elegir un proyecto</Link>
+                    <button type="button" onClick={onOpenCatalog} className={`btn btn-secondary btn-lg ${FOCUS}`}>Ver el catálogo completo</button>
+                </div>
+            </div>
+            <ProjectPicker projects={projects} onSelect={onSelect} />
+        </div>
+    );
+}
 
 function ProjectPicker({ projects, onSelect }) {
     return (
@@ -43,7 +67,8 @@ function DondePublicarPage({ publicarData }) {
     const navigate = useNavigate();
     const project = projectsById.get(requestedProjectId(search, hash)) || null;
 
-    const [tab, setTab] = useState('project');
+    // With a project the page opens on its journals; without one, on the catalog (which needs no project).
+    const [tab, setTab] = useState(project ? 'project' : 'catalog');
     const [trayHeight, setTrayHeight] = useState(0);
     const finder = useJournalFinder(project, journalsById, themes);
     const { rows, visible, advanced, compare, comparedJournals } = finder;
@@ -56,12 +81,34 @@ function DondePublicarPage({ publicarData }) {
     const trayVisible = tab === 'project' && finder.mode === 'table' && project !== null && comparedJournals.length > 0;
     const onTrayHeight = useCallback((height) => setTrayHeight(height ? height + 16 : 0), []);
 
+    const onTabKeyDown = (event) => {
+        const next = nextTabId(TAB_IDS, tab, event.key);
+        if (!next) return;
+        event.preventDefault();
+        setTab(next);
+        document.getElementById(`publicar-tab-${next}`)?.focus();
+    };
+
     const selectProject = (id) => navigate({ search: projectsById.has(id) ? `?p=${encodeURIComponent(id)}` : '' }, { replace: true });
 
     return (
         <div className="py-4 space-y-4" style={{ paddingBottom: trayVisible ? trayHeight : undefined }}>
-            <div role="tablist" aria-label="Secciones" className="flex gap-1 border-b border-gray-200 overflow-x-auto overflow-y-hidden">
-                {TABS.map(([id, label]) => (
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex flex-wrap items-center gap-3.5">
+                <div className="w-[52px] h-[52px] rounded-2xl bg-blue-50 grid place-items-center text-[26px] flex-shrink-0" aria-hidden="true">{project ? project.emoji || '📁' : '🔎'}</div>
+                <div className="min-w-0">
+                    <p className="m-0 text-xs font-bold text-sem-text-2 uppercase tracking-wider">
+                        {project ? `¿Dónde publicar? · Proyecto ${project.number} · ${project.area} · ${project.level}` : 'Revistas de acceso abierto diamante'}
+                    </p>
+                    <h1 className="mt-0.5 mb-0 text-xl leading-snug font-bold text-gray-900">{project ? project.title : '¿Dónde publicar?'}</h1>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 md:ml-auto">
+                    {project && <Link to={`/proyecto/${encodeURIComponent(project.id)}`} className={`btn btn-secondary ${FOCUS}`}>← Volver al proyecto</Link>}
+                    <Link to="/oportunidades" className="link-action focus-ring rounded">Mis oportunidades guardadas →</Link>
+                </div>
+            </div>
+
+            <div role="tablist" aria-label="Secciones" onKeyDown={onTabKeyDown} className="tab-bar">
+                {TABS.map(([id, label, description]) => (
                     <button
                         key={id}
                         type="button"
@@ -69,15 +116,15 @@ function DondePublicarPage({ publicarData }) {
                         id={`publicar-tab-${id}`}
                         aria-controls={`publicar-view-${id}`}
                         aria-selected={tab === id}
+                        tabIndex={tab === id ? 0 : -1}
                         onClick={() => setTab(id)}
-                        className={`px-3.5 py-2.5 -mb-px text-sm font-semibold whitespace-nowrap border-b-[3px] ${FOCUS} ${tab === id ? 'text-institutional-blue border-institutional-blue' : 'text-sem-text-2 border-transparent hover:text-gray-900'}`}
+                        className={`tab-pill ${FOCUS}`}
                     >
-                        {label}
+                        <span className="tab-pill-label">{label}</span>
+                        <span className="tab-pill-desc">{description}</span>
                     </button>
                 ))}
             </div>
-
-            <p><Link to="/oportunidades" className="link-action focus-ring rounded">Mis oportunidades guardadas →</Link></p>
 
             <DataStatus updated={dataUpdatedText(publicarData)} source="DOAJ y SCImago">
                 <p>{dataStatus(publicarData)}</p>
@@ -85,23 +132,7 @@ function DondePublicarPage({ publicarData }) {
             </DataStatus>
 
             <section id="publicar-view-project" role="tabpanel" aria-labelledby="publicar-tab-project" hidden={tab !== 'project'} className="space-y-4">
-                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex flex-wrap items-center gap-3.5">
-                    <div className="w-[52px] h-[52px] rounded-2xl bg-blue-50 grid place-items-center text-[26px] flex-shrink-0" aria-hidden="true">{project ? project.emoji || '📁' : '🔎'}</div>
-                    <div className="min-w-0">
-                        <p className="m-0 text-xs font-bold text-sem-text-2 uppercase tracking-wider">
-                            {project ? `¿Dónde publicar? · Proyecto ${project.number} · ${project.area} · ${project.level}` : '¿Dónde publicar?'}
-                        </p>
-                        <h1 className="mt-0.5 mb-0 text-xl leading-snug font-bold text-gray-900">{project ? project.title : 'Elija un proyecto'}</h1>
-                    </div>
-                    <Link
-                        to={project ? `/proyecto/${encodeURIComponent(project.id)}` : '/proyectos'}
-                        className={`btn btn-secondary md:ml-auto ${FOCUS}`}
-                    >
-                        {project ? '← Volver al proyecto' : '← Volver al banco de proyectos'}
-                    </Link>
-                </div>
-
-                {!project && <ProjectPicker projects={projects} onSelect={selectProject} />}
+                {!project && <ProjectEmptyState projects={projects} onSelect={selectProject} onOpenCatalog={() => setTab('catalog')} />}
 
                 {project && (
                     <div className="space-y-2.5">
