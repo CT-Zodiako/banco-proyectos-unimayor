@@ -11,12 +11,13 @@ const browserStorage = () => {
 // State and derived rows of the journal list of one project: search, sort, list/table, advanced filters (and their
 // saved presets) and the compare selection. Shared by the /donde-publicar page and the project panel so both filter,
 // sort and compare with the same logic. The compare selection belongs to one project: choosing another starts again.
-export default function useJournalFinder(project, journalsById, themes) {
+// `initial` ({ query, mode, sort, advanced }) seeds the state (the page reads it from the URL); the panel passes none.
+export default function useJournalFinder(project, journalsById, themes, initial = {}) {
     const projectId = project ? project.id : null;
-    const [query, setQuery] = useState('');
-    const [mode, setMode] = useState('list');
-    const [sort, setSort] = useState({ key: 'affinity', dir: SORT_DEFAULT_DIR.affinity });
-    const [advanced, setAdvanced] = useState(ADVANCED_DEFAULTS);
+    const [query, setQuery] = useState(initial.query ?? '');
+    const [mode, setMode] = useState(initial.mode ?? 'list');
+    const [sort, setSort] = useState(initial.sort ?? { key: 'affinity', dir: SORT_DEFAULT_DIR.affinity });
+    const [advanced, setAdvanced] = useState(initial.advanced ?? ADVANCED_DEFAULTS);
     const [panelOpen, setPanelOpen] = useState(false);
     const [userPresets, setUserPresets] = useState(() => loadUserPresets(browserStorage()));
     const [compareState, setCompareState] = useState({ projectId: null, ids: [] });

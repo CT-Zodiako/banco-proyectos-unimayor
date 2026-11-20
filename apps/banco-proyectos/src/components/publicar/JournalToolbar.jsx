@@ -7,8 +7,9 @@ const SORT_OPTIONS = [['affinity', 'Mayor afinidad'], ['quartile', 'Mejor cuarti
 const MODES = [['list', 'Lista', List], ['table', 'Tabla', Table2]];
 
 // Search, sort, list/table switch and the button of the advanced filters of one project's journal list. Every control
-// has a visible label. Shared by the /donde-publicar page and the project panel; it holds no state.
-export default function JournalToolbar({ query, onQuery, sort, onSort, mode, onMode, filtersOpen, onToggleFilters, advancedCount, toggleRef }) {
+// has a visible label. Shared by the /donde-publicar page and the project panel; it holds no state. `children` (the
+// page's share button) is shown after the filters button.
+export default function JournalToolbar({ query, onQuery, sort, onSort, mode, onMode, filtersOpen, onToggleFilters, advancedCount, toggleRef, children }) {
     return (
         <div role="search" aria-label="Buscar y ordenar revistas" className="flex flex-wrap items-end gap-x-3 gap-y-3">
             <div className="min-w-[240px] flex-1">
@@ -60,6 +61,7 @@ export default function JournalToolbar({ query, onQuery, sort, onSort, mode, onM
                     </>
                 )}
             </button>
+            {children}
         </div>
     );
 }

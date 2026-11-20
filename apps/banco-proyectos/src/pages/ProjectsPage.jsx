@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Briefcase, ChevronDown, Code, Cpu, Layers, Plus, SlidersHorizontal, X } from 'lucide-react';
 import CatalogFilters from '../components/CatalogFilters';
 import ProposalDialog from '../components/ProposalDialog';
+import ShareSearchButton from '../components/ShareSearchButton';
 import ProjectCard, { LevelDots } from '../components/ProjectCard';
 import { useProjects } from '../hooks/useProjects';
 import { NEW_AREAS } from '../data/projects/areas';
@@ -190,16 +191,19 @@ const ProjectsPage = () => {
                                 {hasFilters ? `que ${one ? 'cumple' : 'cumplen'} tus filtros` : (one ? 'disponible' : 'disponibles')}
                             </span>
                         </h2>
-                        <label className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
-                            Ordenar por
-                            <select
-                                value={sort}
-                                onChange={(e) => setSingle('orden', e.target.value === DEFAULT_SORT ? '' : e.target.value)}
-                                className="field-select"
-                            >
-                                {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-                            </select>
-                        </label>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                            <ShareSearchButton />
+                            <label className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
+                                Ordenar por
+                                <select
+                                    value={sort}
+                                    onChange={(e) => setSingle('orden', e.target.value === DEFAULT_SORT ? '' : e.target.value)}
+                                    className="field-select"
+                                >
+                                    {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                </select>
+                            </label>
+                        </div>
                     </div>
 
                     {hasFilters && (

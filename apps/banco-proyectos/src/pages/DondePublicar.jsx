@@ -5,6 +5,7 @@ import Chips from '../components/publicar/Chips';
 import CompareTray from '../components/publicar/CompareTray';
 import FiltersPanel from '../components/publicar/FiltersPanel';
 import DataGate from '../components/DataGate';
+import ShareSearchButton from '../components/ShareSearchButton';
 import DataStatus from '../components/publicar/DataStatus';
 import HelpView from '../components/publicar/HelpView';
 import JournalResults, { AffinityNote, ResultsLegend } from '../components/publicar/JournalResults';
@@ -12,6 +13,7 @@ import JournalToolbar from '../components/publicar/JournalToolbar';
 import { FOCUS } from '../components/publicar/classes';
 import useJournalFinder from '../hooks/useJournalFinder';
 import { DATA_FILES } from '../lib/data-loader';
+import { applyFinderQuery, parseFinderQuery, sameQuery } from '../lib/publicar/finderUrl';
 import { requestedProjectId } from '../lib/publicar/project';
 import { nextTabId } from '../lib/publicar/tabs';
 import { dataUpdatedText } from '../lib/publicar/display';
@@ -67,11 +69,20 @@ function DondePublicarPage({ publicarData }) {
     const navigate = useNavigate();
     const project = projectsById.get(requestedProjectId(search, hash)) || null;
 
-    // With a project the page opens on its journals; without one, on the catalog (which needs no project).
-    const [tab, setTab] = useState(project ? 'project' : 'catalog');
+    // The finder state (search, sort, view, advanced filters, section) is read from the URL once and written back on
+    // every change; ?p stays as it is. With a project the page opens on its journals, without one on the catalog.
+    const [fromUrl] = useState(() => parseFinderQuery(search));
+    const defaultTab = project ? 'project' : 'catalog';
+    const [tab, setTab] = useState(fromUrl.tab ?? defaultTab);
     const [trayHeight, setTrayHeight] = useState(0);
-    const finder = useJournalFinder(project, journalsById, themes);
+    const finder = useJournalFinder(project, journalsById, themes, fromUrl);
     const { rows, visible, advanced, compare, comparedJournals } = finder;
+
+    // Typing and choices replace the entry (no history spam); a link opened later restores the same view.
+    useEffect(() => {
+        const next = applyFinderQuery(search, { query: finder.query, sort: finder.sort, mode: finder.mode, advanced: finder.advanced, tab, defaultTab });
+        if (!sameQuery(next, search)) navigate({ search: next, hash }, { replace: true });
+    }, [search, hash, finder.query, finder.sort, finder.mode, finder.advanced, tab, defaultTab, navigate]);
 
     useEffect(() => {
         document.title = project ? `${project.title} · ¿Dónde publicar?` : PAGE_TITLE;
@@ -147,7 +158,9 @@ function DondePublicarPage({ publicarData }) {
                             onToggleFilters={() => finder.setPanelOpen((open) => !open)}
                             advancedCount={finder.advancedCount}
                             toggleRef={finder.toggleButtonRef}
-                        />
+                        >
+                            <ShareSearchButton className="min-h-[44px]" />
+                        </JournalToolbar>
 
                         <div className="flex flex-wrap items-center gap-2 text-[14.5px] text-gray-700">
                             <span ref={finder.countRef} aria-live="polite">

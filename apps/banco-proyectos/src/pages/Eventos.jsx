@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, X } from 'lucide-react';
 import DataGate from '../components/DataGate';
+import ShareSearchButton from '../components/ShareSearchButton';
 import EventCard from '../components/eventos/EventCard';
 import EventComparison from '../components/eventos/EventComparison';
 import EventFilters from '../components/eventos/EventFilters';
@@ -135,11 +136,14 @@ function EventosPage({ eventosData }) {
             <EventFilters state={state} hasProject={Boolean(project)} topics={knownTopics} counts={counts} kindTotals={kindTotals} onChange={update} searchRef={searchRef} />
 
             <div className="space-y-2.5">
-                <h2 ref={headingRef} tabIndex={-1} aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
-                    {shown.length
-                        ? `${plural(shown.length, 'evento vigente', 'eventos vigentes')}${project ? ' afines al proyecto' : ''}`
-                        : 'Sin resultados'}
-                </h2>
+                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                    <h2 ref={headingRef} tabIndex={-1} aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
+                        {shown.length
+                            ? `${plural(shown.length, 'evento vigente', 'eventos vigentes')}${project ? ' afines al proyecto' : ''}`
+                            : 'Sin resultados'}
+                    </h2>
+                    <ShareSearchButton />
+                </div>
                 {chips.length > 0 && (
                     <div role="group" aria-label="Filtros activos" className="flex flex-wrap items-center gap-2">
                         <span className="mr-0.5 text-[13.5px] font-semibold text-gray-700">Filtros activos:</span>
