@@ -20,5 +20,10 @@ module.exports = {
       files: ['scripts/**/*.mjs', 'tests/**/*.mjs', '*.config.js', '.eslintrc.cjs'],
       env: { node: true, browser: false },
     },
+    {
+      // DOM interaction tests run in jsdom: browser globals plus node.
+      files: ['tests/dom/**/*.js', 'tests/dom/**/*.jsx'],
+      env: { node: true, browser: true },
+    },
   ],
 };
