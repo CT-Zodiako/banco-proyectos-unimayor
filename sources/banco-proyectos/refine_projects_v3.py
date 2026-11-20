@@ -148,8 +148,8 @@ if __name__ == "__main__":
     xml_path = "temp_docx_extract_4/word/document.xml"
     data = parse_docx_xml(xml_path)
     if data:
-        with open("src/data/mockProjects.js", "w", encoding="utf-8") as f:
-            f.write("export const mockProjects = " + json.dumps(data, indent=4, ensure_ascii=False) + ";")
+        with open("src/data/baseProjects.js", "w", encoding="utf-8") as f:
+            f.write("export const baseProjects = " + json.dumps(data, indent=4, ensure_ascii=False) + ";")
         print(f"Éxito: {len(data)} proyectos procesados.")
     else:
         print("Error: No se encontraron proyectos.")

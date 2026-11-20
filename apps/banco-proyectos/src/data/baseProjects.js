@@ -1,4 +1,4 @@
-export const mockProjects = [
+export const baseProjects = [
     {
         "id": "proj_001",
         "titulo": "🌾 Proyecto 1: Sistema de Monitoreo Agrícola Distribuido con MQTT",

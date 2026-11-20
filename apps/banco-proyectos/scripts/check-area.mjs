@@ -3,7 +3,7 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { AREA_MODULES, MIN_PROJECTS_PER_NEW_AREA } from '../src/data/projects/areas.js';
-import { mockProjects } from '../src/data/mockProjects.js';
+import { baseProjects } from '../src/data/baseProjects.js';
 import { validateArea, duplicates } from './projects-validation.mjs';
 
 const file = process.argv[2];
@@ -21,7 +21,7 @@ for (const other of AREA_MODULES.filter((a) => a !== area)) {
 const { default: projects } = await import(pathToFileURL(path.resolve(file)).href);
 const errors = [
     ...validateArea(projects, area, area.minimum ?? MIN_PROJECTS_PER_NEW_AREA),
-    ...duplicates([...mockProjects, ...others, ...projects]).filter((e) => projects.some((p) => e.startsWith(`${p.id}:`))),
+    ...duplicates([...baseProjects, ...others, ...projects]).filter((e) => projects.some((p) => e.startsWith(`${p.id}:`))),
 ];
 if (errors.length) {
     console.error(`${area.name}: ${errors.length} error(es)\n- ${errors.join('\n- ')}`);

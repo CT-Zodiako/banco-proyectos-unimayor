@@ -22,7 +22,7 @@ npm run dev        # local development
 npm run build      # production build (dist/)
 ```
 
-Projects are stored in `src/data/mockProjects.js` (original 100) and `src/data/projects/<area>.js` (new areas);
+Projects are stored in `src/data/baseProjects.js` (original 100) and `src/data/projects/<area>.js` (new areas);
 `npm test` validates them and runs two suites: `npm run test:unit` (`node --test "tests/*.test.mjs"`, pure logic) and
 `npm run test:dom` (Vitest + jsdom + Testing Library, `tests/dom/*.test.jsx`: the real `<App/>` is driven through the UI with
 `fetch` mocked to serve small fixtures instead of `public/data/*.json`; covers the project panel, the legacy redirects and the

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { projects, newAreaProjects } from '../src/data/projects/index.js';
-import { mockProjects } from '../src/data/mockProjects.js';
+import { baseProjects } from '../src/data/baseProjects.js';
 import { NEW_AREAS, AREA_MODULES, MIN_PROJECTS_PER_NEW_AREA } from '../src/data/projects/areas.js';
 import { validateArea, validateProject, duplicates, titleKey } from '../scripts/projects-validation.mjs';
 
@@ -31,9 +31,9 @@ test('ids and titles are unique across the whole bank', () => {
 });
 
 test('the original 100 projects are kept unchanged and first', () => {
-    assert.equal(projects.length, mockProjects.length + newAreaProjects.length);
-    assert.deepEqual(projects.slice(0, mockProjects.length), mockProjects);
-    assert.equal(mockProjects.length, 100);
+    assert.equal(projects.length, baseProjects.length + newAreaProjects.length);
+    assert.deepEqual(projects.slice(0, baseProjects.length), baseProjects);
+    assert.equal(baseProjects.length, 100);
 });
 
 test('hardware and software display lists are derived from the tables', () => {

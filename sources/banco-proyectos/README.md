@@ -10,8 +10,8 @@ these files; the live data is in `apps/banco-proyectos/src/data/`.
 | `50_Proyectos_IoT_Completo_Final.pdf`, `40_Proyectos_IoT_Completo_Detallado.docx` | Earlier versions (50 and 40 projects) |
 | `raw_pdf_text.txt`, `100_projects_raw.txt` | Text extracted from the PDFs |
 | `extracted_100_tables.json`, `extracted_41_50.json` | Tables extracted from the documents |
-| `refine_projects_v3.py` | Historical one-off script that generated `src/data/mockProjects.js` from a DOCX extraction |
+| `refine_projects_v3.py` | Historical one-off script that generated `src/data/baseProjects.js` from a DOCX extraction |
 | `diseño.jpg` | Original design reference image |
 
-`refine_projects_v3.py` is kept for reference only. It overwrites `src/data/mockProjects.js`, which has been edited
+`refine_projects_v3.py` is kept for reference only. It overwrites `src/data/baseProjects.js`, which has been edited
 since, so do not run it against the app.

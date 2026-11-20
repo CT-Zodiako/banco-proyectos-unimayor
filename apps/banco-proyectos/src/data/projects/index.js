@@ -1,4 +1,4 @@
-import { mockProjects } from '../mockProjects.js';
+import { baseProjects } from '../baseProjects.js';
 import desarrolloVideojuegos from './desarrollo-videojuegos.js';
 import ciberseguridad from './ciberseguridad.js';
 import desarrolloSoftware from './desarrollo-software.js';
@@ -38,4 +38,4 @@ export const newAreaProjects = [
     ...iotMedicoSaludDigital,
 ].map(withDerivedLists);
 
-export const projects = [...mockProjects, ...newAreaProjects];
+export const projects = [...baseProjects, ...newAreaProjects];
