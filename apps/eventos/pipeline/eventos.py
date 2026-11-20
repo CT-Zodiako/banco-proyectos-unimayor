@@ -487,7 +487,8 @@ def merge_events(events):
 def is_expired(event, today):
     """cfp: deadline (else end, else start) before today; attend: end (else start) before today.
 
-    Matches isExpired in site/filters.js. Events without any date are dropped here (the page would keep them).
+    Matches isExpired in src/lib/eventos/filters.js (apps/banco-proyectos). Events without any date are dropped
+    here (the page would keep them).
     """
     today = today.isoformat()
     reference = event["end"] or event["start"]

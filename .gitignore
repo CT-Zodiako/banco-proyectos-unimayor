@@ -15,9 +15,6 @@ __pycache__/
 # Local backups (e.g. the empty Git repository the project bank came with)
 .backup/
 
-# banco-proyectos: copy of the journal finder made by scripts/sync-donde-publicar.mjs
-apps/banco-proyectos/public/donde-publicar/
-
 # banco-proyectos: temporary DOCX extraction folders
 apps/banco-proyectos/temp_docx_extract*/
 
@@ -27,5 +24,3 @@ apps/donde-publicar/data/raw/doaj/
 
 # eventos: cached downloads of the public sources (regenerate with python3 -E -m pipeline.build)
 apps/eventos/data/raw/
-# banco-proyectos: copy of the event finder made by scripts/sync-eventos.mjs
-apps/banco-proyectos/public/eventos/

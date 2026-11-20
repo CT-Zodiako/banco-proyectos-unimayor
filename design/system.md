@@ -70,12 +70,12 @@ Tailwind v3 default palette values are listed only for the utility classes the a
 - **Metric card** (`.metric-card`): white, `rounded-xl`, `border-gray-100`, padding 24px, hover `shadow-lg`.
 - **Motion**: `fadeIn` 0.5s (opacity + translateY 10px).
 
-## Static pages: events and journals
+## Event and journal pages (React)
 
-Sources: `apps/eventos/site/styles.css`, `apps/banco-proyectos/public/eventos/styles.css`, `apps/donde-publicar/site/styles.css`, and `apps/banco-proyectos/public/donde-publicar/styles.css`. Each deployed stylesheet matches its site counterpart. Both use the institutional palette above. The journal page additionally declares quartile colors Q1 `#1b7f3b`, Q2 `#2f6fd0`, Q3 `#c27c0e`, Q4 `#8a5a9e`.
+Sources: `apps/banco-proyectos/src/pages/Eventos.jsx`, `apps/banco-proyectos/src/pages/DondePublicar.jsx`, and the components in `apps/banco-proyectos/src/components/eventos/` and `apps/banco-proyectos/src/components/publicar/`. Both pages are routes of the project bank (`/eventos`, `/donde-publicar`), styled with the same Tailwind setup and institutional palette as the rest of the app; they have no stylesheet of their own. The journal page adds quartile colors (`QUARTILE_CLASSES` in `src/components/publicar/classes.js`): Q1 `#1b7f3b`, Q2 `#2f6fd0`, Q3 `#c27c0e`, Q4 `#8a5a9e`.
 
-- Event filters and cards: white backgrounds, 16px radius, gray-100 border, small shadow; selected segments use institutional blue and white.
+- Event filters and cards: white backgrounds, 16px radius (`rounded-2xl`), gray-100 border, small shadow; selected segments and pills use institutional blue with white text.
 - Event tags: blue-50/blue-700 for calls, green-50/green-700 for attendance, gray-100/gray-700 for online.
-- Layout: maximum width 1376px, horizontal padding 32px, reduced to 16px at 760px.
-- Focus: 3px yellow outline, 2px offset. Mobile event cards stack below 760px.
-- Spacing used by the static pages: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 32 and 40px; source: `apps/eventos/site/styles.css`.
+- Layout: inherits the app shell (`max-w-7xl`, horizontal padding 16px, 24px from `sm`, 32px from `lg`); event cards and filters stack on small screens and switch to rows from the `sm` breakpoint.
+- Focus: 2px institutional-yellow outline (`focus-visible:outline-2 focus-visible:outline-institutional-yellow`).
+- Spacing: Tailwind scale plus a few arbitrary values (`text-[13px]`, `p-[18px]`) in the components above.
