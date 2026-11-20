@@ -2,8 +2,9 @@ import { Link } from 'react-router-dom';
 
 // Header card shared by /eventos and /donde-publicar (T15): hue top border, icon tile, eyebrow, the page's only h1,
 // optional description, and an actions area on the right with the optional back button and the link to the saved
-// opportunities. `hue` is 'events' or 'journals' (the tone class that colors the top border and the tile).
-const HUES = { events: 'tn-events', journals: 'tn-journals' };
+// opportunities. `hue` is 'events', 'journals' or 'projects' (T17: the project comparison; brand blue) — the tone class
+// that colors the top border and the tile.
+const HUES = { events: 'tn-events', journals: 'tn-journals', projects: 'tn-projects' };
 
 export default function PageHeader({ hue, icon, eyebrow, title, children, back }) {
     return (

@@ -77,6 +77,10 @@
   --tone-review-fg: #334155;
   --tone-review-line: #CBD5E1;
   --tone-review-solid: #475569;
+  --tone-projects-bg: #EFF6FF;
+  --tone-projects-fg: #00428A;
+  --tone-projects-line: #93C5FD;
+  --tone-projects-solid: #00428A;
   --btn-journals-from: #0F766E;
   --btn-journals-to: #115E59;
   --btn-journals-hover-from: #115E59;
@@ -102,6 +106,7 @@
 .tn-low { --tn-bg: var(--tone-low-bg); --tn-fg: var(--tone-low-fg); --tn-line: var(--tone-low-line); --tn-solid: var(--tone-low-solid); }
 .tn-lang { --tn-bg: var(--tone-lang-bg); --tn-fg: var(--tone-lang-fg); --tn-line: var(--tone-lang-line); --tn-solid: var(--tone-lang-solid); }
 .tn-review { --tn-bg: var(--tone-review-bg); --tn-fg: var(--tone-review-fg); --tn-line: var(--tone-review-line); --tn-solid: var(--tone-review-solid); }
+.tn-projects { --tn-bg: var(--tone-projects-bg); --tn-fg: var(--tone-projects-fg); --tn-line: var(--tone-projects-line); --tn-solid: var(--tone-projects-solid); }
 /* palette:end */
 
 @layer base {
@@ -174,6 +179,11 @@
   .btn-tertiary { @apply border-transparent bg-transparent px-2 text-institutional-blue hover:underline; }
   .btn-lg { @apply min-h-[44px] px-5 text-[15px]; }
   .btn:disabled, .btn[aria-disabled="true"] { @apply cursor-not-allowed border-gray-200 bg-gray-100 text-gray-600; }
+  /* T17: «Comparar» toggle of a project card (secondary button; pressed = filled brand blue, the label says «Quitar de la
+     comparación»), and the comparison table: a row that differs takes the tint of the projects hue (tn-projects). */
+  .btn-compare { @apply !whitespace-normal text-center; }
+  .btn-compare[aria-pressed="true"] { @apply border-institutional-blue bg-institutional-blue text-white hover:bg-blue-800; }
+  .cmp-table tr[data-differs="true"] > * { background-color: var(--tn-bg); }
 
   /* ── T13: one hue per tool. «Dónde publicar» is teal (journals), «Ver eventos» purple (events). The hex values live in
      src/lib/palette.js (variables written by tailwind.config.js). A type button is a gradient (lighter on top), white

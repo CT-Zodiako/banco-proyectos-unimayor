@@ -35,6 +35,7 @@ const bundle = Object.fromEntries([
     chunk('assets/react.js', 'react'),
     chunk('assets/ProjectsCatalog.js', 'ProjectsCatalog', ['assets/react.js', 'assets/ProjectCard.js']),
     chunk('assets/ProjectCard.js', 'ProjectCard', ['assets/react.js']),
+    chunk('assets/CompareProjects.js', 'CompareProjects', ['assets/react.js', 'assets/ProjectCard.js']),
     chunk('assets/projects-data.js', 'projects-data'),
     chunk('assets/projects-index.js', 'projects-index'),
     chunk('assets/Eventos.js', 'Eventos', ['assets/useLazyData.js']),
@@ -49,21 +50,26 @@ test('preloadMap lists, per route, its page chunk and what it needs, without wha
     assert.ok(map['^/proyecto/'].includes('/assets/projects-data.js'));
     assert.ok(!map['^/proyecto/'].includes('/assets/projects-index.js'));
     assert.deepEqual(map['^/eventos/?$'], ['/assets/Eventos.js', '/assets/useLazyData.js']);
+    // the comparison page (T17) needs the full data as well, and not the light index
+    assert.deepEqual(map['^/proyectos/comparar/?$'], ['/assets/CompareProjects.js', '/assets/ProjectCard.js', '/assets/projects-data.js']);
 });
 
 test('preloadMap skips routes whose chunks are not in the bundle and honors the base path', () => {
     const routes = preloadMap(bundle, '/banco/').map(([pattern]) => pattern);
     // /proyecto/:id has no page chunk here, but it still needs the full projects data
-    assert.deepEqual(routes, ['^/proyectos/?$', '^/proyecto/', '^/eventos/?$']);
+    assert.deepEqual(routes, ['^/proyectos/?$', '^/proyecto/', '^/proyectos/comparar/?$', '^/eventos/?$']);
     assert.deepEqual(Object.fromEntries(preloadMap(bundle, '/'))['^/proyecto/'], ['/assets/projects-data.js']);
     assert.ok(preloadMap(bundle, '/banco/')[0][1].every((url) => url.startsWith('/banco/assets/')));
 });
 
 test('every route pattern is a valid regular expression that matches its own URL', () => {
-    const urls = { '^/proyectos/?$': '/proyectos', '^/proyecto/': '/proyecto/proj_001', '^/eventos/?$': '/eventos', '^/donde-publicar/?$': '/donde-publicar', '^/oportunidades/?$': '/oportunidades', '^/acerca/?$': '/acerca', '^/contacto/?$': '/contacto' };
+    const urls = { '^/proyectos/?$': '/proyectos', '^/proyecto/': '/proyecto/proj_001', '^/proyectos/comparar/?$': '/proyectos/comparar', '^/eventos/?$': '/eventos', '^/donde-publicar/?$': '/donde-publicar', '^/oportunidades/?$': '/oportunidades', '^/acerca/?$': '/acerca', '^/contacto/?$': '/contacto' };
     assert.deepEqual(ROUTE_PRELOADS.map(([pattern]) => pattern), Object.keys(urls));
     for (const [pattern] of ROUTE_PRELOADS) assert.ok(new RegExp(pattern).test(urls[pattern]), pattern);
     assert.equal(new RegExp('^/proyectos/?$').test('/proyecto/proj_001'), false);
+    // the catalog pattern does not catch the comparison page and the project pattern does not either
+    assert.equal(new RegExp('^/proyectos/?$').test('/proyectos/comparar'), false);
+    assert.equal(new RegExp('^/proyecto/').test('/proyectos/comparar'), false);
 });
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');

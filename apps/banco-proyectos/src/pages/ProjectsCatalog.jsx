@@ -1,16 +1,20 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { saveCatalogSearch } from '../lib/links';
 import { useSearchParams } from 'react-router-dom';
-import { Briefcase, ChevronDown, Code, Cpu, Layers, SlidersHorizontal, X } from 'lucide-react';
+import { Briefcase, ChevronDown, Code, Cpu, Layers, Scale, SlidersHorizontal, X } from 'lucide-react';
 import CatalogFilters from '../components/CatalogFilters';
 import ShareSearchButton from '../components/ShareSearchButton';
 import ProjectCard, { LevelDots } from '../components/ProjectCard';
+import ProjectCompareTray from '../components/ProjectCompareTray';
+import useCompareSelection from '../hooks/useCompareSelection';
+import { COMPARE_PARAM, FULL_MESSAGE, MAX_COMPARE } from '../lib/compare-projects';
 import {
     activeCountLabel, activeFilterChips, buildAreaFacets, countByLevel, filterProjects, sortProjects, paginate,
-    topSectorGroups, SORTS, DEFAULT_SORT,
+    topSectorGroups, splitProjectTitle, SORTS, DEFAULT_SORT,
 } from '../lib/catalog';
 
 const PAGE_SIZE = 12;
+const COMPARE_NOTE_ID = 'compare-full-note';
 
 // Compact page list: first, last, and the pages around the current one.
 const pageWindow = (page, pages) => {
@@ -51,6 +55,9 @@ const CardLegend = () => (
         <span className="inline-flex items-center gap-[7px]">
             <Code size={16} aria-hidden="true" className="text-sem-text-2" />Software = herramientas
         </span>
+        <span className="inline-flex items-center gap-[7px]">
+            <Scale size={16} aria-hidden="true" className="text-sem-text-2" />Comparar proyectos: marca «Comparar» en 2 o 3 tarjetas
+        </span>
     </aside>
 );
 
@@ -61,6 +68,10 @@ const ProjectsCatalog = ({ projects }) => {
     const [filtersOpen, setFiltersOpen] = useState(false);
     const resultsRef = useRef(null);
     const headingRef = useRef(null);
+    const compare = useCompareSelection(projects);
+    const compareFull = compare.ids.length >= MAX_COMPARE;
+    const byId = useMemo(() => new Map(projects.map((project) => [project.id, project])), [projects]);
+    const compared = compare.ids.map((id) => ({ id, title: splitProjectTitle(byId.get(id).titulo).title }));
 
     // Remember the filters so the project detail can link back to this exact view.
     useEffect(() => { saveCatalogSearch(params.toString() ? `?${params.toString()}` : ''); }, [params]);
@@ -88,7 +99,9 @@ const ProjectsCatalog = ({ projects }) => {
     // The button that removes a filter disappears with it: the focus goes to the results heading, not to the page.
     const focusResults = () => headingRef.current?.focus({ preventScroll: true });
     const clearAll = () => {
-        setParams(new URLSearchParams(sort === DEFAULT_SORT ? {} : { orden: sort }), { replace: true });
+        const kept = new URLSearchParams(sort === DEFAULT_SORT ? {} : { orden: sort });
+        if (params.has(COMPARE_PARAM)) kept.set(COMPARE_PARAM, params.get(COMPARE_PARAM)); // the comparison is not a filter
+        setParams(kept, { replace: true });
         focusResults();
     };
 
@@ -197,7 +210,16 @@ const ProjectsCatalog = ({ projects }) => {
 
                     {items.length > 0 ? (
                         <div className="grid grid-cols-1 min-[1101px]:grid-cols-2 min-[1700px]:grid-cols-3 gap-5">
-                            {items.map((project) => <ProjectCard key={project.id} project={project} />)}
+                            {items.map((project) => {
+                                const selected = compare.ids.includes(project.id);
+                                return (
+                                    <ProjectCard
+                                        key={project.id}
+                                        project={project}
+                                        compare={{ selected, disabled: !selected && compareFull, noteId: COMPARE_NOTE_ID, onToggle: () => compare.toggle(project.id) }}
+                                    />
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="py-16 text-center border border-dashed border-sem-control-line rounded-2xl bg-white">
@@ -248,6 +270,9 @@ const ProjectsCatalog = ({ projects }) => {
                     )}
                 </section>
             </div>
+
+            {compareFull && <p id={COMPARE_NOTE_ID} className="sr-only">{FULL_MESSAGE}</p>}
+            {compared.length > 0 && <ProjectCompareTray selected={compared} onRemove={compare.remove} onClear={compare.clear} />}
         </>
     );
 };

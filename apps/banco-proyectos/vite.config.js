@@ -27,6 +27,7 @@ export function manualChunks(id) {
 export const ROUTE_PRELOADS = [
     ['^/proyectos/?$', ['ProjectsCatalog', 'projects-index']],
     ['^/proyecto/', ['ProjectDetail', 'projects-data']],
+    ['^/proyectos/comparar/?$', ['CompareProjects', 'projects-data']],
     ['^/eventos/?$', ['Eventos']],
     ['^/donde-publicar/?$', ['DondePublicar']],
     ['^/oportunidades/?$', ['Opportunities']],

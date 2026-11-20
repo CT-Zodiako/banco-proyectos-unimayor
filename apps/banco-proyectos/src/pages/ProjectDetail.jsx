@@ -1,9 +1,9 @@
 import { Fragment } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
     ChevronLeft, Clock, DollarSign, Cpu, Layers, Briefcase,
     Target, ListChecks,
-    ExternalLink, Globe, BookOpen, CalendarDays, Code
+    ExternalLink, Globe, BookOpen, CalendarDays, Code, Scale
 } from 'lucide-react';
 import OpportunityCards from '../components/proyecto-panel/OpportunityCards';
 import PageSkeleton from '../components/PageSkeleton';
@@ -15,6 +15,7 @@ import { useProjects } from '../hooks/useProjects';
 import useProjectPanel from '../hooks/useProjectPanel';
 import { isNewProject, levelRank } from '../lib/catalog';
 import { wherePublishUrl, eventsForProjectUrl, savedCatalogUrl } from '../lib/links';
+import { FULL_MESSAGE, MAX_COMPARE, loadSelection, saveSelection, withCompareParam } from '../lib/compare-projects';
 
 // The slide-over (and the events and journals tabs inside it) downloads the first time a panel opens.
 const ProjectSlideOver = lazyRoute(() => import('../components/proyecto-panel/ProjectSlideOver'));
@@ -36,6 +37,7 @@ const TABLE_HEAD = 'bg-gray-100 border-b border-gray-200 text-xs font-extrabold 
 
 const ProjectDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { projects, loading, error, retry } = useProjects();
     const panel = useProjectPanel();
 
@@ -52,6 +54,16 @@ const ProjectDetail = () => {
             </div>
         );
     }
+
+    // «Comparar con otros»: adds this project to the comparison selection (kept in the session) and opens the catalog on the
+    // view the visitor came from, where the tray shows the selection. With 3 other projects already chosen it is disabled.
+    const selection = loadSelection();
+    const compareFull = selection.length >= MAX_COMPARE && !selection.includes(project.id);
+    const compareWithOthers = () => {
+        const next = selection.includes(project.id) ? selection : [...selection, project.id];
+        saveSelection(next);
+        navigate(withCompareParam(savedCatalogUrl(), next));
+    };
 
     const rank = levelRank(project.nivel);
     const hardware = project.hardware.length;
@@ -88,6 +100,19 @@ const ProjectDetail = () => {
                         <span className="type-ico" aria-hidden="true"><BookOpen size={16} /></span>
                         ¿Dónde publicar este proyecto?
                     </Link>
+                    <span className="inline-flex" data-tip={compareFull ? FULL_MESSAGE : 'Elige otros proyectos y ponlos lado a lado'}>
+                        <button
+                            type="button"
+                            onClick={compareWithOthers}
+                            disabled={compareFull}
+                            aria-describedby={compareFull ? 'compare-full-note' : undefined}
+                            className="btn btn-secondary btn-lg !whitespace-normal text-center"
+                        >
+                            <Scale size={18} aria-hidden="true" />
+                            Comparar con otros
+                        </button>
+                    </span>
+                    {compareFull && <p id="compare-full-note" className="sr-only">{FULL_MESSAGE}</p>}
                 </div>
             </div>
 

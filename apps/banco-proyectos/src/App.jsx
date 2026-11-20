@@ -14,7 +14,7 @@ import { Mail, Globe, MapPin } from 'lucide-react';
 
 // Every page but Home and the shell of /proyectos (title, summary, loading state; its results are a chunk) is its own chunk (src/lib/routeChunks.js), downloaded when its route opens. The event and journal
 // data (hundreds of KB to a few MB of JSON) is only downloaded when each finder is opened.
-const { Proyecto, Acerca, Contacto, Oportunidades, Eventos, DondePublicar } = ROUTE_PAGES;
+const { Proyecto, Comparar, Acerca, Contacto, Oportunidades, Eventos, DondePublicar } = ROUTE_PAGES;
 
 // First stop of the keyboard: moves the focus to <main> without changing the URL (no #hash is added).
 const SkipLink = () => (
@@ -99,6 +99,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/proyectos" element={<ProjectsPage />} />
+                            <Route path="/proyectos/comparar" element={<RouteLoader what="la comparación"><Comparar /></RouteLoader>} />
                             <Route path="/proyecto/:id" element={<RouteLoader what="el proyecto"><Proyecto /></RouteLoader>} />
                             <Route path="/acerca" element={<RouteLoader what="la página"><Acerca /></RouteLoader>} />
                             <Route path="/contacto" element={<RouteLoader what="la página"><Contacto /></RouteLoader>} />

@@ -11,6 +11,8 @@ export const ROUTE_PAGES = {
     // The results of /proyectos (filters, cards, pages); the shell of that page is in the entry bundle.
     Catalogo: lazyRoute(() => import('../pages/ProjectsCatalog')),
     Proyecto: lazyRoute(() => withData(() => import('../pages/ProjectDetail'), loadProjects)),
+    // /proyectos/comparar (T17): its own chunk; it is the only page besides the project page that downloads the full data.
+    Comparar: lazyRoute(() => withData(() => import('../pages/CompareProjects'), loadProjects)),
     Acerca: lazyRoute(() => import('../pages/About')),
     Contacto: lazyRoute(() => import('../pages/Contact')),
     Oportunidades: lazyRoute(() => import('../pages/Opportunities')),
@@ -28,6 +30,9 @@ const BY_PATH = {
 
 /** Starts downloading the project page and the full data (hover or focus on a project link of the catalog). */
 export const prefetchProject = () => ROUTE_PAGES.Proyecto.prefetch();
+
+/** Starts downloading the comparison page and the full data (hover or focus on «Comparar ahora», which is ready to open it). */
+export const prefetchComparison = () => ROUTE_PAGES.Comparar.prefetch();
 
 /** Starts downloading the chunk of the page behind a path (hover or focus of its link). Unknown paths do nothing. */
 export const prefetchRoute = (path) => {

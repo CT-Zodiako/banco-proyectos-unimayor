@@ -1,7 +1,8 @@
 import { m, useReducedMotion } from 'framer-motion';
-import { BookOpen, Briefcase, CalendarDays, Clock, Code, Cpu, Layers } from 'lucide-react';
+import { BookOpen, Briefcase, CalendarDays, Check, Clock, Code, Cpu, Layers, Scale } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { isNewProject, levelRank, splitProjectTitle } from '../lib/catalog';
+import { FULL_MESSAGE } from '../lib/compare-projects';
 import { wherePublishUrl, eventsForProjectUrl } from '../lib/links';
 import { prefetchProject } from '../lib/routeChunks';
 
@@ -17,7 +18,10 @@ export const LevelDots = ({ rank }) => (
     </span>
 );
 
-const ProjectCard = ({ project }) => {
+// `compare` (optional, the catalog passes it): { selected, disabled, noteId, onToggle }. «Comparar» is a toggle button
+// (aria-pressed) whose name says what the next press does; at the limit of 3 the others are disabled and point
+// (aria-describedby) to the note `noteId` that says why, with the same text as a tooltip.
+const ProjectCard = ({ project, compare }) => {
     const reduceMotion = useReducedMotion();
     const { emoji, number, title } = splitProjectTitle(project.titulo);
     const rank = levelRank(project.nivel);
@@ -95,6 +99,22 @@ const ProjectCard = ({ project }) => {
                         <span className="type-ico" aria-hidden="true"><BookOpen size={14} /></span>
                         Dónde publicar<span className="sr-only">{forProject}</span>
                     </Link>
+                    {compare && (
+                        <span className="inline-flex" data-tip={compare.disabled ? FULL_MESSAGE : undefined}>
+                            <button
+                                type="button"
+                                aria-pressed={compare.selected}
+                                aria-label={`${compare.selected ? 'Quitar de la comparación' : 'Comparar'}: ${title}`}
+                                aria-describedby={compare.disabled ? compare.noteId : undefined}
+                                disabled={compare.disabled}
+                                onClick={compare.onToggle}
+                                className="btn btn-secondary btn-compare focus-ring"
+                            >
+                                {compare.selected ? <Check size={16} aria-hidden="true" /> : <Scale size={16} aria-hidden="true" />}
+                                {compare.selected ? 'Quitar de la comparación' : 'Comparar'}
+                            </button>
+                        </span>
+                    )}
                 </div>
             </div>
         </m.article>

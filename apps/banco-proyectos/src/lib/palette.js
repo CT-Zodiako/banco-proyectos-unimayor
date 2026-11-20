@@ -11,6 +11,7 @@
                        rápida / media / lenta, «Sin costo» and «Cumple» (good), «No cumple» (low)
      lang (blue)       the journal accepts Spanish
      review (slate)    the peer-review type
+     projects (blue)   the projects pages: the header of the project comparison and its «Difiere» marks (brand blue, T17)
    Each tone is a soft badge: dark text (fg) on a light tint (bg) with a line, and a solid color for graphic marks
    (rings, bars, swatches). The brand stays blue #00428A and yellow #FFC107. Color never carries a meaning alone:
    every tone sits next to its text label, an icon or bars.
@@ -37,6 +38,7 @@ export const TONES = {
     low: LOW,
     lang: { bg: '#DBEAFE', fg: '#1E3A8A', line: '#93C5FD', solid: '#1D4ED8' },
     review: { bg: '#F1F5F9', fg: '#334155', line: '#CBD5E1', solid: '#475569' },
+    projects: { bg: '#EFF6FF', fg: '#00428A', line: '#93C5FD', solid: '#00428A' },
 };
 
 /* Gradient stops of the two type buttons (top to bottom), their hover stops and the text color on top of them. */
