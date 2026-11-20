@@ -1,34 +1,59 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
 
+// `match` lists the paths that belong to each item, so the item stays marked on its sub-pages too
+// (a project page belongs to "Proyectos").
+const ITEMS = [
+    { to: '/proyectos', label: 'Proyectos', match: ['/proyectos', '/proyecto'] },
+    { to: EVENTS_URL, label: 'Eventos académicos', match: [EVENTS_URL] },
+    { to: PUBLISH_URL, label: 'Dónde publicar', match: [PUBLISH_URL] },
+    { to: '/oportunidades', label: 'Mis oportunidades', match: ['/oportunidades'] },
+];
+
+const isOn = (pathname, paths) => paths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+
+const FOCUS = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow';
+
 const Navbar = () => {
+    const { pathname } = useLocation();
 
     return (
-        <nav className="bg-institutional-blue text-white shadow-md sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-20">
-                    <Link to="/" aria-label="Ir al inicio" className="flex items-center gap-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow">
-                        <div className="bg-white p-1 rounded-sm">
-                            <img src={logo} alt="UNIMAYOR Logo" className="h-10 w-auto" />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
-                            <span className="text-sm font-light opacity-90">Laboratorio de Física y Sistemas Embebidos</span>
-                        </div>
-                    </Link>
-
-                    <div className="hidden md:flex items-center gap-6">
-                        <Link to={EVENTS_URL} className="font-semibold hover:text-institutional-yellow transition-colors">Eventos académicos</Link>
-                        <Link to={PUBLISH_URL} className="font-semibold hover:text-institutional-yellow transition-colors">Dónde publicar</Link>
-                        <Link to="/oportunidades" className="font-semibold hover:text-institutional-yellow transition-colors">Mis oportunidades</Link>
+        <nav aria-label="Principal" className="bg-institutional-blue text-white shadow-md sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-20 flex flex-wrap items-stretch justify-between gap-x-6">
+                <Link
+                    to="/"
+                    aria-label="Ir al inicio"
+                    aria-current={pathname === '/' ? 'page' : undefined}
+                    className={`flex items-center gap-4 py-2 rounded ${FOCUS}`}
+                >
+                    <div className="bg-white p-1 rounded-sm">
+                        <img src={logo} alt="UNIMAYOR Logo" className="h-10 w-auto" />
                     </div>
-                </div>
-                <div className="flex gap-5 pb-3 text-sm font-semibold md:hidden">
-                    <Link to={EVENTS_URL}>Eventos académicos</Link>
-                    <Link to={PUBLISH_URL}>Dónde publicar</Link>
-                    <Link to="/oportunidades">Mis oportunidades</Link>
-                </div>
+                    <div className="flex flex-col">
+                        <span className="text-[15px] sm:text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
+                        <span className="text-sm font-light opacity-90">Laboratorio de Física y Sistemas Embebidos</span>
+                    </div>
+                </Link>
+
+                <ul className="flex flex-wrap items-stretch gap-1 text-[15px]">
+                    {ITEMS.map(({ to, label, match }) => {
+                        const current = isOn(pathname, match);
+                        return (
+                            <li key={to} className="flex">
+                                <Link
+                                    to={to}
+                                    aria-current={current ? 'page' : undefined}
+                                    className={`flex items-center min-h-[44px] px-3.5 border-y-4 border-transparent transition-colors focus-visible:-outline-offset-4 ${FOCUS} ${current
+                                        ? 'font-bold border-b-white bg-white/10'
+                                        : 'font-medium hover:text-institutional-yellow'}`}
+                                >
+                                    {label}
+                                </Link>
+                            </li>
+                        );
+                    })}
+                </ul>
             </div>
         </nav>
     );

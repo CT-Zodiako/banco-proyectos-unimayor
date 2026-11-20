@@ -107,3 +107,42 @@ export function topSectorGroups(projects, limit = 3) {
     }
     return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, limit).map(([group]) => group);
 }
+
+/** "🌾 Proyecto 1: Título" → { emoji, number, title }. The prefix is only removed when it exists; without an emoji a rocket is used. */
+export function splitProjectTitle(titulo) {
+    const text = String(titulo ?? '').trim();
+    const firstSpace = text.indexOf(' ');
+    const first = firstSpace > 0 ? text.substring(0, firstSpace) : '';
+    const hasEmoji = first !== '' && first.length <= 4;
+    const rest = hasEmoji ? text.substring(firstSpace).trim() : text;
+    const prefix = rest.match(/^Proyecto\s+(\d+)\s*:\s*(.*)$/s);
+    return {
+        emoji: hasEmoji ? first : '🚀',
+        number: prefix ? Number(prefix[1]) : null,
+        title: prefix ? prefix[2].trim() : rest,
+    };
+}
+
+/** Difficulty as 1 to 3 (dots on the cards); 0 for an unknown level. */
+export const levelRank = (level) => LEVELS.indexOf(level) + 1;
+
+/** Projects per level, with 0 for the levels that have none. */
+export function countByLevel(projects) {
+    const counts = Object.fromEntries(LEVELS.map((level) => [level, 0]));
+    for (const project of projects) if (project.nivel in counts) counts[project.nivel] += 1;
+    return counts;
+}
+
+/** The applied filters as removable chips: { id, kind: 'area' | 'nivel' | 'sector' | 'q', value, group, text }. Blank sector or search is not a filter. */
+export function activeFilterChips({ areas = [], levels = [], sector = '', query = '' } = {}) {
+    const chips = [
+        ...areas.map((value) => ({ kind: 'area', value, group: 'Área', text: value })),
+        ...levels.map((value) => ({ kind: 'nivel', value, group: 'Nivel', text: value })),
+    ];
+    if (String(sector).trim()) chips.push({ kind: 'sector', value: sector, group: 'Sector', text: sector });
+    if (String(query).trim()) chips.push({ kind: 'q', value: query, group: 'Búsqueda', text: `“${query}”` });
+    return chips.map((chip) => ({ ...chip, id: `${chip.kind}:${chip.value}` }));
+}
+
+/** Text of the active-filters badge: "1 activo", "3 activos" or "Sin filtros activos". */
+export const activeCountLabel = (count) => (count > 0 ? `${count} ${count === 1 ? 'activo' : 'activos'}` : 'Sin filtros activos');

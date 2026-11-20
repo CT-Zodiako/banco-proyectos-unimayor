@@ -5,6 +5,26 @@
 :root {
   --blue-primary: #00428A;
   --yellow-accent: #FFC107;
+
+  /* Semantic tokens (design/mejora-visual/04-componentes.html). One color, one meaning:
+     blue = area and actions, gray = sector and data, orange dots = level, yellow = new / attention / focus,
+     green = ok, red = error. Only --sem-attention-bg is a new value; the rest alias the existing palette. */
+  --sem-area-bg: #EFF6FF;       /* blue-50 */
+  --sem-area-fg: #00428A;       /* institutional.blue */
+  --sem-area-line: #DBEAFE;     /* blue-100 */
+  --sem-sector-bg: #F3F4F6;     /* gray-100 */
+  --sem-sector-fg: #374151;     /* gray-700 */
+  --sem-level-bg: #FFF7ED;      /* orange-50 */
+  --sem-level-fg: #111827;      /* gray-900 */
+  --sem-level-dot: #C2410C;     /* orange-700 */
+  --sem-attention-bg: #FFF8E1;  /* new value; dark text on top */
+  --sem-control-line: #6B7280;  /* gray-500: 4.83:1 border of fields, chips and buttons */
+  --sem-text-2: #4B5563;        /* gray-600: minimum secondary text color */
+  --sem-success-bg: #F0FDF4;    /* green-50 */
+  --sem-success-fg: #15803D;    /* green-700 */
+  --sem-danger-fg: #B91C1C;     /* red-700 */
+  --sem-blue-hover: #1E40AF;    /* blue-800 */
+  --sem-blue-soft: #DBEAFE;     /* blue-100 */
 }
 
 @layer base {
@@ -26,8 +46,99 @@
     @apply px-6 py-2 bg-institutional-blue text-white rounded-lg hover:bg-blue-800 transition-colors font-medium;
   }
 
+  /* ── Badges: icon + text, one color per meaning (area / sector / level / new) ── */
   .badge {
-    @apply px-2 py-1 rounded-full text-xs font-semibold;
+    @apply relative inline-flex max-w-full items-center gap-1.5 rounded-md border px-2 py-[3px] text-[12.5px] font-semibold leading-snug;
+  }
+  .badge-area { @apply border-sem-area-line bg-sem-area-bg font-bold text-sem-area-fg; }
+  .badge-sector { @apply border-gray-200 bg-sem-sector-bg text-sem-sector-fg; }
+  .badge-level { @apply border-gray-200 bg-sem-level-bg text-sem-level-fg; }
+  .badge-new {
+    @apply rounded-full border-institutional-yellow bg-institutional-yellow px-2 py-0.5 text-[11.5px] font-extrabold uppercase tracking-wide text-institutional-dark;
+  }
+  /* Level as 1 to 3 dots (filled = difficulty); the words always accompany them. */
+  .level-dots { @apply inline-flex gap-[3px]; }
+  .level-dots > i {
+    @apply block h-[9px] w-[9px] rounded-full border-[1.5px] border-sem-control-line bg-transparent;
+  }
+  .level-dots > i.on { @apply border-sem-level-dot bg-sem-level-dot; }
+
+  /* ── Buttons: primary (one main action), secondary (visible support), tertiary (minor, inside a row) ── */
+  .btn {
+    @apply inline-flex min-h-[36px] items-center justify-center gap-[7px] whitespace-nowrap rounded-lg border border-institutional-blue px-3.5 text-[13.5px] font-semibold leading-tight no-underline transition-colors;
+  }
+  .btn-primary.btn { @apply bg-institutional-blue text-white hover:border-blue-800 hover:bg-blue-800; }
+  .btn-secondary { @apply bg-white text-institutional-blue hover:bg-sem-area-bg; }
+  .btn-tertiary { @apply border-transparent bg-transparent px-2 text-institutional-blue hover:underline; }
+  .btn-lg { @apply min-h-[44px] px-5 text-[15px]; }
+  .btn:disabled, .btn[aria-disabled="true"] { @apply cursor-not-allowed border-gray-200 bg-gray-100 text-gray-600; }
+
+  /* ── Chips: default / hover / selected (aria-pressed) / disabled ── */
+  .chip {
+    @apply inline-flex min-h-[36px] cursor-pointer items-center gap-[7px] rounded-full border border-sem-control-line bg-white px-[13px] text-[13.5px] font-semibold text-gray-700 transition-colors;
+  }
+  .chip:hover { @apply border-institutional-blue bg-sem-area-bg text-institutional-blue; }
+  .chip[aria-pressed="true"] { @apply border-institutional-blue bg-institutional-blue text-white; }
+  .chip[aria-pressed="true"]:hover { @apply border-blue-800 bg-blue-800 text-white; }
+  .chip:disabled { @apply cursor-not-allowed border-gray-200 bg-gray-100 text-gray-600; }
+  .chip-count { @apply text-[12.5px] font-semibold tabular-nums text-sem-text-2; }
+  .chip[aria-pressed="true"] .chip-count { @apply text-blue-100; }
+  .chip[aria-pressed="true"] .level-dots > i { @apply border-white; }
+  .chip[aria-pressed="true"] .level-dots > i.on { @apply bg-white; }
+  .chip .chip-check { @apply hidden; }
+  .chip[aria-pressed="true"] .chip-check { @apply block; }
+  .chip-sm { @apply min-h-[32px] px-[11px] text-[13px]; }
+
+  /* Applied filter (removable) */
+  .filter-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-sem-area-line bg-sem-area-bg py-[3px] pl-3 pr-1 text-[13.5px] font-semibold text-sem-area-fg;
+  }
+  .filter-chip small { @apply text-[12.5px] font-medium text-gray-700; }
+  .filter-chip button {
+    @apply grid h-6 w-6 cursor-pointer place-items-center rounded-full border-0 bg-sem-area-line p-0 text-sem-area-fg hover:bg-institutional-blue hover:text-white;
+  }
+
+  /* Count pills: gray on gray-100, blue on a selected row */
+  .count-pill {
+    @apply min-w-[30px] rounded-full bg-gray-100 px-2 py-px text-center text-[12.5px] font-semibold tabular-nums text-sem-text-2;
+  }
+  .count-badge { @apply rounded-full bg-institutional-blue px-2.5 py-0.5 text-[12.5px] font-bold text-white; }
+
+  /* Fields */
+  .field-label { @apply block text-sm font-bold text-gray-900; }
+  .field-hint { @apply mb-2 mt-0.5 text-[13px] text-sem-text-2; }
+  .field-input {
+    @apply h-11 w-full rounded-xl border border-sem-control-line bg-white pl-10 pr-3.5 text-[14.5px] text-gray-900 placeholder:text-sem-text-2 placeholder:opacity-100;
+  }
+  .field-select { @apply h-10 rounded-xl border border-sem-control-line bg-white pl-3 pr-8 text-sm text-gray-900; }
+  .link-action {
+    @apply min-h-[32px] cursor-pointer border-0 bg-transparent px-1 py-1.5 text-[13.5px] font-semibold text-institutional-blue underline underline-offset-[3px] hover:text-blue-800;
+  }
+
+  /* Pagination */
+  .page-btn {
+    @apply grid h-10 min-w-[40px] cursor-pointer place-items-center rounded-xl border border-sem-control-line bg-white px-3 text-sm font-semibold text-gray-700 hover:border-institutional-blue hover:bg-sem-area-bg hover:text-institutional-blue disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-600 disabled:hover:bg-gray-100 disabled:hover:text-gray-600;
+  }
+  .page-btn[aria-current="page"] { @apply border-institutional-blue bg-institutional-blue text-white hover:bg-institutional-blue hover:text-white; }
+
+  /* Tooltip: pointer help only; the full meaning is also written as text. Shown on hover and keyboard focus. */
+  [data-tip] { @apply relative; }
+  [data-tip]::after {
+    content: attr(data-tip);
+    @apply pointer-events-none absolute bottom-[calc(100%+8px)] left-0 z-30 hidden w-max max-w-[min(340px,70vw)] whitespace-normal rounded-lg bg-institutional-dark px-2.5 py-[7px] text-[12.5px] font-medium leading-snug text-white shadow-md;
+  }
+  [data-tip]:hover::after, [data-tip]:focus-visible::after { @apply block; }
+  @media (hover: none), (max-width: 959px) {
+    [data-tip]::after, [data-tip]:hover::after, [data-tip]:focus-visible::after { display: none; }
+  }
+
+  /* Visible focus: 2px yellow ring plus 2px blue ring (blue shows on white, yellow on the blue menu) */
+  .focus-ring:focus-visible,
+  .btn:focus-visible, .chip:focus-visible, .filter-chip button:focus-visible, .link-action:focus-visible,
+  .field-input:focus-visible, .field-select:focus-visible, .page-btn:focus-visible {
+    outline: 2px solid var(--yellow-accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--blue-primary);
   }
 }
 
@@ -46,6 +157,15 @@
 @media (min-width: 1101px) {
   body.project-panel-push #root {
     padding-right: min(760px, 100vw);
+  }
+}
+
+/* Respect the reduced-motion setting everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
   }
 }
 

@@ -4,6 +4,7 @@ import {
     DEFAULT_SORT,
     SORTS,
     AREA_FAMILIES, areaTags, isNewProject, buildAreaFacets, filterProjects, sortProjects, paginate, topSectorGroups,
+    splitProjectTitle, levelRank, countByLevel, activeFilterChips, activeCountLabel,
 } from '../src/lib/catalog.js';
 
 const p = (id, area, extra = {}) => ({
@@ -100,4 +101,50 @@ test('pagination clamps the page into range', () => {
 
 test('top sector groups use the text before " - "', () => {
     assert.deepEqual(topSectorGroups(sample, 2), ['Salud', 'Agricultura de precisión']);
+});
+
+test('splitProjectTitle separates emoji, project number and the title without the "Proyecto N:" prefix', () => {
+    assert.deepEqual(splitProjectTitle('🌾 Proyecto 1: Sistema de Monitoreo Agrícola'), { emoji: '🌾', number: 1, title: 'Sistema de Monitoreo Agrícola' });
+    assert.deepEqual(splitProjectTitle('♻️ Proyecto 161: Prótesis: de Mano'), { emoji: '♻️', number: 161, title: 'Prótesis: de Mano' });
+});
+
+test('splitProjectTitle keeps the whole text when there is no prefix, and falls back to the rocket emoji', () => {
+    assert.deepEqual(splitProjectTitle('🔧 Laboratorio de Pentesting'), { emoji: '🔧', number: null, title: 'Laboratorio de Pentesting' });
+    assert.deepEqual(splitProjectTitle('Laboratorio de Pentesting'), { emoji: '🚀', number: null, title: 'Laboratorio de Pentesting' });
+    assert.deepEqual(splitProjectTitle('Proyecto 7: Sin emoji'), { emoji: '🚀', number: 7, title: 'Sin emoji' });
+});
+
+test('levelRank gives 1 to 3 dots by level and 0 for an unknown level', () => {
+    assert.equal(levelRank('Intermedio'), 1);
+    assert.equal(levelRank('Intermedio-Avanzado'), 2);
+    assert.equal(levelRank('Avanzado'), 3);
+    assert.equal(levelRank('Otro'), 0);
+});
+
+test('countByLevel counts projects per level, with zero for the levels without projects', () => {
+    assert.deepEqual(countByLevel(sample), { Intermedio: 3, 'Intermedio-Avanzado': 1, Avanzado: 2 });
+    assert.deepEqual(countByLevel([]), { Intermedio: 0, 'Intermedio-Avanzado': 0, Avanzado: 0 });
+});
+
+test('activeFilterChips lists areas, levels, sector and search in that order, each with its group label', () => {
+    const chips = activeFilterChips({ areas: ['SBC-IoT', 'AIoT'], levels: ['Avanzado'], sector: 'Salud', query: 'eeg' });
+    assert.deepEqual(chips.map(({ kind, value, group, text }) => [kind, value, group, text]), [
+        ['area', 'SBC-IoT', 'Área', 'SBC-IoT'],
+        ['area', 'AIoT', 'Área', 'AIoT'],
+        ['nivel', 'Avanzado', 'Nivel', 'Avanzado'],
+        ['sector', 'Salud', 'Sector', 'Salud'],
+        ['q', 'eeg', 'Búsqueda', '“eeg”'],
+    ]);
+    assert.equal(new Set(chips.map((chip) => chip.id)).size, 5);
+});
+
+test('activeFilterChips is empty without filters and ignores blank sector or search', () => {
+    assert.deepEqual(activeFilterChips({}), []);
+    assert.deepEqual(activeFilterChips({ areas: [], levels: [], sector: '  ', query: '' }), []);
+});
+
+test('activeCountLabel pluralises the active filters and says so when there are none', () => {
+    assert.equal(activeCountLabel(0), 'Sin filtros activos');
+    assert.equal(activeCountLabel(1), '1 activo');
+    assert.equal(activeCountLabel(4), '4 activos');
 });

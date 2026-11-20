@@ -1,73 +1,97 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { BookOpen, CalendarDays } from 'lucide-react';
+import { BookOpen, Briefcase, CalendarDays, Clock, Code, Cpu, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { isNewProject } from '../lib/catalog';
+import { isNewProject, levelRank, splitProjectTitle } from '../lib/catalog';
 import { wherePublishUrl, eventsForProjectUrl } from '../lib/links';
-
-// Splits "🌾 Proyecto 1: Título" into the emoji and the visible title.
-const splitTitle = (titulo) => {
-    const firstSpace = titulo.indexOf(' ');
-    const first = titulo.substring(0, firstSpace);
-    return first.length <= 4 ? { emoji: first, title: titulo.substring(firstSpace).trim() } : { emoji: '🚀', title: titulo };
-};
 
 const problemOf = (descripcion) =>
     descripcion.split(/\n\n|\n/).find((p) => p.toLowerCase().startsWith('problema:'))?.replace(/problema:\s*/i, '') || descripcion;
 
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+// Three dots, filled from the left; decorative, the level is always written next to them.
+export const LevelDots = ({ rank }) => (
+    <span className="level-dots" aria-hidden="true">
+        {[1, 2, 3].map((n) => <i key={n} className={n <= rank ? 'on' : ''} />)}
+    </span>
+);
+
 const ProjectCard = ({ project }) => {
     const reduceMotion = useReducedMotion();
-    const { emoji, title } = splitTitle(project.titulo);
+    const { emoji, number, title } = splitProjectTitle(project.titulo);
+    const rank = levelRank(project.nivel);
+    const titleId = `project-title-${project.id}`;
+    const forProject = ` del proyecto ${number ?? title}`;
+    const hardware = project.hardware.length;
+    const software = project.software.length;
 
     return (
         <motion.article
+            aria-labelledby={titleId}
             initial={reduceMotion ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             whileHover={reduceMotion ? undefined : { y: -4 }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col"
+            className="bg-white rounded-2xl border border-gray-200 hover:border-sem-area-line shadow-sm hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col gap-3.5"
         >
             <div className="flex gap-3.5">
                 <div className="w-[52px] h-[52px] bg-blue-50 rounded-2xl flex items-center justify-center text-[26px] flex-shrink-0" aria-hidden="true">
                     {emoji}
                 </div>
                 <div className="min-w-0">
-                    <h3 className="text-[17px] leading-snug font-bold text-gray-900">
-                        <Link to={`/proyecto/${project.id}`} className="hover:text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded">
+                    {number !== null && <p className="text-[12.5px] font-semibold text-sem-text-2">Proyecto {number}</p>}
+                    <h3 id={titleId} className="mt-px text-[18px] leading-[1.3] font-bold text-gray-900 line-clamp-3">
+                        <Link to={`/proyecto/${project.id}`} className="hover:text-institutional-blue hover:underline hover:underline-offset-[3px] focus-ring rounded">
                             {title}
                         </Link>
                     </h3>
-                    <p className="mt-1 text-[13.5px] text-gray-600 line-clamp-2">{problemOf(project.descripcion)}</p>
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-1.5 mt-3.5 mb-3.5">
-                <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md text-[11.5px] font-bold uppercase tracking-wide">{project.area}</span>
+            <p className="text-sm leading-normal text-sem-text-2 line-clamp-2">
+                <b className="font-bold text-gray-700">Problema:</b> {problemOf(project.descripcion)}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-1.5">
+                <span className="badge badge-area" data-tip="Área: la línea técnica del proyecto">
+                    <Layers size={15} aria-hidden="true" className="flex-none" />
+                    <span className="sr-only">Área: </span>{project.area}
+                </span>
                 {isNewProject(project) && (
-                    <span className="px-1.5 py-0.5 bg-institutional-yellow text-institutional-dark rounded-full text-[10px] font-bold uppercase tracking-wide self-center">Nuevo</span>
+                    <span className="badge badge-new" data-tip="Nuevo: proyecto incorporado este semestre">Nuevo</span>
                 )}
-                <span className="px-2 py-0.5 bg-green-50 text-green-700 rounded-md text-[11.5px] font-semibold">{project.sector}</span>
-                <span className="px-2 py-0.5 bg-orange-50 text-orange-700 rounded-md text-[11.5px] font-semibold">{project.nivel}</span>
+                <span className="badge badge-sector" data-tip="Sector: dónde se aplica">
+                    <Briefcase size={15} aria-hidden="true" className="flex-none" />
+                    <span className="sr-only">Sector: </span>{project.sector}
+                </span>
+                <span className="badge badge-level" data-tip={`Nivel ${rank} de 3: ${project.nivel}`}>
+                    <LevelDots rank={rank} />
+                    <span className="sr-only">Nivel {rank} de 3: </span>{project.nivel}
+                </span>
             </div>
 
-            <div className="mt-auto pt-3.5 border-t border-gray-100 flex justify-between items-center text-[12.5px] text-gray-500">
-                <div className="flex gap-3.5">
-                    <span title="Componentes de hardware">HW <b className="text-gray-700">{project.hardware.length}</b></span>
-                    <span title="Herramientas de software">SW <b className="text-gray-700">{project.software.length}</b></span>
-                    <span>{project.duracion}</span>
-                </div>
-                <div className="flex gap-3">
-                    <Link
-                        to={eventsForProjectUrl(project.id)}
-                        className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"
-                    >
-                        <CalendarDays size={14} aria-hidden="true" />
-                        Eventos
+            <div className="mt-auto pt-3.5 border-t border-gray-100 flex flex-col gap-3">
+                <ul aria-label="Datos del proyecto" className="flex flex-wrap gap-x-4 gap-y-1.5 text-[13.5px] text-gray-700">
+                    <li className="inline-flex items-center gap-1.5" data-tip={`Hardware: ${plural(hardware, 'componente físico', 'componentes físicos')} (placas, sensores, actuadores)`}>
+                        <Cpu size={16} aria-hidden="true" className="text-sem-text-2" />
+                        <span>Hardware <b className="font-bold text-gray-900">{hardware}</b><span className="sr-only"> {hardware === 1 ? 'componente' : 'componentes'}</span></span>
+                    </li>
+                    <li className="inline-flex items-center gap-1.5" data-tip={`Software: ${plural(software, 'herramienta', 'herramientas')} (lenguajes, plataformas, librerías)`}>
+                        <Code size={16} aria-hidden="true" className="text-sem-text-2" />
+                        <span>Software <b className="font-bold text-gray-900">{software}</b><span className="sr-only"> {software === 1 ? 'herramienta' : 'herramientas'}</span></span>
+                    </li>
+                    <li className="inline-flex items-center gap-1.5" data-tip={`Duración estimada: ${project.duracion}`}>
+                        <Clock size={16} aria-hidden="true" className="text-sem-text-2" />
+                        <span>{project.duracion}</span>
+                    </li>
+                </ul>
+                <div className="flex flex-wrap gap-2">
+                    <Link to={eventsForProjectUrl(project.id)} className="btn btn-secondary" data-tip="Congresos y convocatorias afines a este proyecto">
+                        <CalendarDays size={15} aria-hidden="true" />
+                        Ver eventos<span className="sr-only">{forProject}</span>
                     </Link>
-                    <Link
-                        to={wherePublishUrl(project.id)}
-                        className="inline-flex items-center gap-1.5 font-semibold text-institutional-blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow rounded"
-                    >
-                        <BookOpen size={14} aria-hidden="true" />
-                        Dónde publicar
+                    <Link to={wherePublishUrl(project.id)} className="btn btn-secondary" data-tip="Revistas donde podrías publicar este proyecto">
+                        <BookOpen size={15} aria-hidden="true" />
+                        Dónde publicar<span className="sr-only">{forProject}</span>
                     </Link>
                 </div>
             </div>
