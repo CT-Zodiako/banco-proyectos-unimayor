@@ -339,6 +339,47 @@
   .seg > button.seg-tone:hover { background-color: var(--tn-bg); color: var(--tn-fg); }
   .seg > button.seg-tone[aria-pressed="true"] { background-color: var(--tn-bg); color: var(--tn-fg); font-weight: 800; box-shadow: inset 0 -5px 0 var(--tn-solid); }
 
+  /* ── /oportunidades (T19): summary cards, compact cards, board and the backup panel ──
+     A status has ONE tone of palette.js: Por revisar slate (tn-review), Preparando amber (tn-fair), Enviado blue
+     (tn-lang), Descartado rose (tn-low); the label is always beside the color. */
+  .opp-dot { @apply inline-block h-[9px] w-[9px] flex-none rounded-full; background-color: var(--dot, var(--tn-solid)); }
+  .stat-total {
+    @apply flex min-h-[64px] flex-row items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white px-4 py-2 min-[900px]:flex-col min-[900px]:items-start min-[900px]:justify-center min-[900px]:gap-0;
+  }
+  .stat-total .stat-label { @apply text-[13px] font-bold text-gray-700; }
+  .stat-total .stat-n { @apply text-2xl font-extrabold leading-tight tabular-nums text-institutional-blue; }
+  .stat-card {
+    @apply flex min-h-[64px] w-full cursor-pointer flex-col items-start justify-center gap-0 rounded-xl border bg-white px-3.5 py-2 text-left transition-colors;
+    border-color: var(--tn-line);
+    box-shadow: inset 4px 0 0 var(--tn-solid);
+  }
+  .stat-card .stat-label { @apply flex items-center gap-1.5 text-[13px] font-bold text-gray-900; }
+  .stat-card .stat-n { @apply text-2xl font-extrabold leading-tight tabular-nums; color: var(--tn-fg); }
+  .stat-card:hover { background-color: var(--tn-bg); }
+  .stat-card[aria-pressed="true"] { background-color: var(--tn-bg); border-color: var(--tn-solid); box-shadow: inset 4px 0 0 var(--tn-solid), inset 0 0 0 1.5px var(--tn-solid); }
+  .stat-card .stat-check { @apply hidden; color: var(--tn-fg); }
+  .stat-card[aria-pressed="true"] .stat-check { @apply block; }
+  .stat-card:focus-visible {
+    outline: 2px solid var(--yellow-accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--blue-primary);
+  }
+  .opp-remove { color: var(--sem-danger-fg); }
+  .opp-remove:hover { @apply text-red-900; }
+  .opp-note-dot { @apply h-2 w-2 flex-none rounded-full bg-institutional-blue; }
+  /* Disclosures of a card («Nota», «Lista de preparación») and of the backup panel: native <details>. */
+  .opp-details { @apply border-t border-gray-200 pt-2 text-[13.5px] text-gray-700; }
+  .opp-details > summary { @apply flex min-h-[36px] cursor-pointer list-none items-center gap-2 rounded-lg px-1 py-1; }
+  .opp-backup > summary { @apply list-none; }
+  .opp-details > summary::-webkit-details-marker, .opp-backup > summary::-webkit-details-marker { display: none; }
+  .opp-details > summary:focus-visible, .opp-backup > summary:focus-visible {
+    outline: 2px solid var(--yellow-accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--blue-primary);
+  }
+  .opp-chevron { @apply transition-transform motion-reduce:transition-none; }
+  .opp-details[open] > summary .opp-chevron, .opp-backup[open] > summary .opp-chevron { transform: rotate(180deg); }
+
   /* Section tabs with a one-line description (Dónde publicar; also the aria-pressed type selector of Eventos): a segmented bar, selected = filled blue, unselected = bordered. */
   .tab-bar { @apply grid grid-cols-1 gap-2 min-[700px]:grid-cols-3; }
   .tab-pill {

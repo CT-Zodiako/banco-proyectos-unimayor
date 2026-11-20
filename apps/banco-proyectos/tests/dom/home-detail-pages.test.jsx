@@ -144,19 +144,23 @@ describe('Opportunities: fields and buttons', () => {
         { type: 'event', id: 'e1', title: 'Congreso IoT', url: 'https://example.org/e1', start: '2099-05-10', status: 'review', note: '' },
     ]));
 
+    // T19 (the page was reorganized): the status select is inline in each card and saves on change, the note is behind
+    // «Nota» with its own «Guardar nota» button, and the names carry the card title. Classes and helper text are the same.
     it('uses the shared button and field classes with visible labels and helper text', async () => {
         seed();
         await open('/oportunidades');
         await screen.findByRole('heading', { level: 1, name: 'Mis oportunidades' });
         expect(screen.getByRole('button', { name: 'Exportar respaldo' }).className).toContain('btn btn-primary');
-        expect(screen.getByLabelText('Filtrar por estado').className).toContain('field-select');
-        expect(screen.getByLabelText('Estado').className).toContain('field-select');
-        expect(screen.getByLabelText('Nota personal').className).toContain('field-textarea');
-        expect(screen.getByRole('button', { name: 'Guardar cambios' }).className).toContain('btn btn-primary');
-        for (const label of ['Filtrar por estado', 'Estado', 'Nota personal', 'Seleccionar respaldo para importar']) {
+        expect(screen.getByRole('combobox', { name: 'Ordenar por' }).className).toContain('field-select');
+        expect(screen.getByRole('combobox', { name: 'Estado de Congreso IoT' }).className).toContain('field-select');
+        expect(screen.getByLabelText('Nota personal de Congreso IoT').className).toContain('field-textarea');
+        expect(screen.getByRole('button', { name: 'Guardar nota: Congreso IoT' }).className).toContain('btn btn-primary');
+        for (const label of ['Buscar en mis oportunidades', 'Ordenar por', 'Nota personal de Congreso IoT', 'Seleccionar respaldo para importar']) {
             const field = screen.getByLabelText(label);
             expect(field.labels[0].className).toContain('field-label');
-            expect(document.getElementById(field.getAttribute('aria-describedby')).className).toContain('field-hint');
+        }
+        for (const label of ['Nota personal de Congreso IoT', 'Seleccionar respaldo para importar']) {
+            expect(document.getElementById(screen.getByLabelText(label).getAttribute('aria-describedby')).className).toContain('field-hint');
         }
     });
 
@@ -164,20 +168,22 @@ describe('Opportunities: fields and buttons', () => {
         seed();
         const user = userEvent.setup();
         await open('/oportunidades');
-        await user.selectOptions(await screen.findByLabelText('Estado'), 'preparing');
-        await user.type(screen.getByLabelText('Nota personal'), 'Pedir carta');
-        await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
+        await user.selectOptions(await screen.findByLabelText('Estado de Congreso IoT'), 'preparing');
+        expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY))[0]).toMatchObject({ status: 'preparing', note: '' });
+        await user.click(document.querySelector('summary[data-opp-note-summary]'));
+        await user.type(screen.getByLabelText('Nota personal de Congreso IoT'), 'Pedir carta');
+        await user.click(screen.getByRole('button', { name: 'Guardar nota: Congreso IoT' }));
         expect(await screen.findByText('Cambios guardados en este navegador.')).toBeTruthy();
         expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY))[0]).toMatchObject({ status: 'preparing', note: 'Pedir carta' });
     });
 
-    it('marks removal and calendar actions as links styled by the shared class', async () => {
+    it('marks removal and calendar actions as links styled by the shared class; the source is a button-styled link', async () => {
         seed();
         await open('/oportunidades');
-        for (const name of ['Quitar', 'Agregar evento al calendario']) {
+        for (const name of [/^Quitar Congreso IoT/, /^Agregar evento al calendario/]) {
             expect((await screen.findByRole('button', { name })).className).toContain('link-action');
         }
-        expect(screen.getByRole('link', { name: /Fuente oficial/ }).className).toContain('link-action');
+        expect(screen.getByRole('link', { name: /^Fuente oficial/ }).className).toContain('btn btn-events');
     });
 });
 

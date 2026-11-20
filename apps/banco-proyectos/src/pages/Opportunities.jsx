@@ -1,9 +1,15 @@
-import { useId, useRef, useState } from 'react';
-import { AlertCircle, BookmarkCheck, ChevronLeft } from 'lucide-react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { AlertCircle, BookOpen, BookmarkCheck, CalendarDays, ChevronLeft } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
+import BackupPanel from '../components/opportunities/BackupPanel';
+import OpportunitiesBoard from '../components/opportunities/OpportunitiesBoard';
+import OpportunitiesSummary from '../components/opportunities/OpportunitiesSummary';
+import OpportunitiesToolbar, { ActiveFilters } from '../components/opportunities/OpportunitiesToolbar';
+import OpportunityCard from '../components/opportunities/OpportunityCard';
 import useDocumentTitle from '../hooks/useDocumentTitle';
-import { calendarFile, exportBackup, filterOpportunities, importBackup, MAX_BACKUP_SIZE, previewBackup, readOpportunities, removeOpportunity, STATUS_LABELS, updateOpportunity } from '../lib/opportunities';
-import { submissionGuide } from '../lib/submissionGuide';
+import { calendarFile, readOpportunities, removeOpportunity, STATUS_LABELS, updateOpportunity } from '../lib/opportunities';
+import { filterView, groupByType, hasDeadlines, itemKey, itemStatus, parseViewQuery, sortItems, statusCounts, typeCounts, viewFilters, viewToSearch } from '../lib/opportunitiesView';
 
 // Error line: red text and icon on a tint, always with words (role="alert" announces it).
 function ErrorNote({ children }) {
@@ -12,112 +18,77 @@ function ErrorNote({ children }) {
     </p>;
 }
 
-function BackupControls({ onImport }) {
-    const fileId = useId();
-    const [backup, setBackup] = useState(null);
-    const [preview, setPreview] = useState(null);
-    const [message, setMessage] = useState('');
-    const selection = useRef(0);
-    function download() {
-        try {
-            const blob = new Blob([exportBackup(localStorage)], { type: 'application/json;charset=utf-8' });
-            const href = URL.createObjectURL(blob);
-            const anchor = document.createElement('a');
-            anchor.href = href;
-            anchor.download = 'mis-oportunidades.json';
-            anchor.click();
-            setTimeout(() => URL.revokeObjectURL(href), 1000);
-            setMessage('Respaldo descargado.');
-        } catch { setMessage('No se pudo exportar el respaldo. No se modificaron los datos.'); }
-    }
-    async function selectFile(event) {
-        const token = ++selection.current;
-        const file = event.target.files[0];
-        event.target.value = '';
-        setBackup(null); setPreview(null); setMessage('');
-        if (!file) return;
-        try {
-            if (file.size > MAX_BACKUP_SIZE) throw new Error('Archivo demasiado grande');
-            const text = await file.text();
-            const result = previewBackup(localStorage, text);
-            if (token !== selection.current) return;
-            setBackup(text); setPreview(result);
-        } catch {
-            if (token === selection.current) setMessage('No se pudo leer el respaldo. Verifique el archivo. No se modificaron los datos.');
-        }
-    }
-    function confirmImport() {
-        try {
-            const result = importBackup(localStorage, backup);
-            onImport(readOpportunities(localStorage));
-            setBackup(null); setPreview(null);
-            setMessage(`Importación terminada: ${result.added} agregadas y ${result.duplicates} duplicadas conservadas sin cambios.`);
-        } catch { setMessage('No se pudo completar la importación. Revise sus oportunidades antes de volver a intentarlo.'); }
-    }
-    return <section className="rounded-2xl border border-gray-200 bg-white p-5 space-y-4" aria-labelledby="backup-title">
-        <div>
-            <h2 id="backup-title" className="text-xl font-bold text-gray-900">Respaldo local</h2>
-            <p className="mt-1 text-[13.5px] text-sem-text-2">El archivo contiene sus oportunidades, estados y notas. Guárdelo en un lugar seguro.</p>
-        </div>
-        <div><button type="button" onClick={download} className="btn btn-primary btn-lg">Exportar respaldo</button></div>
-        <div>
-            <label htmlFor={fileId} className="field-label">Seleccionar respaldo para importar</label>
-            <p id={`${fileId}-hint`} className="field-hint">Archivo .json que descargó antes con «Exportar respaldo». Se muestra una vista previa antes de importar.</p>
-            <input id={fileId} aria-describedby={`${fileId}-hint`} type="file" accept="application/json,.json" onChange={selectFile} className="text-sm text-gray-900 file:mr-3 file:cursor-pointer file:rounded-lg file:border file:border-institutional-blue file:bg-white file:px-3.5 file:py-1.5 file:text-[13.5px] file:font-semibold file:text-institutional-blue hover:file:bg-sem-area-bg" />
-        </div>
-        {preview && <div className="space-y-2"><p className="text-sm text-gray-900">Se agregarán {preview.added} oportunidades; {preview.duplicates} duplicadas no se modificarán. La comparación se volverá a hacer al importar.</p>
-            <button type="button" onClick={confirmImport} className="btn btn-primary">Confirmar importación</button></div>}
-        <p role="status" className="text-sm text-gray-700">{message}</p>
-    </section>;
-}
+const plural = (n) => `${n} ${n === 1 ? 'oportunidad' : 'oportunidades'}`;
 
-function OpportunityEditor({ item, onSave }) {
-    const uid = useId();
-    const [status, setStatus] = useState(item.status || 'review');
-    const [note, setNote] = useState(item.note || '');
-    const [message, setMessage] = useState('');
-    function submit(event) {
-        event.preventDefault();
-        try {
-            updateOpportunity(localStorage, item.type, item.id, { status, note });
-            onSave(readOpportunities(localStorage));
-            setMessage('Cambios guardados en este navegador.');
-        } catch { setMessage('No se pudieron guardar los cambios.'); }
-    }
-    return <form onSubmit={submit} className="grid gap-4 border-t border-gray-200 pt-4">
-        <div>
-            <label htmlFor={`${uid}-status`} className="field-label">Estado</label>
-            <p id={`${uid}-status-hint`} className="field-hint">En qué punto va esta oportunidad.</p>
-            <select id={`${uid}-status`} aria-describedby={`${uid}-status-hint`} value={status} onChange={(event) => setStatus(event.target.value)} className="field-select">
-                {Object.entries(STATUS_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-            </select>
+// Nothing saved yet: how to save and where (both finders, in their own hue).
+function NothingSaved() {
+    return <div data-opp-empty className="rounded-2xl border border-dashed border-sem-control-line bg-white px-6 py-10 text-center">
+        <h3 className="m-0 text-lg font-bold text-gray-900">Todavía no guardaste oportunidades</h3>
+        <p className="mx-auto mb-5 mt-2 max-w-xl text-[14.5px] text-gray-700">Pulsa «Guardar» en un evento o en una revista y aparecerá aquí, para darle seguimiento con un estado y notas propias.</p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link to="/eventos" className="btn btn-events btn-lg focus-ring"><CalendarDays size={16} aria-hidden="true" />Buscar eventos</Link>
+            <Link to="/donde-publicar" className="btn btn-journals btn-lg focus-ring"><BookOpen size={16} aria-hidden="true" />Dónde publicar</Link>
         </div>
-        <div>
-            <label htmlFor={`${uid}-note`} className="field-label">Nota personal</label>
-            <p id={`${uid}-note-hint`} className="field-hint">Solo se guarda en este navegador.</p>
-            <textarea id={`${uid}-note`} aria-describedby={`${uid}-note-hint`} value={note} onChange={(event) => setNote(event.target.value)} rows={2} className="field-textarea" />
-        </div>
-        <div><button type="submit" className="btn btn-primary">Guardar cambios</button></div>
-        <p role="status" className="text-sm text-gray-700">{message}</p>
-    </form>;
-}
-
-function safeUrl(value) {
-    try {
-        const url = new URL(value);
-        return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
-    } catch { return null; }
+    </div>;
 }
 
 export default function Opportunities() {
     useDocumentTitle('Mis oportunidades');
+    const { search } = useLocation();
+    const navigate = useNavigate();
     const [items, setItems] = useState(() => {
         try { return readOpportunities(localStorage); } catch { return null; }
     });
     const [error, setError] = useState('');
-    const [filter, setFilter] = useState('all');
-    const filterId = useId();
-    const visible = items ? filterOpportunities(items, filter) : [];
+    const [drafts, setDrafts] = useState({}); // notes being typed, kept per card so a card that changes column keeps them
+    const [announcement, setAnnouncement] = useState('');
+    const [backupOpen, setBackupOpen] = useState(false);
+    const listId = useId();
+    const headingRef = useRef(null);
+    const backupSummary = useRef(null);
+    const statusSelects = useRef(new Map());
+    const pendingFocus = useRef(null);
+
+    const all = useMemo(() => items ?? [], [items]);
+    const withDeadlines = hasDeadlines(all);
+    const parsed = useMemo(() => parseViewQuery(search), [search]);
+    // «Fecha límite más próxima» only exists while a saved event has a closing date.
+    const state = useMemo(() => (parsed.sort === 'deadline' && !withDeadlines ? { ...parsed, sort: 'recent' } : parsed), [parsed, withDeadlines]);
+    const visible = useMemo(() => sortItems(filterView(all, viewFilters(state)), state.sort), [all, state]);
+
+    const go = (patch) => navigate({ search: viewToSearch({ ...parsed, ...patch }, search) }, { replace: true });
+    const clearFilters = () => go({ type: 'all', status: 'all', query: '' });
+
+    // After a status change the card may sit in another column, or be gone from a filtered list: the keyboard focus goes
+    // to its status select, or to the list heading when it is no longer there.
+    useEffect(() => {
+        const key = pendingFocus.current;
+        if (!key) return;
+        pendingFocus.current = null;
+        (statusSelects.current.get(key) ?? headingRef.current)?.focus({ preventScroll: true });
+    }, [items]);
+
+    const registerStatus = (key, element) => {
+        if (element) statusSelects.current.set(key, element);
+        else statusSelects.current.delete(key);
+    };
+    function setDraft(key, text) { setDrafts((current) => ({ ...current, [key]: text })); }
+    function changeStatus(item, status) {
+        try {
+            updateOpportunity(localStorage, item.type, item.id, { status, note: item.note ?? '' });
+            pendingFocus.current = itemKey(item);
+            setItems(readOpportunities(localStorage));
+            setAnnouncement(`Estado de ${item.title}: ${STATUS_LABELS[status]}.`);
+        } catch { setError('No se pudieron guardar los cambios.'); }
+    }
+    function saveNote(item, note) {
+        try {
+            updateOpportunity(localStorage, item.type, item.id, { status: itemStatus(item), note });
+            setItems(readOpportunities(localStorage));
+            setDrafts(({ [itemKey(item)]: _saved, ...rest }) => rest); // eslint-disable-line no-unused-vars
+            return true;
+        } catch { return false; }
+    }
     function remove(item) {
         try {
             removeOpportunity(localStorage, item.type, item.id);
@@ -134,6 +105,25 @@ export default function Opportunities() {
         anchor.click();
         setTimeout(() => URL.revokeObjectURL(href), 1000);
     }
+    function showBackup(event) {
+        event.preventDefault();
+        setBackupOpen(true);
+        backupSummary.current?.focus();
+        backupSummary.current?.scrollIntoView?.({ block: 'start' });
+    }
+
+    const renderCard = (item) => <OpportunityCard
+        key={itemKey(item)}
+        item={item}
+        draft={drafts[itemKey(item)]}
+        onDraft={setDraft}
+        onStatus={changeStatus}
+        onNote={saveNote}
+        onRemove={remove}
+        onCalendar={downloadCalendar}
+        registerStatus={registerStatus}
+    />;
+
     return <div className="py-8 space-y-5">
         <PageHeader
             hue="projects"
@@ -147,36 +137,46 @@ export default function Opportunities() {
         </PageHeader>
         {items === null && <ErrorNote>No se pueden leer los favoritos guardados. No se modificaron los datos.</ErrorNote>}
         {error && <ErrorNote>{error}</ErrorNote>}
-        <BackupControls onImport={setItems} />
-        {items && <div>
-            <label htmlFor={filterId} className="field-label">Filtrar por estado</label>
-            <p id={`${filterId}-hint`} className="field-hint">Muestra solo las oportunidades con el estado elegido.</p>
-            <select id={filterId} aria-describedby={`${filterId}-hint`} value={filter} onChange={(event) => setFilter(event.target.value)} className="field-select">
-                <option value="all">Todos</option>
-                {Object.entries(STATUS_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-            </select>
-        </div>}
-        {items && ['event', 'journal'].map((type) => <section key={type} className="space-y-3" aria-labelledby={`opp-${type}`}>
-            <h2 id={`opp-${type}`} className="text-xl font-bold text-gray-900">{type === 'event' ? 'Eventos' : 'Revistas'}</h2>
-            {!visible.some((item) => item.type === type) && <p className="text-gray-700">{filter === 'all' ? (type === 'event' ? 'Todavía no hay eventos guardados.' : 'Todavía no hay revistas guardadas.') : 'No hay oportunidades con este estado.'}</p>}
-            {visible.filter((item) => item.type === type).map((item) => <article key={item.id} className="rounded-2xl border border-gray-200 bg-white p-5 space-y-3">
-                <h3 className="font-bold text-gray-900">{item.title}</h3>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                    {safeUrl(item.url) && <a className="link-action" href={safeUrl(item.url)} target="_blank" rel="noopener noreferrer">Fuente oficial ↗</a>}
-                    {safeUrl(item.instructions) && <a className="link-action" href={safeUrl(item.instructions)} target="_blank" rel="noopener noreferrer">Instrucciones para autores ↗</a>}
-                    {type === 'event' && item.start && <button type="button" onClick={() => downloadCalendar(item, 'start')} className="link-action">Agregar evento al calendario</button>}
-                    {type === 'event' && item.deadline && <button type="button" onClick={() => downloadCalendar(item, 'deadline')} className="link-action">Agregar cierre al calendario</button>}
-                    <button type="button" onClick={() => remove(item)} className="link-action">Quitar</button>
+        <p className="m-0 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-sem-area-line bg-sem-area-bg px-4 py-2.5 text-[13.5px] text-gray-900">
+            <span>Tus oportunidades se guardan solo en este navegador. Exporta un respaldo para no perderlas.</span>
+            <a href="#respaldo" onClick={showBackup} className="link-action focus-ring rounded">Ir al respaldo</a>
+        </p>
+        {items && items.length > 0 && <OpportunitiesSummary
+            total={all.length}
+            counts={statusCounts(all, { type: state.type, query: state.query })}
+            status={state.status}
+            onStatus={(status) => go({ status })}
+        />}
+        {items && <section aria-labelledby={listId} className="space-y-4">
+            <h2 id={listId} ref={headingRef} tabIndex={-1} className="m-0 text-xl font-bold text-gray-900 focus-visible:outline-none">Mis oportunidades</h2>
+            {all.length === 0 && <NothingSaved />}
+            {all.length > 0 && <>
+                <OpportunitiesToolbar state={state} typeCounts={typeCounts(all, { status: state.status, query: state.query })} withDeadlines={withDeadlines} onChange={go} />
+                <div className="space-y-2.5">
+                    <p role="status" aria-live="polite" className="m-0 text-[15px] font-bold text-gray-900">{plural(visible.length)}</p>
+                    <ActiveFilters state={state} statusLabels={STATUS_LABELS} onChange={go} onClear={clearFilters} showClear={visible.length > 0} />
                 </div>
-                <OpportunityEditor item={item} onSave={setItems} />
-                <details className="text-sm text-gray-700"><summary className="cursor-pointer font-semibold text-institutional-blue underline underline-offset-[3px]">Lista de preparación</summary>
-                    <p className="mt-2 text-gray-700">Estos pasos son orientativos; confirme los requisitos en la fuente oficial.</p>
-                    {(safeUrl(item.instructions) || safeUrl(item.url)) ? <a className="link-action mt-2 inline-block" href={safeUrl(item.instructions) || safeUrl(item.url)} target="_blank" rel="noopener noreferrer">{type === 'journal' && safeUrl(item.instructions) ? 'Consultar instrucciones para autores ↗' : 'Consultar fuente oficial ↗'}</a> : <p className="mt-2 text-gray-700">No hay un enlace oficial disponible.</p>}
-                    <ol className="mt-3 space-y-2">
-                        {submissionGuide(type).map((step) => <li key={step}><label className="flex items-start gap-2"><input type="checkbox" className="mt-0.5 h-4 w-4 flex-none accent-institutional-blue" />{step}</label></li>)}
-                    </ol><p className="mt-2 text-gray-700">Las marcas de esta lista no se guardan.</p>
-                </details>
-            </article>)}
-        </section>)}
+                {visible.length === 0 && <div data-opp-empty className="rounded-2xl border border-dashed border-sem-control-line bg-white px-6 py-8 text-center">
+                    <p className="mb-3 mt-0 text-[15px] font-semibold text-gray-900">Ninguna oportunidad coincide</p>
+                    <p className="mx-auto mb-4 mt-0 max-w-md text-[13.5px] text-gray-700">Prueba con otra palabra o quita algún filtro.</p>
+                    <button type="button" onClick={clearFilters} className="btn btn-secondary">Limpiar filtros</button>
+                </div>}
+                {visible.length > 0 && state.view === 'board' && <OpportunitiesBoard items={visible} status={state.status} renderCard={renderCard} />}
+                {visible.length > 0 && state.view === 'list' && groupByType(visible).filter((group) => group.items.length > 0).map((group) => <ListSection key={group.type} group={group} renderCard={renderCard} />)}
+            </>}
+        </section>}
+        <p role="status" data-opp-announce className="sr-only">{announcement}</p>
+        <BackupPanel open={backupOpen} onToggle={setBackupOpen} summaryRef={backupSummary} onImport={setItems} />
     </div>;
+}
+
+function ListSection({ group, renderCard }) {
+    const headingId = useId();
+    return <section aria-labelledby={headingId} className="space-y-3">
+        <div className="flex items-center gap-2">
+            <h3 id={headingId} className="m-0 text-[17px] font-bold text-gray-900">{group.label}</h3>
+            <span className="count-pill">{group.items.length}</span>
+        </div>
+        <div data-opp-grid className="grid grid-cols-1 gap-4 min-[1100px]:grid-cols-2">{group.items.map(renderCard)}</div>
+    </section>;
 }

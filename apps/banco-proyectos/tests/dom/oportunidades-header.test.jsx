@@ -40,14 +40,14 @@ describe('/oportunidades header', () => {
         expect(within(document.querySelector('main')).queryAllByRole('link').filter((link) => link.getAttribute('href') === '/oportunidades')).toHaveLength(0);
     });
 
-    it('the header is the first block of the page, before the backup controls and the filter', async () => {
+    it('the header is the first block of the page, before the pointer to the backup and the backup panel (T19: now at the bottom)', async () => {
         await open();
         const page = header().parentElement;
         expect(page.firstElementChild).toBe(header());
         const backup = screen.getByRole('heading', { level: 2, name: 'Respaldo local' });
         expect(header().compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(header().compareDocumentPosition(screen.getByRole('link', { name: 'Ir al respaldo' })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
         expect(screen.getByRole('button', { name: 'Exportar respaldo' })).toBeTruthy();
-        expect(screen.getByLabelText('Filtrar por estado')).toBeTruthy();
     });
 
     it('the other pages with a header still link to the saved opportunities', async () => {
