@@ -65,7 +65,7 @@ function DondePublicarPage({ publicarData }) {
     const { projects, journals, themes } = publicarData;
     const projectsById = useMemo(() => new Map(projects.map((item) => [item.id, item])), [projects]);
     const journalsById = useMemo(() => new Map(journals.map((journal) => [journal.id, journal])), [journals]);
-    const { search, hash } = useLocation();
+    const { search, hash, state } = useLocation();
     const navigate = useNavigate();
     const project = projectsById.get(requestedProjectId(search, hash)) || null;
 
@@ -74,8 +74,13 @@ function DondePublicarPage({ publicarData }) {
     const [fromUrl] = useState(() => parseFinderQuery(search));
     const defaultTab = project ? 'project' : 'catalog';
     const [tab, setTab] = useState(fromUrl.tab ?? defaultTab);
+    // The catalog search starts from ?q only when the catalog is the section the page opens on.
+    const [catalogSeed] = useState(() => ((fromUrl.tab ?? defaultTab) === 'catalog' ? fromUrl.query : ''));
     const [trayHeight, setTrayHeight] = useState(0);
     const finder = useJournalFinder(project, journalsById, themes, fromUrl);
+    // The global search of the navbar sends the journal name in the router state; it also works when this page is already open.
+    const catalogRequest = state?.catalogSearch ?? null;
+    useEffect(() => { if (catalogRequest) setTab('catalog'); }, [catalogRequest]);
     const { rows, visible, advanced, compare, comparedJournals } = finder;
 
     // Typing and choices replace the entry (no history spam); a link opened later restores the same view.
@@ -197,7 +202,7 @@ function DondePublicarPage({ publicarData }) {
             </section>
 
             <section id="publicar-view-catalog" role="tabpanel" aria-labelledby="publicar-tab-catalog" hidden={tab !== 'catalog'}>
-                <CatalogView active={tab === 'catalog'} />
+                <CatalogView active={tab === 'catalog'} initialQuery={catalogSeed} request={catalogRequest} />
             </section>
 
             <section id="publicar-view-help" role="tabpanel" aria-labelledby="publicar-tab-help" hidden={tab !== 'help'}>

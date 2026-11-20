@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import GlobalSearch from './GlobalSearch';
 import logo from '../assets/logo.png';
 import { EVENTS_URL, PUBLISH_URL } from '../lib/links';
 
@@ -54,6 +55,9 @@ const Navbar = () => {
                                 </li>
                             );
                         })}
+                        <li className="flex items-center max-md:ml-auto md:ml-2">
+                            <GlobalSearch />
+                        </li>
                     </ul>
                 </div>
             </nav>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useLazyData from '../../hooks/useLazyData';
 import { DATA_FILES } from '../../lib/data-loader';
 import { Search } from 'lucide-react';
@@ -47,13 +47,21 @@ function JournalCard({ journal }) {
 }
 
 // Every diamond open access journal with a SCImago quartile. The list (a few MB of JSON) is downloaded the first time
-// the tab is opened (a static file shared through lib/data-loader.js).
-export default function CatalogView({ active }) {
-    const [query, setQuery] = useState('');
+// the tab is opened (a static file shared through lib/data-loader.js). `initialQuery` starts the search (from ?q), and a
+// new `request` ({ q }, from the global search of the navbar) replaces the search and clears the other filters.
+export default function CatalogView({ active, initialQuery = '', request = null }) {
+    const [query, setQuery] = useState(initialQuery);
     const [quartile, setQuartile] = useState('all');
     const [spanish, setSpanish] = useState(false);
     const [shown, setShown] = useState(PAGE_SIZE);
     const { status, data: catalog, retry } = useLazyData(DATA_FILES.catalog, active);
+    useEffect(() => {
+        if (!request) return;
+        setQuery(request.q);
+        setQuartile('all');
+        setSpanish(false);
+        setShown(PAGE_SIZE);
+    }, [request]);
     const failed = status === 'error';
 
     const rows = useMemo(
