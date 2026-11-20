@@ -1,5 +1,5 @@
 import { Check, MapPin, Search } from 'lucide-react';
-import { KIND_FILTER_LABELS, eventFilterChips, plural } from '../../lib/eventos/display';
+import { KIND_FILTER_DESCRIPTIONS, KIND_FILTER_LABELS, eventFilterChips, plural } from '../../lib/eventos/display';
 import { activeCountLabel } from '../../lib/catalog';
 
 // A filter section: visible title, then one line that says what it does (same pattern as the project catalog).
@@ -19,7 +19,7 @@ const Field = ({ id, label, children }) => (
 );
 
 // Filter panel of the event finder. It holds no state: every change goes up through onChange(patch).
-const EventFilters = ({ state, hasProject, topics, counts, onChange, searchRef }) => {
+const EventFilters = ({ state, hasProject, topics, counts, kindTotals, onChange, searchRef }) => {
     const activeCount = eventFilterChips(state).length;
     return (
         <section role="search" aria-label="Filtros de eventos" className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -42,8 +42,31 @@ const EventFilters = ({ state, hasProject, topics, counts, onChange, searchRef }
                 Combina tipo, búsqueda, modalidad, fechas y temas. Los números de cada tema indican cuántos eventos vigentes hay.
             </p>
 
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(420px,100%),1fr))] gap-x-10 gap-y-5">
-                <Section title="Tipo de evento" hint="Elige entre convocatorias para presentar tu trabajo y eventos para asistir.">
+            {kindTotals ? (
+                <Section title="Tipo de evento" hint="Elige entre convocatorias para presentar tu trabajo y eventos para asistir." className="mb-5">
+                    <div className="tab-bar">
+                        {Object.entries(KIND_FILTER_LABELS).map(([value, label]) => (
+                            <button
+                                key={value}
+                                type="button"
+                                aria-pressed={state.kind === value}
+                                aria-labelledby={`kind-${value}-label`}
+                                aria-describedby={`kind-${value}-desc kind-${value}-count`}
+                                onClick={() => onChange({ kind: value })}
+                                className="tab-pill focus-ring"
+                            >
+                                <span className="flex w-full items-baseline justify-between gap-3">
+                                    <span id={`kind-${value}-label`} className="tab-pill-label">{label}</span>
+                                    <span id={`kind-${value}-count`} className="tab-pill-desc whitespace-nowrap font-semibold">{plural(kindTotals[value], 'evento', 'eventos')}</span>
+                                </span>
+                                <span id={`kind-${value}-desc`} className="tab-pill-desc">{KIND_FILTER_DESCRIPTIONS[value]}</span>
+                            </button>
+                        ))}
+                    </div>
+                </Section>
+            ) : (
+                /* Without totals (the project slide-over, which has no room for descriptions) the compact segmented control stays. */
+                <Section title="Tipo de evento" hint="Elige entre convocatorias para presentar tu trabajo y eventos para asistir." className="mb-5">
                     <div className="seg w-full sm:w-auto">
                         {Object.entries(KIND_FILTER_LABELS).map(([value, label]) => (
                             <button key={value} type="button" aria-pressed={state.kind === value} onClick={() => onChange({ kind: value })}>
@@ -52,7 +75,9 @@ const EventFilters = ({ state, hasProject, topics, counts, onChange, searchRef }
                         ))}
                     </div>
                 </Section>
+            )}
 
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(420px,100%),1fr))] gap-x-10 gap-y-5">
                 <Section title="Búsqueda" hint="Busca en el nombre del evento y en su lugar.">
                     <label htmlFor="search" className="field-label mb-1 !text-[13.5px]">Buscar por nombre o lugar</label>
                     <div className="relative">

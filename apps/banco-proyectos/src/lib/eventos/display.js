@@ -6,6 +6,11 @@ import { AFFINITY_MAX } from './affinity.js';
 export const SOURCE_LABELS = { wikicfp: 'WikiCFP', ccfddl: 'CCF Deadlines', devpost: 'Devpost', manual: 'UNIMAYOR' };
 export const KIND_LABELS = { cfp: 'Convocatoria', attend: 'Para asistir' };
 export const KIND_FILTER_LABELS = { all: 'Todos', cfp: 'Convocatorias (presentar)', attend: 'Para asistir' };
+export const KIND_FILTER_DESCRIPTIONS = {
+    all: 'Congresos y eventos juntos',
+    cfp: 'Congresos con fecha límite para enviar tu trabajo',
+    attend: 'Talleres, charlas, ferias y hackatones',
+};
 const MODALITY_LABELS = { online: 'En línea', presencial: 'Presencial' };
 export const SOON_DAYS = 14;
 export const AFFINITY_LABELS = { topics: 'Temas en común', keywords: 'Palabras clave', access: 'Acceso (Colombia o en línea)', time: 'Tiempo para preparar' };

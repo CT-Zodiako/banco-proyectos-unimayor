@@ -5,12 +5,14 @@ import DataGate from '../components/DataGate';
 import EventCard from '../components/eventos/EventCard';
 import EventComparison from '../components/eventos/EventComparison';
 import EventFilters from '../components/eventos/EventFilters';
+import ProjectHint from '../components/eventos/ProjectHint';
 import ProjectPanel from '../components/eventos/ProjectPanel';
 import DataStatus from '../components/publicar/DataStatus';
 import useEventResults from '../hooks/useEventResults';
 import { DATA_FILES } from '../lib/data-loader';
 import { comparisonKey, dataInfoText, dataStatusText, dataUpdatedText, eventFilterChips, plural } from '../lib/eventos/display';
-import { DEFAULT_STATE, MAX_COMPARISON, parseQuery, stateToQuery, toggleComparison } from '../lib/eventos/filters';
+import { DEFAULT_STATE, MAX_COMPARISON, kindCounts, parseQuery, stateToQuery, toggleComparison, withProject } from '../lib/eventos/filters';
+import { PAGE_SIZE, nextVisibleCount, pagingStatus, visibleSlice } from '../lib/eventos/paging';
 
 const PAGE_TITLE = 'Buscador de eventos académicos · Banco de Proyectos · UNIMAYOR';
 
@@ -24,6 +26,7 @@ function EventosPage({ eventosData }) {
     const [selected, setSelected] = useState([]);
     const [projectMissing, setProjectMissing] = useState(false);
     const searchRef = useRef(null);
+    const statusRef = useRef(null);
 
     const requested = useMemo(() => {
         const parsed = parseQuery(search);
@@ -60,7 +63,30 @@ function EventosPage({ eventosData }) {
         return () => { document.title = 'Banco de Proyectos IoT - UNIMAYOR'; };
     }, [project]);
 
-    const { today, affinityByEvent, counts, shown, noProjectEvents } = useEventResults({ events, project, state });
+    const { today, ranked, affinityByEvent, counts, shown, noProjectEvents } = useEventResults({ events, project, state });
+    // Events of each type under every other filter (same base list as the topic counts).
+    const kindTotals = useMemo(
+        () => kindCounts(project ? ranked.map((item) => item.event) : events, { ...state, today }),
+        [events, ranked, project, state, today],
+    );
+
+    // «Mostrar más»: only the first PAGE_SIZE matches are rendered. The count belongs to the filter state it was
+    // reached with, so any change of type, search, sort, topic, project... starts again from the first page.
+    const pagingKey = stateToQuery(state);
+    const [paging, setPaging] = useState({ key: pagingKey, count: PAGE_SIZE });
+    const visibleCount = paging.key === pagingKey ? paging.count : PAGE_SIZE;
+    const visible = useMemo(() => visibleSlice(shown, visibleCount), [shown, visibleCount]);
+    const hasMore = visible.length < shown.length;
+    const [focusStatus, setFocusStatus] = useState(false);
+    function showMore() {
+        const next = nextVisibleCount(visibleCount, shown.length);
+        setPaging({ key: pagingKey, count: next });
+        setFocusStatus(next >= shown.length); // the button disappears: keep the focus on the page, on the counter
+    }
+    useEffect(() => {
+        if (focusStatus && !hasMore) statusRef.current?.focus();
+        setFocusStatus(false);
+    }, [focusStatus, hasMore]);
 
     const isFiltered = stateToQuery({ ...state, project: null, sort: DEFAULT_STATE.sort }) !== '';
     const chips = eventFilterChips(state);
@@ -68,6 +94,9 @@ function EventosPage({ eventosData }) {
     function clearFilters() {
         go({ ...DEFAULT_STATE, topics: [], sort: state.sort, ...(state.project ? { project: state.project } : {}) });
         searchRef.current?.focus();
+    }
+    function chooseProject(id) {
+        go(withProject(state, id));
     }
     function showAllEvents() {
         const { project: _drop, ...rest } = state; // eslint-disable-line no-unused-vars
@@ -98,9 +127,11 @@ function EventosPage({ eventosData }) {
             {projectMissing && (
                 <p role="status" className="rounded-xl border border-gray-200 border-l-[5px] border-l-institutional-yellow bg-sem-attention-bg px-4 py-3 text-sm text-institutional-dark">No se encontró el proyecto</p>
             )}
-            {project && <ProjectPanel project={project} onShowAll={showAllEvents} />}
+            {project
+                ? <ProjectPanel project={project} onShowAll={showAllEvents} />
+                : <ProjectHint projects={projects} onSelect={chooseProject} />}
 
-            <EventFilters state={state} hasProject={Boolean(project)} topics={knownTopics} counts={counts} onChange={update} searchRef={searchRef} />
+            <EventFilters state={state} hasProject={Boolean(project)} topics={knownTopics} counts={counts} kindTotals={kindTotals} onChange={update} searchRef={searchRef} />
 
             <div className="space-y-2.5">
                 <h2 aria-live="polite" className="text-[22px] font-extrabold leading-tight text-gray-900">
@@ -130,7 +161,7 @@ function EventosPage({ eventosData }) {
 
             <section aria-label="Eventos encontrados">
                 <div className="grid gap-4">
-                    {shown.map((event) => {
+                    {visible.map((event) => {
                         const key = comparisonKey(event);
                         return (
                             <EventCard
@@ -145,6 +176,16 @@ function EventosPage({ eventosData }) {
                         );
                     })}
                 </div>
+                {shown.length > PAGE_SIZE && (
+                    <div className="mt-4 flex flex-col items-center gap-3">
+                        <p ref={statusRef} tabIndex={-1} role="status" aria-live="polite" className="m-0 text-sm font-semibold text-gray-700 focus-visible:outline-none">
+                            {pagingStatus(visible.length, shown.length)}
+                        </p>
+                        {hasMore && (
+                            <button type="button" onClick={showMore} className="btn btn-secondary focus-ring">Mostrar más eventos</button>
+                        )}
+                    </div>
+                )}
                 {shown.length === 0 && !noProjectEvents && (
                     <div className="text-center p-7 text-sem-text-2 border border-dashed border-sem-control-line rounded-2xl bg-white">
                         <p className="mb-3">Ningún evento vigente cumple estos filtros.</p>

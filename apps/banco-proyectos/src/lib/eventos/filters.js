@@ -62,6 +62,20 @@ export function filterEvents(events, options = {}) {
     });
 }
 
+/** { all, cfp, attend }: how many non-expired events each type has under every other filter in `options` (the
+    selected type itself is ignored), so each type option tells how many results choosing it would give. */
+export function kindCounts(events, options = {}) {
+    const open = filterEvents(events, { ...options, kind: 'all' });
+    const cfp = open.filter((event) => event.kind === 'cfp').length;
+    const attend = open.filter((event) => event.kind === 'attend').length;
+    return { all: open.length, cfp, attend };
+}
+
+/** Filter state with a project chosen: the default sort becomes the affinity ranking, a sort the user picked stays. */
+export function withProject(state, projectId) {
+    return { ...state, project: projectId, sort: state.sort === DEFAULT_STATE.sort ? 'affinity' : state.sort };
+}
+
 export const SORT_VALUES = {
     // For events to attend there is usually no deadline: the end (else the start) tells when they close.
     deadline: (e) => e.deadline || (e.kind === 'attend' ? e.end || e.start : null) || null,
