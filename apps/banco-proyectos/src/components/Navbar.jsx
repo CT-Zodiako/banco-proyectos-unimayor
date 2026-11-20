@@ -23,23 +23,23 @@ const Navbar = () => {
     return (
         <header className="bg-institutional-blue text-white shadow-md sticky top-0 z-50">
             <nav aria-label="Principal">
-                <div className="page-container min-h-20 flex flex-wrap items-stretch justify-between gap-x-6">
+                <div className="page-container min-h-20 flex flex-wrap items-stretch justify-between gap-x-6 min-[1280px]:flex-nowrap min-[1280px]:gap-x-4 min-[1536px]:gap-x-6">
                     <Link
                         to="/"
                         aria-current={pathname === '/' ? 'page' : undefined}
-                        className={`flex items-center gap-4 py-2 rounded ${FOCUS}`}
+                        className={`flex min-w-0 items-center gap-3 py-2 rounded min-[1536px]:gap-4 ${FOCUS}`}
                     >
                         <div className="bg-white p-1 rounded-sm flex-none">
                             <img src={logo} alt="" className="h-10 w-auto max-w-none" />
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-[15px] sm:text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
-                            <span className="text-sm font-light opacity-90">Laboratorio de Física y Sistemas Embebidos</span>
+                        <div className="flex min-w-0 flex-col">
+                            <span title="Institución Universitaria Colegio Mayor del Cauca" className="min-[1280px]:truncate text-[15px] sm:text-lg font-bold leading-tight">Institución Universitaria Colegio Mayor del Cauca</span>
+                            <span className="min-[1280px]:truncate text-sm font-light opacity-90">Laboratorio de Física y Sistemas Embebidos</span>
                             <span className="sr-only">. Ir al inicio</span>
                         </div>
                     </Link>
 
-                    <ul className="flex flex-wrap items-stretch gap-1 text-[15px]">
+                    <ul className="flex flex-wrap items-stretch gap-1 text-[15px] min-[1280px]:flex-none min-[1280px]:flex-nowrap">
                         {ITEMS.map(({ to, label, match, tone }) => {
                             const current = isOn(pathname, match);
                             return (
@@ -47,17 +47,17 @@ const Navbar = () => {
                                     <Link
                                         to={to}
                                         aria-current={current ? 'page' : undefined}
-                                        className={`flex items-center min-h-[44px] px-3.5 border-y-4 border-transparent transition-colors focus-visible:-outline-offset-4 ${FOCUS} ${current
+                                        className={`flex items-center min-h-[44px] px-3.5 min-[1024px]:max-[1535px]:px-2.5 border-y-4 border-transparent transition-colors focus-visible:-outline-offset-4 ${FOCUS} ${current
                                             ? 'font-bold border-b-white bg-white/10'
                                             : 'font-medium hover:text-institutional-yellow'}`}
                                     >
-                                        {tone && <span className={`nav-dot ${tone} mr-2 flex-none`} aria-hidden="true" />}
+                                        {tone && <span className={`nav-dot ${tone} mr-2 flex-none min-[1024px]:max-[1535px]:mr-1.5`} aria-hidden="true" />}
                                         {label}
                                     </Link>
                                 </li>
                             );
                         })}
-                        <li className="flex items-center max-md:ml-auto md:ml-2">
+                        <li className="flex items-center max-md:ml-auto md:ml-2 min-[1024px]:max-[1535px]:ml-1">
                             <GlobalSearch />
                         </li>
                     </ul>

@@ -75,7 +75,7 @@ export default function GlobalSearch() {
                 className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg border border-white/35 bg-white/10 px-2.5 text-[15px] font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-institutional-yellow md:px-3"
             >
                 <Search size={18} aria-hidden="true" className="flex-none" />
-                <span className="hidden md:inline">Buscar</span>
+                <span className="hidden md:inline min-[1024px]:max-[1535px]:sr-only">Buscar</span>
                 <kbd aria-hidden="true" className="hidden rounded border border-white/40 px-1.5 py-px font-sans text-xs font-semibold text-white/90 md:inline">{hint}</kbd>
             </button>
             {open && <GlobalSearchDialog onClose={close} />}
