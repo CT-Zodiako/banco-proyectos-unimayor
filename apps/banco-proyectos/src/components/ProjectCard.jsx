@@ -18,9 +18,10 @@ export const LevelDots = ({ rank }) => (
     </span>
 );
 
-// `compare` (optional, the catalog passes it): { selected, disabled, noteId, onToggle }. «Comparar» is a toggle button
-// (aria-pressed) whose name says what the next press does; at the limit of 3 the others are disabled and point
-// (aria-describedby) to the note `noteId` that says why, with the same text as a tooltip.
+// `compare` (optional, the catalog passes it): { selected, disabled, noteId, onToggle }. «Comparar» is a standard toggle
+// button: its name («Comparar: <título>») and its visible label never change, the state is aria-pressed plus the check
+// icon and the filled style; at the limit of 3 the others are disabled and point (aria-describedby) to the note `noteId`
+// that says why, with the same text as a tooltip.
 const ProjectCard = ({ project, compare }) => {
     const reduceMotion = useReducedMotion();
     const { emoji, number, title } = splitProjectTitle(project.titulo);
@@ -104,14 +105,14 @@ const ProjectCard = ({ project, compare }) => {
                             <button
                                 type="button"
                                 aria-pressed={compare.selected}
-                                aria-label={`${compare.selected ? 'Quitar de la comparación' : 'Comparar'}: ${title}`}
+                                aria-label={`Comparar: ${title}`}
                                 aria-describedby={compare.disabled ? compare.noteId : undefined}
                                 disabled={compare.disabled}
                                 onClick={compare.onToggle}
                                 className="btn btn-secondary btn-compare focus-ring"
                             >
                                 {compare.selected ? <Check size={16} aria-hidden="true" /> : <Scale size={16} aria-hidden="true" />}
-                                {compare.selected ? 'Quitar de la comparación' : 'Comparar'}
+                                Comparar
                             </button>
                         </span>
                     )}

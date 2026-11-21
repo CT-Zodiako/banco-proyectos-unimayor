@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import useLazyData from '../../hooks/useLazyData';
 import { DATA_FILES } from '../../lib/data-loader';
 import { Search } from 'lucide-react';
 import PanelSkeleton from '../proyecto-panel/PanelSkeleton';
+import { SKIP_LIST_MIN, SkipListEnd, SkipListLink } from '../SkipList';
 import { JournalBadges } from './JournalBadges';
 import { ExtLink, FavoriteButton, QuartileBadge } from './JournalLinks';
 import { FOCUS, TONE_CLASS } from './classes';
@@ -60,6 +61,9 @@ export default function CatalogView({ active, initialQuery = '', request = null 
     const [quartile, setQuartile] = useState('all');
     const [spanish, setSpanish] = useState(false);
     const [shown, setShown] = useState(PAGE_SIZE);
+    const id = useId();
+    const moreId = `${id}-more`;
+    const endId = `${id}-end`;
     const { status, data: catalog, retry } = useLazyData(DATA_FILES.catalog, active);
     useEffect(() => {
         if (!request) return;
@@ -74,6 +78,7 @@ export default function CatalogView({ active, initialQuery = '', request = null 
         () => (catalog ? filterRows(catalog.map((journal) => ({ match: { fit: 'all' }, journal })), { query, quartile, spanish }) : []),
         [catalog, query, quartile, spanish],
     );
+    const skippable = Math.min(shown, rows.length) >= SKIP_LIST_MIN;
     const change = (setter) => (value) => { setter(value); setShown(PAGE_SIZE); };
     let count = 'Cargando catálogo…';
     if (failed) count = 'No se pudo cargar el catálogo.';
@@ -118,16 +123,22 @@ export default function CatalogView({ active, initialQuery = '', request = null 
                 <span className="md:ml-auto text-[13.5px] text-gray-700" aria-live="polite">{count}</span>
                 {failed && <button type="button" onClick={retry} className="btn btn-secondary">Reintentar</button>}
             </div>
+            {skippable && <SkipListLink label="Saltar la lista de revistas" endId={endId} moreId={rows.length > shown ? moreId : undefined} />}
             <div className="grid gap-3">
                 {status === 'loading' && <PanelSkeleton rows={4} />}
-                {rows.slice(0, shown).map(({ journal }) => <JournalCard key={journal.id} journal={journal} />)}
+                {rows.length > 0 && (
+                    <ul role="list" aria-label={`Lista de ${rows.length === 1 ? '1 revista' : `${rows.length} revistas`}`} className="m-0 grid list-none gap-3 p-0">
+                        {rows.slice(0, shown).map(({ journal }) => <li key={journal.id}><JournalCard journal={journal} /></li>)}
+                    </ul>
+                )}
                 {catalog && rows.length === 0 && (
                     <p className="text-center p-7 text-sem-text-2 border border-dashed border-sem-control-line rounded-2xl bg-white">Sin resultados para esta búsqueda.</p>
                 )}
             </div>
             {rows.length > shown && (
-                <button type="button" onClick={() => setShown((current) => current + PAGE_SIZE)} className="btn btn-secondary btn-lg mx-auto mt-3.5 flex">Ver más revistas</button>
+                <button type="button" id={moreId} onClick={() => setShown((current) => current + PAGE_SIZE)} className="btn btn-secondary btn-lg mx-auto mt-3.5 flex">Ver más revistas</button>
             )}
+            {skippable && <SkipListEnd id={endId}>Fin de la lista de revistas</SkipListEnd>}
         </>
     );
 }

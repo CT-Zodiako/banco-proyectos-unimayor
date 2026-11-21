@@ -1,5 +1,7 @@
+import { useId } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import CollapsibleLegend from '../CollapsibleLegend';
+import { SKIP_LIST_MIN, SkipListEnd, SkipListLink } from '../SkipList';
 import { JournalBadge } from './JournalBadges';
 import JournalTable from './JournalTable';
 import { QuartileBadge } from './JournalLinks';
@@ -71,12 +73,17 @@ export function AffinityNote({ className = '' }) {
 // first rows and onMore (with it) adds the "Cargar más" button; the page shows every row.
 export default function JournalResults({ rows, mode, sort, onSort, compare, onToggleCompare, limit = Infinity, onMore, onClearFilters, listClassName = '' }) {
     const shown = rows.slice(0, limit);
+    const id = useId();
+    const moreId = `${id}-more`;
+    const endId = `${id}-end`;
+    const skippable = shown.length >= SKIP_LIST_MIN;
     return (
         <>
+            {skippable && <SkipListLink label="Saltar la lista de revistas" endId={endId} moreId={onMore && shown.length < rows.length ? moreId : undefined} />}
             {rows.length > 0 && mode === 'list' && (
-                <div className={`grid gap-2.5 ${listClassName}`}>
-                    {shown.map((row, index) => <ResultItem key={row.journal.id} row={row} open={index === 0} />)}
-                </div>
+                <ul role="list" aria-label={`Lista de ${rows.length === 1 ? '1 revista' : `${rows.length} revistas`}`} className={`m-0 grid list-none gap-2.5 p-0 ${listClassName}`}>
+                    {shown.map((row, index) => <li key={row.journal.id}><ResultItem row={row} open={index === 0} /></li>)}
+                </ul>
             )}
             {rows.length > 0 && mode === 'table' && (
                 <JournalTable rows={shown} sort={sort} compare={compare} onSort={(id) => onSort((current) => nextSort(current, id))} onToggleCompare={onToggleCompare} />
@@ -93,9 +100,10 @@ export default function JournalResults({ rows, mode, sort, onSort, compare, onTo
             {onMore && rows.length > 0 && (
                 <div className="flex flex-wrap items-center justify-center gap-3 pt-4 text-[13.5px] text-gray-700">
                     <span aria-live="polite">Mostrando {shown.length} de {rows.length}</span>
-                    {shown.length < rows.length && <button type="button" onClick={onMore} className={BTN_SECONDARY}>Cargar más</button>}
+                    {shown.length < rows.length && <button type="button" id={moreId} onClick={onMore} className={BTN_SECONDARY}>Cargar más</button>}
                 </div>
             )}
+            {skippable && <SkipListEnd id={endId}>Fin de la lista de revistas</SkipListEnd>}
         </>
     );
 }

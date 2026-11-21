@@ -139,13 +139,13 @@ describe('/eventos: event card', () => {
         expect(primary.textContent).toBe('Ver convocatoria');
 
         const save = within(card).getByRole('button', { name: 'Guardar Congreso IoT Cauca 2099 en mis oportunidades' });
-        const compare = within(card).getByRole('button', { name: 'Comparar Congreso IoT Cauca 2099' });
+        const compare = within(card).getByRole('button', { name: 'Comparar: Congreso IoT Cauca 2099' });
         expect(save.classList.contains('btn-secondary')).toBe(true);
         expect(compare.classList.contains('btn-secondary')).toBe(true);
         expect(compare.getAttribute('aria-pressed')).toBe('false');
         await user.click(compare);
-        expect(within(card).getByRole('button', { name: 'Comparar Congreso IoT Cauca 2099' }).getAttribute('aria-pressed')).toBe('true');
-        expect(compare.textContent).toBe('Quitar de comparación');
+        expect(within(card).getByRole('button', { name: 'Comparar: Congreso IoT Cauca 2099' }).getAttribute('aria-pressed')).toBe('true');
+        expect(compare.textContent).toBe('Comparar'); // T23: the visible label does not change with the state
         await user.click(save);
         expect(within(card).getByRole('button', { name: 'Guardar Congreso IoT Cauca 2099 en mis oportunidades' }).textContent).not.toBe('No se pudo guardar');
     });

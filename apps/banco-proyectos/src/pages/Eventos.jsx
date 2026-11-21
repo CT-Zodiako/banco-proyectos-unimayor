@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, X } from 'lucide-react';
 import DataGate from '../components/DataGate';
 import PageHeader from '../components/PageHeader';
+import { SKIP_LIST_MIN, SkipListEnd, SkipListLink } from '../components/SkipList';
 import ShareSearchButton from '../components/ShareSearchButton';
 import EventCard from '../components/eventos/EventCard';
 import EventComparison from '../components/eventos/EventComparison';
@@ -17,6 +18,8 @@ import { comparisonKey, dataInfoText, dataStatusText, dataUpdatedText, eventFilt
 import { DEFAULT_STATE, MAX_COMPARISON, kindCounts, parseQuery, stateToQuery, toggleComparison, withProject } from '../lib/eventos/filters';
 import { PAGE_SIZE, nextVisibleCount, pagingStatus, visibleSlice } from '../lib/eventos/paging';
 
+const MORE_ID = 'eventos-mostrar-mas';
+
 // Filters live in the URL (?p, kind, tema, modalidad, co, q, orden, desde, hasta, lugar), so a search can be shared.
 // With ?p=<project id> only the events sharing a topic with that project are listed, ranked by estimated affinity.
 function EventosPage({ eventosData }) {
@@ -29,6 +32,7 @@ function EventosPage({ eventosData }) {
     const searchRef = useRef(null);
     const statusRef = useRef(null);
     const headingRef = useRef(null);
+    const listEndId = useId();
 
     const requested = useMemo(() => {
         const parsed = parseQuery(search);
@@ -159,29 +163,32 @@ function EventosPage({ eventosData }) {
             <EventComparison events={events} selected={selected} onClear={() => setSelected([])} />
 
             <section aria-label="Eventos encontrados">
-                <div className="grid gap-4">
+                {visible.length >= SKIP_LIST_MIN && <SkipListLink label="Saltar la lista de eventos" endId={listEndId} moreId={hasMore ? MORE_ID : undefined} />}
+                <ul role="list" aria-label={`Lista de ${plural(shown.length, 'evento', 'eventos')}`} className="m-0 grid list-none gap-4 p-0">
                     {visible.map((event) => {
                         const key = comparisonKey(event);
                         return (
-                            <EventCard
-                                key={event.id}
-                                event={event}
-                                affinity={affinityByEvent.get(event)}
-                                today={today}
-                                selected={selected.includes(key)}
-                                compareFull={selected.length >= MAX_COMPARISON}
-                                onToggleCompare={() => setSelected((current) => toggleComparison(current, key))}
-                            />
+                            <li key={event.id}>
+                                <EventCard
+                                    event={event}
+                                    affinity={affinityByEvent.get(event)}
+                                    today={today}
+                                    selected={selected.includes(key)}
+                                    compareFull={selected.length >= MAX_COMPARISON}
+                                    onToggleCompare={() => setSelected((current) => toggleComparison(current, key))}
+                                />
+                            </li>
                         );
                     })}
-                </div>
+                </ul>
+                {visible.length >= SKIP_LIST_MIN && <SkipListEnd id={listEndId}>Fin de la lista de eventos</SkipListEnd>}
                 {shown.length > PAGE_SIZE && (
                     <div className="mt-4 flex flex-col items-center gap-3">
                         <p ref={statusRef} tabIndex={-1} role="status" aria-live="polite" className="m-0 text-sm font-semibold text-gray-700 focus-visible:outline-none">
                             {pagingStatus(visible.length, shown.length)}
                         </p>
                         {hasMore && (
-                            <button type="button" onClick={showMore} className="btn btn-secondary focus-ring">Mostrar más eventos</button>
+                            <button type="button" id={MORE_ID} onClick={showMore} className="btn btn-secondary focus-ring">Mostrar más eventos</button>
                         )}
                     </div>
                 )}

@@ -20,7 +20,7 @@ const titleOf = (id) => splitProjectTitle(byId(id).titulo).title;
 const params = () => new URLSearchParams(window.location.search);
 
 const add = (id) => screen.getByRole('button', { name: `Comparar: ${titleOf(id)}` });
-const remove = (id) => screen.getByRole('button', { name: `Quitar de la comparación: ${titleOf(id)}` });
+const remove = add; // T23: the toggle keeps its name «Comparar: <título>» when pressed; the state is aria-pressed
 const tray = () => screen.queryByRole('region', { name: 'Proyectos para comparar' });
 const compareNow = () => within(tray()).getByRole('button', { name: 'Comparar ahora' });
 
@@ -60,13 +60,12 @@ describe('/proyectos: the «Comparar» toggle of each card', () => {
         expect(tray()).toBeNull();
     });
 
-    it('pressing it selects the project: aria-pressed, the name changes to «Quitar de la comparación: <título>», and pressing again undoes it', async () => {
+    it('pressing it selects the project: aria-pressed turns true (the name stays «Comparar: <título>»), and pressing again undoes it', async () => {
         await openCatalog();
         const user = userEvent.setup();
         await user.click(add('proj_001'));
         const selected = remove('proj_001');
         expect(selected.getAttribute('aria-pressed')).toBe('true');
-        expect(screen.queryByRole('button', { name: `Comparar: ${titleOf('proj_001')}` })).toBeNull();
         await user.click(selected);
         expect(add('proj_001').getAttribute('aria-pressed')).toBe('false');
         expect(tray()).toBeNull();
@@ -92,8 +91,10 @@ describe('/proyectos: the «Comparar» toggle of each card', () => {
         expect(document.getElementById(blocked.getAttribute('aria-describedby')).textContent).toBe(MESSAGE);
         expect(blocked.closest('[data-tip]')?.getAttribute('data-tip')).toBe(MESSAGE);
         for (const id of ['proj_001', 'proj_002', 'proj_003']) expect(remove(id).disabled).toBe(false);
-        const others = screen.getAllByRole('button', { name: /^Comparar: / });
+        const toggles = screen.getAllByRole('button', { name: /^Comparar: / });
+        const others = toggles.filter((button) => button.getAttribute('aria-pressed') === 'false');
         expect(others).toHaveLength(9);
+        expect(toggles).toHaveLength(12);
         expect(others.every((button) => button.disabled)).toBe(true);
 
         await user.click(remove('proj_002'));
@@ -158,7 +159,7 @@ describe('/proyectos: the comparison tray', () => {
         expect(params().has('cmp')).toBe(false);
         expect(params().get('q')).toBe('sensor');
         expect(window.sessionStorage.getItem(STORAGE_KEY)).toBeNull();
-        expect(screen.queryAllByRole('button', { name: /^Quitar de la comparación: / })).toHaveLength(0);
+        expect(screen.getAllByRole('button', { name: /^Comparar: / }).every((button) => button.getAttribute('aria-pressed') === 'false')).toBe(true);
     });
 
     it('is a stacked, in-flow region of the page container (never covers the last cards), with a polite status', async () => {
@@ -223,7 +224,7 @@ describe('/proyectos: the selection lives in the URL (cmp) and in the session', 
         cleanup();
         await openCatalog('/proyectos?cmp=proj_001,proj_002,proj_003,proj_004');
         expect(within(tray()).getByRole('status').textContent).toMatch(/3 de 3/);
-        expect(screen.queryByRole('button', { name: `Quitar de la comparación: ${titleOf('proj_004')}` })).toBeNull();
+        expect(add('proj_004').getAttribute('aria-pressed')).toBe('false'); // the fourth id of the URL is ignored
     });
 
     it('old URLs stay as they are: no cmp is added when nothing is selected', async () => {

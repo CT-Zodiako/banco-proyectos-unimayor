@@ -109,9 +109,9 @@ describe('/eventos: show more', () => {
     it('keeps the comparison selection and the URL while paging', async () => {
         await openBig();
         const user = userEvent.setup();
-        await user.click(within(cards()[0]).getByRole('button', { name: 'Comparar Evento 01' }));
+        await user.click(within(cards()[0]).getByRole('button', { name: 'Comparar: Evento 01' }));
         await user.click(more());
-        expect(within(cards()[0]).getByRole('button', { name: 'Comparar Evento 01' }).getAttribute('aria-pressed')).toBe('true');
+        expect(within(cards()[0]).getByRole('button', { name: 'Comparar: Evento 01' }).getAttribute('aria-pressed')).toBe('true');
         expect(window.location.search).toBe('');
     });
 });

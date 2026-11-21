@@ -58,7 +58,7 @@ python3 -I -m unittest discover -s tests -t .
 (cd ../../apps/banco-proyectos && npm test)   # page logic (publicar-*.test.mjs) and the committed data
 ```
 
-The generated JSON is committed and bundled by Vite, so deploying needs no Python. `pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths, and
+The generated JSON is committed under `apps/banco-proyectos/public/data/` and is not part of the JavaScript bundle: the app fetches it at runtime from `/data/<file>.json` through `src/lib/data-loader.js`, so deploying needs no Python. `pipeline.build` accepts `--projects`, `--doaj`, `--scimago`, `--out` and `--catalog-out` to override paths, and
 `--doaj-date YYYY-MM-DD` for the day DOAJ was downloaded (default: the CSV's modification day). It records that date
 and the SCImago edition (the year in the CSV's `Total Docs. (YYYY)` column) in `sources.doaj_downloaded` and
 `sources.scimago_edition`; the page shows them as "DOAJ: 2026-11-09 · SCImago: edición 2025".

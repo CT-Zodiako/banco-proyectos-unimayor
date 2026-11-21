@@ -8,7 +8,9 @@
 #                src/lib and read committed JSON, so they need no npm install.
 #   docker     - builds the production image (Dockerfile) to prove it still builds: npm ci, prebuild and build run
 #                inside the container, exactly as Railway does.
-# The weekly bot commits ("chore(data): ...") also trigger this workflow; that is intended.
+# The weekly bot commits ("chore(data): ...") do NOT trigger this workflow: they are pushed by actualizar-datos.yml with the
+# default GITHUB_TOKEN (no personal access token), and GitHub does not start workflows for pushes made with that token.
+# Only the data tests that actualizar-datos.yml runs itself check that refreshed data.
 #
 # IMPORTANT: a push to master also triggers the Railway deploy, and Railway does NOT wait for this workflow:
 # a red CI is a warning, it does not stop a deploy. Optional follow-up: enable "Wait for CI" in the Railway

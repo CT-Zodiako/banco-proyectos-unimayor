@@ -47,7 +47,7 @@ const LINK = 'hover:text-institutional-yellow hover:underline underline-offset-4
 
 const Footer = () => (
     <footer className="bg-institutional-dark text-white pt-16 pb-8">
-        <div className="page-container grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="page-container grid grid-cols-1 gap-12 md:grid-cols-[1fr_1fr_1.4fr] min-[1024px]:grid-cols-3">
             <div className="space-y-4">
                 <div className="bg-white rounded-xl p-2 inline-block">
                     <img src={logo} alt="Escudo de la Institución Universitaria Colegio Mayor del Cauca" width="421" height="391" loading="lazy" decoding="async" className="h-24 w-auto" />
@@ -70,7 +70,7 @@ const Footer = () => (
                 </ul>
             </div>
 
-            <div className="space-y-4">
+            <div className="min-w-0 space-y-4">
                 <h2 className="text-lg font-bold text-gray-200">Contacto</h2>
                 <div className="space-y-3 text-sm text-gray-400">
                     <p className="flex items-start gap-2">
@@ -79,7 +79,7 @@ const Footer = () => (
                     </p>
                     <p className="flex items-start gap-2">
                         <Mail size={18} aria-hidden="true" className="text-institutional-yellow flex-shrink-0" />
-                        <span className="flex flex-col">
+                        <span className="flex min-w-0 flex-col [overflow-wrap:anywhere]">
                             <span>sdionizio@unimayor.edu.co</span>
                             <span>cristiantovar@unimayor.edu.co</span>
                         </span>

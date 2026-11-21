@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarDays, ChevronDown, Clock, FileText, MapPin, Users, Wifi } from 'lucide-react';
+import { CalendarDays, Check, ChevronDown, Clock, FileText, MapPin, Scale, Users, Wifi } from 'lucide-react';
 import AffinityRing from '../publicar/AffinityRing';
 import { formatDate, formatRange } from '../../lib/eventos/filters';
 import { AFFINITY_THRESHOLDS, affinityLevel } from '../../lib/eventos/affinity';
@@ -144,12 +144,13 @@ const EventCard = ({ event, affinity, today, selected, compareFull, onToggleComp
                 <button
                     type="button"
                     aria-pressed={selected}
-                    aria-label={`Comparar ${event.title}`}
+                    aria-label={`Comparar: ${event.title}`}
                     disabled={!selected && compareFull}
                     onClick={() => onToggleCompare(event)}
                     className={`btn btn-secondary ${selected ? '!bg-sem-area-bg' : ''}`}
                 >
-                    {selected ? 'Quitar de comparación' : 'Comparar'}
+                    {selected ? <Check size={16} aria-hidden="true" /> : <Scale size={16} aria-hidden="true" />}
+                    Comparar
                 </button>
                 <span className="text-[13px] text-sem-text-2 sm:ml-auto min-[1536px]:ml-0">Fuente: {SOURCE_LABELS[event.source] || event.source}</span>
             </div>

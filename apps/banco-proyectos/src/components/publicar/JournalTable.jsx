@@ -82,7 +82,7 @@ export default function JournalTable({ rows, sort, compare, onSort, onToggleComp
                                 <td className={TD}>
                                     <input
                                         type="checkbox"
-                                        aria-label={`Comparar ${journal.title}`}
+                                        aria-label={`Comparar: ${journal.title}`}
                                         checked={selected}
                                         disabled={!selected && full}
                                         title={!selected && full ? `Máximo ${MAX_COMPARE} revistas` : undefined}

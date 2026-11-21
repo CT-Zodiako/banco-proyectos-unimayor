@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { AlertCircle, BookOpen, BookmarkCheck, CalendarDays, ChevronLeft } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
+import { SKIP_LIST_MIN, SkipListEnd, SkipListLink } from '../components/SkipList';
 import BackupPanel from '../components/opportunities/BackupPanel';
 import OpportunitiesBoard from '../components/opportunities/OpportunitiesBoard';
 import OpportunitiesSummary from '../components/opportunities/OpportunitiesSummary';
@@ -44,6 +45,7 @@ export default function Opportunities() {
     const [announcement, setAnnouncement] = useState('');
     const [backupOpen, setBackupOpen] = useState(false);
     const listId = useId();
+    const listEndId = useId();
     const headingRef = useRef(null);
     const backupSummary = useRef(null);
     const statusSelects = useRef(new Map());
@@ -161,8 +163,10 @@ export default function Opportunities() {
                     <p className="mx-auto mb-4 mt-0 max-w-md text-[13.5px] text-gray-700">Prueba con otra palabra o quita algún filtro.</p>
                     <button type="button" onClick={clearFilters} className="btn btn-secondary">Limpiar filtros</button>
                 </div>}
+                {visible.length >= SKIP_LIST_MIN && <SkipListLink label="Saltar la lista de oportunidades" endId={listEndId} />}
                 {visible.length > 0 && state.view === 'board' && <OpportunitiesBoard items={visible} status={state.status} renderCard={renderCard} />}
                 {visible.length > 0 && state.view === 'list' && groupByType(visible).filter((group) => group.items.length > 0).map((group) => <ListSection key={group.type} group={group} renderCard={renderCard} />)}
+                {visible.length >= SKIP_LIST_MIN && <SkipListEnd id={listEndId}>Fin de la lista de oportunidades</SkipListEnd>}
             </>}
         </section>}
         <p role="status" data-opp-announce className="sr-only">{announcement}</p>
