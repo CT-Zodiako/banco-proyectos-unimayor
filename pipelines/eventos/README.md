@@ -7,7 +7,7 @@ React page (a route of the project bank) that lists academic events where studen
 - **Eventos para asistir** (`kind: "attend"`): hackathons, talks, workshops and fairs.
 
 Events come from public sources plus a hand-curated file for local Colombian events. A pipeline downloads them,
-tags them with the bank's topic areas, removes duplicates and expired events, and writes `apps/banco-proyectos/public/data/eventos.json`. The page
+tags them with the bank's topic areas, removes duplicates and expired events, cleans odd titles, and writes `apps/banco-proyectos/public/data/eventos.json`. The page
 hides expired events by itself, so a file that is a few weeks old still shows only open events.
 
 The page lives in the project bank, `apps/banco-proyectos`, at the route `/eventos` (`src/pages/Eventos.jsx`), and
@@ -21,7 +21,7 @@ the router redirects it to `/eventos?p=<project id>` with the same project prese
 |---|---|
 | `../../apps/banco-proyectos/public/data/eventos.json` | The generated data the page fetches at runtime from `/data/eventos.json` (committed) |
 | `../../apps/banco-proyectos/src/pages/Eventos.jsx` | The page; its components are in `src/components/eventos/` and its pure logic (filters, affinity, map links, favorites) in `src/lib/eventos/` |
-| `pipeline/eventos.py` | Pure logic: source parsers, topic tagging, manual file validation, dedupe, expiry, output |
+| `pipeline/eventos.py` | Pure logic: source parsers, topic tagging, manual file validation, dedupe, title cleaning, expiry, output |
 | `pipeline/sources.py` | Downloads (urllib, curl fallback on TLS errors) and the `data/raw/` cache |
 | `pipeline/projects.py` | Project profiles (topics, keywords) for the project → events cross |
 | `pipeline/build.py` | Command that generates `eventos.json` |
@@ -83,6 +83,26 @@ Learning, Robótica, Sistemas Ciberfísicos, Desarrollo de Software, Videojuegos
   letters and digits: "IEEE-RICAI 2027" and "RICAI 2027" are both `ricai2027`. The year comes from the title,
   else from the start or deadline. The fields of the best source are kept (manual > ccf-deadlines > WikiCFP >
   Devpost), missing fields are filled from the others, and topics are joined.
+- **Cleaning** (`clean_events`, after dedupe and expiry, before writing; the JSON fields and ids do not change):
+  - *Titles and names*: WikiCFP organizers add markers to the acronym. `AAIE--EI 2027` becomes `AAIE 2027` (also
+    `--Ei`, `--ESCI`, `--CFP`), `Ei/Scopus-ACAI 2026` and `Ei/Scopus/CPCI-ICRPA 2027` lose the indexing label
+    (`ACAI 2026`, `ICRPA 2027`), `ACM--CFP--RobCE 2027` becomes `ACM RobCE 2027`, and in names a publisher
+    joined to the year (`ACM--2026 The 9th International …`) reads `ACM 2026 The 9th International …`. Publishers:
+    IEEE, ACM, Springer, SPIE, IET, IOP, EAI. Any other `--`, and acronyms with a single dash (`ECML-PKDD`,
+    `IEEE-DSIS`), are left as they are.
+  - *Duplicates*: WikiCFP lists some conferences twice, the second with the `--EI` marker (`AAIE 2027` and
+    `AAIE--EI 2027`: same dates, place and deadline), and one conference can appear with and without a publisher
+    prefix (`MCVR 2026` / `SPIE MCVR 2026`, `SecureComm 2027` in ccf-deadlines / `EAI SecureComm 2027` in WikiCFP).
+    Two events are the same conference when the acronym and year match once markers and the publisher prefix are
+    ignored **and** they have the same kind and the same start date, with no different end date and no different
+    country. The same acronym in another year, other dates or another country is never merged. Events with no
+    start date are never merged.
+  - *Which one stays*: the record of the best source (manual > ccf-deadlines > WikiCFP > Devpost), then the most
+    complete one, then the one with the plainest title (no marker, no publisher prefix). It keeps its `id` and
+    `url`; empty fields are filled from the other record, the earliest deadline wins, and the topics are joined.
+  - Cleaning twice gives the same result. The build prints `deduplicated N events, cleaned M titles` (M counts the
+    titles that changed in the written file). With the 2026-11-16 data: 481 events became 456 (24 `--EI`/SPIE
+    twins and one cross-source pair) and 27 titles were cleaned.
 - **Expiry** (same rule as the page): a `cfp` event is expired when its deadline (else its end date, else its
   start date) is before today; an `attend` event when its end date (else its start date) is before today. An event
   that ends or closes today is still shown. Events with no date at all are left out.
@@ -105,7 +125,7 @@ counts as 0 events; with `--require-all-sources` the build prints
 `error: --require-all-sources: <sources> failed; eventos.json was not written` and exits with code 1, keeping the
 previous `eventos.json`.
 
-The build prints one line, e.g. `wikicfp=316 ccfddl=88 devpost=47 manual=2 events=453 projects=210 out=…/banco-proyectos/public/data/eventos.json`.
+The build prints `deduplicated N events, cleaned M titles` and then one line, e.g. `wikicfp=316 ccfddl=88 devpost=47 manual=2 events=453 projects=210 out=…/banco-proyectos/public/data/eventos.json`.
 When a source fails, the build prints `warning: <source> failed: …`, reports 0 for it and writes the file with
 the others. It exits with code 1 without writing `eventos.json` when every public source fails, or when the
 manual file is missing or invalid (`error: data/manual-events.json: entry 1: "kind" must be "cfp" or "attend"`),

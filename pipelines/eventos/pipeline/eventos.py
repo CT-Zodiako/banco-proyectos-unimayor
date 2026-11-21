@@ -133,6 +133,12 @@ COUNTRY_ALIASES = {
     "czech republic": "Czechia", "mexico city": "Mexico", "türkiye": "Turkey", "turkiye": "Turkey",
 }
 ORG_PREFIXES = {"ieee", "acm", "springer", "ifip", "usenix", "the"}
+# Publishers that WikiCFP puts before the acronym or in front of the year of the name ("SPIE MCVR 2026", "SPIE--2026
+# The 3rd ..."). The cleaning step ignores them when it looks for the same conference twice.
+PUBLISHERS = ("IEEE", "ACM", "Springer", "SPIE", "IET", "IOP", "EAI")
+PUBLISHER_PREFIXES = ORG_PREFIXES | {p.lower() for p in PUBLISHERS}
+# Indexing labels that WikiCFP organizers add to the acronym ("AAIE--EI 2027", "Ei/Scopus-ACAI 2026"); "CFP" is noise.
+INDEX_MARKERS = ("ei", "esci", "scopus", "cpci", "istp")
 
 
 class ManualEventsError(ValueError):
@@ -438,7 +444,7 @@ def _title_head(title):
     return re.split(r"\s+[—–-]\s+|:\s", title, maxsplit=1)[0]
 
 
-def dedupe_key(event):
+def dedupe_key(event, prefixes=ORG_PREFIXES):
     """Normalized acronym + year ("IEEE-RICAI 2027" -> "ricai2027"); None when the year is unknown."""
     head = _title_head(event["title"])
     year = re.search(r"\b(19|20)\d{2}\b", head)
@@ -450,7 +456,7 @@ def dedupe_key(event):
             return None
         year = dates[0][:4]
     tokens = [t for t in re.split(r"[\s\-_/]+", re.sub(r"\b(19|20)\d{2}\b", " ", head).lower()) if t]
-    while len(tokens) > 1 and tokens[0] in ORG_PREFIXES:
+    while len(tokens) > 1 and tokens[0] in prefixes:
         tokens.pop(0)
     acronym = re.sub(r"[^a-z0-9]", "", "".join(tokens))
     return acronym + year if acronym else None
@@ -482,6 +488,106 @@ def merge_events(events):
         winner["topics"] = order_topics([t for e in group for t in e["topics"]])
         merged.append(winner)
     return merged
+
+
+# ---------------------------------------------------------------- cleaning: odd titles and duplicate conferences
+
+_MARKER = "|".join(INDEX_MARKERS)
+_SUFFIX_MARKER_RE = re.compile(r"(?<=\S)--(?:" + _MARKER + r"|cfp)(?=\s|-|\)|$)", re.IGNORECASE)
+_LEADING_MARKERS_RE = re.compile(r"^((?:(?:" + _MARKER + r")[/-])+)(?=[A-Za-z0-9])", re.IGNORECASE)
+_PUBLISHER_JOIN_RE = re.compile(r"^(" + "|".join(PUBLISHERS) + r")--(?=\S)", re.IGNORECASE)
+
+
+def clean_text(text):
+    """Title or name without WikiCFP markers: "AAIE--EI 2027" -> "AAIE 2027", "Ei/Scopus-ACAI 2026" -> "ACAI 2026",
+    "ACM--2026 The 9th ..." -> "ACM 2026 The 9th ...". Text that has no known marker is returned unchanged,
+    as is any other use of "--"."""
+    if not text:
+        return text
+    cleaned = _SUFFIX_MARKER_RE.sub("", text)
+    leading = _LEADING_MARKERS_RE.match(cleaned)
+    # A lone "EI-" may be a real acronym; stripped only when it is a chain ("Ei/Scopus-") or another label.
+    if leading and (leading.group(1).count("/") + leading.group(1).count("-") > 1
+                    or leading.group(1)[:-1].lower() != "ei"):
+        cleaned = cleaned[leading.end():]
+    cleaned = _PUBLISHER_JOIN_RE.sub(lambda m: m.group(1) + " ", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned if cleaned else text
+
+
+def _same_conference(a, b):
+    """Same edition of the same conference: same kind, acronym + year, start date, and no conflicting end or place."""
+    if a["kind"] != b["kind"] or not a["start"] or a["start"] != b["start"]:
+        return False
+    if a["end"] and b["end"] and a["end"] != b["end"]:
+        return False
+    if a["country"] and b["country"]:
+        return a["country"] == b["country"]
+    if a["location"] and b["location"]:
+        return a["location"].lower() == b["location"].lower()
+    return True
+
+
+def _title_mess(title):
+    """(has a marker, has a publisher prefix) of an original title: 0 is better; keeps the plainest title."""
+    tokens = [t for t in re.split(r"[\s\-_/]+", _title_head(clean_text(title)).lower()) if t]
+    return (int(clean_text(title) != title), int(len(tokens) > 1 and tokens[0] in PUBLISHER_PREFIXES))
+
+
+def _completeness(event):
+    return sum(event[key] is not None for key in ("name", "end", "deadline", "location", "country", "url"))
+
+
+def _merge_group(group, originals):
+    """One event from a group of duplicates (list of (position, cleaned event); originals are the events before
+    cleaning): the best source, then the most complete, then the plainest title. Missing fields come from the
+    others, the earliest deadline wins, topics are joined."""
+    ranked = sorted(group, key=lambda g: (SOURCE_PRIORITY.get(g[1]["source"], 9), -_completeness(g[1]),
+                                          _title_mess(originals[g[0]]["title"]), g[0]))
+    winner = dict(ranked[0][1])
+    for _, other in ranked[1:]:
+        for key in ("name", "end", "url"):
+            if winner[key] is None:
+                winner[key] = other[key]
+        if winner["location"] is None and other["location"] is not None:
+            winner["location"], winner["country"] = other["location"], other["country"]
+        elif winner["country"] is None:
+            winner["country"] = other["country"]
+        if other["deadline"] and (winner["deadline"] is None or other["deadline"] < winner["deadline"]):
+            winner["deadline"] = other["deadline"]
+        winner["online"] = winner["online"] or other["online"]
+    winner["topics"] = order_topics([t for _, e in group for t in e["topics"]])
+    return winner
+
+
+def clean_events(events):
+    """(events, stats): odd titles and names cleaned, and one event per conference edition.
+
+    Two events are the same conference when their acronym + year match once markers and publisher prefixes are
+    ignored (EAI SecureComm 2027 = SecureComm 2027) and they have the same kind and start date, with no conflicting
+    end date or country. Anything less is kept: precision over recall. Ids, urls and the JSON fields are not
+    changed; a group keeps the record from the best source, else the most complete, else the plainest title.
+    The result keeps first-seen order; stats are {"deduplicated": n, "titles_cleaned": n of kept titles changed}.
+    """
+    cleaned = [dict(e, title=clean_text(e["title"]), name=clean_text(e["name"])) for e in events]
+    clusters, by_key = [], {}
+    for position, event in enumerate(cleaned):
+        key = dedupe_key(event, PUBLISHER_PREFIXES)
+        cluster = None
+        for candidate in by_key.get(key, ()) if key and event["start"] else ():
+            if all(_same_conference(event, other) for _, other in candidate):
+                cluster = candidate
+                break
+        if cluster is None:
+            cluster = []
+            clusters.append(cluster)
+            if key and event["start"]:
+                by_key.setdefault(key, []).append(cluster)
+        cluster.append((position, event))
+    result = [_merge_group(cluster, events) if len(cluster) > 1 else cluster[0][1] for cluster in clusters]
+    originals = {e["id"]: e["title"] for e in events}
+    changed = sum(1 for e in result if originals.get(e["id"]) != e["title"])
+    return result, {"deduplicated": len(events) - len(result), "titles_cleaned": changed}
 
 
 def is_expired(event, today):

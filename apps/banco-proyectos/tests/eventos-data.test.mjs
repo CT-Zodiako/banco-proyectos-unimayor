@@ -29,6 +29,35 @@ test('every event has the fields the cards and filters need', () => {
     }
 });
 
+test('no title or name keeps the "--" markers of the sources (AAIE--EI 2027, ACM--2026 ...)', () => {
+    for (const event of data.events) {
+        assert.equal(event.title.includes('--'), false, `${event.id}: ${event.title}`);
+        assert.equal((event.name ?? '').includes('--'), false, `${event.id}: ${event.name}`);
+    }
+});
+
+test('the same conference is listed once: no two events share name, start and place', () => {
+    const normalize = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const seen = new Map();
+    for (const event of data.events) {
+        if (!event.name || !event.start) continue;
+        const key = [normalize(event.name), event.start, normalize(event.location ?? '')].join('|');
+        assert.equal(seen.has(key), false, `${event.id} repeats ${seen.get(key)}: ${event.title}`);
+        seen.set(key, event.id);
+    }
+});
+
+test('the same acronym and year with the same start date is listed once', () => {
+    const publisher = /^(?:(?:ieee|acm|springer|spie|iet|iop|eai|ifip|usenix)[\s-]+)+/i;
+    const seen = new Map();
+    for (const event of data.events) {
+        if (!event.start) continue;
+        const key = [event.title.replace(publisher, '').toLowerCase(), event.start].join('|');
+        assert.equal(seen.has(key), false, `${event.id} repeats ${seen.get(key)}: ${event.title}`);
+        seen.set(key, event.id);
+    }
+});
+
 test('the source counts add up to the events in the file', () => {
     const total = Object.values(data.sources).reduce((sum, n) => sum + n, 0);
     assert.equal(total, data.events.length);

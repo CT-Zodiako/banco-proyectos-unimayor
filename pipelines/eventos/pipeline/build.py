@@ -89,12 +89,13 @@ def main(argv=None):
               file=sys.stderr)
         return 1
 
-    events = ev.drop_expired(ev.merge_events(manual + downloaded), today)
+    events, cleaning = ev.clean_events(ev.drop_expired(ev.merge_events(manual + downloaded), today))
     counts = {name: 0 for name in PUBLIC_SOURCES + ("manual",)}
     for event in events:
         counts[event["source"]] += 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(ev.render_json(ev.build_payload(events, counts, today, projects)), encoding="utf-8")
+    print(f"deduplicated {cleaning['deduplicated']} events, cleaned {cleaning['titles_cleaned']} titles")
     print(" ".join(f"{name}={count}" for name, count in counts.items())
           + f" events={len(events)} projects={len(projects)} out={args.out}")
     return 0

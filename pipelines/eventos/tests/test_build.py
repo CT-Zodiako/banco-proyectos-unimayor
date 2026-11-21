@@ -12,6 +12,7 @@ FIXTURES = pathlib.Path(__file__).resolve().parent / "fixtures"
 CICI = {"title": "CICI 2027 — IV Congreso Internacional de Ciencia e Ingeniería", "kind": "cfp",
         "start": "2027-04-14", "end": "2027-04-16", "deadline": "2027-02-26", "location": "Pasto, Colombia",
         "online": True, "url": "https://cici.umariana.edu.co/", "topics": ["Inteligencia Artificial"]}
+CLEANING = "deduplicated 0 events, cleaned 0 titles\n"
 
 
 class OfflineBuildTest(unittest.TestCase):
@@ -55,7 +56,7 @@ class OfflineBuildTest(unittest.TestCase):
         self.cache()
         code, stdout, _ = self.run_build()
         self.assertEqual(code, 0)
-        self.assertEqual(stdout, f"wikicfp=4 ccfddl=3 devpost=3 manual=1 events=11 projects=4 out={self.out}\n")
+        self.assertEqual(stdout, CLEANING + f"wikicfp=4 ccfddl=3 devpost=3 manual=1 events=11 projects=4 out={self.out}\n")
         payload = self.payload()
         self.assertEqual(payload["generated"], "2026-10-31")
         self.assertEqual(payload["sources"], {"wikicfp": 4, "ccfddl": 3, "devpost": 3, "manual": 1})
@@ -68,11 +69,35 @@ class OfflineBuildTest(unittest.TestCase):
         self.assertEqual([p["id"] for p in payload["projects"]], ["proj_001", "proj_103", "proj_112", "proj_151"])
         self.assertEqual(payload["projects"][0]["topics"], ["IoT"])
 
+    def test_marker_duplicates_and_odd_titles_are_cleaned_before_writing(self):
+        self.cache()
+        twin = {**CICI, "title": "CICI--EI 2027 — IV Congreso Internacional de Ciencia e Ingeniería",
+                "id": "manual-cici-ei-2027", "topics": ["Redes"]}
+        odd = {"id": "manual-acai-2027", "title": "Ei/Scopus-ACAI 2027", "kind": "cfp", "start": "2027-05-04", "deadline": "2027-03-01",
+               "url": "https://acai.example/"}
+        self.manual.write_text(json.dumps([CICI, twin, odd]), encoding="utf-8")
+        code, stdout, stderr = self.run_build()
+        self.assertEqual(code, 0)
+        self.assertNotIn("error:", stderr)
+        self.assertEqual(stdout, "deduplicated 1 events, cleaned 1 titles\n"
+                         f"wikicfp=4 ccfddl=3 devpost=3 manual=2 events=12 projects=4 out={self.out}\n")
+        payload = self.payload()
+        self.assertEqual(payload["sources"], {"wikicfp": 4, "ccfddl": 3, "devpost": 3, "manual": 2})
+        by_id = {e["id"]: e for e in payload["events"]}
+        self.assertNotIn("manual-cici-ei-2027", by_id)
+        self.assertEqual(by_id["manual-cici-2027"]["topics"], ["Redes", "Inteligencia Artificial"])
+        self.assertEqual(by_id["manual-acai-2027"]["title"], "ACAI 2027")
+        self.assertEqual(list(payload), ["generated", "sources", "topics", "events", "projects"])
+        for event in payload["events"]:
+            self.assertEqual(list(event), ["id", "title", "name", "kind", "start", "end", "deadline", "location",
+                                           "country", "online", "url", "source", "topics"])
+            self.assertNotIn("--", event["title"])
+
     def test_one_failing_source_is_reported_as_zero(self):
         self.cache(wikicfp=False, devpost=False)
         code, stdout, stderr = self.run_build()
         self.assertEqual(code, 0)
-        self.assertEqual(stdout, f"wikicfp=0 ccfddl=3 devpost=0 manual=1 events=4 projects=4 out={self.out}\n")
+        self.assertEqual(stdout, CLEANING + f"wikicfp=0 ccfddl=3 devpost=0 manual=1 events=4 projects=4 out={self.out}\n")
         self.assertIn("warning: wikicfp failed:", stderr)
         self.assertIn("warning: devpost failed:", stderr)
         self.assertEqual(self.payload()["sources"], {"wikicfp": 0, "ccfddl": 3, "devpost": 0, "manual": 1})
@@ -93,7 +118,7 @@ class OfflineBuildTest(unittest.TestCase):
         code, stdout, stderr = self.run_build("--require-all-sources")
         self.assertEqual(code, 0)
         self.assertNotIn("error:", stderr)
-        self.assertEqual(stdout, f"wikicfp=4 ccfddl=3 devpost=3 manual=1 events=11 projects=4 out={self.out}\n")
+        self.assertEqual(stdout, CLEANING + f"wikicfp=4 ccfddl=3 devpost=3 manual=1 events=11 projects=4 out={self.out}\n")
         self.assertEqual(self.payload()["sources"], {"wikicfp": 4, "ccfddl": 3, "devpost": 3, "manual": 1})
 
     def test_all_sources_failing_exits_non_zero_without_writing(self):
@@ -125,7 +150,7 @@ class OfflineBuildTest(unittest.TestCase):
         self.projects.unlink()
         code, stdout, stderr = self.run_build()
         self.assertEqual(code, 0)
-        self.assertEqual(stdout, f"wikicfp=4 ccfddl=3 devpost=3 manual=1 events=11 projects=0 out={self.out}\n")
+        self.assertEqual(stdout, CLEANING + f"wikicfp=4 ccfddl=3 devpost=3 manual=1 events=11 projects=0 out={self.out}\n")
         self.assertEqual(stderr.splitlines()[0], f"warning: missing projects file {self.projects}; writing projects: []")
         payload = self.payload()
         self.assertEqual(payload["projects"], [])

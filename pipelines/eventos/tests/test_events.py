@@ -133,6 +133,166 @@ class MergeTest(unittest.TestCase):
         self.assertIsNone(ev.dedupe_key(event(title="Feria TIC")))
 
 
+def conference(**fields):
+    """A dated WikiCFP-style event for the cleaning tests."""
+    return event(**{"start": "2027-01-09", "end": "2027-01-11", "deadline": "2026-11-20",
+                    "location": "Tokyo, Japan", "country": "Japan", **fields})
+
+
+class CleanTextTest(unittest.TestCase):
+    def test_real_titles_are_cleaned(self):
+        table = {
+            "AAIE--EI 2027": "AAIE 2027",
+            "ICoSSE--Ei 2027": "ICoSSE 2027",
+            "ICRAI--EI 2026": "ICRAI 2026",
+            "PEMM--ESCI 2027": "PEMM 2027",
+            "ACM--CFP--RobCE 2027": "ACM RobCE 2027",
+            "Ei/Scopus-ACAI 2026": "ACAI 2026",
+            "Ei/Scopus/CPCI-ICRPA 2027": "ICRPA 2027",
+            "Ei/Scopus-CDIVP 2027": "CDIVP 2027",
+        }
+        for raw, clean in table.items():
+            self.assertEqual(ev.clean_text(raw), clean, raw)
+
+    def test_real_names_are_cleaned(self):
+        table = {
+            "ACM--2026 The 9th International Conference on Virtual Reality Technology (ICVRT 2026)":
+                "ACM 2026 The 9th International Conference on Virtual Reality Technology (ICVRT 2026)",
+            "IEEE--2027 the 13th International Conference on Mechatronics and Robotics Engineering":
+                "IEEE 2027 the 13th International Conference on Mechatronics and Robotics Engineering",
+            "Springer--2027 6th International Conference on Intelligent Systems Design":
+                "Springer 2027 6th International Conference on Intelligent Systems Design",
+            "SPIE--2026 The 3rd International Conference on Measurement": "SPIE 2026 The 3rd International Conference on Measurement",
+            "IET--2027 The 10th International Conference on Software Engineering":
+                "IET 2027 The 10th International Conference on Software Engineering",
+            "2027 13th International Conference on Computer Technology Applications (ICCTA 2027)--ESCI":
+                "2027 13th International Conference on Computer Technology Applications (ICCTA 2027)",
+        }
+        for raw, clean in table.items():
+            self.assertEqual(ev.clean_text(raw), clean, raw)
+
+    def test_legitimate_titles_are_left_alone(self):
+        for text in ["IEEE-DSIS 2026", "ECML-PKDD 2027", "ICISE-IE 2026", "Cyber-AI 2027", "SCSN-AI 2027",
+                     "DCOSS-IoT 2027", "Paris CFP-RCVE 2027", "smart-homes 2027", "IEEE WCNC | AI4SecureNets 2027",
+                     "Build with Gemma - Innovate in Windsor", "EI-Lab 2027", "CICI 2027 — IV Congreso",
+                     "Unknown--Thing 2027", "AAIE 2027", ""]:
+            self.assertEqual(ev.clean_text(text), text, text)
+
+    def test_none_stays_none_and_cleaning_is_idempotent(self):
+        self.assertIsNone(ev.clean_text(None))
+        for text in ["ACM--CFP--RobCE 2027", "Ei/Scopus/CPCI-ICRPA 2027", "AAIE--EI 2027", "ACM--2026 The 9th"]:
+            once = ev.clean_text(text)
+            self.assertEqual(ev.clean_text(once), once)
+
+
+class CleanEventsTest(unittest.TestCase):
+    def test_marker_twin_merges_into_the_plain_record(self):
+        plain = conference(id="wikicfp-194956", title="AAIE 2027", name="2027 Asia Conference on AI (AAIE 2027)",
+                           topics=["Inteligencia Artificial"])
+        twin = conference(id="wikicfp-194957", title="AAIE--EI 2027", name="2027 Asia Conference on AI (AAIE 2027)",
+                          topics=["Inteligencia Artificial", "Machine Learning"])
+        for order in ([plain, twin], [twin, plain]):
+            cleaned, stats = ev.clean_events(order)
+            self.assertEqual(cleaned, [{**plain, "topics": ["Inteligencia Artificial", "Machine Learning"]}])
+            self.assertEqual(stats, {"deduplicated": 1, "titles_cleaned": 0})
+
+    def test_more_complete_record_is_kept_with_the_clean_title_and_fills_the_other(self):
+        plain = conference(id="wikicfp-1", title="BDEE 2027", deadline=None, location=None, country=None,
+                           name=None, url=None)
+        twin = conference(id="wikicfp-2", title="BDEE--EI 2027", name="2027 The 7th Conference (BDEE 2027)",
+                          topics=["Big Data"])
+        cleaned, stats = ev.clean_events([plain, twin])
+        self.assertEqual(cleaned, [{**twin, "title": "BDEE 2027"}])
+        self.assertEqual(stats, {"deduplicated": 1, "titles_cleaned": 1})
+
+    def test_missing_fields_are_filled_and_the_earliest_deadline_wins(self):
+        plain = conference(id="a", title="ICSIM 2027", name="IET--2027 The 10th Conference", deadline="2026-12-05",
+                           location=None, url="https://x.example/icsim", topics=["Desarrollo de Software"])
+        twin = conference(id="b", title="ICSIM--EI 2027", name="2027 The 10th Conference", deadline="2026-12-01",
+                          url=None, topics=["Big Data"])
+        cleaned, _ = ev.clean_events([twin, plain])
+        self.assertEqual(len(cleaned), 1)
+        kept = cleaned[0]
+        self.assertEqual((kept["id"], kept["title"], kept["name"]), ("a", "ICSIM 2027", "IET 2027 The 10th Conference"))
+        self.assertEqual((kept["deadline"], kept["location"], kept["country"], kept["url"]),
+                         ("2026-12-01", "Tokyo, Japan", "Japan", "https://x.example/icsim"))
+        self.assertEqual(kept["topics"], ["Desarrollo de Software", "Big Data"])
+
+    def test_publisher_prefixed_twin_merges_and_the_unprefixed_title_is_kept(self):
+        plain = conference(id="wikicfp-192660", title="MCVR 2026")
+        spie = conference(id="wikicfp-192659", title="SPIE MCVR 2026", topics=["Redes"])
+        cleaned, stats = ev.clean_events([spie, plain])
+        self.assertEqual([(e["id"], e["title"], e["topics"]) for e in cleaned],
+                         [("wikicfp-192660", "MCVR 2026", ["Redes"])])
+        self.assertEqual(stats["deduplicated"], 1)
+
+    def test_same_conference_in_two_sources_keeps_the_best_source(self):
+        wiki = conference(id="wikicfp-203810", title="EAI SecureComm 2027", start="2027-10-15", end="2027-10-18",
+                          deadline="2027-02-01", location="Hefei, China", country="China", topics=["Ciberseguridad"],
+                          name="23rd EAI International Conference on Security and Privacy")
+        ccf = conference(id="ccfddl-securecomm27", title="SecureComm 2027", source="ccfddl", start="2027-10-15",
+                         end="2027-10-18", deadline="2027-02-01", location="Hefei, China", country="China",
+                         url="https://securecomm.eai-conferences.org/2027/", topics=["Ciberseguridad", "Redes"],
+                         name="International Conference on Security and Privacy in Communication Networks")
+        cleaned, stats = ev.clean_events([wiki, ccf])
+        self.assertEqual(cleaned, [{**ccf}])
+        self.assertEqual(stats["deduplicated"], 1)
+
+    def test_odd_titles_are_cleaned_without_dropping_anything(self):
+        a = conference(id="a", title="Ei/Scopus-ACAI 2026", name="ACM--2026 The Conference", start="2026-12-18")
+        b = conference(id="b", title="ACM--CFP--RobCE 2027", start="2027-05-20")
+        cleaned, stats = ev.clean_events([a, b])
+        self.assertEqual([(e["id"], e["title"], e["name"]) for e in cleaned],
+                         [("a", "ACAI 2026", "ACM 2026 The Conference"), ("b", "ACM RobCE 2027", None)])
+        self.assertEqual(stats, {"deduplicated": 0, "titles_cleaned": 2})
+
+    def test_near_misses_are_never_merged(self):
+        base = conference(id="a", title="ICAID 2026")
+        cases = {
+            "other year": conference(id="b", title="ICAID 2027", start="2027-03-17", end="2027-03-19"),
+            "same title, other dates": conference(id="b", title="ICAID 2026", start="2026-12-25", end="2026-12-27"),
+            "same start, other end": conference(id="b", title="ICAID 2026", end="2027-01-12"),
+            "same title, other country": conference(id="b", title="ICAID 2026", location="Paris, France",
+                                                    country="France"),
+            "other acronym, same place and dates": conference(id="b", title="ICAIDS 2026"),
+            "sibling acronym": conference(id="b", title="ICAID-W 2026"),
+            "other kind": conference(id="b", title="ICAID 2026", kind="attend"),
+            "no start": conference(id="b", title="ICAID 2026", start=None, end=None),
+        }
+        for label, other in cases.items():
+            cleaned, stats = ev.clean_events([base, other])
+            self.assertEqual(cleaned, [base, other], label)
+            self.assertEqual(stats["deduplicated"], 0, label)
+
+    def test_events_without_start_or_year_are_kept_even_when_titles_match(self):
+        events = [conference(id="a", title="Feria TIC", start=None, end=None),
+                  conference(id="b", title="Feria TIC", start=None, end=None)]
+        self.assertEqual(ev.clean_events(events)[0], events)
+
+    def test_idempotent_and_schema_invariant(self):
+        events = [
+            conference(id="wikicfp-1", title="AAIE 2027"), conference(id="wikicfp-2", title="AAIE--EI 2027"),
+            conference(id="wikicfp-3", title="PEMM--ESCI 2027", start="2027-06-10", end="2027-06-12"),
+            conference(id="wikicfp-4", title="ICAID 2026", start="2026-12-25", end="2026-12-27"),
+            conference(id="wikicfp-5", title="ICAID 2027", start="2027-03-17", end="2027-03-19"),
+            conference(id="manual-1", title="CICI 2027 — IV Congreso", source="manual", start="2027-04-14",
+                       end="2027-04-16"),
+            conference(id="devpost-1", title="LaunchPad Hacks (580k In Prizes!)", kind="attend", source="devpost"),
+        ]
+        snapshot = json.loads(json.dumps(events))
+        once, stats = ev.clean_events(events)
+        self.assertEqual(events, snapshot)  # the input is not modified
+        self.assertEqual(stats, {"deduplicated": 1, "titles_cleaned": 1})
+        self.assertEqual([e["id"] for e in once],
+                         ["wikicfp-1", "wikicfp-3", "wikicfp-4", "wikicfp-5", "manual-1", "devpost-1"])
+        twice, again = ev.clean_events(once)
+        self.assertEqual(twice, once)
+        self.assertEqual(again, {"deduplicated": 0, "titles_cleaned": 0})
+        for e in once:
+            self.assertEqual(list(e), list(snapshot[0]))
+            self.assertEqual(list(e), ev.FIELDS)
+
+
 class OutputTest(unittest.TestCase):
     def test_events_sorted_by_deadline_then_start_with_title_tiebreak(self):
         a = event(id="a", title="B 2027", deadline="2026-11-05")
