@@ -24,3 +24,7 @@ pipelines/donde-publicar/data/raw/doaj/
 
 # eventos: cached downloads of the public sources (regenerate with python3 -E -m pipeline.build)
 pipelines/eventos/data/raw/
+
+# Private research idea bank: patent-sensitive, never publish (the repository is public).
+# Public disclosure would destroy patent novelty; do not remove this rule.
+investigacion/
