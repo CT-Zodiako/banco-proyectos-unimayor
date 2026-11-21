@@ -345,7 +345,7 @@ describe('choosing a result', () => {
         const user = await openApp();
         await openWithButton(user);
         await loaded();
-        await search(user, 'robotica abierta');
+        await search(user, 'taller robotica abierta');
         await user.keyboard('{Enter}');
         expect(route()).toBe('/eventos?q=Taller+de+Rob%C3%B3tica+Abierta');
         expect(screen.queryByRole('dialog')).toBeNull();

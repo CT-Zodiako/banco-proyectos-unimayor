@@ -875,5 +875,854 @@ export default [
                 "descripcion": "Diseño del bastidor ajustable y de los soportes de la pierna."
             }
         ]
+    },
+    {
+        "id": "proj_257",
+        "titulo": "🌡️ Proyecto 257: Banco de Termografía Infrarroja Calibrado con Cuerpo Negro y Fantoma de Inclusiones Calientes para Evaluar Algoritmos de Análisis de Asimetrías Térmicas",
+        "descripcion": "Problema: Los servicios de salud del Cauca empiezan a usar cámaras térmicas para apoyar la detección de procesos inflamatorios, pero casi nunca verifican su exactitud: la temperatura medida depende de la emisividad, la distancia y el ambiente, y no existe un banco local para calibrarlas ni un fantoma para comparar algoritmos, así que los hallazgos térmicos son difíciles de reproducir.\n\nDescripción: Banco de adquisición que combina una cámara infrarroja radiométrica de 160 × 120 píxeles conectada por USB a un computador, un cuerpo negro de placa con control PID mediante celdas Peltier y sensor PT100 como referencia, y un fantoma de silicona y agar con resistencias calefactoras que simulan inclusiones inflamatorias a distintas profundidades. Un programa en Python corrige la emisividad, calcula mapas de diferencia térmica entre zonas contralaterales y compara un umbral adaptativo con una red U-Net pequeña entrenada en el computador del laboratorio con las imágenes del fantoma, usando Dice como métrica. Es un banco de caracterización y no un equipo de diagnóstico; las pruebas con voluntarios sanos, solo para verificar el protocolo, se hacen bajo consentimiento informado.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Termografía clínica",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Termografía infrarroja y radiometría básica",
+            "Calibración con una fuente de cuerpo negro",
+            "Control PID de temperatura con celdas Peltier",
+            "Fabricación de fantomas térmicos con inclusiones",
+            "Segmentación de imágenes con U-Net en PyTorch",
+            "Análisis de incertidumbre de medición"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir y validar un banco de termografía infrarroja con referencia de cuerpo negro y fantoma de inclusiones calientes que permita calibrar cámaras y comparar algoritmos de análisis de asimetrías térmicas.",
+            "📌 Objetivos Específicos:",
+            "• Calibrar la cámara entre 25 °C y 42 °C con un error absoluto inferior a 0,5 °C frente al sensor PT100 del cuerpo negro, corrigiendo emisividad y distancia.",
+            "• Fabricar un fantoma con tres inclusiones calefactadas a 3, 6 y 10 mm de profundidad y determinar la diferencia mínima de temperatura detectable en cada una.",
+            "• Entrenar una U-Net con al menos 300 imágenes del fantoma y compararla con un umbral adaptativo mediante el coeficiente de Dice, buscando un valor superior a 0,80."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Termografía clínica"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Cámara infrarroja FLIR Lepton 3.5 con placa PureThermal 2",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura imágenes radiométricas de 160 × 120 píxeles y las entrega por USB al computador."
+            },
+            {
+                "componente": "Cuerpo negro de placa de aluminio con recubrimiento de alta emisividad",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Ofrece una superficie isoterma de emisividad conocida para calibrar la cámara."
+            },
+            {
+                "componente": "Celdas Peltier TEC1-12706, driver MOSFET y sensor PT100 con MAX31865",
+                "categoria": "Control Térmico",
+                "funcion": "Regulan la temperatura del cuerpo negro con control PID y la miden con exactitud."
+            },
+            {
+                "componente": "Fantoma de silicona y agar con resistencias calefactoras",
+                "categoria": "Material",
+                "funcion": "Simula tejido con inclusiones a distintas profundidades y diferencias térmicas conocidas."
+            },
+            {
+                "componente": "Arduino Nano y fuente de laboratorio regulada",
+                "categoria": "Microcontrolador",
+                "funcion": "Ejecuta el lazo de control y alimenta las resistencias de las inclusiones."
+            },
+            {
+                "componente": "Computador con tarjeta gráfica del laboratorio",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Entrena la red de segmentación y ejecuta el análisis de las imágenes térmicas."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Python con OpenCV y NumPy",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Corrección de emisividad, registro de imágenes y mapas de asimetría térmica."
+            },
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento y evaluación local de la U-Net que segmenta las inclusiones."
+            },
+            {
+                "herramienta": "Arduino IDE",
+                "tipo": "Firmware Embebido",
+                "descripcion": "Control PID de la temperatura del cuerpo negro y registro de las lecturas."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del molde del fantoma y de la carcasa del cuerpo negro."
+            }
+        ]
+    },
+    {
+        "id": "proj_258",
+        "titulo": "🧠 Proyecto 258: Segmentación Local de Tumores Cerebrales en Resonancia Magnética con nnU-Net y MONAI para Producir Biomodelos 3D de Planificación Neuroquirúrgica",
+        "descripcion": "Problema: Los neurocirujanos y radiólogos de la región planifican la resección de tumores cerebrales sobre cortes de resonancia que deben interpretar mentalmente en tres dimensiones, y la segmentación manual de cada caso toma más de una hora; los programas comerciales de planificación y los biomodelos importados son costosos y los hospitales de baja complejidad rara vez los tienen.\n\nDescripción: Flujo de trabajo que entrena localmente una red 3D U-Net con nnU-Net y MONAI sobre la tarea de tumor cerebral del Medical Segmentation Decathlon, derivada de BraTS, que reúne 484 resonancias multiparamétricas anonimizadas de acceso público. El modelo segmenta el edema, el tumor sin realce y el tumor con realce, y se evalúa con el coeficiente de Dice y la distancia de Hausdorff al percentil 95. Las máscaras se convierten en mallas en 3D Slicer y se imprimen a escala junto con la superficie cerebral extraída de las mismas imágenes para revisar la lesión de forma táctil. La inferencia se ejecuta en el computador del laboratorio sin sacar las imágenes de él. Es un prototipo de apoyo a la docencia y la planificación, no un dispositivo médico certificado.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Neurocirugía",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Imágenes de resonancia magnética multiparamétrica",
+            "Segmentación 3D con U-Net en MONAI y nnU-Net",
+            "Métricas de segmentación: Dice y distancia de Hausdorff",
+            "Procesamiento de mallas y modelado para impresión 3D",
+            "Formatos DICOM y NIfTI y protección de datos de salud"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Implementar y evaluar un flujo local de segmentación automática de tumores cerebrales en resonancia magnética que genere biomodelos impresos en 3D como apoyo a la docencia y la planificación neuroquirúrgica.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar una red 3D U-Net con validación cruzada de cinco particiones y alcanzar un Dice medio superior a 0,80 en el núcleo tumoral y una distancia de Hausdorff al percentil 95 inferior a 8 mm.",
+            "• Reducir a menos de 10 minutos por caso el tiempo desde el volumen de resonancia hasta la malla corregida, frente a la segmentación manual de referencia en 3D Slicer.",
+            "• Imprimir al menos cinco biomodelos con una desviación dimensional inferior a 1,5 mm frente a la malla digital y evaluar su utilidad con profesionales mediante un cuestionario estructurado."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Neurocirugía"
+        ],
+        "referencias": [
+            "Antonelli, M., Reinke, A., Bakas, S., et al. (2022). The Medical Segmentation Decathlon. Nature Communications, 13, 4128.",
+            "Isensee, F., Jaeger, P. F., Kohl, S. A. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods, 18(2), 203–211."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Computador con GPU NVIDIA de 12 GB de memoria",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Entrena la red 3D y ejecuta la inferencia local sobre los volúmenes de resonancia."
+            },
+            {
+                "componente": "Impresora 3D FDM del laboratorio",
+                "categoria": "Equipo de Fabricación",
+                "funcion": "Fabrica los biomodelos del tumor y de la superficie cerebral a escala."
+            },
+            {
+                "componente": "Filamento PETG translúcido y PLA de varios colores",
+                "categoria": "Material",
+                "funcion": "Permiten diferenciar el edema, el núcleo tumoral y el tumor con realce en el biomodelo."
+            },
+            {
+                "componente": "Calibrador digital de 0,01 mm",
+                "categoria": "Instrumento de Medición",
+                "funcion": "Mide las dimensiones de referencia de los biomodelos para el control dimensional."
+            },
+            {
+                "componente": "Disco externo cifrado",
+                "categoria": "Almacenamiento",
+                "funcion": "Guarda los volúmenes anonimizados y los modelos entrenados dentro del laboratorio."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "MONAI",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de la red 3D, aumento de datos y cálculo de métricas de segmentación."
+            },
+            {
+                "herramienta": "nnU-Net",
+                "tipo": "Framework de Segmentación",
+                "descripcion": "Configuración automática de la red de referencia y comparación con el modelo propio."
+            },
+            {
+                "herramienta": "3D Slicer",
+                "tipo": "Procesamiento de Imágenes Médicas",
+                "descripcion": "Visualización, corrección manual de máscaras y exportación de mallas STL."
+            },
+            {
+                "herramienta": "PrusaSlicer",
+                "tipo": "Fabricación",
+                "descripcion": "Preparación de la impresión por color y por material de cada estructura."
+            }
+        ]
+    },
+    {
+        "id": "proj_259",
+        "titulo": "📏 Proyecto 259: Fantoma Modular de Agarosa y Acrílico con Insertos de Densidad y Relajación para el Control de Calidad de Tomografía y Resonancia Magnética",
+        "descripcion": "Problema: Los equipos de tomografía y resonancia de la región se verifican con fantomas comerciales importados, que cuestan miles de dólares y casi nunca se prestan para docencia; por eso los estudiantes de radiología y bioingeniería rara vez miden la linealidad de las unidades Hounsfield, la resolución espacial o la uniformidad, y el control de calidad depende de pocos técnicos.\n\nDescripción: Fantoma cilíndrico de acrílico relleno de agua o de agarosa con insertos intercambiables: cilindros con soluciones de fosfato dipotásico que simulan densidades de hueso en tomografía, agarosa dopada con cloruro de manganeso para obtener tiempos de relajación T1 y T2 en resonancia, y una placa impresa en 3D con patrones de pares de líneas para la resolución espacial. Los estudios se adquieren en el servicio de radiología de una institución aliada y se analizan con Python y 3D Slicer, con un detector automático de insertos basado en la transformada de Hough. Es un fantoma didáctico de verificación y no reemplaza el control de calidad certificado del equipo.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Control de calidad en radiología",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Física de la tomografía y unidades Hounsfield",
+            "Relajación T1 y T2 en resonancia magnética",
+            "Preparación de materiales equivalentes a tejido",
+            "Lectura y análisis de imágenes DICOM con Python",
+            "Control de calidad en imagen diagnóstica"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Diseñar, fabricar y caracterizar un fantoma modular de bajo costo que permita verificar la calidad de imagen en tomografía computarizada y resonancia magnética con fines docentes.",
+            "📌 Objetivos Específicos:",
+            "• Obtener una relación lineal entre la concentración de fosfato dipotásico y los números Hounsfield medidos, con coeficiente de determinación superior a 0,98 entre 0 y 600 HU.",
+            "• Ajustar tiempos de relajación T1 entre 300 y 1 500 ms y T2 entre 40 y 200 ms con al menos cinco concentraciones de manganeso, verificados con secuencias de resonancia.",
+            "• Detectar automáticamente los insertos y medir la uniformidad de la imagen con un error de posición menor de 1 mm, y comparar los resultados con la medición manual de dos observadores."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Control de calidad en radiología"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Cilindro de acrílico con tapas roscadas y bastidor de insertos",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Aloja el medio de relleno y mantiene los insertos en posiciones conocidas."
+            },
+            {
+                "componente": "Soluciones de fosfato dipotásico y agarosa dopada con cloruro de manganeso",
+                "categoria": "Material",
+                "funcion": "Reproducen densidades y tiempos de relajación equivalentes a hueso y tejido blando."
+            },
+            {
+                "componente": "Placa de pares de líneas impresa en 3D",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Permite evaluar la resolución espacial en los cortes axiales."
+            },
+            {
+                "componente": "Balanza de precisión y agitador magnético con calefacción",
+                "categoria": "Equipo de Laboratorio",
+                "funcion": "Garantizan concentraciones y mezclas repetibles en cada inserto."
+            },
+            {
+                "componente": "Tomógrafo y resonador de una institución aliada",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Adquieren los estudios del fantoma con los protocolos de rutina del servicio."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "3D Slicer",
+                "tipo": "Procesamiento de Imágenes Médicas",
+                "descripcion": "Visualización de los estudios y medición de regiones de interés en los insertos."
+            },
+            {
+                "herramienta": "Python con pydicom y scikit-image",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Lectura DICOM, transformada de Hough, uniformidad y regresión de calibración."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del bastidor de insertos y de la placa de pares de líneas."
+            },
+            {
+                "herramienta": "ImageJ (Fiji)",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Medición manual de contraste y resolución para comparar con el análisis automático."
+            }
+        ]
+    },
+    {
+        "id": "proj_260",
+        "titulo": "📈 Proyecto 260: Amplificador de EEG de Ocho Canales con Electrodos Secos y Eliminación de Artefactos mediante Autoencoder Convolucional en Raspberry Pi 5",
+        "descripcion": "Problema: La electroencefalografía clínica en el Cauca depende de pocos equipos concentrados en Popayán, y los registros fuera del consultorio se contaminan con parpadeos, movimiento y ruido de la red eléctrica que obligan a repetir exámenes; los amplificadores comerciales con electrodos secos y procesamiento integrado son costosos y no permiten estudiar cómo se limpia la señal.\n\nDescripción: Amplificador de ocho canales con el convertidor simultáneo ADS131M08, preamplificadores INA333 y circuito de pierna derecha, conectado por SPI a una Raspberry Pi 5 con pantalla local. La señal se limpia con un autoencoder convolucional 1D entrenado en el computador del laboratorio con el conjunto público EEGdenoiseNet, que mezcla EEG limpio con artefactos oculares y musculares; el modelo exportado a ONNX se ejecuta en la Raspberry Pi sobre ventanas de dos segundos. La mejora se mide con la relación señal-ruido y la correlación con la señal limpia, y se verifica con registros de voluntarios sanos bajo consentimiento informado. Es un prototipo de investigación, no un dispositivo médico certificado.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Neurofisiología clínica",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Instrumentación biomédica para señales de EEG",
+            "Electrodos secos e impedancia de contacto",
+            "Diseño de PCB de señal mixta de bajo ruido",
+            "Redes neuronales convolucionales 1D para señales",
+            "Despliegue de modelos con ONNX Runtime en Raspberry Pi"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir un amplificador de EEG de ocho canales con electrodos secos y evaluar un autoencoder convolucional que elimine artefactos de forma local en una Raspberry Pi 5.",
+            "📌 Objetivos Específicos:",
+            "• Lograr un ruido referido a la entrada inferior a 1,5 µV RMS entre 0,5 y 45 Hz y un rechazo de modo común superior a 100 dB a 60 Hz.",
+            "• Entrenar el autoencoder con EEGdenoiseNet y mejorar la relación señal-ruido en al menos 5 dB frente al filtrado clásico en artefactos oculares y musculares.",
+            "• Ejecutar la inferencia en la Raspberry Pi 5 con una latencia inferior a 50 ms por ventana de dos segundos y verificarla con al menos diez voluntarios sanos."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Neurofisiología clínica"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Convertidor ADS131M08 con preamplificadores INA333",
+                "categoria": "Convertidor Analógico-Digital",
+                "funcion": "Amplifican y digitalizan de forma simultánea ocho canales de EEG."
+            },
+            {
+                "componente": "Raspberry Pi 5 con pantalla táctil de 7 pulgadas",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Adquiere por SPI, ejecuta el modelo de limpieza y muestra la señal en pantalla local."
+            },
+            {
+                "componente": "Electrodos secos de pines flexibles y diadema impresa en 3D",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Registran el EEG sin gel y se ajustan a distintas formas de cabeza."
+            },
+            {
+                "componente": "Batería LiPo con convertidor DC-DC aislado de bajo ruido",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Alimenta el amplificador sin acoplar el ruido de la red eléctrica."
+            },
+            {
+                "componente": "Simulador de señales biológicas y generador de funciones",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Entregan señales conocidas para medir ruido, ganancia y rechazo de modo común."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "KiCad",
+                "tipo": "Diseño de Circuitos Impresos",
+                "descripcion": "Diseño de la PCB de señal mixta con planos de tierra analógico y digital separados."
+            },
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento del autoencoder convolucional 1D con EEGdenoiseNet."
+            },
+            {
+                "herramienta": "ONNX Runtime",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Ejecución del modelo exportado en la Raspberry Pi 5 con baja latencia."
+            },
+            {
+                "herramienta": "MNE-Python",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Filtrado clásico de referencia, análisis espectral y visualización del EEG."
+            }
+        ]
+    },
+    {
+        "id": "proj_261",
+        "titulo": "🫁 Proyecto 261: Banco de Pruebas para Ventiladores Mecánicos con Pulmón de Ensayo de Distensibilidad y Resistencia Ajustables y Analizador de Flujo y Presión",
+        "descripcion": "Problema: Los hospitales de baja complejidad del Cauca mantienen ventiladores mecánicos y equipos de anestesia que rara vez se verifican entre mantenimientos, porque los analizadores de flujo de gas y los pulmones de prueba comerciales son costosos y están en pocas ciudades; un volumen corriente o una presión positiva fuera de tolerancia puede pasar inadvertido y afectar a pacientes críticos.\n\nDescripción: Banco de pruebas con un pulmón de ensayo de fuelle de distensibilidad ajustable entre 20 y 100 mL/cmH2O y resistencias de orificio intercambiables, un sensor de presión diferencial SDP810 sobre un tubo de Venturi impreso en 3D para medir el flujo y un sensor de presión en la vía aérea, ambos leídos por un STM32 que envía las muestras por USB a un programa en Python. El programa integra el flujo para calcular volumen corriente, frecuencia, PEEP, presión pico y relación I:E, y los compara con los valores programados en el ventilador y con una jeringa de calibración de 3 L. Se inspira en los métodos de ensayo de la norma ISO 80601-2-12, pero es un instrumento de apoyo al mantenimiento y no un analizador certificado.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Terapia respiratoria",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Mecánica respiratoria: distensibilidad y resistencia",
+            "Medición de flujo por presión diferencial",
+            "Diseño de pulmones de ensayo y tubos de Venturi",
+            "Calibración con jeringa de volumen conocido",
+            "Adquisición de datos en tiempo real con USB"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un banco de pruebas de bajo costo que mida los parámetros de ventilación mecánica y verifique la exactitud de ventiladores mediante un pulmón de ensayo ajustable.",
+            "📌 Objetivos Específicos:",
+            "• Medir volúmenes corrientes entre 200 y 800 mL con un error inferior al 5 % frente a una jeringa de calibración de 3 L.",
+            "• Medir presiones de 0 a 40 cmH2O con un error inferior a ±1 cmH2O frente a un manómetro de referencia y calcular la PEEP y la presión pico de cada ciclo.",
+            "• Ensayar un ventilador con al menos nueve combinaciones de distensibilidad y resistencia y generar un informe de desviaciones frente a los valores programados."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Terapia respiratoria"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Sensor de presión diferencial SDP810 con tubo de Venturi impreso en 3D",
+                "categoria": "Sensor de Flujo",
+                "funcion": "Mide el flujo de gas en la vía aérea del pulmón de ensayo."
+            },
+            {
+                "componente": "Sensor de presión manométrica MPX5010DP",
+                "categoria": "Sensor de Presión",
+                "funcion": "Mide la presión en la vía aérea para obtener la PEEP y la presión pico."
+            },
+            {
+                "componente": "STM32F411 (placa Black Pill)",
+                "categoria": "Microcontrolador",
+                "funcion": "Muestrea ambos sensores a 200 Hz y transmite los datos por USB."
+            },
+            {
+                "componente": "Pulmón de fuelle con muelles ajustables y resistencias de orificio impresas en 3D",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Reproduce distintas distensibilidades y resistencias respiratorias."
+            },
+            {
+                "componente": "Jeringa de calibración de 3 L y manómetro de referencia",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Verifican el volumen y la presión medidos por el banco."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "STM32CubeIDE",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Firmware de muestreo, compensación de temperatura y comunicación USB."
+            },
+            {
+                "herramienta": "Python con SciPy y PyQtGraph",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Integración del flujo, detección de ciclos y cálculo de volumen, PEEP y relación I:E."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del tubo de Venturi, de las resistencias y del fuelle del pulmón."
+            },
+            {
+                "herramienta": "KiCad",
+                "tipo": "Diseño de Circuitos Impresos",
+                "descripcion": "Placa de acondicionamiento de los sensores y de alimentación."
+            }
+        ]
+    },
+    {
+        "id": "proj_262",
+        "titulo": "🔌 Proyecto 262: Analizador de Seguridad Eléctrica y Corriente de Fuga para Equipos Biomédicos con Red de Cuerpo Humano y Registro Local de Informes",
+        "descripcion": "Problema: En muchos hospitales del Cauca los equipos biomédicos se usan durante años sin una medición periódica de la resistencia de tierra y de las corrientes de fuga, porque los analizadores de seguridad eléctrica comerciales son costosos y su calibración se hace fuera de la región; un fallo de aislamiento puede causar descargas a pacientes conectados a monitores, electrobisturís o bombas.\n\nDescripción: Analizador con dos módulos: una medición de la resistencia del conductor de protección con una corriente continua de 200 mA a cuatro hilos y una medición de corriente de fuga de chasis, de paciente y de tierra a través de una red de 1 kΩ en serie con el paralelo de 10 kΩ y 15 nF, que representa al cuerpo humano, seguida de un convertidor de valor eficaz. Un microcontrolador muestra los resultados en una pantalla local, los guarda en una tarjeta microSD y genera un informe por equipo. Las pruebas se hacen con un transformador de aislamiento y equipos de práctica, siempre con supervisión docente, y se comparan con un analizador comercial de un hospital aliado. Es una herramienta didáctica de apoyo al mantenimiento, no sustituye la verificación certificada.",
+        "area": "Bioingeniería",
+        "sector": "Ingeniería clínica - Seguridad eléctrica hospitalaria",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Seguridad eléctrica de equipos médicos (IEC 62353)",
+            "Medición de corrientes de fuga con valor eficaz",
+            "Mediciones a cuatro hilos de baja resistencia",
+            "Aislamiento galvánico y trabajo seguro con tensión de red",
+            "Gestión de mantenimiento y trazabilidad de equipos"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar y verificar un analizador de seguridad eléctrica de bajo costo que mida la resistencia de tierra y las corrientes de fuga de equipos biomédicos y registre los resultados por equipo.",
+            "📌 Objetivos Específicos:",
+            "• Medir la resistencia del conductor de protección entre 0,05 y 2 Ω con un error inferior al 5 % frente a resistencias patrón de baja tolerancia.",
+            "• Medir corrientes de fuga entre 10 µA y 5 mA con un error inferior al 5 %, verificado con inyección de corriente a 50 y 60 Hz.",
+            "• Evaluar al menos diez equipos de práctica y comparar los resultados con los de un analizador comercial de un hospital aliado, con diferencias menores al 10 %."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Ingeniería clínica - Seguridad eléctrica hospitalaria"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "STM32 Nucleo-G431RB",
+                "categoria": "Microcontrolador",
+                "funcion": "Mide las señales acondicionadas y ejecuta la secuencia de ensayos."
+            },
+            {
+                "componente": "Convertidor de valor eficaz AD736 con amplificador de precisión",
+                "categoria": "Acondicionamiento de Señal",
+                "funcion": "Convierte la tensión de la red de medición en una señal proporcional a la corriente."
+            },
+            {
+                "componente": "Red de cuerpo humano con resistencias de película metálica al 0.1 % y capacitor de 15 nF",
+                "categoria": "Instrumento de Medición",
+                "funcion": "Reproduce la impedancia del cuerpo humano que fija la norma para las corrientes de fuga."
+            },
+            {
+                "componente": "Fuente de corriente de 200 mA con medición a cuatro hilos",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Hace circular la corriente de ensayo por el conductor de protección y mide su caída."
+            },
+            {
+                "componente": "Transformador de aislamiento de 1 kVA y toma de prueba con protección diferencial",
+                "categoria": "Seguridad Eléctrica",
+                "funcion": "Separan el banco de la red y reducen el riesgo para quien opera."
+            },
+            {
+                "componente": "Pantalla TFT, tarjeta microSD y carcasa aislante impresa en 3D",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestran el resultado y guardan el informe de cada equipo."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "STM32CubeIDE",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Secuencia de ensayos, lectura del convertidor y escritura de registros en la tarjeta."
+            },
+            {
+                "herramienta": "KiCad",
+                "tipo": "Diseño de Circuitos Impresos",
+                "descripcion": "Diseño de la placa de medición con separación de las zonas de tensión de red."
+            },
+            {
+                "herramienta": "LTspice",
+                "tipo": "Simulación de Circuitos",
+                "descripcion": "Verificación de la respuesta en frecuencia de la red de cuerpo humano."
+            },
+            {
+                "herramienta": "Python con pandas y ReportLab",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Generación del informe por equipo y de la hoja de vida de mantenimiento."
+            }
+        ]
+    },
+    {
+        "id": "proj_263",
+        "titulo": "⚗️ Proyecto 263: Biorreactor de Perfusión con Control Local de Temperatura, pH y Caudal para el Cultivo Dinámico de Andamios de Ingeniería de Tejidos",
+        "descripcion": "Problema: Los grupos de investigación de la región que desarrollan andamios para regenerar hueso o cartílago cultivan sus muestras en condiciones estáticas, porque los biorreactores de perfusión comerciales cuestan decenas de miles de dólares; sin flujo, el interior de los andamios porosos recibe pocos nutrientes y los resultados de los cultivos son poco reproducibles.\n\nDescripción: Biorreactor de perfusión con cámara de acrílico y soportes impresos en 3D que aloja andamios cilíndricos, una bomba peristáltica de caudal controlado y un reservorio de medio con calentamiento regulado a 37 °C. Un microcontrolador Teensy mantiene la temperatura con un lazo PID, mide el pH con una sonda y su circuito de acondicionamiento, controla el caudal entre 0,1 y 5 mL/min y registra los datos en una tarjeta microSD, con alarmas locales por desviación. Se emplea medio tamponado con HEPES, que no exige atmósfera de CO2, y se valida primero sin células con un colorante trazador. Los ensayos con células solo se harán, si procede, en un laboratorio con bioseguridad avalada.",
+        "area": "Bioingeniería",
+        "sector": "Investigación - Ingeniería de tejidos",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Principios de cultivo celular dinámico y perfusión",
+            "Control PID de temperatura y caudal",
+            "Medición y calibración de pH",
+            "Diseño de cámaras de cultivo con materiales biocompatibles",
+            "Bioseguridad y desinfección en el laboratorio"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Diseñar y validar un biorreactor de perfusión de bajo costo con control local de temperatura, pH y caudal para el cultivo dinámico de andamios de ingeniería de tejidos.",
+            "📌 Objetivos Específicos:",
+            "• Mantener la temperatura del medio en 37 ± 0,5 °C durante 72 horas continuas, medida con un termómetro de referencia calibrado.",
+            "• Medir el pH con un error inferior a 0,1 unidades tras una calibración de dos puntos y activar una alarma local cuando se desvíe más de 0,3 unidades.",
+            "• Lograr un caudal entre 0,1 y 5 mL/min con un error inferior al 5 % por gravimetría y demostrar la perfusión homogénea de andamios impresos con un colorante trazador."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Investigación - Ingeniería de tejidos"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Teensy 4.1",
+                "categoria": "Microcontrolador",
+                "funcion": "Ejecuta los lazos PID, las alarmas y el registro de datos de cada sesión."
+            },
+            {
+                "componente": "Cámara de acrílico con soportes de PETG y juntas de silicona",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Aloja los andamios y se desinfecta con etanol al 70 % entre ensayos."
+            },
+            {
+                "componente": "Bomba peristáltica con motor paso a paso y tubo de silicona",
+                "categoria": "Actuador",
+                "funcion": "Hace circular el medio entre el reservorio y la cámara con caudal controlado."
+            },
+            {
+                "componente": "Sonda de pH con acondicionador de alta impedancia",
+                "categoria": "Sensor Químico",
+                "funcion": "Mide el pH del medio de cultivo en el circuito de perfusión."
+            },
+            {
+                "componente": "Calefactor flexible de silicona con sensor PT100 y MAX31865",
+                "categoria": "Control Térmico",
+                "funcion": "Calienta el reservorio y mide su temperatura con precisión."
+            },
+            {
+                "componente": "Termómetro de referencia y balanza analítica",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Verifican la temperatura y el caudal entregados por el biorreactor."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Arduino IDE con Teensyduino",
+                "tipo": "Firmware Embebido",
+                "descripcion": "Lazos PID de temperatura y caudal, lectura de pH y registro en la tarjeta microSD."
+            },
+            {
+                "herramienta": "Python con PyQtGraph",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Visualización local de las curvas y exportación de las sesiones por USB."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño de la cámara de cultivo, los soportes de andamios y el reservorio."
+            },
+            {
+                "herramienta": "ImageJ (Fiji)",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Cuantificación de la distribución del colorante trazador dentro de los andamios."
+            }
+        ]
+    },
+    {
+        "id": "proj_264",
+        "titulo": "👁️ Proyecto 264: Queratómetro de Discos de Plácido Impreso en 3D con Cámara y Calibración con Esferas de Acero para el Tamizaje de Astigmatismo Corneal",
+        "descripcion": "Problema: En las zonas rurales del Cauca muchas personas con astigmatismo o con queratocono incipiente nunca reciben un diagnóstico, porque los queratómetros y topógrafos corneales están en pocos consultorios de optometría y cuestan millones de pesos; la baja visión sin corregir afecta el rendimiento escolar y laboral, y el queratocono suele detectarse cuando ya hay pérdida visual.\n\nDescripción: Queratómetro con un disco de Plácido de anillos concéntricos impreso en 3D e iluminado con LED de baja intensidad, una cámara con lente macro y un apoyo de mentón y frente. El programa en Python detecta los anillos reflejados en la córnea, ajusta elipses para obtener el radio de curvatura y el eje de los meridianos principales y calcula las queratometrías y el astigmatismo corneal. Se calibra con esferas de acero de radios conocidos y un ojo artificial tórico, y se compara con el autoqueratómetro de una clínica optométrica aliada en voluntarios que dan su consentimiento informado. Es un prototipo de apoyo al tamizaje, no un dispositivo médico certificado.",
+        "area": "Bioingeniería",
+        "sector": "Salud visual - Optometría y queratometría",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Óptica de la córnea y queratometría",
+            "Diseño óptico de discos de Plácido",
+            "Detección de anillos y ajuste de elipses con OpenCV",
+            "Calibración con superficies esféricas de radio conocido",
+            "Diseño mecánico de apoyos ergonómicos"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar y calibrar un queratómetro de discos de Plácido de bajo costo que estime el radio de curvatura corneal y el astigmatismo como apoyo al tamizaje visual.",
+            "📌 Objetivos Específicos:",
+            "• Medir el radio de curvatura de esferas de acero entre 7 y 8,5 mm con un error inferior a 0,05 mm, equivalente a menos de 0,25 dioptrías.",
+            "• Determinar el eje del astigmatismo con un error inferior a 10° y la potencia cilíndrica con un error inferior a 0,5 dioptrías sobre superficies tóricas de referencia.",
+            "• Comparar las queratometrías de al menos 30 ojos de voluntarios con las de un autoqueratómetro comercial mediante análisis de Bland-Altman."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud visual - Optometría y queratometría"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Disco de Plácido de anillos concéntricos impreso en 3D con LED difusos",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Proyecta los anillos de referencia sobre la superficie de la córnea."
+            },
+            {
+                "componente": "Cámara USB con lente macro de enfoque fijo",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura los anillos reflejados con resolución suficiente para medir su forma."
+            },
+            {
+                "componente": "Apoyo de mentón y frente con ajuste micrométrico impreso en 3D",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Posiciona la cabeza a la distancia de trabajo con buena repetibilidad."
+            },
+            {
+                "componente": "Esferas de acero de rodamiento de radios conocidos y ojo artificial tórico",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Permiten calibrar y verificar el radio y la potencia medidos."
+            },
+            {
+                "componente": "Raspberry Pi 4 con pantalla local de 7 pulgadas",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta el análisis de imagen y muestra las queratometrías al operador."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Python con OpenCV y SciPy",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Detección de anillos, ajuste de elipses y cálculo de queratometrías y eje."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del disco de Plácido, del apoyo de mentón y de la carcasa."
+            },
+            {
+                "herramienta": "PyQt",
+                "tipo": "Aplicación de Escritorio",
+                "descripcion": "Interfaz de captura, resultados y exportación del informe de cada medición."
+            },
+            {
+                "herramienta": "Jupyter Notebook",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Gráficos de Bland-Altman y análisis de repetibilidad de las mediciones."
+            }
+        ]
+    },
+    {
+        "id": "proj_265",
+        "titulo": "🔊 Proyecto 265: Densitómetro Óseo Ultrasónico de Transmisión para Calcáneo con Medición de Velocidad del Sonido y Atenuación de Banda Ancha",
+        "descripcion": "Problema: La osteoporosis en mujeres posmenopáusicas y adultos mayores del Cauca se diagnostica tarde, porque la densitometría con rayos X solo está en unos pocos centros urbanos y es costosa; la fractura de cadera por fragilidad suele ser la primera señal. Un método de tamizaje sin radiación, portátil y económico ayudaría a priorizar a quién remitir.\n\nDescripción: Equipo de ultrasonido cuantitativo de transmisión con dos transductores de 500 kHz enfrentados a ambos lados de un baño de agua termostatizado donde se coloca el talón o una muestra. Un generador de pulsos y un amplificador de recepción envían la señal a un osciloscopio USB; un programa en Python calcula la velocidad del sonido, la atenuación de banda ancha y un índice combinado de ambos parámetros, tomando como referencia la señal en agua. Se calibra con bloques de acrílico y fantomas de resina epóxica con carga mineral y se prueba con fragmentos de hueso bovino de la industria cárnica; la medición en personas queda fuera del alcance del semestre. Es un instrumento de caracterización, no un dispositivo médico certificado.",
+        "area": "Bioingeniería",
+        "sector": "Salud - Salud ósea y osteoporosis",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Física del ultrasonido en hueso y tejidos",
+            "Electrónica de pulsadores y receptores ultrasónicos",
+            "Medición de tiempo de vuelo y atenuación espectral",
+            "Procesamiento de señales con la transformada de Fourier",
+            "Diseño de montajes mecánicos con alineación precisa"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir y caracterizar un equipo de ultrasonido de transmisión de bajo costo que mida la velocidad del sonido y la atenuación en hueso como base para el tamizaje de la salud ósea.",
+            "📌 Objetivos Específicos:",
+            "• Medir la velocidad del sonido en bloques de acrílico y de resina epóxica con un error inferior al 1 % frente a valores de referencia y un coeficiente de variación menor al 1,5 %.",
+            "• Obtener la pendiente de atenuación entre 200 y 800 kHz con una variabilidad menor al 5 % en diez repeticiones con reposicionamiento de la muestra.",
+            "• Diferenciar al menos tres fantomas de distinta densidad mineral y muestras de hueso bovino mediante el índice combinado, con una diferencia significativa (p < 0,05)."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Salud ósea y osteoporosis"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Transductores ultrasónicos de contacto de 500 kHz",
+                "categoria": "Transductor Ultrasónico",
+                "funcion": "Emiten y reciben los pulsos que atraviesan la muestra dentro del baño de agua."
+            },
+            {
+                "componente": "Generador de pulsos de alta tensión y amplificador de recepción de bajo ruido",
+                "categoria": "Acondicionamiento de Señal",
+                "funcion": "Excitan el transductor emisor y amplifican el eco antes de digitalizarlo."
+            },
+            {
+                "componente": "Osciloscopio USB de 100 MS/s",
+                "categoria": "Instrumento de Medición",
+                "funcion": "Digitaliza los pulsos recibidos y entrega las formas de onda al computador."
+            },
+            {
+                "componente": "Baño de agua de acrílico con calefactor y sensor de temperatura",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Acopla los transductores a la muestra y mantiene la temperatura estable a 37 °C."
+            },
+            {
+                "componente": "Bloques de acrílico, fantomas de epóxica con carga mineral y hueso bovino",
+                "categoria": "Material",
+                "funcion": "Sirven como patrones de calibración y como muestras de ensayo."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Python con NumPy y SciPy",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Tiempo de vuelo por correlación cruzada y atenuación por espectro de potencia."
+            },
+            {
+                "herramienta": "PyQtGraph",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Visualización en vivo de la forma de onda y de los parámetros calculados."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del bastidor de los transductores con alineación coaxial."
+            },
+            {
+                "herramienta": "GNU Octave",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Análisis estadístico de repetibilidad y comparación entre fantomas."
+            }
+        ]
+    },
+    {
+        "id": "proj_266",
+        "titulo": "🖨️ Proyecto 266: Bioimpresora de Extrusión de Hidrogeles Adaptada de una Impresora 3D con Modelo Local de Aprendizaje Automático para Predecir el Ancho de Línea",
+        "descripcion": "Problema: Los grupos de investigación en ingeniería de tejidos de la región no pueden explorar la bioimpresión porque las bioimpresoras comerciales cuestan decenas de miles de dólares, y ajustar la presión, la velocidad y la concentración del hidrogel por ensayo y error consume mucho material y semanas de trabajo con cada formulación nueva.\n\nDescripción: Impresora cartesiana de bajo costo modificada con un cabezal de extrusión de pistón para jeringas de 5 mL, que deposita hidrogeles de alginato y gelatina sin células, entrecruzados con cloruro de calcio. Una cámara USB fotografía cada línea impresa y un programa en Python mide el ancho del filamento y el índice de imprimibilidad. Con al menos 200 ensayos a distintas presiones, velocidades y concentraciones se entrena localmente un regresor de bosque aleatorio con scikit-learn que predice el ancho de línea y sugiere parámetros; su error se evalúa con validación cruzada y con impresiones nuevas. Es un banco de caracterización de materiales: no se imprimen células ni se usa con pacientes.",
+        "area": "Bioingeniería",
+        "sector": "Investigación - Bioimpresión 3D",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Reología básica y entrecruzamiento de hidrogeles",
+            "Modificación de impresoras 3D con cabezales de extrusión",
+            "Índice de imprimibilidad y medición de filamentos",
+            "Regresión con bosques aleatorios en scikit-learn",
+            "Diseño de experimentos y validación cruzada"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Adaptar una impresora 3D como bioimpresora de extrusión de bajo costo y entrenar un modelo local que prediga el ancho de línea de hidrogeles a partir de los parámetros de impresión.",
+            "📌 Objetivos Específicos:",
+            "• Imprimir líneas y rejillas de alginato-gelatina con un ancho de filamento controlado entre 300 y 800 µm y una desviación estándar menor al 15 % entre repeticiones.",
+            "• Alcanzar un índice de imprimibilidad entre 0,9 y 1,1 en rejillas de poros cuadrados para al menos tres formulaciones distintas.",
+            "• Entrenar un regresor con al menos 200 ensayos y predecir el ancho de línea con un error absoluto medio inferior a 50 µm en impresiones nuevas no vistas."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Investigación - Bioimpresión 3D"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Impresora cartesiana tipo Ender con firmware Marlin",
+                "categoria": "Equipo de Fabricación",
+                "funcion": "Aporta el movimiento en tres ejes y las trayectorias de la bioimpresora."
+            },
+            {
+                "componente": "Cabezal de pistón con motor paso a paso y jeringa de 5 mL con aguja cónica",
+                "categoria": "Actuador",
+                "funcion": "Extruye el hidrogel con un caudal controlado."
+            },
+            {
+                "componente": "Alginato de sodio, gelatina y cloruro de calcio",
+                "categoria": "Material",
+                "funcion": "Forman el hidrogel de ensayo y su solución de entrecruzamiento."
+            },
+            {
+                "componente": "Cámara USB con soporte y fondo iluminado",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Fotografía cada línea impresa con iluminación constante para medirla."
+            },
+            {
+                "componente": "Lecho de impresión refrigerado con módulo Peltier y sensor de temperatura",
+                "categoria": "Control Térmico",
+                "funcion": "Mantiene la gelatina cerca de su temperatura de gelificación durante la impresión."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Marlin",
+                "tipo": "Firmware Embebido",
+                "descripcion": "Control de los ejes y de la extrusión de la jeringa con perfiles de velocidad."
+            },
+            {
+                "herramienta": "Python con OpenCV",
+                "tipo": "Análisis de Imágenes",
+                "descripcion": "Medición automática del ancho de filamento y del índice de imprimibilidad."
+            },
+            {
+                "herramienta": "scikit-learn",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento del regresor y validación cruzada del ancho de línea."
+            },
+            {
+                "herramienta": "FreeCAD",
+                "tipo": "Diseño CAD",
+                "descripcion": "Diseño del soporte del cabezal de pistón y de las rejillas de ensayo."
+            }
+        ]
     }
 ];

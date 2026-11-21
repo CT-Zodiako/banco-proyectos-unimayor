@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // Vendor libraries get their own long-lived chunks, so a change in the app code does not invalidate them in the
-// browser cache. `projects-data` is the full 236 projects (src/data, only the project page needs it) and
+// browser cache. `projects-data` is the full 286 projects (src/data, only the project page needs it) and
 // `projects-index` the light index the catalog reads (generated, src/data/projects-index.js); both load on demand
 // through src/lib/projects-loader.js. areas.js stays out of them because the catalog code reads it at startup.
 const VENDOR_CHUNKS = [
@@ -82,7 +82,8 @@ export default defineConfig({
     plugins: [react(), routePreload()],
     build: {
         rollupOptions: { output: { manualChunks } },
-        // The only chunk above 500 kB is projects-data (~1 MB of text, ~200 kB gzipped), lazy on purpose: only the project page loads it.
-        chunkSizeWarningLimit: 1000,
+        // The only chunk above 500 kB is projects-data (~1.2 MB of text, ~260 kB gzipped with 286 projects), lazy on purpose: only the
+        // project page and the comparison load it. 1500 keeps the warning for any other chunk (T27: it passed 1000 with the 50 health projects).
+        chunkSizeWarningLimit: 1500,
     },
 })

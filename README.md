@@ -3,7 +3,7 @@
 [![CI](https://github.com/CT-Zodiako/banco-proyectos-unimayor/actions/workflows/ci.yml/badge.svg)](https://github.com/CT-Zodiako/banco-proyectos-unimayor/actions/workflows/ci.yml)
 
 Search tools of the Laboratorio de Física y Sistemas Embebidos, Institución Universitaria Colegio Mayor del Cauca:
-a catalog of 236 student projects (23 areas) that also tells each project **which journals to publish in** and
+a catalog of 286 student projects (23 areas) that also tells each project **which journals to publish in** and
 **which events to attend**. One React app, two Python data pipelines, deployed on Railway:
 https://banco-proyectos-unimayor-production.up.railway.app
 

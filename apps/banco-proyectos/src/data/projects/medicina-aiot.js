@@ -834,5 +834,835 @@ export default [
                 "descripcion": "Registro local de láminas analizadas y resultados."
             }
         ]
+    },
+    {
+        "id": "proj_247",
+        "titulo": "🌡️ Proyecto 247: Tamizaje Termográfico Multicondición de Fiebre, Inflamación y Asimetría Vascular con Cámara Infrarroja y Procesamiento en el Borde sobre Jetson Orin Nano",
+        "descripcion": "Problema: En los puestos de salud rurales del Cauca el tamizaje de fiebre, inflamación y mala circulación depende del termómetro puntual y de la inspección visual, que no detectan asimetrías de temperatura entre extremidades ni zonas localizadas de calor; así se pierden oportunidades de remitir a tiempo a los hospitales de Popayán casos de infección, trombosis venosa profunda o insuficiencia arterial.\n\nDescripción: Estación de tamizaje con una cámara térmica FLIR Lepton 3.5 conectada a un Jetson Orin Nano que segmenta la región de interés (rostro, pantorrillas o manos) y ejecuta localmente una red convolucional multitarea con tres salidas: temperatura corporal elevada, asimetría térmica entre extremidades y calor localizado compatible con inflamación. El modelo se entrena con termogramas de voluntarios sanos sometidos a perturbaciones térmicas controladas (compresas tibias o frías), se calibra con un cuerpo negro de referencia y entrega un informe de sospecha, nunca un diagnóstico. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con un cuerpo negro de referencia y voluntarios bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Medicina - Termografía clínica y tamizaje multicondición",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Calibración radiométrica con cuerpo negro de referencia",
+            "Segmentación de regiones de interés en imágenes térmicas",
+            "Entrenamiento de redes multitarea con PyTorch",
+            "Optimización de modelos con TensorRT en Jetson",
+            "Diseño de protocolos de adquisición termográfica"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una estación de termografía infrarroja con procesamiento en el borde que identifique de forma simultánea fiebre, asimetría térmica entre extremidades y calor localizado, como apoyo al tamizaje en puestos de salud rurales.",
+            "📌 Objetivos Específicos:",
+            "• Calibrar la cámara Lepton frente a un cuerpo negro de referencia y obtener un error absoluto medio inferior a 0,5 °C en el rango de 30 a 40 °C.",
+            "• Entrenar el modelo multitarea con termogramas de al menos 40 voluntarios y alcanzar una sensibilidad superior al 80 % ante las perturbaciones térmicas controladas, con validación entre sujetos.",
+            "• Desplegar el modelo con TensorRT en el Jetson Orin Nano con una latencia inferior a 100 ms por termograma y generar un informe de sospecha con el mapa térmico anotado."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Medicina - Termografía clínica y tamizaje multicondición"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Jetson Orin Nano Developer Kit de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la segmentación y la inferencia del modelo multitarea en cada termograma."
+            },
+            {
+                "componente": "Cámara térmica FLIR Lepton 3.5 con módulo PureThermal",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura termogramas radiométricos de 160 × 120 píxeles por USB."
+            },
+            {
+                "componente": "Cuerpo negro de referencia con termistor calibrado",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Entrega una temperatura conocida para calibrar y verificar la cámara."
+            },
+            {
+                "componente": "Trípode con regla de distancia fija",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Mantiene constantes la distancia y el ángulo de captura entre voluntarios."
+            },
+            {
+                "componente": "Pantalla táctil de 7 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra el mapa térmico y el informe de sospecha al personal de salud."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento del modelo multitarea con termogramas anotados."
+            },
+            {
+                "herramienta": "TensorRT",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Optimización y ejecución del modelo en la GPU del Jetson."
+            },
+            {
+                "herramienta": "OpenCV",
+                "tipo": "Librería de Visión Artificial",
+                "descripcion": "Segmentación de regiones y corrección radiométrica de los termogramas."
+            },
+            {
+                "herramienta": "Label Studio",
+                "tipo": "Anotación de Datos",
+                "descripcion": "Marcado de las regiones de interés y de las perturbaciones térmicas."
+            }
+        ]
+    },
+    {
+        "id": "proj_248",
+        "titulo": "🦶 Proyecto 248: Detección Temprana del Riesgo de Úlcera en el Pie Diabético mediante Termografía Plantar con Sensor MLX90640 y TinyML sobre ESP32-S3",
+        "descripcion": "Problema: Las úlceras del pie diabético suelen detectarse cuando ya existe infección o necrosis, porque la neuropatía impide sentir el daño y los controles en los centros de salud del Cauca se limitan a la inspección visual y al monofilamento. Un aumento localizado de la temperatura plantar precede a la lesión, pero casi nunca se mide, y las amputaciones evitables siguen siendo frecuentes.\n\nDescripción: Plataforma de revisión del pie con un sensor térmico MLX90640 de 32 × 24 píxeles y un ESP32-S3 que captura el termograma plantar sobre un soporte de vidrio, compara el pie derecho con el izquierdo y ejecuta un modelo TinyML cuantizado que clasifica el riesgo (sin asimetría, vigilancia o riesgo alto) a partir de la diferencia de temperatura entre zonas homólogas, cuyo umbral clínico de 2,2 °C describe la literatura. El modelo se entrena con termogramas de voluntarios sanos y asimetrías sintéticas añadidas por aumento de datos, y los resultados se publican en un tablero para el control del paciente. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con calentamientos locales controlados en voluntarios bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Enfermedades crónicas - Pie diabético y podología",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Adquisición de imágenes con sensores térmicos matriciales",
+            "Registro y comparación de zonas plantares homólogas",
+            "Aumento de datos con asimetrías térmicas sintéticas",
+            "Cuantización de modelos para microcontroladores",
+            "Interpretación de umbrales térmicos en el pie diabético"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir un dispositivo de termografía plantar con inferencia embebida que clasifique el riesgo de ulceración del pie diabético por asimetría térmica, como apoyo al control periódico en la atención primaria.",
+            "📌 Objetivos Específicos:",
+            "• Verificar el sensor MLX90640 frente a un cuerpo negro de referencia y lograr un error medio inferior a 0,7 °C entre 28 y 38 °C.",
+            "• Entrenar un clasificador de tres niveles de riesgo con termogramas de al menos 30 voluntarios y alcanzar una exactitud superior al 85 % ante calentamientos locales mayores de 2,2 °C.",
+            "• Cuantizar el modelo a 8 bits y ejecutarlo en el ESP32-S3 con una latencia inferior a 200 ms y un consumo de memoria menor a 250 KB."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Enfermedades crónicas - Pie diabético y podología"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "ESP32-S3 con 8 MB de PSRAM",
+                "categoria": "Microcontrolador",
+                "funcion": "Procesa el termograma, ejecuta el modelo de riesgo y publica el resultado."
+            },
+            {
+                "componente": "Sensor térmico MLX90640 de 32 × 24 píxeles",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Mide la temperatura de la planta del pie sin contacto."
+            },
+            {
+                "componente": "Soporte de vidrio con espejo a 45 grados",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Permite fotografiar la planta de ambos pies con el paciente de pie o sentado."
+            },
+            {
+                "componente": "Pantalla TFT de 2,8 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra el mapa térmico de ambos pies y el nivel de riesgo."
+            },
+            {
+                "componente": "Cuerpo negro de referencia con termistor calibrado",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Verifica la exactitud del sensor antes de las sesiones de captura."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "TensorFlow / Keras",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento del clasificador de riesgo con termogramas aumentados."
+            },
+            {
+                "herramienta": "TensorFlow Lite for Microcontrollers",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Ejecución del modelo cuantizado en el ESP32-S3."
+            },
+            {
+                "herramienta": "ESP-IDF",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Firmware de lectura del sensor, preprocesamiento e inferencia."
+            },
+            {
+                "herramienta": "Mosquitto",
+                "tipo": "Broker MQTT",
+                "descripcion": "Transporte de los resultados de cada revisión hacia el tablero."
+            },
+            {
+                "herramienta": "Streamlit",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Tablero con la evolución de la asimetría térmica por paciente."
+            }
+        ]
+    },
+    {
+        "id": "proj_249",
+        "titulo": "🎀 Proyecto 249: Tamizaje Adjunto con Termografía Mamaria Infrarroja y Red Convolucional Cuantizada en Raspberry Pi 5 con Acelerador Coral, con Análisis Explícito de Limitaciones",
+        "descripcion": "Problema: La mamografía llega con poca regularidad a las mujeres de las zonas rurales del Cauca por la distancia y la falta de equipos, y se ha propuesto la termografía infrarroja como técnica portátil y sin radiación. Sin embargo, su sensibilidad y especificidad son menores que las de la mamografía, por lo que solo puede considerarse un apoyo adjunto cuya utilidad debe medirse con rigor.\n\nDescripción: Se entrena en Google Colab una red convolucional ligera que clasifica termogramas mamarios como normales o sospechosos con la base pública DMR-IR de termografía mamaria, y se analiza su desempeño por subgrupos con atención a los falsos positivos y a la influencia de la temperatura ambiente. El modelo cuantizado se despliega en una Raspberry Pi 5 con acelerador Coral USB y una cámara térmica FLIR Lepton 3.5, y se prueba el protocolo de aclimatación con voluntarias sanas. La interfaz declara siempre que el resultado no reemplaza la mamografía ni la valoración clínica. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos públicos anonimizados y voluntarias sanas bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Medicina - Mastología y detección temprana de cáncer de mama",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Aprendizaje por transferencia con imágenes térmicas",
+            "Evaluación con intervalos de confianza y curvas ROC",
+            "Análisis de falsos positivos y factores de confusión",
+            "Cuantización para aceleradores Edge TPU",
+            "Comunicación responsable de las limitaciones clínicas"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Evaluar la viabilidad de la termografía mamaria con aprendizaje profundo en el borde como técnica adjunta de tamizaje, cuantificando sus límites de desempeño y declarándolos en la interfaz del prototipo.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar por transferencia un modelo MobileNetV2 con DMR-IR, dividiendo por paciente, y reportar el AUC, la sensibilidad y la especificidad con intervalos de confianza del 95 %.",
+            "• Medir la caída de desempeño al reducir las imágenes a 160 × 120 píxeles, la resolución de la cámara Lepton, y documentarla frente a la resolución original.",
+            "• Desplegar el modelo cuantizado en la Raspberry Pi 5 con Coral con una latencia inferior a 150 ms por imagen y documentar al menos tres factores de confusión térmica."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Medicina - Mastología y detección temprana de cáncer de mama"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la interfaz del sistema y gestiona la captura y la inferencia."
+            },
+            {
+                "componente": "Acelerador Coral USB Edge TPU",
+                "categoria": "Acelerador de Inferencia",
+                "funcion": "Acelera la inferencia del modelo cuantizado a 8 bits."
+            },
+            {
+                "componente": "Cámara térmica FLIR Lepton 3.5 con módulo PureThermal",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura termogramas radiométricos de las voluntarias por USB."
+            },
+            {
+                "componente": "Soporte regulable con fondo térmicamente neutro",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Fija la distancia de captura y reduce reflejos infrarrojos del entorno."
+            },
+            {
+                "componente": "Termohigrómetro digital calibrado",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Registra la temperatura y la humedad de la sala durante la aclimatación."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "TensorFlow / Keras",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento por transferencia y cuantización del clasificador."
+            },
+            {
+                "herramienta": "PyCoral y TensorFlow Lite",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Ejecución del modelo compilado para el Edge TPU en la Raspberry Pi."
+            },
+            {
+                "herramienta": "scikit-learn",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Cálculo de curvas ROC, métricas e intervalos de confianza por remuestreo."
+            },
+            {
+                "herramienta": "OpenCV",
+                "tipo": "Librería de Visión Artificial",
+                "descripcion": "Preprocesamiento, recorte y normalización de los termogramas."
+            }
+        ]
+    },
+    {
+        "id": "proj_250",
+        "titulo": "🩹 Proyecto 250: Seguimiento de la Cicatrización de Heridas Crónicas con Cámara Térmica y RGB, Segmentación del Lecho de la Herida y Alerta de Estancamiento en Raspberry Pi 5",
+        "descripcion": "Problema: Las enfermeras de atención domiciliaria y de los hospitales de primer nivel miden las úlceras por presión y las heridas crónicas con regla y descripción subjetiva, por lo que no hay un registro objetivo de si la herida cicatriza o empeora, y los signos tempranos de infección, como el aumento local de temperatura, pasan inadvertidos hasta la consulta siguiente.\n\nDescripción: Dispositivo de mano con Raspberry Pi 5, cámara RGB y sensor térmico MLX90640 que fotografía la herida junto a un marcador ArUco de escala, segmenta con una red U-Net ligera el lecho de la herida para calcular su área en cm² y estima la diferencia de temperatura entre el borde y la piel sana circundante. La red se entrena con el conjunto público de úlceras del pie FUSeg y se ajusta con imágenes propias. Cada visita se guarda en una base local y se grafica la evolución del área y la temperatura para alertar un estancamiento o un posible foco infeccioso. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con simuladores de heridas y voluntarios bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Medicina - Heridas crónicas y enfermería domiciliaria",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Segmentación semántica de imágenes médicas con U-Net",
+            "Calibración de escala con marcadores ArUco",
+            "Fusión de información térmica y visible",
+            "Exportación de modelos a ONNX Runtime",
+            "Diseño de registros clínicos locales con SQLite"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Implementar un dispositivo de mano que mida el área de heridas crónicas y la diferencia térmica con la piel circundante, para que el personal de enfermería registre su evolución de forma objetiva.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar una U-Net ligera con FUSeg y alcanzar un coeficiente de Dice superior a 0,75 en el conjunto de prueba, y reportar el error del área frente a la medida con simuladores de heridas.",
+            "• Medir el área con el marcador ArUco con un error relativo inferior al 10 % en simuladores de heridas de áreas conocidas fotografiadas desde distintos ángulos.",
+            "• Implementar la alerta de estancamiento con una regla documentada y verificarla con series simuladas de seguimiento, con latencia de análisis inferior a 2 segundos por visita."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Medicina - Heridas crónicas y enfermería domiciliaria"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 de 4 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la segmentación, el cálculo del área y la base local."
+            },
+            {
+                "componente": "Raspberry Pi Camera Module 3",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura la imagen en luz visible de la herida con enfoque automático."
+            },
+            {
+                "componente": "Sensor térmico MLX90640 de 32 × 24 píxeles",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Mide la temperatura de la herida y de la piel circundante sin contacto."
+            },
+            {
+                "componente": "Anillo de luz LED difusa con marcador ArUco impreso",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Estandariza la iluminación y aporta la escala métrica de la imagen."
+            },
+            {
+                "componente": "Pantalla táctil de 5 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra la segmentación y la gráfica de evolución durante la visita."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "PyTorch y segmentation_models_pytorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de la U-Net de segmentación del lecho de la herida."
+            },
+            {
+                "herramienta": "ONNX Runtime",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Inferencia del modelo exportado en la Raspberry Pi."
+            },
+            {
+                "herramienta": "OpenCV",
+                "tipo": "Librería de Visión Artificial",
+                "descripcion": "Detección del marcador ArUco, escala y registro térmico."
+            },
+            {
+                "herramienta": "SQLite",
+                "tipo": "Base de Datos Local",
+                "descripcion": "Almacenamiento de las visitas, áreas y temperaturas por paciente."
+            }
+        ]
+    },
+    {
+        "id": "proj_251",
+        "titulo": "🦷 Proyecto 251: Detección de Caries Interproximales en Radiografías de Aleta de Mordida con Detector YOLO Cuantizado en Orange Pi 5 para Consultorios de Baja Complejidad",
+        "descripcion": "Problema: En los consultorios odontológicos públicos y rurales del Cauca las radiografías de aleta de mordida se interpretan a simple vista, con alta variabilidad entre odontólogos y sin segunda lectura, de modo que las caries interproximales incipientes pasan inadvertidas hasta que el daño es mayor y el tratamiento es más costoso y doloroso para el paciente.\n\nDescripción: Estación de apoyo con una Orange Pi 5 que recibe radiografías de aleta de mordida digitales o fotografiadas desde el negatoscopio, y ejecuta localmente un detector YOLO cuantizado con el NPU del procesador RK3588 para marcar las lesiones sospechosas con su nivel de confianza. El modelo se preentrena con conjuntos públicos de radiografías dentales anonimizadas, como DENTEX, y se ajusta con radiografías de aleta de mordida anonimizadas de una clínica aliada con aval institucional. El odontólogo ve las cajas propuestas y decide. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con imágenes anonimizadas y la lectura de odontólogos bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Odontología - Diagnóstico por imagen dental",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Anotación de lesiones en radiografías dentales",
+            "Entrenamiento de detectores de objetos con YOLO",
+            "Cuantización y conversión de modelos con RKNN-Toolkit2",
+            "Evaluación con mAP y concordancia entre lectores",
+            "Anonimización de imágenes médicas"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una estación local que detecte caries interproximales en radiografías de aleta de mordida y las señale al odontólogo, como segunda lectura en consultorios de baja complejidad.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar un detector YOLO con imágenes públicas y de la clínica aliada y alcanzar una sensibilidad superior al 70 % por lesión con menos de 1 falso positivo por imagen en el conjunto de prueba.",
+            "• Convertir el modelo a RKNN con cuantización a 8 bits y medir en la Orange Pi 5 una latencia inferior a 150 ms por imagen con una pérdida de mAP menor a 0,03.",
+            "• Comparar las detecciones con la lectura de dos odontólogos sobre 50 imágenes y reportar la concordancia con el índice kappa de Cohen."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Odontología - Diagnóstico por imagen dental"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Orange Pi 5 de 8 GB con procesador RK3588",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la inferencia del detector en su NPU y sirve la interfaz."
+            },
+            {
+                "componente": "Cámara USB de 12 MP con trípode",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Fotografía radiografías desde el negatoscopio cuando no hay archivo digital."
+            },
+            {
+                "componente": "Negatoscopio LED de bajo costo",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Ilumina la radiografía de manera uniforme para la fotografía."
+            },
+            {
+                "componente": "Monitor HDMI de 15 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra la radiografía con las lesiones sospechosas marcadas."
+            },
+            {
+                "componente": "Computador con GPU del laboratorio",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Entrena y ajusta el detector antes de convertirlo a RKNN."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Ultralytics YOLO",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento y evaluación del detector de caries."
+            },
+            {
+                "herramienta": "RKNN-Toolkit2",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Conversión, cuantización y ejecución del modelo en el NPU de la Orange Pi."
+            },
+            {
+                "herramienta": "CVAT",
+                "tipo": "Anotación de Datos",
+                "descripcion": "Anotación de cajas de lesión sobre las radiografías."
+            },
+            {
+                "herramienta": "pydicom",
+                "tipo": "Librería de Imágenes Médicas",
+                "descripcion": "Lectura de metadatos DICOM y eliminación de datos personales."
+            }
+        ]
+    },
+    {
+        "id": "proj_252",
+        "titulo": "🩸 Proyecto 252: Tamizaje de Anemia con Fotografías de la Conjuntiva Palpebral Tomadas con Teléfono Inteligente y Modelo de Regresión con TensorFlow Lite sin Conexión",
+        "descripcion": "Problema: La anemia por deficiencia de hierro afecta a mujeres en edad fértil y gestantes de comunidades rurales e indígenas del Cauca, pero confirmarla exige una muestra de sangre y un hemoglobinómetro o laboratorio que quedan lejos. La palidez de la conjuntiva se mira a simple vista con baja concordancia entre examinadores, y los promotores de salud no cuentan con una herramienta objetiva.\n\nDescripción: Aplicación Android que guía al promotor para fotografiar la conjuntiva palpebral inferior dentro de una cápsula impresa en 3D con luz LED difusa y una carta de color de referencia, segmenta la región con una red ligera y estima la hemoglobina mediante un modelo de regresión con TensorFlow Lite que corre sin conexión en el teléfono. El resultado se clasifica con el umbral de la OMS de 12 g/dL para mujeres adultas no embarazadas y las lecturas se sincronizan cuando hay internet. El modelo se entrena con fotografías de voluntarias y valores de un hemoglobinómetro portátil de referencia. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con voluntarias adultas bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Salud pública - Anemia y nutrición materno-infantil",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Estandarización de la captura de imágenes con carta de color",
+            "Segmentación de regiones de interés en fotografías",
+            "Regresión con redes neuronales y validación cruzada",
+            "Integración de modelos TensorFlow Lite en Android",
+            "Evaluación del acuerdo con métodos de referencia"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una aplicación móvil que estime la hemoglobina a partir de fotografías de la conjuntiva palpebral y marque la posible anemia, como apoyo al tamizaje de promotores de salud en comunidades rurales.",
+            "📌 Objetivos Específicos:",
+            "• Construir una cápsula de captura con iluminación y carta de color y reunir fotografías de al menos 80 voluntarias adultas con su valor de hemoglobinómetro de referencia.",
+            "• Entrenar el modelo de regresión y alcanzar un error absoluto medio inferior a 1,2 g/dL, con una sensibilidad superior al 80 % para detectar hemoglobina menor a 12 g/dL en validación por voluntaria.",
+            "• Integrar el modelo en la aplicación Android con una inferencia sin conexión inferior a 1 segundo y medir el acuerdo con el método de referencia mediante un diagrama de Bland-Altman."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud pública - Anemia y nutrición materno-infantil"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Teléfono inteligente Android de gama media",
+                "categoria": "Dispositivo Móvil",
+                "funcion": "Captura las fotografías y ejecuta el modelo sin conexión."
+            },
+            {
+                "componente": "Cápsula de captura impresa en 3D con anillo LED",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Aísla la luz ambiente y entrega iluminación difusa constante."
+            },
+            {
+                "componente": "Carta de color de referencia impresa",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Corrige las diferencias de color entre teléfonos y condiciones de luz."
+            },
+            {
+                "componente": "Hemoglobinómetro portátil de referencia",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Entrega el valor de hemoglobina que se usa para etiquetar y validar."
+            },
+            {
+                "componente": "Microcontrolador con control PWM del anillo LED",
+                "categoria": "Microcontrolador",
+                "funcion": "Regula la intensidad de la luz de la cápsula de captura."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "TensorFlow / Keras",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de la segmentación y de la regresión de hemoglobina."
+            },
+            {
+                "herramienta": "TensorFlow Lite",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Ejecución del modelo cuantizado dentro de la aplicación Android."
+            },
+            {
+                "herramienta": "Android Studio",
+                "tipo": "Framework de Desarrollo Móvil",
+                "descripcion": "Desarrollo de la aplicación de captura guiada y de resultados."
+            },
+            {
+                "herramienta": "Python con pandas",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Preparación del conjunto de datos y análisis de acuerdo con Bland-Altman."
+            }
+        ]
+    },
+    {
+        "id": "proj_253",
+        "titulo": "🩻 Proyecto 253: Cribado de Nódulos Pulmonares en TAC de Tórax con Red 3D Comprimida mediante Poda, Destilación y Cuantización para Inferencia en Jetson Orin Nano",
+        "descripcion": "Problema: Los tomógrafos del suroccidente colombiano se concentran en Popayán y Cali, y los nódulos pulmonares pequeños de una TAC de tórax solicitada por otro motivo pueden pasar inadvertidos a radiólogos con alta carga de lectura. Los modelos 3D que los detectan son grandes y requieren servidores con GPU costosos, lo que dificulta usarlos en el borde de un hospital regional.\n\nDescripción: Se entrena en el laboratorio con la base pública LUNA16, derivada de LIDC-IDRI, un detector de candidatos y un clasificador 3D de nódulos con MONAI, y luego se reduce el modelo en tres etapas: poda estructurada, destilación de conocimiento hacia una red estudiante más pequeña y cuantización a INT8 con TensorRT. El modelo comprimido se ejecuta en un Jetson Orin Nano que lee estudios DICOM, marca las posiciones sospechosas y las muestra en un visor local. Se mide con rigor el costo en sensibilidad de cada etapa de compresión. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos públicos anonimizados.",
+        "area": "Medicina con AIoT",
+        "sector": "Oncología - Cribado de cáncer de pulmón con tomografía",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Procesamiento de volúmenes DICOM y remuestreo isotrópico",
+            "Entrenamiento de redes convolucionales 3D con MONAI",
+            "Poda estructurada y destilación de conocimiento",
+            "Cuantización INT8 y calibración con TensorRT",
+            "Evaluación con curvas FROC en detección de nódulos"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Comprimir un modelo 3D de detección de nódulos pulmonares en TAC de tórax y desplegarlo en un computador de borde, cuantificando el compromiso entre tamaño, velocidad y sensibilidad.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar un modelo 3D base con LUNA16 y alcanzar una sensibilidad superior al 80 % con 4 falsos positivos por estudio en validación cruzada de 10 particiones.",
+            "• Reducir el tamaño del modelo al menos 4 veces con poda, destilación y cuantización INT8, con una pérdida de sensibilidad inferior a 3 puntos porcentuales respecto al modelo base.",
+            "• Desplegar el modelo comprimido en el Jetson Orin Nano y procesar un estudio completo en menos de 60 segundos, mostrando los hallazgos en un visor 3D Slicer."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Oncología - Cribado de cáncer de pulmón con tomografía"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Jetson Orin Nano Developer Kit de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la inferencia del modelo 3D comprimido sobre los estudios."
+            },
+            {
+                "componente": "Computador del laboratorio con GPU NVIDIA y 32 GB de RAM",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Entrena el modelo base y realiza la poda y la destilación."
+            },
+            {
+                "componente": "Disco SSD NVMe de 1 TB",
+                "categoria": "Almacenamiento",
+                "funcion": "Guarda los volúmenes de LUNA16 y los modelos intermedios."
+            },
+            {
+                "componente": "Monitor de 24 pulgadas con visor DICOM",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Presenta el estudio con las posiciones sospechosas marcadas."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "MONAI y PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento del detector y del clasificador 3D de nódulos."
+            },
+            {
+                "herramienta": "TensorRT",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Cuantización INT8 y ejecución del modelo comprimido en el Jetson."
+            },
+            {
+                "herramienta": "SimpleITK",
+                "tipo": "Librería de Imágenes Médicas",
+                "descripcion": "Lectura DICOM, remuestreo isotrópico y normalización de los volúmenes."
+            },
+            {
+                "herramienta": "3D Slicer",
+                "tipo": "Visualización de Imágenes Médicas",
+                "descripcion": "Revisión de los estudios con las posiciones sospechosas."
+            }
+        ]
+    },
+    {
+        "id": "proj_254",
+        "titulo": "🌊 Proyecto 254: Guía de Adquisición Ecográfica en el Punto de Atención con Clasificación de Vistas Cardíacas en Video sobre un Mini PC con OpenVINO",
+        "descripcion": "Problema: Los puestos de salud que reciben un ecógrafo portátil suelen tener operadores con poca práctica, y la calidad de la imagen depende de encontrar la ventana acústica y la vista correctas. Sin retroalimentación en el momento, se repiten exámenes, se obtienen imágenes inservibles para la lectura remota y el equipo se subutiliza en lugares donde no hay especialista cercano.\n\nDescripción: Sistema que toma la señal de video HDMI de un ecógrafo portátil mediante una tarjeta de captura USB y la analiza en un mini PC con procesador Intel, donde un modelo convolucional optimizado con OpenVINO clasifica en tiempo real cada fotograma como vista apical de cuatro cámaras, apical de dos cámaras o vista no adecuada. Muestra una indicación visual y sonora para que el operador reubique el transductor. El modelo se entrena con la base pública CAMUS y con fotogramas no cardíacos registrados en un fantoma. Se trata de un prototipo de apoyo a la capacitación, no dispositivo médico certificado, validado con registros anonimizados y operadores voluntarios bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Medicina - Ecografía en el punto de atención",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Captura y procesamiento de video en tiempo real",
+            "Entrenamiento de clasificadores de vistas ecográficas",
+            "Optimización de modelos con OpenVINO",
+            "Diseño de retroalimentación visual para el operador",
+            "Manejo de la variabilidad de imágenes de ultrasonido"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un sistema de guía que reconozca en video la vista cardíaca que obtiene el operador de un ecógrafo portátil y lo oriente hacia una adquisición adecuada, como apoyo a la capacitación en el punto de atención.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar un clasificador de tres clases con CAMUS y fotogramas de fantoma y alcanzar una exactitud superior al 90 % entre pacientes y un valor F1 mayor a 0,85 en la clase de vista no adecuada.",
+            "• Optimizar el modelo con OpenVINO y obtener en el mini PC un procesamiento de al menos 20 fotogramas por segundo con un retardo de la indicación al operador inferior a 300 ms.",
+            "• Probar el sistema con 5 operadores voluntarios sobre un fantoma y comparar el tiempo hasta lograr una vista adecuada con y sin la guía."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Medicina - Ecografía en el punto de atención"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Mini PC con procesador Intel N100 y 16 GB de RAM",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Ejecuta la clasificación de vistas y la interfaz de guía."
+            },
+            {
+                "componente": "Tarjeta de captura HDMI a USB 3.0",
+                "categoria": "Interfaz de Adquisición de Video",
+                "funcion": "Toma la imagen del ecógrafo sin modificar el equipo."
+            },
+            {
+                "componente": "Ecógrafo portátil de un centro aliado con salida HDMI",
+                "categoria": "Equipo Biomédico",
+                "funcion": "Fuente de las imágenes para pruebas con fantoma y voluntarios."
+            },
+            {
+                "componente": "Fantoma de entrenamiento para ecografía",
+                "categoria": "Material",
+                "funcion": "Permite registrar vistas y practicar sin exponer a pacientes."
+            },
+            {
+                "componente": "Parlante USB pequeño",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Emite la indicación sonora de vista adecuada o por corregir."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento del clasificador de vistas con CAMUS y fantoma."
+            },
+            {
+                "herramienta": "OpenVINO",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Optimización y ejecución del modelo en el procesador Intel."
+            },
+            {
+                "herramienta": "OpenCV",
+                "tipo": "Librería de Visión Artificial",
+                "descripcion": "Captura del video, recorte del área de imagen y preprocesamiento."
+            },
+            {
+                "herramienta": "Gradio",
+                "tipo": "Interfaz de Usuario",
+                "descripcion": "Interfaz web local con la vista detectada y las indicaciones al operador."
+            }
+        ]
+    },
+    {
+        "id": "proj_255",
+        "titulo": "🔬 Proyecto 255: Tamizaje de Citología Cervicouterina con Microscopio Abierto de Bajo Costo y Clasificación de Células en Raspberry Pi 5",
+        "descripcion": "Problema: En las zonas rurales del Cauca la citología cervicouterina se lee en laboratorios centralizados y sus resultados pueden tardar semanas en llegar a la usuaria, con riesgo de que no regrese a la consulta. Hay pocos citotecnólogos y la lectura manual de cientos de células por lámina es cansada y variable, lo que limita el tamizaje del cáncer de cuello uterino.\n\nDescripción: Estación que digitaliza láminas de citología con un microscopio abierto OpenFlexure impreso en 3D, con cámara y platina motorizada controladas por una Raspberry Pi 5. El software recorta células por segmentación con OpenCV y las clasifica con una red EfficientNet-Lite entrenada con SIPaKMeD, y luego prioriza los campos con células anormales para revisión del citotecnólogo. Se evalúa la caída de desempeño al pasar de las imágenes públicas a las del microscopio propio. Se trata de un prototipo de apoyo a la lectura, no dispositivo médico certificado, validado con la base pública anonimizada y láminas de un laboratorio aliado con aval y consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Oncología - Citología cervicouterina y tamizaje",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Montaje y calibración de microscopios de bajo costo",
+            "Segmentación de células con técnicas clásicas de visión",
+            "Clasificación de células con EfficientNet-Lite",
+            "Barrido automático de láminas con platina motorizada",
+            "Evaluación con F1 macro y matrices de confusión"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir un sistema de bajo costo que digitalice láminas de citología cervicouterina y clasifique sus células para priorizar los campos que el citotecnólogo debe revisar primero.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar un clasificador de cinco clases celulares con SIPaKMeD y alcanzar un valor F1 macro superior a 0,85 en el conjunto de prueba.",
+            "• Montar el microscopio con barrido automático y capturar una lámina completa en menos de 15 minutos con enfoque controlado en al menos el 90 % de los campos.",
+            "• Medir la pérdida de F1 macro al evaluar imágenes del microscopio propio con láminas del laboratorio aliado y ajustar el modelo para reducirla a menos de 0,10."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Oncología - Citología cervicouterina y tamizaje"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Controla la platina, captura los campos y ejecuta la clasificación."
+            },
+            {
+                "componente": "Microscopio abierto OpenFlexure con motores paso a paso",
+                "categoria": "Instrumento Óptico",
+                "funcion": "Desplaza la lámina y enfoca de manera automática el barrido."
+            },
+            {
+                "componente": "Cámara Raspberry Pi HQ con objetivo de 40 aumentos",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura imágenes de las células con resolución suficiente."
+            },
+            {
+                "componente": "Iluminador LED con difusor",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Entrega iluminación uniforme para las imágenes de campo claro."
+            },
+            {
+                "componente": "Monitor HDMI de 15 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra los campos priorizados y las células marcadas."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento del clasificador celular con SIPaKMeD."
+            },
+            {
+                "herramienta": "ONNX Runtime",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Ejecución del clasificador exportado en la Raspberry Pi."
+            },
+            {
+                "herramienta": "OpenCV",
+                "tipo": "Librería de Visión Artificial",
+                "descripcion": "Segmentación celular, enfoque y unión de campos del barrido."
+            },
+            {
+                "herramienta": "OpenFlexure Software",
+                "tipo": "Control de Microscopio",
+                "descripcion": "Control del microscopio y de la captura automática de campos."
+            }
+        ]
+    },
+    {
+        "id": "proj_256",
+        "titulo": "💓 Proyecto 256: Tamizaje de Hipertensión Arterial con Fotopletismografía de Dedo y Clasificación TinyML en Raspberry Pi Pico 2 W para Jornadas Comunitarias",
+        "descripcion": "Problema: La hipertensión arterial suele ser silenciosa y muchas personas de zonas rurales del Cauca la desconocen porque no acuden a controles ni tienen un tensiómetro en casa. En las jornadas comunitarias, los promotores de salud disponen de pocos equipos y filas largas, por lo que se necesita una forma rápida y económica de identificar a quienes deben ser remitidos a una medición formal.\n\nDescripción: Dispositivo de dedo con un sensor óptico MAX30102 y una Raspberry Pi Pico 2 W que registra 30 segundos de fotopletismografía, extrae características de la forma de la onda de pulso (tiempo de subida, índice de reflexión y variabilidad) y ejecuta un modelo TinyML que clasifica a la persona como normotensa, con prehipertensión o con posible hipertensión. El modelo se entrena con la base pública PPG-BP y se evalúa frente a un tensiómetro de brazo validado, y el resultado se envía por Bluetooth Low Energy a una aplicación. Se trata de un prototipo de apoyo al tamizaje, no dispositivo médico certificado ni medidor de presión, validado con datos públicos anonimizados y voluntarios bajo consentimiento informado.",
+        "area": "Medicina con AIoT",
+        "sector": "Medicina - Hipertensión y riesgo cardiovascular",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Adquisición de señales de fotopletismografía",
+            "Extracción de características de la onda de pulso",
+            "Entrenamiento de clasificadores con Edge Impulse",
+            "Despliegue de TinyML en microcontroladores RP2350",
+            "Validación frente a tensiómetros de referencia"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un dispositivo de dedo que clasifique con TinyML el nivel de presión arterial a partir de la onda de pulso, como apoyo al tamizaje comunitario de la hipertensión.",
+            "📌 Objetivos Específicos:",
+            "• Entrenar un clasificador de tres clases con PPG-BP y alcanzar un AUC superior a 0,75 para la clase de posible hipertensión, con validación por sujeto.",
+            "• Desplegar el modelo en la Raspberry Pi Pico 2 W con un tiempo de inferencia inferior a 100 ms y una memoria de modelo menor a 150 KB.",
+            "• Comparar la clasificación del dispositivo con las mediciones de un tensiómetro de brazo validado en al menos 30 voluntarios y reportar sensibilidad y especificidad."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Medicina - Hipertensión y riesgo cardiovascular"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi Pico 2 W",
+                "categoria": "Microcontrolador",
+                "funcion": "Adquiere la señal, extrae características y ejecuta el modelo TinyML."
+            },
+            {
+                "componente": "Sensor óptico MAX30102",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Registra la fotopletismografía del dedo con luz roja e infrarroja."
+            },
+            {
+                "componente": "Pantalla OLED SSD1306",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra el avance de la medición y la clasificación obtenida."
+            },
+            {
+                "componente": "Batería LiPo con módulo de carga TP4056",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Alimenta el dispositivo y lo aísla de la red eléctrica."
+            },
+            {
+                "componente": "Tensiómetro de brazo validado",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Entrega la presión de referencia para evaluar al dispositivo."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Edge Impulse",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento y cuantización del clasificador de la onda de pulso."
+            },
+            {
+                "herramienta": "Pico SDK y TensorFlow Lite Micro",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Firmware de adquisición y ejecución del modelo en el RP2350."
+            },
+            {
+                "herramienta": "SciPy",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Filtrado de la señal y detección de picos y puntos característicos."
+            },
+            {
+                "herramienta": "MIT App Inventor",
+                "tipo": "Framework de Desarrollo Móvil",
+                "descripcion": "Aplicación sencilla que recibe y registra el resultado por Bluetooth."
+            }
+        ]
     }
 ];

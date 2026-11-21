@@ -40,10 +40,10 @@ test('a failed download is not kept: the next load() tries again and can succeed
     assert.equal(calls, 2);
 });
 
-test('the default loader serves the same 236 projects the scripts and tests import from src/data/projects', async () => {
+test('the default loader serves the same 286 projects the scripts and tests import from src/data/projects', async () => {
     assert.equal(loadedProjects(), null);
     const loaded = await loadProjects();
     assert.equal(loaded, projects);
-    assert.equal(loaded.length, 236);
+    assert.equal(loaded.length, 286);
     assert.equal(loadedProjects(), projects);
 });

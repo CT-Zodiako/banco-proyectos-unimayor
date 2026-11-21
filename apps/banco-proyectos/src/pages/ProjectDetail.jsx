@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
     ChevronLeft, Clock, DollarSign, Cpu, Layers, Briefcase,
     Target, ListChecks,
-    ExternalLink, Globe, BookOpen, CalendarDays, Code, Scale
+    Globe, BookOpen, CalendarDays, Code, Scale
 } from 'lucide-react';
 import OpportunityCards from '../components/proyecto-panel/OpportunityCards';
 import PageSkeleton from '../components/PageSkeleton';
@@ -359,14 +359,12 @@ const ProjectDetail = () => {
                         <section aria-labelledby="sec-referencias" className="p-4 border-2 border-dashed border-gray-300 rounded-2xl">
                             <h2 id="sec-referencias" className="text-sm font-bold text-gray-900 uppercase tracking-widest">Referencias</h2>
                             <p className="mt-1 mb-3 text-[13px] text-sem-text-2">Fuentes para profundizar.</p>
-                            <div className="space-y-2">
+                            {/* The data holds each reference as a citation text (scripts/projects-validation.mjs). */}
+                            <ul className="space-y-2">
                                 {project.referencias.map((ref, i) => (
-                                    <a key={i} href={ref.url} className="flex items-center gap-2 text-institutional-blue underline underline-offset-[3px] hover:text-blue-800 text-sm font-medium">
-                                        <ExternalLink size={14} aria-hidden="true" className="flex-none" />
-                                        {ref.nombre}
-                                    </a>
+                                    <li key={i} className="text-sm leading-snug text-sem-text-2 [overflow-wrap:anywhere]">{ref}</li>
                                 ))}
-                            </div>
+                            </ul>
                         </section>
                     )}
                 </div>

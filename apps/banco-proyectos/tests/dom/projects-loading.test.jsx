@@ -1,4 +1,4 @@
-// T16 of odd/tasks/mejora-visual.md: the 236 projects are a separate chunk (src/data/projects), loaded on demand by
+// T16 of odd/tasks/mejora-visual.md: the 286 projects are a separate chunk (src/data/projects), loaded on demand by
 // useProjects. T16b: the catalog, the Home figures and the global search read a light index of them
 // (src/data/projects-index.js, useProjectsIndex) and only the project page loads the full data. Pages that need data wait
 // on a skeleton, a failure says so with «Reintentar», and the data itself does not change.
@@ -35,13 +35,13 @@ async function freshHook(options, name = 'useProjects') {
 }
 
 describe('useProjects', () => {
-    it('starts loading with an empty list and ends with the same 236 projects of the data files', async () => {
+    it('starts loading with an empty list and ends with the same 286 projects of the data files', async () => {
         const { result } = await freshHook();
         expect(result.current.loading).toBe(true);
         expect(result.current.projects).toEqual([]);
         expect(result.current.error).toBe(null);
         await waitFor(() => expect(result.current.loading).toBe(false));
-        expect(result.current.projects).toHaveLength(236);
+        expect(result.current.projects).toHaveLength(286);
         expect(result.current.projects).toEqual(projects);
         expect(result.current.error).toBe(null);
     });
@@ -61,7 +61,7 @@ describe('useProjects', () => {
         const { useProjects } = await import('../../src/hooks/useProjects.js');
         const second = renderHook(() => useProjects());
         expect(second.result.current.loading).toBe(false);
-        expect(second.result.current.projects).toHaveLength(236);
+        expect(second.result.current.projects).toHaveLength(286);
     });
 
     it('reports a failed download and loads on retry()', async () => {
@@ -73,7 +73,7 @@ describe('useProjects', () => {
         act(() => result.current.retry());
         await waitFor(() => expect(result.current.loading).toBe(false));
         expect(result.current.error).toBe(null);
-        expect(result.current.projects).toHaveLength(236);
+        expect(result.current.projects).toHaveLength(286);
     });
 });
 
@@ -83,7 +83,7 @@ describe('useProjectsIndex', () => {
         expect(result.current.loading).toBe(true);
         expect(result.current.projects).toEqual([]);
         await waitFor(() => expect(result.current.loading).toBe(false));
-        expect(result.current.projects).toHaveLength(236);
+        expect(result.current.projects).toHaveLength(286);
         expect(result.current.projects).toEqual(projectsIndex);
         expect(result.current.error).toBe(null);
     });
@@ -101,14 +101,14 @@ describe('useProjectsIndex', () => {
         await waitFor(() => expect(result.current.error).toBeTruthy());
         act(() => result.current.retry());
         await waitFor(() => expect(result.current.loading).toBe(false));
-        expect(result.current.projects).toHaveLength(236);
+        expect(result.current.projects).toHaveLength(286);
     });
 
     it('does not need the full projects: it works when that chunk is broken', async () => {
         controlProjects({ module: FULL, failures: 99 });
         const { result } = await freshHook(undefined, 'useProjectsIndex');
         await waitFor(() => expect(result.current.loading).toBe(false));
-        expect(result.current.projects).toHaveLength(236);
+        expect(result.current.projects).toHaveLength(286);
         expect(result.current.error).toBe(null);
     });
 });

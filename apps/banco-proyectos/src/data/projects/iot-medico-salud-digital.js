@@ -514,5 +514,872 @@ export default [
                 "descripcion": "Cálculo de sensibilidad, especificidad y curvas ROC frente al audiómetro clínico."
             }
         ]
+    },
+    {
+        "id": "proj_277",
+        "titulo": "🩻 Proyecto 277: Red de Teleradiología de Bajo Costo para Hospitales Rurales con Pasarela DICOM, Anonimización y Compresión Adaptativa al Ancho de Banda",
+        "descripcion": "Problema: Los hospitales de primer nivel de zonas rurales del Cauca realizan tomografías y resonancias de forma esporádica, pero casi nunca cuentan con un radiólogo en sitio y envían los estudios en discos o por mensajería, de modo que el informe llega tarde. Los enlaces de internet son lentos e inestables y el envío de estudios completos sin protección expone datos sensibles de los pacientes.\n\nDescripción: Red de teleradiología con una pasarela DICOM basada en Orthanc sobre un computador de placa única instalado en el hospital rural, que recibe estudios del equipo de imagen, elimina los datos identificables y los envía por un canal cifrado a un servidor central con visor web para el especialista remoto. Un módulo ajusta la compresión según el ancho de banda medido. Se prueba con estudios públicos anonimizados y un simulador de red. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con estudios públicos anonimizados y especialistas voluntarios bajo consentimiento informado.",
+        "sector": "Salud - Teleradiología rural",
+        "nivel": "Avanzado",
+        "habilidades": [
+            "Protocolo DICOM y servidores PACS de código abierto",
+            "Anonimización de metadatos según perfiles de confidencialidad",
+            "Transferencia segura con VPN y TLS entre sedes",
+            "Compresión de imágenes médicas con y sin pérdida",
+            "Emulación de enlaces de baja capacidad con herramientas de red",
+            "Visores web DICOM para lectura remota"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una red de teleradiología de bajo costo que capture, anonimice, comprima y transmita estudios de tomografía y resonancia desde un hospital rural hasta un especialista remoto con visor web.",
+            "📌 Objetivos Específicos:",
+            "• Implementar una pasarela DICOM con Orthanc que reciba estudios por C-STORE y elimine o sustituya el 100 % de las etiquetas identificables definidas en el perfil de confidencialidad básico de DICOM.",
+            "• Diseñar una compresión adaptativa que reduzca el tamaño de las series al menos un 35 % sin pérdida y permita enviar una serie de 300 cortes en menos de 10 minutos con un enlace emulado de 2 Mbit/s.",
+            "• Entregar un visor web para el especialista remoto con desplazamiento de cortes, ventana y nivel, y evaluar su usabilidad con al menos cinco usuarios voluntarios."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 de 8 GB con disco SSD NVMe",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Aloja la pasarela DICOM local y almacena los estudios en cola de envío."
+            },
+            {
+                "componente": "Servidor de laboratorio o PC con Ubuntu Server",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Hace de PACS central y de servidor del visor del especialista remoto."
+            },
+            {
+                "componente": "Router con módem 4G y puerto Ethernet",
+                "categoria": "Equipo de Red",
+                "funcion": "Provee el enlace de datos móvil limitado entre el hospital rural y la sede central."
+            },
+            {
+                "componente": "Interruptor Ethernet gestionable",
+                "categoria": "Equipo de Red",
+                "funcion": "Permite conectar el simulador de modalidad y emular condiciones de red."
+            },
+            {
+                "componente": "UPS de línea interactiva de 600 VA",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Mantiene operativa la pasarela durante los cortes eléctricos frecuentes."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Orthanc con plugin DICOMweb",
+                "tipo": "Servidor PACS / DICOM",
+                "descripcion": "Recibe, almacena y reenvía estudios con interfaz REST y DICOMweb."
+            },
+            {
+                "herramienta": "pydicom y dcmtk",
+                "tipo": "Librería de Procesamiento de Imágenes Médicas",
+                "descripcion": "Anonimizan etiquetas y comprimen las series con JPEG 2000 sin pérdida."
+            },
+            {
+                "herramienta": "WireGuard y OHIF Viewer",
+                "tipo": "Seguridad de Red / Visualización",
+                "descripcion": "Cifra el túnel entre sedes y muestra los estudios en el navegador."
+            },
+            {
+                "herramienta": "Linux tc netem y Grafana",
+                "tipo": "Emulación de Red / Visualización / Dashboard",
+                "descripcion": "Simulan ancho de banda limitado y grafican tiempos de transferencia."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Teleradiología rural"
+        ]
+    },
+    {
+        "id": "proj_278",
+        "titulo": "🌡️ Proyecto 278: Red de Telemonitoreo Termográfico para Puestos de Salud con Panel de Seguimiento y Flujo de Remisión de Pacientes",
+        "descripcion": "Problema: En los puestos de salud dispersos del Cauca, el seguimiento de pacientes con riesgo de úlceras en el pie diabético depende de revisiones visuales poco frecuentes y de traslados costosos al hospital. Las cámaras termográficas clínicas son caras y sus imágenes se guardan en equipos aislados, sin una vía organizada para que un médico las revise y decida una remisión.\n\nDescripción: Estación de captura con un módulo térmico radiométrico FLIR Lepton 3.5 en una placa PureThermal conectada a una Raspberry Pi, con guía de posicionamiento impresa en 3D. Calcula mapas de temperatura del pie, la asimetría entre ambos lados y los envía con almacenamiento y reenvío a un servidor con panel de seguimiento y flujo de remisión. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con un termómetro de referencia y voluntarios sanos bajo consentimiento informado.",
+        "sector": "Salud - Termografía comunitaria y pie diabético",
+        "nivel": "Intermedio-Avanzado",
+        "habilidades": [
+            "Termografía radiométrica y calibración de sensores",
+            "Diseño de protocolos de captura estandarizados",
+            "Almacenamiento y reenvío con colas persistentes",
+            "Desarrollo de APIs y bases de datos relacionales",
+            "Paneles de seguimiento con alertas clínicas",
+            "Diseño de flujos de remisión de pacientes"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir una red de telemonitoreo termográfico para puestos de salud que capture mapas de temperatura del pie, los transmita con tolerancia a fallos de conexión y apoye al médico en el seguimiento y la remisión.",
+            "📌 Objetivos Específicos:",
+            "• Calibrar la estación térmica con un termómetro de referencia hasta lograr un error inferior a 1 °C entre 30 °C y 40 °C en al menos 30 mediciones repetidas.",
+            "• Entregar mapas con segmentación manual de regiones y cálculo automático de la asimetría de temperatura entre pies, con repetibilidad inferior a 0,5 °C en voluntarios sanos.",
+            "• Desarrollar un panel con alertas por umbral y un flujo de remisión con estados pendiente, revisado y remitido que sincronice sin pérdida de datos tras cortes de conexión de hasta 24 horas."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Módulo FLIR Lepton 3.5 con placa PureThermal 3",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura imágenes térmicas radiométricas de 160 x 120 píxeles por USB."
+            },
+            {
+                "componente": "Raspberry Pi 4 de 4 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Controla la captura, calcula las asimetrías y gestiona la cola de envío."
+            },
+            {
+                "componente": "Pantalla táctil de 7 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Guía al personal de salud durante el registro y la revisión de la captura."
+            },
+            {
+                "componente": "Soporte de captura impreso en 3D con distancia fija",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Fija el ángulo y la distancia para que las capturas sean comparables."
+            },
+            {
+                "componente": "Termómetro de contacto de referencia con sonda",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Sirve para calibrar y verificar la exactitud de las lecturas térmicas."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Python con OpenCV y NumPy",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Convierte los fotogramas radiométricos en mapas de temperatura por región."
+            },
+            {
+                "herramienta": "FastAPI y PostgreSQL",
+                "tipo": "Servicio Web / Base de Datos",
+                "descripcion": "Almacenan las capturas, los pacientes y el estado de cada remisión."
+            },
+            {
+                "herramienta": "Mosquitto MQTT",
+                "tipo": "Broker MQTT",
+                "descripcion": "Transporta las capturas desde los puestos de salud con reintentos."
+            },
+            {
+                "herramienta": "Grafana",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Muestra la evolución térmica por paciente y las alertas pendientes."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Termografía comunitaria y pie diabético"
+        ]
+    },
+    {
+        "id": "proj_279",
+        "titulo": "🔗 Proyecto 279: Pasarela de Signos Vitales con Interoperabilidad HL7 FHIR y Perfiles Bluetooth Estándar para Instituciones de Salud de Baja Complejidad",
+        "descripcion": "Problema: Los puestos y centros de salud de baja complejidad usan tensiómetros, oxímetros y termómetros que muestran el dato en una pantalla y obligan a transcribirlo a mano a la historia clínica, con errores y demoras. Cada fabricante usa formatos propios y los sistemas de información no pueden intercambiar datos entre instituciones.\n\nDescripción: Pasarela en una Raspberry Pi que se conecta por Bluetooth Low Energy a dispositivos con perfiles GATT estándar de presión arterial, oximetría y temperatura, valida las lecturas y las convierte en recursos FHIR R4 Observation con códigos LOINC. Los recursos se publican en un servidor HAPI FHIR y se consultan en un panel. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos sintéticos, un banco de pruebas de simulación y voluntarios bajo consentimiento informado.",
+        "sector": "Salud - Interoperabilidad de datos clínicos",
+        "nivel": "Avanzado",
+        "habilidades": [
+            "Estándar HL7 FHIR R4 y terminologías LOINC y UCUM",
+            "Perfiles GATT de Bluetooth Low Energy para salud",
+            "Programación asíncrona en Python con Bleak",
+            "Despliegue de servidores FHIR con contenedores",
+            "Validación de recursos clínicos con herramientas oficiales",
+            "Pruebas de latencia y pérdida de datos"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una pasarela de signos vitales que capture lecturas de dispositivos Bluetooth estándar y las publique como recursos HL7 FHIR para que cualquier sistema clínico compatible pueda consultarlas.",
+            "📌 Objetivos Específicos:",
+            "• Conectar al menos tres tipos de dispositivo con perfiles estándar y capturar sus lecturas con una pérdida inferior al 2 % en 200 mediciones de prueba.",
+            "• Generar recursos FHIR Observation con códigos LOINC y unidades UCUM, de los cuales el 100 % supere la validación del validador oficial de HL7 FHIR.",
+            "• Lograr un retardo menor a 5 segundos entre la medición y su consulta en el servidor, y recuperar los datos sin duplicados tras una caída de red de 10 minutos."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 de 4 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la pasarela, convierte las lecturas y gestiona el reenvío de datos."
+            },
+            {
+                "componente": "Tensiómetro de brazo con Bluetooth y perfil de presión arterial",
+                "categoria": "Dispositivo Biomédico Comercial",
+                "funcion": "Entrega lecturas de presión sistólica, diastólica y pulso con perfil estándar."
+            },
+            {
+                "componente": "Oxímetro de pulso con Bluetooth y perfil PLX",
+                "categoria": "Dispositivo Biomédico Comercial",
+                "funcion": "Aporta lecturas de saturación de oxígeno y frecuencia del pulso."
+            },
+            {
+                "componente": "ESP32-C3 con sensor MAX30205",
+                "categoria": "Microcontrolador",
+                "funcion": "Emula un termómetro clínico con perfil estándar de temperatura corporal."
+            },
+            {
+                "componente": "Pantalla de 7 pulgadas con carcasa",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra el estado de conexión y confirma el envío de cada lectura."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Python con Bleak",
+                "tipo": "Librería de Comunicación Inalámbrica",
+                "descripcion": "Gestiona la conexión BLE y la lectura de características GATT."
+            },
+            {
+                "herramienta": "HAPI FHIR en Docker",
+                "tipo": "Servidor FHIR",
+                "descripcion": "Almacena los recursos Observation y atiende consultas REST estándar."
+            },
+            {
+                "herramienta": "Validador oficial HL7 FHIR",
+                "tipo": "Validación de Interoperabilidad",
+                "descripcion": "Comprueba que cada recurso cumpla el perfil base de FHIR R4."
+            },
+            {
+                "herramienta": "Grafana",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Presenta las series de signos vitales consultadas desde el servidor FHIR."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Interoperabilidad de datos clínicos"
+        ]
+    },
+    {
+        "id": "proj_280",
+        "titulo": "💊 Proyecto 280: Control de Inventario, Vencimientos y Temperatura de Medicamentos en Botiquines de Puestos de Salud Rurales con Etiquetas NFC",
+        "descripcion": "Problema: Los botiquines y farmacias de puestos de salud rurales del Cauca registran los medicamentos en cuadernos y los inventarios se revisan solo cuando llega el supervisor. Se producen desabastecimientos de insumos esenciales, pérdida de medicamentos vencidos y exposición a temperaturas altas sin que nadie lo advierta a tiempo.\n\nDescripción: Estante inteligente con lector NFC PN532 conectado a un ESP32, que lee etiquetas NTAG adheridas a cada caja con lote y vencimiento, y registra entradas y salidas. Sensores de temperatura y humedad vigilan el armario. Los datos viajan por MQTT a un servidor local con panel de existencias y alertas de bajo inventario, vencimiento próximo y temperatura fuera de rango. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con medicamentos de muestra no clínicos y personal de salud voluntario bajo consentimiento informado.",
+        "sector": "Salud - Farmacia y logística de botiquines rurales",
+        "nivel": "Intermedio",
+        "habilidades": [
+            "Lectura y escritura de etiquetas NFC con microcontroladores",
+            "Diseño de esquemas de datos para inventarios",
+            "Sensado de temperatura y humedad en almacenamiento",
+            "Mensajería MQTT con reconexión automática",
+            "Alertas por umbral con Node-RED",
+            "Pruebas de confiabilidad de lectura en campo"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un sistema de control de inventario de medicamentos con etiquetas NFC y vigilancia de temperatura que reduzca los desabastecimientos y las pérdidas por vencimiento en botiquines rurales.",
+            "📌 Objetivos Específicos:",
+            "• Leer correctamente al menos el 98 % de 200 etiquetas NFC adheridas a cajas de distinto tamaño en un estante de pruebas, con un tiempo de lectura inferior a 1 segundo.",
+            "• Registrar entradas y salidas con lote y fecha de vencimiento, y generar alertas a 30 y 60 días del vencimiento y cuando las existencias bajen del mínimo configurado.",
+            "• Medir temperatura y humedad con un error inferior a 0,5 °C y avisar en menos de 2 minutos cuando el armario salga del rango de 15 °C a 30 °C."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "ESP32-DevKitC",
+                "categoria": "Microcontrolador",
+                "funcion": "Gestiona el lector NFC, los sensores y la comunicación con el servidor."
+            },
+            {
+                "componente": "Lector NFC PN532 con antena",
+                "categoria": "Lector RFID / NFC",
+                "funcion": "Lee y escribe las etiquetas pegadas en cada caja de medicamento."
+            },
+            {
+                "componente": "Etiquetas NFC NTAG213 adhesivas",
+                "categoria": "Etiqueta de Identificación",
+                "funcion": "Almacenan lote, vencimiento y código de cada presentación."
+            },
+            {
+                "componente": "Sensor SHT31 de temperatura y humedad",
+                "categoria": "Sensor Ambiental",
+                "funcion": "Mide las condiciones de almacenamiento dentro del armario."
+            },
+            {
+                "componente": "Pantalla OLED y zumbador",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Confirma cada lectura y avisa localmente de vencimientos próximos."
+            },
+            {
+                "componente": "Fuente de 5 V con batería de respaldo",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Mantiene el registro de temperatura durante los cortes de energía."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Arduino IDE con librería Adafruit PN532",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Programa el firmware de lectura NFC y de lectura de sensores."
+            },
+            {
+                "herramienta": "Mosquitto MQTT",
+                "tipo": "Broker MQTT",
+                "descripcion": "Recibe los eventos de inventario y las lecturas ambientales."
+            },
+            {
+                "herramienta": "Node-RED con SQLite",
+                "tipo": "Orquestación de Flujos / Base de Datos",
+                "descripcion": "Procesa los eventos, guarda las existencias y dispara las alertas."
+            },
+            {
+                "herramienta": "Grafana",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Muestra existencias, vencimientos y curvas de temperatura del botiquín."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Farmacia y logística de botiquines rurales"
+        ]
+    },
+    {
+        "id": "proj_281",
+        "titulo": "🫀 Proyecto 281: Electrocardiógrafo Remoto de Almacenamiento y Reenvío para Telecardiología en Centros de Salud sin Cobertura Continua",
+        "descripcion": "Problema: En municipios apartados del Cauca los pacientes con dolor torácico o palpitaciones deben viajar horas para obtener un electrocardiograma interpretado por un médico. El internet de los centros de salud se interrumpe con frecuencia, por lo que un equipo que requiere conexión permanente para enviar el trazado resulta poco práctico.\n\nDescripción: Electrocardiógrafo de dos derivaciones con un ADS1292R y un ESP32-S3 que guarda en tarjeta SD trazados de hasta cinco minutos en formato abierto WFDB y los envía cuando hay conexión. Un visor web permite al médico remoto medir intervalos y descargar el registro. Se verifica la fidelidad reproduciendo registros de PhysioNet con un generador de señales. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con registros públicos anonimizados y voluntarios sanos bajo consentimiento informado.",
+        "sector": "Medicina - Telecardiología rural",
+        "nivel": "Intermedio-Avanzado",
+        "habilidades": [
+            "Adquisición de biopotenciales con convertidores de 24 bits",
+            "Diseño de circuitos de pierna derecha y filtrado de red",
+            "Formatos abiertos de señales fisiológicas como WFDB",
+            "Almacenamiento en tarjeta SD y colas de reenvío",
+            "Visualización web de señales con herramientas de medición",
+            "Verificación con señales de referencia de PhysioNet"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Construir un electrocardiógrafo de bajo costo con almacenamiento y reenvío que registre trazados fieles y los entregue a un médico remoto aunque la conexión se interrumpa durante horas.",
+            "📌 Objetivos Específicos:",
+            "• Registrar dos derivaciones a 500 Hz con ruido de red inferior a 50 µV pico a pico y una correlación mayor a 0,95 frente a registros de referencia de PhysioNet reproducidos con un generador.",
+            "• Almacenar al menos 100 trazados de cinco minutos en formato WFDB y reenviarlos sin pérdida ni duplicados tras interrupciones de conexión de más de 6 horas.",
+            "• Implementar un visor web que mida la frecuencia cardiaca, con un error inferior a 2 latidos por minuto frente al valor de referencia, y permita exportar el registro."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "ESP32-S3-DevKitC-1",
+                "categoria": "Microcontrolador",
+                "funcion": "Controla la adquisición, el almacenamiento local y el envío de los trazados."
+            },
+            {
+                "componente": "ADS1292R con módulo de evaluación",
+                "categoria": "Acondicionamiento de Señal",
+                "funcion": "Digitaliza dos derivaciones de ECG con amplificador y circuito de pierna derecha."
+            },
+            {
+                "componente": "Electrodos Ag/AgCl y cable de pacientes de 3 derivaciones",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Capturan la actividad eléctrica del corazón en la piel del paciente."
+            },
+            {
+                "componente": "Módulo de tarjeta microSD",
+                "categoria": "Almacenamiento",
+                "funcion": "Guarda los trazados mientras no haya conexión disponible."
+            },
+            {
+                "componente": "Batería LiPo de 3,7 V con cargador TP4056",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Alimenta el equipo de forma aislada de la red eléctrica."
+            },
+            {
+                "componente": "Generador de funciones de laboratorio",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Reproduce registros de PhysioNet atenuados para verificar la fidelidad."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Arduino IDE / ESP-IDF",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Programa la adquisición, el filtrado y la cola de reenvío."
+            },
+            {
+                "herramienta": "Python con wfdb y SciPy",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Convierte formatos, filtra y calcula la frecuencia cardiaca."
+            },
+            {
+                "herramienta": "FastAPI con PostgreSQL",
+                "tipo": "Servicio Web / Base de Datos",
+                "descripcion": "Recibe los trazados y organiza los estudios para el médico."
+            },
+            {
+                "herramienta": "Plotly Dash",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Muestra el trazado con calibre de amplitud y herramientas de medición."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Medicina - Telecardiología rural"
+        ]
+    },
+    {
+        "id": "proj_282",
+        "titulo": "🫧 Proyecto 282: Telemetría de Oxígeno Medicinal con Sensores y Radio LoRa para Concentradores y Cilindros en Clínicas Rurales",
+        "descripcion": "Problema: Las clínicas rurales dependen de concentradores y cilindros de oxígeno cuyo estado casi nunca se vigila. Un concentrador desgastado entrega una pureza menor a la esperada, un cilindro puede agotarse sin aviso y un corte eléctrico pasa inadvertido, lo que pone en riesgo a pacientes con insuficiencia respiratoria lejos de un hospital.\n\nDescripción: Nodo de telemetría que mide pureza con un sensor electroquímico de oxígeno, flujo con un tubo Venturi y un sensor de presión diferencial, presión del cilindro con un transductor y presencia de red eléctrica. Transmite por LoRaWAN a una pasarela en el centro de salud, con alarmas locales y un panel en Grafana. El nodo solo observa y no controla ningún equipo médico. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con bancos de prueba con aire ambiente y gas de referencia, y personal voluntario bajo consentimiento informado.",
+        "sector": "Salud - Oxigenoterapia en clínicas rurales",
+        "nivel": "Intermedio-Avanzado",
+        "habilidades": [
+            "Calibración de sensores electroquímicos de oxígeno",
+            "Medición de flujo con tubos Venturi",
+            "Redes LoRaWAN con pasarela y servidor de red",
+            "Diseño de alarmas con histéresis y reconocimiento",
+            "Eficiencia energética en nodos con batería",
+            "Seguridad básica en la manipulación de gases"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un sistema de telemetría que vigile la pureza, el flujo y la reserva de oxígeno medicinal y la energía de una clínica rural, y alerte oportunamente al personal ante condiciones de riesgo.",
+            "📌 Objetivos Específicos:",
+            "• Calibrar el sensor de oxígeno con aire ambiente y una mezcla de referencia hasta un error absoluto inferior a 2 % de concentración frente a un analizador de referencia.",
+            "• Estimar el flujo entre 1 y 10 L/min con un error menor al 10 % frente a un rotámetro y medir la presión del cilindro con una resolución mínima de 1 bar.",
+            "• Alcanzar un retardo de alarma inferior a 60 segundos por LoRaWAN y una autonomía de al menos 48 horas del nodo ante un corte de red eléctrica."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Heltec WiFi LoRa 32 V3",
+                "categoria": "Microcontrolador",
+                "funcion": "Lee los sensores y transmite los datos por radio LoRaWAN."
+            },
+            {
+                "componente": "Sensor electroquímico de oxígeno ME2-O2",
+                "categoria": "Sensor de Gas",
+                "funcion": "Mide la concentración de oxígeno entregada por el concentrador."
+            },
+            {
+                "componente": "Sensor de presión diferencial con tubo Venturi impreso",
+                "categoria": "Sensor de Flujo",
+                "funcion": "Estima el caudal de gas a partir de la caída de presión."
+            },
+            {
+                "componente": "Transductor de presión de 0 a 250 bar",
+                "categoria": "Sensor de Presión",
+                "funcion": "Mide la reserva de oxígeno disponible en el cilindro."
+            },
+            {
+                "componente": "Pasarela LoRaWAN de 8 canales",
+                "categoria": "Equipo de Red",
+                "funcion": "Recibe los paquetes del nodo y los reenvía al servidor del centro de salud."
+            },
+            {
+                "componente": "Batería de respaldo con cargador solar",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Mantiene el nodo funcionando durante los cortes eléctricos."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Arduino IDE con librería RadioLib",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Programa la lectura de sensores y el enlace LoRaWAN."
+            },
+            {
+                "herramienta": "ChirpStack",
+                "tipo": "Servidor de Red LoRaWAN",
+                "descripcion": "Gestiona los dispositivos y entrega los datos del nodo al servidor."
+            },
+            {
+                "herramienta": "InfluxDB y Grafana",
+                "tipo": "Base de Datos de Series / Dashboard",
+                "descripcion": "Guardan y grafican pureza, flujo, presión y estado de la red eléctrica."
+            },
+            {
+                "herramienta": "Node-RED",
+                "tipo": "Orquestación de Flujos",
+                "descripcion": "Genera las alarmas y las notificaciones al personal de la clínica."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Oxigenoterapia en clínicas rurales"
+        ]
+    },
+    {
+        "id": "proj_283",
+        "titulo": "⌚ Proyecto 283: Concentrador de Sensores Vestibles para Vigilancia del Estrés Térmico de Corteros de Caña de Azúcar del Norte del Cauca",
+        "descripcion": "Problema: Los corteros de caña del norte del Cauca trabajan a pleno sol con alta carga física, y el golpe de calor y la deshidratación son riesgos reales de su labor. Los supervisores evalúan el esfuerzo a simple vista y no existen datos individuales de temperatura, humedad ni frecuencia cardiaca que permitan ordenar pausas de descanso oportunas.\n\nDescripción: Cada trabajador usa una banda de pecho con Bluetooth para la frecuencia cardiaca y un módulo de cinturón con sensores de temperatura de piel, temperatura de globo y humedad ambiente. Una aplicación móvil actúa como concentrador, calcula el índice de estrés térmico WBGT y la carga cardiaca, sugiere pausas y sincroniza con un panel del supervisor. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con pruebas en un invernadero de la universidad y voluntarios bajo consentimiento informado.",
+        "sector": "Agroindustria - Estrés térmico y salud ocupacional",
+        "nivel": "Intermedio",
+        "habilidades": [
+            "Integración de sensores vestibles con Bluetooth Low Energy",
+            "Cálculo del índice WBGT con termómetro de globo",
+            "Desarrollo móvil multiplataforma con Flutter",
+            "Almacenamiento local y sincronización diferida",
+            "Diseño de alertas de pausa configurables",
+            "Diseño de pruebas de campo con voluntarios"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un concentrador de sensores vestibles que estime el estrés térmico individual de trabajadores al aire libre y apoye a los supervisores en la programación de pausas y la hidratación.",
+            "📌 Objetivos Específicos:",
+            "• Medir temperatura de piel y ambiente con un error inferior a 0,5 °C y estimar el WBGT con una diferencia menor a 1 °C frente a un monitor de estrés térmico de referencia.",
+            "• Recibir la frecuencia cardiaca de la banda de pecho y las lecturas del módulo de cinturón con una pérdida inferior al 3 % durante jornadas simuladas de 4 horas.",
+            "• Mostrar en un panel el estado de al menos diez trabajadores con alertas de pausa configurables, que lleguen al supervisor en menos de 15 segundos."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "ESP32-C3 con carcasa de cinturón",
+                "categoria": "Microcontrolador",
+                "funcion": "Lee los sensores del módulo y transmite los datos por Bluetooth Low Energy."
+            },
+            {
+                "componente": "Banda de pecho de frecuencia cardiaca con Bluetooth",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Entrega la frecuencia cardiaca con el perfil estándar de ritmo cardiaco."
+            },
+            {
+                "componente": "Sensor MAX30205 de temperatura de piel",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Mide la temperatura cutánea con resolución de 0,1 °C."
+            },
+            {
+                "componente": "Globo de cobre negro con sensor DS18B20",
+                "categoria": "Sensor Ambiental",
+                "funcion": "Mide la temperatura de globo que integra la radiación solar."
+            },
+            {
+                "componente": "Sensor BME280 de temperatura y humedad",
+                "categoria": "Sensor Ambiental",
+                "funcion": "Mide temperatura del aire, humedad y presión en el entorno de trabajo."
+            },
+            {
+                "componente": "Batería LiPo de 1000 mAh con cargador USB-C",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Alimenta el módulo de cinturón durante una jornada completa de trabajo."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Arduino IDE con NimBLE-Arduino",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Programa el módulo de cinturón como servidor BLE de sensores."
+            },
+            {
+                "herramienta": "Flutter con flutter_blue_plus",
+                "tipo": "Framework de Desarrollo Móvil",
+                "descripcion": "Crea la aplicación concentradora que recibe y muestra los datos."
+            },
+            {
+                "herramienta": "Mosquitto MQTT",
+                "tipo": "Broker MQTT",
+                "descripcion": "Envía los datos del concentrador al panel del supervisor al recuperar la red."
+            },
+            {
+                "herramienta": "Grafana con InfluxDB",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Presenta el estado térmico y cardiaco de la cuadrilla en tiempo casi real."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Agroindustria - Estrés térmico y salud ocupacional"
+        ]
+    },
+    {
+        "id": "proj_284",
+        "titulo": "🤰 Proyecto 284: Kit de Telemonitoreo Materno para el Control Prenatal Rural con Alertas de Hipertensión Gestacional y Respaldo por SMS",
+        "descripcion": "Problema: Muchas gestantes de veredas del Cauca asisten a pocos controles prenatales por la distancia y el costo del transporte, y los trastornos hipertensivos del embarazo pueden agravarse entre una consulta y otra sin que nadie lo detecte. Las zonas con cobertura celular débil impiden usar aplicaciones que dependen de internet continuo.\n\nDescripción: Kit para el auxiliar de enfermería con un tensiómetro Bluetooth, un oxímetro, un termómetro y una báscula con celdas de carga, conectados a un ESP32 con pantalla. Registra los signos de alarma mediante un cuestionario guiado y aplica reglas clínicas simples, como presión de 140/90 mmHg o más en dos lecturas, para notificar a la enfermera jefe por MQTT o por SMS con un módulo celular. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con voluntarias no gestantes y personal de salud bajo consentimiento informado.",
+        "sector": "Salud materna - Control prenatal rural",
+        "nivel": "Intermedio-Avanzado",
+        "habilidades": [
+            "Integración de dispositivos de signos vitales con Bluetooth",
+            "Mediciones de peso con celdas de carga y amplificador HX711",
+            "Comunicación celular con módulos AT para envío de SMS",
+            "Diseño de interfaces para personal de salud con poca capacitación",
+            "Reglas clínicas de alerta con umbrales parametrizables",
+            "Pruebas de usabilidad con la escala SUS"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un kit de telemonitoreo materno que registre signos vitales y señales de alarma en el control prenatal rural y envíe alertas confiables a la enfermera jefe aun con cobertura limitada.",
+            "📌 Objetivos Específicos:",
+            "• Integrar tensiómetro, oxímetro, termómetro y báscula en un solo equipo y registrar cada sesión completa en menos de 5 minutos con un error de peso menor a 0,5 kg.",
+            "• Aplicar las reglas de alerta por presión arterial y signos de alarma configurables, con 100 % de coincidencia frente a 50 casos ficticios definidos con un profesional de enfermería.",
+            "• Entregar las alertas por MQTT en menos de 10 segundos con conexión y por SMS en menos de 2 minutos sin ella, y lograr una puntuación SUS de al menos 70 con ocho usuarios."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "ESP32-S3 con pantalla táctil de 3,5 pulgadas",
+                "categoria": "Microcontrolador",
+                "funcion": "Concentra los datos del kit y guía al usuario en cada paso del control."
+            },
+            {
+                "componente": "Tensiómetro de brazo con Bluetooth y perfil de presión arterial",
+                "categoria": "Dispositivo Biomédico Comercial",
+                "funcion": "Mide la presión arterial y el pulso con un equipo de uso clínico."
+            },
+            {
+                "componente": "Sensor MAX30102 de oximetría",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Mide la saturación de oxígeno y la frecuencia del pulso."
+            },
+            {
+                "componente": "Termómetro infrarrojo MLX90614",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Mide la temperatura corporal sin contacto para detectar fiebre."
+            },
+            {
+                "componente": "Báscula de 4 celdas de carga con amplificador HX711",
+                "categoria": "Sensor de Fuerza",
+                "funcion": "Mide el peso corporal para vigilar la ganancia durante el embarazo."
+            },
+            {
+                "componente": "Módulo celular SIM7600 para datos y SMS",
+                "categoria": "Módulo de Comunicación",
+                "funcion": "Envía alertas por SMS cuando no hay conexión de datos disponible."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Arduino IDE con LVGL",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Programa el firmware y la interfaz táctil del kit."
+            },
+            {
+                "herramienta": "Mosquitto MQTT",
+                "tipo": "Broker MQTT",
+                "descripcion": "Transporta las sesiones y alertas hacia el servidor del centro de salud."
+            },
+            {
+                "herramienta": "Node-RED con PostgreSQL",
+                "tipo": "Orquestación de Flujos / Base de Datos",
+                "descripcion": "Evalúa las reglas de alerta y guarda el historial de cada gestante."
+            },
+            {
+                "herramienta": "Grafana",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Muestra las tendencias de presión, peso y alertas para la enfermera jefe."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud materna - Control prenatal rural"
+        ]
+    },
+    {
+        "id": "proj_285",
+        "titulo": "🔐 Proyecto 285: Capa de Protección de Datos para Dispositivos de Salud Conectados con Seudonimización, Consentimiento y Auditoría según la Ley 1581 de 2012",
+        "descripcion": "Problema: Las plataformas de telemonitoreo y los dispositivos de salud conectados manejan datos sensibles, pero en proyectos pequeños suelen transmitirlos sin cifrar, con identificadores directos y sin registrar quién los consulta ni con qué autorización. Eso incumple el espíritu de la Ley 1581 de 2012 y expone a los pacientes a filtraciones y usos indebidos.\n\nDescripción: Capa de seguridad entre los dispositivos y la plataforma, en una Raspberry Pi, que usa TLS con certificados de cliente almacenados en un elemento seguro ATECC608, seudonimiza identificadores con HMAC, cifra campos con AES-GCM y gestiona consentimientos con propósito y revocación. Un registro de auditoría encadenado por hash y el control de acceso con Keycloak se prueban con datos sintéticos de Synthea. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos sintéticos y revisión de un asesor jurídico, sin certificación de cumplimiento legal.",
+        "sector": "Salud - Protección de datos personales sensibles",
+        "nivel": "Avanzado",
+        "habilidades": [
+            "Criptografía aplicada con TLS mutuo y AES-GCM",
+            "Gestión de claves con elementos seguros ATECC608",
+            "Control de acceso por roles con OpenID Connect",
+            "Registros de auditoría con cadenas de hash",
+            "Pruebas de seguridad con OWASP ZAP y Wireshark",
+            "Principios de la Ley 1581 de 2012 y habeas data"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Diseñar y validar una capa de protección de datos para dispositivos de salud conectados que aplique cifrado, seudonimización, consentimiento y auditoría alineados con los principios de la Ley 1581 de 2012.",
+            "📌 Objetivos Específicos:",
+            "• Establecer comunicación TLS con autenticación mutua para al menos tres dispositivos y comprobar con Wireshark que el 100 % de los datos clínicos viaja cifrado.",
+            "• Registrar consentimientos con propósito, fecha y revocación, y atender solicitudes de acceso, rectificación y supresión sobre 50 pacientes sintéticos en menos de 5 segundos.",
+            "• Auditar todas las consultas en un registro verificable por hash, con sobrecarga de latencia menor a 200 ms y sin hallazgos críticos en un escaneo con OWASP ZAP."
+        ],
+        "referencias": [
+            "Congreso de la República de Colombia. (2012). Ley Estatutaria 1581 de 2012, por la cual se dictan disposiciones generales para la protección de datos personales."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la capa de seguridad, el servidor de consentimientos y la auditoría."
+            },
+            {
+                "componente": "Elemento seguro ATECC608 en módulo de desarrollo",
+                "categoria": "Seguridad de Hardware",
+                "funcion": "Guarda las claves privadas y firma las conexiones de cada dispositivo."
+            },
+            {
+                "componente": "ESP32-S3 (3 unidades)",
+                "categoria": "Microcontrolador",
+                "funcion": "Simulan dispositivos de salud que envían lecturas con TLS de cliente."
+            },
+            {
+                "componente": "Interruptor Ethernet gestionable",
+                "categoria": "Equipo de Red",
+                "funcion": "Permite capturar el tráfico en un puerto espejo para su análisis."
+            },
+            {
+                "componente": "Equipo portátil para pruebas de seguridad",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Ejecuta las herramientas de escaneo y el análisis de tráfico."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Mosquitto con TLS y step-ca",
+                "tipo": "Seguridad de Red / Broker MQTT",
+                "descripcion": "Emite certificados y exige autenticación mutua a los dispositivos."
+            },
+            {
+                "herramienta": "Keycloak",
+                "tipo": "Gestión de Identidad y Acceso",
+                "descripcion": "Controla el acceso por roles de médicos, enfermeras y administradores."
+            },
+            {
+                "herramienta": "Python con cryptography y PostgreSQL",
+                "tipo": "Librería de Criptografía / Base de Datos",
+                "descripcion": "Aplica HMAC, cifra campos y guarda consentimientos y auditoría."
+            },
+            {
+                "herramienta": "Synthea, OWASP ZAP y Wireshark",
+                "tipo": "Datos Sintéticos / Pruebas de Seguridad",
+                "descripcion": "Generan pacientes ficticios y verifican la seguridad del sistema."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud - Protección de datos personales sensibles"
+        ]
+    },
+    {
+        "id": "proj_286",
+        "titulo": "📱 Proyecto 286: Historia Clínica Comunitaria Offline-First para Promotores de Salud con Sincronización Diferida en Zonas sin Conectividad",
+        "descripcion": "Problema: Los promotores y auxiliares de salud que visitan viviendas en veredas del Cauca registran en papel el estado de gestantes, niños y crónicos, y luego digitan los datos en el puesto de salud, con retrasos y errores de transcripción. Las aplicaciones que requieren conexión permanente fallan donde no hay cobertura, que es justamente donde más se necesitan.\n\nDescripción: Aplicación Android para teléfonos de gama baja con base de datos local PouchDB que funciona sin conexión, con formularios de visita, signos vitales capturados desde un oxímetro Bluetooth y datos de vacunación. Al llegar al puesto de salud sincroniza con un servidor CouchDB en una Raspberry Pi y resuelve conflictos de edición. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con registros ficticios de visitas y promotores voluntarios bajo consentimiento informado.",
+        "sector": "Salud pública - Promotores de salud en zonas dispersas",
+        "nivel": "Intermedio",
+        "habilidades": [
+            "Arquitecturas offline-first con replicación de bases de datos",
+            "Desarrollo móvil con interfaces de bajo consumo",
+            "Resolución de conflictos de edición en sincronización",
+            "Integración de oxímetros con Bluetooth Low Energy",
+            "Diseño de formularios clínicos con validación",
+            "Evaluación de usabilidad con la escala SUS"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una aplicación de historia clínica comunitaria offline-first que permita a promotores de salud registrar visitas domiciliarias sin conexión y sincronizarlas sin pérdida de datos en el puesto de salud.",
+            "📌 Objetivos Específicos:",
+            "• Registrar visitas completas durante siete días en modo avión y sincronizar 500 registros con un servidor local en menos de 60 segundos con un enlace emulado de 256 kbit/s.",
+            "• Resolver correctamente los conflictos de edición concurrente en 50 casos de prueba, sin pérdida ni duplicación de registros, y conservar el historial de cambios.",
+            "• Capturar signos vitales desde un oxímetro Bluetooth y lograr una puntuación SUS de al menos 70 con ocho promotores voluntarios en un teléfono de gama baja."
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Teléfono Android de gama baja con 2 GB de RAM",
+                "categoria": "Dispositivo Móvil",
+                "funcion": "Ejecuta la aplicación de visitas y almacena los registros sin conexión."
+            },
+            {
+                "componente": "Raspberry Pi 4 de 4 GB con disco SSD",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Funciona como servidor local de sincronización en el puesto de salud."
+            },
+            {
+                "componente": "Oxímetro de pulso con Bluetooth",
+                "categoria": "Dispositivo Biomédico Comercial",
+                "funcion": "Entrega saturación de oxígeno y pulso a la aplicación en cada visita."
+            },
+            {
+                "componente": "Punto de acceso Wi-Fi de bajo consumo",
+                "categoria": "Equipo de Red",
+                "funcion": "Crea la red local donde los teléfonos sincronizan sus registros."
+            },
+            {
+                "componente": "Banco de baterías de 20000 mAh",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Mantiene los teléfonos cargados durante jornadas largas de visitas."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Flutter o Ionic con PouchDB",
+                "tipo": "Framework de Desarrollo Móvil",
+                "descripcion": "Construye la aplicación con base de datos local y replicación."
+            },
+            {
+                "herramienta": "Apache CouchDB",
+                "tipo": "Base de Datos Documental",
+                "descripcion": "Recibe la replicación y conserva las revisiones de cada documento."
+            },
+            {
+                "herramienta": "Linux tc netem",
+                "tipo": "Emulación de Red",
+                "descripcion": "Simula enlaces lentos y cortes para probar la sincronización diferida."
+            },
+            {
+                "herramienta": "Grafana",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Resume visitas, alertas y cobertura de seguimiento por vereda."
+            }
+        ],
+        "area": "IoT Médico y Salud Digital",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Salud pública - Promotores de salud en zonas dispersas"
+        ]
     }
 ];

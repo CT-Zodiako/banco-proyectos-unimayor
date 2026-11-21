@@ -18,7 +18,7 @@ test('vendor libraries go to their own chunks', () => {
     assert.equal(chunkOf('node_modules/lucide-react/dist/esm/icons/clock.js'), 'icons');
 });
 
-test('the 236 projects go to projects-data, but areas.js (read by the catalog at startup) and the app code do not', () => {
+test('the 286 projects go to projects-data, but areas.js (read by the catalog at startup) and the app code do not', () => {
     assert.equal(chunkOf('src/data/baseProjects.js'), 'projects-data');
     assert.equal(chunkOf('src/data/projects/index.js'), 'projects-data');
     assert.equal(chunkOf('src/data/projects/robotica.js'), 'projects-data');

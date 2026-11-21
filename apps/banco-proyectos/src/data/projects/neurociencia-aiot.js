@@ -862,5 +862,922 @@ export default [
                 "descripcion": "Tablero de sesiones para el psicólogo de bienestar."
             }
         ]
+    },
+    {
+        "id": "proj_237",
+        "titulo": "🩻 Proyecto 237: Apoyo al Triaje de Hemorragia Intracraneal en TAC de Cráneo con Redes Convolucionales Entrenadas en Colab, Mapas Grad-CAM e Inferencia en Jetson",
+        "descripcion": "Problema: En clínicas y hospitales del Cauca un TAC de cráneo con sospecha de hemorragia puede esperar horas hasta ser informado, porque en muchos municipios no hay radiólogo en sitio ni lectura remota continua; en la hemorragia intracraneal cada hora perdida aumenta el riesgo de secuelas graves o de muerte.\n\nDescripción: Sistema de apoyo a la decisión clínica que prioriza estudios de TAC de cráneo sin contraste. En Google Colab se entrena una red convolucional EfficientNet-B0 con transferencia de aprendizaje sobre un subconjunto anonimizado del conjunto público RSNA Intracranial Hemorrhage Detection, usando tres ventanas de Hounsfield (cerebro, subdural y hueso) como canales, y se valida de forma externa con CQ500. El modelo se exporta a ONNX y se optimiza con TensorRT en un Jetson Orin Nano que recibe los cortes DICOM desde un servidor Orthanc, calcula la probabilidad de hemorragia por estudio, genera mapas Grad-CAM y publica por MQTT una alerta de prioridad al médico. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado solo con conjuntos públicos anonimizados.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurorradiología - Hemorragia Intracraneal en TAC",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Lectura y anonimización de estudios DICOM con ventanas de Hounsfield",
+            "Entrenamiento de redes convolucionales con transferencia de aprendizaje",
+            "Evaluación con curvas ROC y validación externa por conjunto",
+            "Explicabilidad con mapas de activación Grad-CAM",
+            "Optimización de modelos con ONNX y TensorRT",
+            "Integración de servidores DICOM y alertas con MQTT"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar y evaluar un prototipo de apoyo al triaje que estime la probabilidad de hemorragia intracraneal en TAC de cráneo anonimizados con una red neuronal entrenada y la ejecute en un dispositivo de borde con explicación visual.",
+            "📌 Objetivos Específicos:",
+            "• Preparar un subconjunto balanceado de al menos 20 000 cortes del conjunto RSNA con ventanas de Hounsfield, partición por paciente y verificación de la anonimización de los metadatos.",
+            "• Entrenar la red en Colab y alcanzar un área bajo la curva ROC superior a 0,90 por estudio en la validación externa con el conjunto CQ500.",
+            "• Cuantizar el modelo con TensorRT en un Jetson Orin Nano y lograr una inferencia inferior a 10 segundos por estudio, con una pérdida de AUC menor a 0,02 respecto al modelo original.",
+            "• Generar mapas Grad-CAM y medir su coincidencia con las máscaras expertas de sangrado del conjunto CT-ICH de PhysioNet en los casos positivos disponibles.",
+            "• Integrar el servidor Orthanc y la alerta por MQTT con un retardo menor a 1 minuto desde la recepción del último corte hasta el aviso al médico."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurorradiología - Hemorragia Intracraneal en TAC"
+        ],
+        "referencias": [
+            "Flanders, A. E., Prevedello, L. M., Shih, G., Halabi, S. S., Kalpathy-Cramer, J., Ball, R., … Kitamura, F. C. (2020). Construction of a machine learning dataset through collaboration: The RSNA 2019 Brain CT Hemorrhage Challenge. Radiology: Artificial Intelligence, 2(3), e190211.",
+            "Selvaraju, R. R., Cogswell, M., Das, A., Vedantam, R., Parikh, D., & Batra, D. (2017). Grad-CAM: Visual explanations from deep networks via gradient-based localization. En Proceedings of the IEEE International Conference on Computer Vision (pp. 618–626)."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Jetson Orin Nano Developer Kit de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la inferencia optimizada y genera los mapas Grad-CAM en la clínica."
+            },
+            {
+                "componente": "Estación de trabajo del laboratorio con GPU NVIDIA y 32 GB de RAM",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Preprocesa los DICOM y respalda el entrenamiento cuando Colab se agota."
+            },
+            {
+                "componente": "Disco SSD NVMe de 500 GB",
+                "categoria": "Almacenamiento",
+                "funcion": "Guarda los estudios anonimizados y los puntos de control del entrenamiento."
+            },
+            {
+                "componente": "Monitor de 24 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra el visor con el corte, la probabilidad y el mapa de calor."
+            },
+            {
+                "componente": "Red local aislada con router",
+                "categoria": "Equipo de Red",
+                "funcion": "Simula el enlace entre el tomógrafo y el nodo de borde de la clínica rural."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "PyTorch y timm",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de EfficientNet-B0 con transferencia de aprendizaje."
+            },
+            {
+                "herramienta": "TensorRT y ONNX Runtime",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Cuantización y ejecución del modelo en el Jetson Orin Nano."
+            },
+            {
+                "herramienta": "Orthanc",
+                "tipo": "Servidor DICOM",
+                "descripcion": "Recepción y almacenamiento de los cortes enviados por el tomógrafo simulado."
+            },
+            {
+                "herramienta": "pydicom",
+                "tipo": "Librería de Imágenes Médicas",
+                "descripcion": "Lectura de DICOM, anonimización y conversión a ventanas de Hounsfield."
+            },
+            {
+                "herramienta": "Mosquitto",
+                "tipo": "Broker MQTT",
+                "descripcion": "Publicación de la alerta de prioridad al teléfono del médico."
+            }
+        ]
+    },
+    {
+        "id": "proj_238",
+        "titulo": "🔍 Proyecto 238: Segmentación Automática de Tumores Cerebrales en Resonancia Magnética Multimodal con Red 3D en MONAI y Cálculo del Volumen Tumoral en un Nodo de Borde",
+        "descripcion": "Problema: El seguimiento de un glioma exige medir el volumen tumoral en resonancias de varias secuencias, una tarea manual de decenas de minutos que depende del observador; los pacientes del Cauca viajan lejos para una valoración neuroquirúrgica y con frecuencia llegan con estudios sin cuantificar ni comparar.\n\nDescripción: Se entrena en Colab una red SegResNet 3D con el marco MONAI sobre las cuatro secuencias (T1, T1 con gadolinio, T2 y FLAIR) de la tarea BrainTumour de Medical Segmentation Decathlon, derivada de BraTS, con aumento de datos, pérdida Dice-Focal y validación cruzada de cinco particiones. El modelo exportado a ONNX en FP16 corre en un Jetson Orin Nano que expone una API con FastAPI: recibe volúmenes NIfTI anonimizados y devuelve la máscara de edema, tumor no realzado y tumor realzado, el volumen en mililitros y un mapa de incertidumbre por aumento en la inferencia; además avisa por MQTT al especialista. El resultado se revisa en 3D Slicer. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos públicos anonimizados.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurooncología - Segmentación de Tumores Cerebrales",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Preprocesamiento de resonancias multimodales en formato NIfTI",
+            "Entrenamiento de redes de segmentación 3D con MONAI",
+            "Métricas de segmentación: Dice y distancia de Hausdorff",
+            "Estimación de incertidumbre con aumento en la inferencia",
+            "Exportación a ONNX y ejecución en FP16 en el borde",
+            "Desarrollo de servicios de inferencia con FastAPI"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un prototipo de apoyo que segmente tumores cerebrales en resonancias magnéticas multimodales anonimizadas con una red 3D entrenada y calcule su volumen en un nodo de borde con mapas de incertidumbre.",
+            "📌 Objetivos Específicos:",
+            "• Preparar los 484 volúmenes de la tarea BrainTumour con normalización por secuencia, particiones por paciente y verificación visual de una muestra en 3D Slicer.",
+            "• Entrenar la red SegResNet en Colab y alcanzar un Dice medio superior a 0,85 en tumor completo, 0,75 en núcleo tumoral y 0,65 en tumor realzado en la validación cruzada.",
+            "• Exportar el modelo a ONNX en FP16 y segmentar un estudio completo en el Jetson Orin Nano en menos de 3 minutos con una diferencia de Dice menor a 0,01 respecto al original.",
+            "• Calcular el volumen tumoral y comprobar que su error relativo frente a las máscaras expertas sea inferior al 15 % en el 80 % de los casos de prueba.",
+            "• Generar mapas de incertidumbre y verificar que las regiones de mayor incertidumbre concentren los errores de segmentación del modelo."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurooncología - Segmentación de Tumores Cerebrales"
+        ],
+        "referencias": [
+            "Menze, B. H., Jakab, A., Bauer, S., Kalpathy-Cramer, J., Farahani, K., Kirby, J., … Van Leemput, K. (2015). The multimodal brain tumor image segmentation benchmark (BRATS). IEEE Transactions on Medical Imaging, 34(10), 1993–2024.",
+            "Antonelli, M., Reinke, A., Bakas, S., Farahani, K., Kopp-Schneider, A., Landman, B. A., … Cardoso, M. J. (2022). The Medical Segmentation Decathlon. Nature Communications, 13, 4128."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Jetson Orin Nano Developer Kit de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Segmenta los volúmenes y calcula el volumen tumoral en el sitio de atención."
+            },
+            {
+                "componente": "Estación de trabajo con GPU NVIDIA de 12 GB de memoria",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Entrena variantes de la red y ejecuta la validación cruzada completa."
+            },
+            {
+                "componente": "Disco SSD externo de 1 TB",
+                "categoria": "Almacenamiento",
+                "funcion": "Aloja los volúmenes NIfTI, los puntos de control y los resultados."
+            },
+            {
+                "componente": "Pantalla de 27 pulgadas con perfil de color calibrado",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Permite la revisión de las máscaras superpuestas en tres planos."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "MONAI y PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Transformaciones, pérdida Dice-Focal y entrenamiento de SegResNet 3D."
+            },
+            {
+                "herramienta": "ONNX Runtime con TensorRT",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Inferencia en FP16 por ventana deslizante en el Jetson Orin Nano."
+            },
+            {
+                "herramienta": "3D Slicer",
+                "tipo": "Visualización de Imágenes Médicas",
+                "descripcion": "Revisión de máscaras, edición manual y cálculo de volúmenes de referencia."
+            },
+            {
+                "herramienta": "FastAPI",
+                "tipo": "Servicio Web de Inferencia",
+                "descripcion": "Recibe los volúmenes NIfTI y devuelve la máscara y el reporte de volumen."
+            },
+            {
+                "herramienta": "Mosquitto",
+                "tipo": "Broker MQTT",
+                "descripcion": "Aviso al especialista cuando termina cada segmentación."
+            }
+        ]
+    },
+    {
+        "id": "proj_239",
+        "titulo": "🌐 Proyecto 239: Aprendizaje Federado entre Nodos Hospitalarios Simulados para Estadificar el Alzheimer en Resonancia Magnética Estructural sin Compartir las Imágenes",
+        "descripcion": "Problema: El Alzheimer suele diagnosticarse tarde en el Cauca, donde hay pocos neurólogos y ninguna base propia de resonancias; entrenar un buen modelo exigiría reunir imágenes de varias instituciones, pero la protección de datos y la desconfianza institucional impiden sacarlas de cada hospital.\n\nDescripción: Se entrena una red MobileNetV3 sobre cortes axiales de resonancias estructurales T1 del conjunto OASIS-1 (sujetos de 60 años o más, con escala CDR de 0, 0,5 y 1 o más) mediante aprendizaje federado: tres nodos que simulan hospitales, con particiones por sujeto y distinto balance de clases, entrenan localmente con Flower y envían solo los pesos a un servidor que los promedia con FedAvg y FedProx. Participan la estación con GPU, un Jetson Orin Nano y una Raspberry Pi 5 con un subconjunto reducido. Se compara el modelo federado con el centralizado y con los modelos aislados, y las predicciones se explican con Grad-CAM. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos públicos anonimizados.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurología - Alzheimer y Aprendizaje Federado",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Preprocesamiento de resonancias T1 y selección de cortes axiales",
+            "Entrenamiento distribuido con aprendizaje federado en Flower",
+            "Simulación de nodos con datos no idénticos entre instituciones",
+            "Evaluación con exactitud balanceada y AUC macro por sujeto",
+            "Privacidad diferencial y medición del costo de comunicación",
+            "Explicabilidad con Grad-CAM en neuroimagen"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Evaluar con un prototipo de aprendizaje federado si tres nodos hospitalarios simulados pueden entrenar un modelo de estadificación de Alzheimer en resonancia estructural comparable al centralizado sin intercambiar imágenes.",
+            "📌 Objetivos Específicos:",
+            "• Construir tres particiones por sujeto del conjunto OASIS-1 con distintos balances de clase y diferencias de intensidad que imiten distintos equipos de resonancia.",
+            "• Entrenar con Flower los modelos federados FedAvg y FedProx en cinco rondas como mínimo y alcanzar una AUC macro superior a 0,80 en un conjunto de prueba separado por sujeto.",
+            "• Comparar la exactitud balanceada del modelo federado con la del centralizado y la de los modelos aislados, y lograr una diferencia menor a 5 puntos frente al centralizado.",
+            "• Medir el volumen de datos transmitido por ronda y el tiempo de entrenamiento local en el Jetson Orin Nano y la Raspberry Pi 5.",
+            "• Aplicar privacidad diferencial con Opacus y cuantificar la pérdida de AUC, y revisar los mapas Grad-CAM con un especialista en neuroimagen."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurología - Alzheimer y Aprendizaje Federado"
+        ],
+        "referencias": [
+            "Marcus, D. S., Wang, T. H., Parker, J., Csernansky, J. G., Morris, J. C., & Buckner, R. L. (2007). Open Access Series of Imaging Studies (OASIS): Cross-sectional MRI data in young, middle aged, nondemented, and demented older adults. Journal of Cognitive Neuroscience, 19(9), 1498–1507.",
+            "McMahan, B., Moore, E., Ramage, D., Hampson, S., & Agüera y Arcas, B. (2017). Communication-efficient learning of deep networks from decentralized data. Proceedings of Machine Learning Research, 54, 1273–1282."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Estación de trabajo con GPU NVIDIA y 32 GB de RAM",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Hace de servidor de agregación y de nodo hospitalario con entrenamiento local."
+            },
+            {
+                "componente": "Jetson Orin Nano Developer Kit de 8 GB",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Actúa como segundo nodo hospitalario con entrenamiento acelerado."
+            },
+            {
+                "componente": "Raspberry Pi 5 con 8 GB de RAM y enfriador activo",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Actúa como nodo de recursos limitados con un subconjunto reducido."
+            },
+            {
+                "componente": "Switch Ethernet gigabit y router",
+                "categoria": "Equipo de Red",
+                "funcion": "Conecta los nodos y permite medir el tráfico de cada ronda federada."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Flower",
+                "tipo": "Framework de Aprendizaje Federado",
+                "descripcion": "Coordinación de rondas, estrategias FedAvg y FedProx y clientes."
+            },
+            {
+                "herramienta": "PyTorch y torchvision",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de MobileNetV3 sobre cortes de resonancia."
+            },
+            {
+                "herramienta": "Opacus",
+                "tipo": "Librería de Privacidad Diferencial",
+                "descripcion": "Entrenamiento local con ruido y recorte de gradientes."
+            },
+            {
+                "herramienta": "nibabel y scikit-learn",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Lectura de volúmenes, selección de cortes y cálculo de métricas por sujeto."
+            },
+            {
+                "herramienta": "TensorBoard",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Seguimiento de la pérdida, la exactitud y el tráfico de cada ronda."
+            }
+        ]
+    },
+    {
+        "id": "proj_240",
+        "titulo": "🚨 Proyecto 240: Detección de Crisis Epilépticas en EEG de Montaje Reducido con Red Convolucional Cuantizada para Microcontrolador y Validación en la Base CHB-MIT",
+        "descripcion": "Problema: Las personas con epilepsia refractaria en zonas rurales del Cauca esperan meses por un video-EEG y entre consultas nadie registra cuántas crisis tienen ni cuándo; un detector de EEG de pocos canales que funcione junto al paciente permitiría documentar las crisis y avisar al cuidador sin enviar todo el registro a un servidor.\n\nDescripción: Se entrena en la estación del laboratorio una red convolucional compacta tipo EEGNet con cuatro canales bipolares temporales de la base pública CHB-MIT de PhysioNet, ventanas de 4 segundos, partición por paciente y suavizado de decisiones consecutivas. El modelo se cuantiza a enteros de 8 bits con TensorFlow Lite para Microcontroladores y se ejecuta en un ESP32-S3 conectado a un front end ADS1299 de cuatro canales. La validación reproduce grabaciones de CHB-MIT por el puerto serie y mide las falsas alarmas por artefactos con voluntarios sanos; la alerta viaja por BLE y MQTT al teléfono del cuidador. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos públicos anonimizados y voluntarios sanos bajo consentimiento informado.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurofisiología - Detección de Crisis por EEG en el Borde",
+        "nivel": "Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Lectura de registros EDF y anotaciones de crisis con MNE-Python",
+            "Filtrado y segmentación de EEG en ventanas con partición por paciente",
+            "Entrenamiento de redes compactas para series temporales",
+            "Cuantización a 8 bits y despliegue en microcontroladores",
+            "Evaluación por evento: sensibilidad y falsas alarmas por hora",
+            "Pruebas de hardware en el lazo con puerto serie"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar y validar un detector de crisis epilépticas en EEG de cuatro canales con una red cuantizada que se ejecute íntegramente en un microcontrolador y avise a un cuidador en pocos segundos.",
+            "📌 Objetivos Específicos:",
+            "• Procesar la base CHB-MIT con un montaje de cuatro canales temporales, ventanas de 4 segundos y particiones de entrenamiento y prueba separadas por paciente.",
+            "• Entrenar la red y lograr una sensibilidad por evento superior al 80 % con menos de 2 falsas alarmas por hora en los pacientes de prueba.",
+            "• Cuantizar el modelo a 8 bits para que ocupe menos de 150 KB y se ejecute en menos de 100 ms por ventana en el ESP32-S3, y documentar la diferencia de métricas frente al modelo en el PC.",
+            "• Implementar la cadena de alerta ESP32-S3, BLE, teléfono y MQTT con una latencia media de detección inferior a 15 segundos desde el inicio anotado de la crisis.",
+            "• Medir en registros de voluntarios sanos con parpadeos, masticación y movimiento la tasa de falsas alarmas por artefactos del dispositivo."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurofisiología - Detección de Crisis por EEG en el Borde"
+        ],
+        "referencias": [
+            "Goldberger, A. L., Amaral, L. A. N., Glass, L., Hausdorff, J. M., Ivanov, P. C., Mark, R. G., … Stanley, H. E. (2000). PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals. Circulation, 101(23), e215–e220.",
+            "Shoeb, A. H. (2009). Application of machine learning to epileptic seizure onset detection and treatment [Tesis doctoral, Massachusetts Institute of Technology]."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Tarjeta de EEG de 4 canales basada en ADS1299",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Adquiere el EEG temporal con resolución de 24 bits y bajo ruido."
+            },
+            {
+                "componente": "ESP32-S3 con 8 MB de PSRAM",
+                "categoria": "Microcontrolador",
+                "funcion": "Ejecuta el modelo cuantizado y envía las alertas por BLE y Wi-Fi."
+            },
+            {
+                "componente": "Diadema con electrodos secos en F7, T7, F8 y T8",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Ubica los electrodos sobre las regiones temporales frecuentes en las crisis."
+            },
+            {
+                "componente": "Batería LiPo de 1000 mAh con aislamiento galvánico",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Alimenta el sistema sin conexión a la red eléctrica por seguridad del usuario."
+            },
+            {
+                "componente": "Estación de trabajo con GPU NVIDIA",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Entrena los modelos y reproduce los registros CHB-MIT por el puerto serie."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "MNE-Python",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Lectura de EDF, montajes bipolares, filtrado y ventanas de EEG."
+            },
+            {
+                "herramienta": "TensorFlow y Keras",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de la red tipo EEGNet con validación por paciente."
+            },
+            {
+                "herramienta": "TensorFlow Lite para Microcontroladores",
+                "tipo": "Motor de Inferencia Embebida",
+                "descripcion": "Ejecución de la red cuantizada en el ESP32-S3."
+            },
+            {
+                "herramienta": "ESP-IDF",
+                "tipo": "Entorno de Desarrollo Embebido",
+                "descripcion": "Firmware de adquisición, inferencia, BLE y comunicación con el broker."
+            },
+            {
+                "herramienta": "Mosquitto",
+                "tipo": "Broker MQTT",
+                "descripcion": "Entrega de la alerta al teléfono del cuidador."
+            }
+        ]
+    },
+    {
+        "id": "proj_241",
+        "titulo": "🦾 Proyecto 241: Interfaz Cerebro-Máquina de Imaginación Motora con EEGNet Preentrenada para Controlar una Mano Robótica Asistiva Impresa en 3D de Bajo Costo",
+        "descripcion": "Problema: Tras un accidente cerebrovascular o una lesión medular, muchas personas conservan la intención de mover la mano pero no la ejecución, y los sistemas de asistencia controlados por actividad cerebral cuestan miles de dólares y no tienen soporte técnico en el Cauca; los estudiantes tampoco disponen de plataformas abiertas para investigar.\n\nDescripción: Interfaz cerebro-máquina no invasiva que decodifica la imaginación del movimiento de la mano derecha frente al reposo a partir de EEG sobre la corteza sensoriomotora. Se preentrena una EEGNet en Colab con el conjunto público PhysioNet EEG Motor Movement/Imagery, que incluye 109 voluntarios, y se ajusta con una sesión de calibración de 15 minutos por usuario. Un OpenBCI Cyton de 8 canales transmite a una Raspberry Pi 5 que clasifica ventanas de 2 segundos y envía órdenes por Wi-Fi a un ESP32 que cierra o abre una mano robótica impresa en 3D con cinco servomotores; el estado se publica por MQTT para el terapeuta. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con voluntarios sanos bajo consentimiento informado.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurotecnología - Control de Dispositivos Asistivos",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Registro de EEG sensoriomotor y análisis de ritmos mu y beta",
+            "Transferencia de aprendizaje con redes compactas para EEG",
+            "Calibración y evaluación en línea de interfaces cerebro-máquina",
+            "Diseño y control de una mano robótica con servomotores",
+            "Comunicación Wi-Fi y MQTT entre nodos",
+            "Seguridad eléctrica y ética con voluntarios"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una interfaz cerebro-máquina de imaginación motora con una red preentrenada y ajustada por usuario que controle en tiempo casi real una mano robótica asistiva de bajo costo.",
+            "📌 Objetivos Específicos:",
+            "• Preentrenar la EEGNet en Colab con los canales equivalentes al montaje de 8 canales y alcanzar una exactitud superior al 75 % para mano derecha frente a reposo en sujetos no vistos tras el ajuste.",
+            "• Implementar la adquisición con el OpenBCI Cyton y el clasificador en la Raspberry Pi 5 con un retardo entre la ventana de EEG y el movimiento del servomotor inferior a 1 segundo.",
+            "• Construir la mano robótica impresa en 3D con cinco servomotores, límites de fuerza y parada de emergencia verificados.",
+            "• Evaluar en línea con al menos cinco voluntarios sanos una exactitud superior al 70 % y menos del 10 % de activaciones falsas durante el reposo."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurotecnología - Control de Dispositivos Asistivos"
+        ],
+        "referencias": [
+            "Lawhern, V. J., Solon, A. J., Waytowich, N. R., Gordon, S. M., Hung, C. P., & Lance, B. J. (2018). EEGNet: A compact convolutional neural network for EEG-based brain–computer interfaces. Journal of Neural Engineering, 15(5), 056013.",
+            "Schalk, G., McFarland, D. J., Hinterberger, T., Birbaumer, N., & Wolpaw, J. R. (2004). BCI2000: A general-purpose brain-computer interface (BCI) system. IEEE Transactions on Biomedical Engineering, 51(6), 1034–1043."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Tarjeta de EEG de 8 canales basada en ADS1299 (tipo OpenBCI Cyton)",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Registra la actividad sensoriomotora con resolución de 24 bits."
+            },
+            {
+                "componente": "Gorro con electrodos en C3, Cz, C4, FC1, FC2, CP1, CP2 y Pz",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Cubre la corteza motora donde cambian los ritmos mu y beta."
+            },
+            {
+                "componente": "Raspberry Pi 5 con 8 GB de RAM",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta el preprocesamiento y la red ajustada, y envía las órdenes."
+            },
+            {
+                "componente": "ESP32 con driver PCA9685",
+                "categoria": "Microcontrolador",
+                "funcion": "Genera las señales de los cinco servomotores de la mano robótica."
+            },
+            {
+                "componente": "Mano robótica impresa en 3D con servomotores MG90S",
+                "categoria": "Actuador",
+                "funcion": "Cierra y abre los dedos según la orden decodificada."
+            },
+            {
+                "componente": "Batería portátil aislada y pulsador de parada de emergencia",
+                "categoria": "Fuente de Alimentación / Energía",
+                "funcion": "Aísla al usuario de la red eléctrica y detiene los servomotores."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "BrainFlow",
+                "tipo": "Librería de Adquisición de Bioseñales",
+                "descripcion": "Lectura de los datos del OpenBCI Cyton en tiempo real."
+            },
+            {
+                "herramienta": "PyTorch y braindecode",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Preentrenamiento y ajuste fino de EEGNet con el conjunto público."
+            },
+            {
+                "herramienta": "MNE-Python",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Filtrado, referencia, épocas y análisis de la desincronización mu."
+            },
+            {
+                "herramienta": "PsychoPy",
+                "tipo": "Software de Estimulación Experimental",
+                "descripcion": "Presentación de las instrucciones de imaginación y reposo."
+            },
+            {
+                "herramienta": "Mosquitto",
+                "tipo": "Broker MQTT",
+                "descripcion": "Publicación de órdenes y del estado de la mano para el terapeuta."
+            }
+        ]
+    },
+    {
+        "id": "proj_242",
+        "titulo": "🚌 Proyecto 242: Detección de Somnolencia en Conductores de Transporte Público con EEG de Cuatro Canales, Cámara Infrarroja y Alarma en Cabina mediante Aprendizaje Automático",
+        "descripcion": "Problema: Los conductores de buses intermunicipales y mototaxis del Cauca cumplen jornadas largas por carreteras de montaña, y la somnolencia es una causa reconocida de siniestros viales evitables; las empresas controlan las horas de conducción pero no el estado real de alerta, y los sistemas comerciales de monitoreo de fatiga son costosos.\n\nDescripción: Sistema de dos modalidades que estima la somnolencia. Una diadema OpenBCI Ganglion de cuatro canales registra EEG frontal y occipital, y una cámara infrarroja con una Raspberry Pi 5 mide el cierre ocular (PERCLOS) con MediaPipe Face Mesh. Con las potencias theta y alfa y la tasa de parpadeo, un bosque aleatorio, comparado con una red ligera, clasifica alerta y somnolencia tomando como referencia los lapsos de la tarea de vigilancia psicomotora y la Escala de Somnolencia de Karolinska. Se prueba en un simulador de conducción del laboratorio; ante somnolencia suena una alarma en cabina y el evento se registra por MQTT. Se trata de un prototipo de apoyo, no un dispositivo certificado de seguridad vial, validado con voluntarios bajo consentimiento informado.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Seguridad Vial - Fatiga del Conductor",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Extracción de potencias espectrales de EEG en bandas theta y alfa",
+            "Detección de parpadeo y cálculo de PERCLOS con visión artificial",
+            "Diseño de protocolos de vigilancia psicomotora con voluntarios",
+            "Fusión de características de EEG y video con aprendizaje automático",
+            "Validación dejando un sujeto fuera",
+            "Diseño de alertas en cabina y registro de eventos con MQTT"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un sistema que combine EEG de cuatro canales y video infrarrojo para clasificar la somnolencia de un conductor en un simulador y activar una alarma en cabina con baja tasa de falsas alertas.",
+            "📌 Objetivos Específicos:",
+            "• Registrar sesiones de al menos 10 voluntarios en un simulador de conducción monótona con EEG, video infrarrojo, lapsos de la tarea de vigilancia y escala de Karolinska.",
+            "• Entrenar el clasificador de alerta y somnolencia con EEG, PERCLOS y parpadeo, y alcanzar una exactitud superior al 80 % en validación dejando un sujeto fuera.",
+            "• Comparar el desempeño de EEG solo, video solo y fusión de ambos, e identificar cuál modalidad aporta más y cuál es más robusta a artefactos.",
+            "• Implementar la alarma en cabina y el registro por MQTT con una latencia inferior a 3 segundos y menos de una falsa alarma cada 10 minutos en estado de alerta."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Seguridad Vial - Fatiga del Conductor"
+        ],
+        "referencias": [
+            "Åkerstedt, T., & Gillberg, M. (1990). Subjective and objective sleepiness in the active individual. International Journal of Neuroscience, 52(1–2), 29–37."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Diadema de EEG de 4 canales tipo OpenBCI Ganglion",
+                "categoria": "Sensor Biomédico",
+                "funcion": "Registra EEG frontal y occipital y lo transmite por BLE."
+            },
+            {
+                "componente": "Raspberry Pi 5 con 8 GB de RAM",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Procesa EEG y video, ejecuta el clasificador y activa la alarma."
+            },
+            {
+                "componente": "Cámara Raspberry Pi Camera Module 3 NoIR con LED infrarrojos de 850 nm",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura los ojos del conductor con poca luz y de noche."
+            },
+            {
+                "componente": "Zumbador y luz LED en cabina",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Emiten la alarma al detectar somnolencia."
+            },
+            {
+                "componente": "Simulador de conducción con volante y pedales USB",
+                "categoria": "Equipo de Cómputo",
+                "funcion": "Reproduce una ruta monótona para provocar y medir la somnolencia."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "BrainFlow",
+                "tipo": "Librería de Adquisición de Bioseñales",
+                "descripcion": "Lectura del EEG de la diadema y cálculo de potencias por banda."
+            },
+            {
+                "herramienta": "MediaPipe Face Mesh y OpenCV",
+                "tipo": "Visión por Computador",
+                "descripcion": "Detección de puntos del rostro, parpadeo y porcentaje de cierre ocular."
+            },
+            {
+                "herramienta": "scikit-learn",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento y validación del bosque aleatorio con un sujeto fuera."
+            },
+            {
+                "herramienta": "PsychoPy",
+                "tipo": "Software de Estimulación Experimental",
+                "descripcion": "Tarea de vigilancia psicomotora y registro de lapsos."
+            },
+            {
+                "herramienta": "Mosquitto y Grafana",
+                "tipo": "Broker MQTT",
+                "descripcion": "Registro de eventos y tablero de alertas para el despachador."
+            }
+        ]
+    },
+    {
+        "id": "proj_243",
+        "titulo": "👁️ Proyecto 243: Pupilometría Infrarroja de Bajo Costo con Segmentación Pupilar por Red Neuronal Ligera para el Tamizaje del Reflejo Fotomotor en Deportistas Universitarios",
+        "descripcion": "Problema: Tras un golpe en la cabeza durante un partido o un entrenamiento, los deportistas universitarios suelen seguir jugando porque nadie valora la conmoción cerebral en la cancha; los pupilómetros portátiles miden el reflejo fotomotor de forma objetiva, pero su costo los deja fuera de las ligas y colegios del Cauca.\n\nDescripción: Pupilómetro portátil con una cámara infrarroja NoIR de 90 cuadros por segundo dentro de un visor impreso en 3D con LED infrarrojos y un LED blanco de estímulo. Una U-Net ligera, entrenada en Colab con cuadros públicos de pupilas (por ejemplo, LPW) y 500 cuadros propios etiquetados, segmenta la pupila en una Raspberry Pi 5; de la curva de diámetro se calculan latencia, velocidad de constricción, amplitud y recuperación. Cada medición se compara con la línea base individual del deportista y un detector de anomalías marca desviaciones y las envía por MQTT al cuerpo médico. Es un prototipo de apoyo, no dispositivo médico certificado, no diagnostica conmoción y se valida con ojos artificiales y voluntarios sanos bajo consentimiento informado.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurotrauma - Conmoción Cerebral en el Deporte",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Imagen infrarroja de pupila y diseño de estímulos luminosos controlados",
+            "Segmentación con redes U-Net ligeras y etiquetado con CVAT",
+            "Extracción de parámetros de la curva del reflejo fotomotor",
+            "Detección de anomalías respecto a una línea base individual",
+            "Calibración con ojos artificiales de diámetro conocido",
+            "Ética en el uso de datos de salud de deportistas"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un pupilómetro infrarrojo de bajo costo que mida con una red de segmentación ligera los parámetros del reflejo fotomotor y los compare con la línea base de cada deportista como apoyo al tamizaje.",
+            "📌 Objetivos Específicos:",
+            "• Construir el visor con cámara infrarroja, LED de estímulo y control de temporización, y registrar videos a 90 cuadros por segundo con iluminación reproducible.",
+            "• Entrenar la red de segmentación y lograr una intersección sobre la unión superior a 0,90 en el conjunto de prueba y un error medio del diámetro inferior a 0,3 mm con ojos artificiales de 2 a 8 mm.",
+            "• Medir en 10 voluntarios sanos tres veces el reflejo y obtener un coeficiente de variación inferior al 10 % en la latencia y la velocidad de constricción.",
+            "• Implementar el detector de anomalías por línea base y estimar su tasa de alertas falsas en sesiones de voluntarios sanos en días distintos, con un objetivo menor al 10 %."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurotrauma - Conmoción Cerebral en el Deporte"
+        ],
+        "referencias": [],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi Camera Module 3 NoIR con objetivo macro",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Graba la pupila a 90 cuadros por segundo con luz infrarroja."
+            },
+            {
+                "componente": "Raspberry Pi 5 con 8 GB de RAM",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Segmenta la pupila, calcula los parámetros y sincroniza los resultados."
+            },
+            {
+                "componente": "LED infrarrojos de 850 nm y LED blanco de estímulo con control de intensidad",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Iluminan el ojo sin molestia y provocan el reflejo con un pulso calibrado."
+            },
+            {
+                "componente": "Visor impreso en 3D con copa ocular y sensor de luz BH1750",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Aísla la luz ambiente y registra la intensidad real del estímulo."
+            },
+            {
+                "componente": "Ojos artificiales impresos con pupilas de 2 a 8 mm",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Permiten calibrar la medición del diámetro en milímetros."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de la U-Net ligera para segmentar la pupila."
+            },
+            {
+                "herramienta": "OpenCV",
+                "tipo": "Visión por Computador",
+                "descripcion": "Preprocesamiento, ajuste de elipse y seguimiento del diámetro pupilar."
+            },
+            {
+                "herramienta": "CVAT",
+                "tipo": "Herramienta de Etiquetado",
+                "descripcion": "Etiquetado de los 500 cuadros propios para el ajuste fino."
+            },
+            {
+                "herramienta": "SciPy y scikit-learn",
+                "tipo": "Análisis de Datos",
+                "descripcion": "Parámetros de la curva y detector de anomalías por línea base."
+            },
+            {
+                "herramienta": "Mosquitto y Grafana",
+                "tipo": "Broker MQTT",
+                "descripcion": "Sincronización de mediciones y tablero de seguimiento por deportista."
+            }
+        ]
+    },
+    {
+        "id": "proj_244",
+        "titulo": "🎙️ Proyecto 244: Tamizaje Acústico de la Enfermedad de Parkinson a partir de la Vocal Sostenida con Aprendizaje Automático y Estación de Grabación para Puestos de Salud",
+        "descripcion": "Problema: El Parkinson se detecta tarde en el Cauca porque la consulta de neurología queda lejos y sus primeros signos, como la voz baja, monótona y temblorosa, suelen atribuirse a la edad; una grabación de pocos segundos podría ayudar al personal de atención primaria a decidir a quién remitir, pero no existe una herramienta local de tamizaje.\n\nDescripción: Estación de grabación con una Raspberry Pi 5, micrófono de condensador USB y pantalla táctil que guía al paciente para sostener la vocal /a/ durante cinco segundos. Con Parselmouth se extraen jitter, shimmer, relación armónico-ruido y coeficientes MFCC. En el laboratorio se entrenan máquinas de vectores de soporte y XGBoost sobre el conjunto público UCI Parkinsons, con validación cruzada por sujeto, y se comparan con una red 1D sobre MFCC. El modelo corre en el borde, muestra un nivel de riesgo bajo, medio o alto con una recomendación de remisión y guarda solo las características, no el audio, en un tablero para el médico. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con datos públicos y voluntarios sanos bajo consentimiento informado.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurología - Biomarcadores Acústicos del Parkinson",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Grabación de voz con protocolo de vocal sostenida",
+            "Extracción de jitter, shimmer y relación armónico-ruido con Parselmouth",
+            "Validación cruzada agrupada por sujeto para evitar fuga de datos",
+            "Comparación de modelos clásicos y redes 1D sobre MFCC",
+            "Robustez al ruido ambiental y calibración de umbrales de riesgo",
+            "Protección de datos de voz según la Ley 1581 de 2012"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar una estación de bajo costo que, a partir de la vocal sostenida, estime el riesgo acústico de Parkinson con un modelo entrenado en datos públicos y ayude al personal de salud a decidir una remisión.",
+            "📌 Objetivos Específicos:",
+            "• Extraer las características acústicas del conjunto UCI Parkinsons y entrenar tres modelos con validación cruzada agrupada por sujeto, reportando el AUC con su intervalo de confianza.",
+            "• Alcanzar un AUC superior a 0,85 con el mejor modelo y una caída menor a 5 puntos cuando se añade ruido con una relación señal a ruido de 20 dB.",
+            "• Implementar la estación en la Raspberry Pi 5 para que una grabación produzca el nivel de riesgo en menos de 3 segundos sin almacenar el audio.",
+            "• Evaluar con al menos 20 voluntarios sanos de 50 años o más la especificidad del sistema y la usabilidad, con una puntuación media superior a 4 sobre 5 en una encuesta breve."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurología - Biomarcadores Acústicos del Parkinson"
+        ],
+        "referencias": [
+            "Little, M. A., McSharry, P. E., Roberts, S. J., Costello, D. A. E., & Moroz, I. M. (2007). Exploiting nonlinear recurrence and fractal scaling properties for voice disorder detection. BioMedical Engineering OnLine, 6, 23."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 con 8 GB de RAM",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Extrae las características de voz y ejecuta el modelo en el sitio."
+            },
+            {
+                "componente": "Micrófono de condensador USB con filtro antipop",
+                "categoria": "Sensor de Audio",
+                "funcion": "Captura la vocal sostenida con calidad uniforme entre grabaciones."
+            },
+            {
+                "componente": "Pantalla táctil de 7 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Guía al paciente y muestra el nivel de riesgo y la recomendación."
+            },
+            {
+                "componente": "Sonómetro de referencia o aplicación calibrada",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Verifica el nivel de ruido ambiental antes de cada grabación."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "Parselmouth (Praat)",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Cálculo de jitter, shimmer, relación armónico-ruido y MFCC."
+            },
+            {
+                "herramienta": "scikit-learn y XGBoost",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Entrenamiento de SVM y modelos de árboles con validación por sujeto."
+            },
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Red 1D sobre MFCC para comparar con los modelos clásicos."
+            },
+            {
+                "herramienta": "Streamlit",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Interfaz de la estación y tablero de riesgo para el médico."
+            },
+            {
+                "herramienta": "SQLite",
+                "tipo": "Base de Datos",
+                "descripcion": "Almacena solo las características y el resultado de cada grabación."
+            }
+        ]
+    },
+    {
+        "id": "proj_245",
+        "titulo": "🤸 Proyecto 245: Teleejercicio para Neurorrehabilitación de Equilibrio y Levantarse de la Silla con Estimación de Pose por Video Procesada en el Borde",
+        "descripcion": "Problema: Después de un accidente cerebrovascular o con enfermedad de Parkinson, los ejercicios de equilibrio y de levantarse de la silla deben repetirse a diario en casa, pero los pacientes del Cauca viven lejos de los fisioterapeutas, los hacen sin corrección y el terapeuta no sabe cuántos realizaron ni con qué calidad.\n\nDescripción: Una Raspberry Pi 5 con Camera Module 3 y un televisor guía al paciente en tres ejercicios: levantarse de la silla cinco veces, apoyo en tándem y transferencia de peso. La estimación de pose con MediaPipe BlazePose o MoveNet se ejecuta en el borde; con los puntos clave se calculan repeticiones, tiempo total, inclinación del tronco y simetría de rodillas, y un clasificador sencillo etiqueta la calidad como adecuada, con compensación o con riesgo de caída. Solo se guardan los puntos clave, nunca el video, y se envían por MQTT a un tablero del fisioterapeuta, que ajusta la rutina. Se trata de un prototipo de apoyo, no dispositivo médico certificado, validado con goniómetro y sensor inercial en voluntarios sanos y, con aval ético, con pacientes bajo consentimiento informado.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neurorrehabilitación - Teleejercicio con Visión Artificial",
+        "nivel": "Intermedio",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Estimación de pose humana con modelos ligeros en el borde",
+            "Cálculo de ángulos articulares y detección de repeticiones",
+            "Clasificación de la calidad del movimiento con características cinemáticas",
+            "Diseño de interfaces de guía para adultos mayores",
+            "Privacidad por diseño: almacenar puntos clave y no video",
+            "Validación con goniómetro y sensores inerciales"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar un sistema de teleejercicio que mida con estimación de pose en el borde la cantidad y la calidad de ejercicios de equilibrio y levantarse de la silla y las reporte al fisioterapeuta sin enviar video.",
+            "📌 Objetivos Específicos:",
+            "• Implementar la guía de los tres ejercicios y el cálculo de repeticiones, tiempo, inclinación del tronco y simetría con un procesamiento de al menos 15 cuadros por segundo en la Raspberry Pi 5.",
+            "• Validar el ángulo de rodilla frente al goniómetro con un error medio inferior a 8 grados y el conteo de repeticiones con una concordancia superior al 95 %.",
+            "• Entrenar el clasificador de calidad con ejemplos simulados por voluntarios y etiquetados por un fisioterapeuta, y alcanzar una puntuación F1 macro superior a 0,80.",
+            "• Desarrollar el tablero del fisioterapeuta con la evolución semanal y verificar que solo se transmitan puntos clave por MQTT."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neurorrehabilitación - Teleejercicio con Visión Artificial"
+        ],
+        "referencias": [
+            "Bazarevsky, V., Grishchenko, I., Raveendran, K., Zhu, T., Zhang, F., & Grundmann, M. (2020). BlazePose: On-device real-time body pose tracking. arXiv:2006.10204."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Raspberry Pi 5 con 8 GB de RAM",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta la estimación de pose y el clasificador de calidad en la casa."
+            },
+            {
+                "componente": "Cámara Raspberry Pi Camera Module 3 de gran angular",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Captura el cuerpo completo del paciente a corta distancia."
+            },
+            {
+                "componente": "Televisor o monitor de 32 pulgadas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Muestra las instrucciones, el conteo y la retroalimentación al paciente."
+            },
+            {
+                "componente": "Goniómetro digital y sensor inercial MPU-6050",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Dan la medida de referencia para validar los ángulos de la pose."
+            },
+            {
+                "componente": "Silla firme sin ruedas y marcas de piso",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Estandarizan la posición y la altura del ejercicio en cada hogar."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "MediaPipe y MoveNet",
+                "tipo": "Visión por Computador",
+                "descripcion": "Estimación de puntos clave del cuerpo en tiempo real."
+            },
+            {
+                "herramienta": "OpenCV",
+                "tipo": "Visión por Computador",
+                "descripcion": "Captura de video, dibujo de la guía y suavizado de las trayectorias."
+            },
+            {
+                "herramienta": "scikit-learn",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Clasificación de la calidad del movimiento con características cinemáticas."
+            },
+            {
+                "herramienta": "Mosquitto",
+                "tipo": "Broker MQTT",
+                "descripcion": "Envío de puntos clave y resultados al tablero del fisioterapeuta."
+            },
+            {
+                "herramienta": "Grafana",
+                "tipo": "Visualización / Dashboard",
+                "descripcion": "Evolución semanal de repeticiones, simetría y riesgo de caída."
+            }
+        ]
+    },
+    {
+        "id": "proj_246",
+        "titulo": "🌀 Proyecto 246: Videonistagmografía de Bajo Costo con Seguimiento Pupilar por Aprendizaje Profundo para Apoyar la Valoración Inicial del Paciente con Vértigo Agudo",
+        "descripcion": "Problema: El vértigo agudo es un motivo frecuente de consulta en urgencias y distinguir un origen periférico benigno de uno central, como un accidente cerebrovascular de fosa posterior, depende de examinar los movimientos oculares, una destreza escasa fuera de las ciudades; los videonistagmógrafos comerciales son costosos para la red pública del Cauca.\n\nDescripción: Gafas impresas en 3D con una microcámara infrarroja de 90 cuadros por segundo y LED de 850 nm registran un ojo con poca luz y se conectan por USB a una Raspberry Pi 5. Un modelo de segmentación pupilar tipo DeepVOG, ajustado en Colab con cuadros etiquetados, obtiene las trazas horizontal y vertical; con SciPy se detectan las fases rápidas y se calculan frecuencia, velocidad de la fase lenta y dirección del nistagmo, y un clasificador indica si hay nistagmo y hacia dónde. Sin pacientes, la validación usa el nistagmo optocinético fisiológico, provocado en voluntarios sanos con franjas en movimiento en un monitor. Los resultados se muestran en pantalla y se envían por MQTT. Se trata de un prototipo de apoyo, no dispositivo médico certificado ni sustituto del examen clínico.",
+        "area": "Neurociencia con AIoT",
+        "sector": "Neuro-otología - Vértigo y Nistagmo",
+        "nivel": "Intermedio-Avanzado",
+        "duracion": "Un semestre",
+        "presupuesto": "Bajo costo",
+        "habilidades": [
+            "Diseño de gafas con cámara infrarroja y control de iluminación",
+            "Seguimiento pupilar con redes de segmentación ligeras",
+            "Detección de fases rápidas y lentas en señales oculomotoras",
+            "Estimulación optocinética con franjas en movimiento",
+            "Calibración angular de la mirada con puntos de fijación",
+            "Seguridad fotobiológica y ética con voluntarios"
+        ],
+        "objetivos": [
+            "🎯 Objetivo General: Desarrollar unas gafas de videonistagmografía de bajo costo que registren el movimiento ocular, detecten el nistagmo y su dirección con un modelo de seguimiento pupilar y lo informen en el borde como apoyo a la valoración inicial.",
+            "📌 Objetivos Específicos:",
+            "• Construir las gafas con microcámara infrarroja a 90 cuadros por segundo y LED de 850 nm dentro de los límites de irradiancia seguros, y grabar al menos 20 sesiones de voluntarios.",
+            "• Ajustar el modelo de seguimiento pupilar con cuadros etiquetados y lograr un error medio inferior a 3 píxeles de la posición del centro pupilar en el conjunto de prueba.",
+            "• Detectar el nistagmo optocinético con sensibilidad y especificidad superiores al 90 % y determinar su dirección correcta en más del 95 % de los registros.",
+            "• Estimar la frecuencia del nistagmo con un error menor a 0,5 Hz frente a la anotación manual de dos revisores y mostrar el resultado en menos de 2 segundos tras cada registro."
+        ],
+        "pasos": [
+            "Análisis de requisitos",
+            "Diseño de la solución",
+            "Implementación y pruebas",
+            "Validación y sustentación"
+        ],
+        "aplicaciones": [
+            "Neuro-otología - Vértigo y Nistagmo"
+        ],
+        "referencias": [
+            "Yiu, Y.-H., Aboulatta, M., Raiser, T., Ophey, L., Flanagin, V. L., zu Eulenburg, P., & Ahmadi, S.-A. (2019). DeepVOG: Open-source pupil segmentation and gaze estimation in neuroscience using deep learning. Journal of Neuroscience Methods, 324, 108307."
+        ],
+        "hardware_tabla": [
+            {
+                "componente": "Microcámara infrarroja USB de 90 cuadros por segundo",
+                "categoria": "Sensor de Imagen",
+                "funcion": "Registra el ojo con resolución temporal suficiente para ver las fases rápidas."
+            },
+            {
+                "componente": "Gafas impresas en 3D con LED infrarrojos de 850 nm",
+                "categoria": "Estructura / Componente Mecánico",
+                "funcion": "Sostienen la cámara y aíslan la luz ambiente del ojo registrado."
+            },
+            {
+                "componente": "Raspberry Pi 5 con 8 GB de RAM",
+                "categoria": "Computador de Placa Única",
+                "funcion": "Ejecuta el seguimiento pupilar y el análisis del nistagmo en el borde."
+            },
+            {
+                "componente": "Monitor de 27 pulgadas para franjas optocinéticas",
+                "categoria": "Interfaz de Usuario / Iluminación",
+                "funcion": "Provoca nistagmo fisiológico en voluntarios sanos de forma reproducible."
+            },
+            {
+                "componente": "Radiómetro o referencia de irradiancia infrarroja",
+                "categoria": "Instrumento de Referencia",
+                "funcion": "Comprueba que la iluminación infrarroja se mantenga en niveles seguros."
+            }
+        ],
+        "software_tabla": [
+            {
+                "herramienta": "PyTorch",
+                "tipo": "Framework de Aprendizaje Automático",
+                "descripcion": "Ajuste fino del modelo de segmentación y seguimiento de la pupila."
+            },
+            {
+                "herramienta": "DeepVOG",
+                "tipo": "Seguimiento Ocular",
+                "descripcion": "Base de código abierto para estimar la posición pupilar en video."
+            },
+            {
+                "herramienta": "SciPy",
+                "tipo": "Librería de Procesamiento de Señales",
+                "descripcion": "Detección de fases rápidas y cálculo de frecuencia y velocidad lenta."
+            },
+            {
+                "herramienta": "PsychoPy",
+                "tipo": "Software de Estimulación Experimental",
+                "descripcion": "Presentación de franjas optocinéticas y puntos de calibración."
+            },
+            {
+                "herramienta": "Mosquitto",
+                "tipo": "Broker MQTT",
+                "descripcion": "Envío del resultado de cada registro al tablero del médico."
+            }
+        ]
     }
 ];
