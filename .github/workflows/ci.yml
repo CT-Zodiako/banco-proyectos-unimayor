@@ -1,0 +1,127 @@
+# Automatic checks on every push and pull request (any branch), plus a manual "Run workflow" button.
+# Three independent jobs run in parallel:
+#   web        - the project bank (apps/banco-proyectos): lint, unit tests, DOM tests, production build,
+#                a check that the generated src/data/projects-index.js is committed up to date, and a size budget
+#                for the entry chunk of the build.
+#   pipelines  - the Python data pipelines (journal finder and event finder) tests plus the JS data tests that the
+#                weekly workflow (actualizar-datos.yml) also runs. Those JS tests only import pure modules from
+#                src/lib and read committed JSON, so they need no npm install.
+#   docker     - builds the production image (Dockerfile) to prove it still builds: npm ci, prebuild and build run
+#                inside the container, exactly as Railway does.
+# The weekly bot commits ("chore(data): ...") also trigger this workflow; that is intended.
+#
+# IMPORTANT: a push to master also triggers the Railway deploy, and Railway does NOT wait for this workflow:
+# a red CI is a warning, it does not stop a deploy. Optional follow-up: enable "Wait for CI" in the Railway
+# service settings (Settings > Source > Wait for CI) so a deploy only starts when these checks pass.
+name: CI
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch: # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/banco-proyectos
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/banco-proyectos/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: DOM tests
+        run: npm run test:dom
+
+      # "npm run build" runs the prebuild first, which regenerates src/data/projects-index.js.
+      - name: Build
+        run: npm run build
+
+      - name: Generated projects index is up to date
+        run: |
+          if ! git diff --exit-code -- src/data/projects-index.js; then
+            echo "::error file=apps/banco-proyectos/src/data/projects-index.js::src/data/projects-index.js is out of date. Run 'npm run build:projects-index' in apps/banco-proyectos and commit the result."
+            exit 1
+          fi
+
+      - name: Entry chunk size budget
+        env:
+          BUDGET_BYTES: "120000" # 120 kB raw (Vite prints kB as bytes / 1000); the entry chunk is ~66 kB today
+        run: |
+          node - <<'EOF'
+          const fs = require('node:fs');
+          const dir = 'dist/assets';
+          const budget = Number(process.env.BUDGET_BYTES);
+          const entries = fs.readdirSync(dir).filter((f) => /^index-.*\.js$/.test(f));
+          if (entries.length !== 1) {
+            console.error(`::error::Expected exactly one dist/assets/index-*.js entry chunk, found ${entries.length}`);
+            process.exit(1);
+          }
+          const size = fs.statSync(`${dir}/${entries[0]}`).size;
+          const line = `Entry chunk ${entries[0]}: ${(size / 1000).toFixed(2)} kB raw (budget ${(budget / 1000).toFixed(0)} kB)`;
+          console.log(line);
+          if (process.env.GITHUB_STEP_SUMMARY) {
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Bundle size\n\n${line}\n`);
+          }
+          if (size > budget) {
+            console.error(`::error::The entry chunk ${entries[0]} is ${size} bytes, over the ${budget} byte budget. Lazy-load the new code (React.lazy / dynamic import) or raise BUDGET_BYTES on purpose in .github/workflows/ci.yml.`);
+            process.exit(1);
+          }
+          EOF
+
+  pipelines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Journal finder (Python tests and JS data tests)
+        working-directory: pipelines/donde-publicar
+        run: |
+          python3 -I -m unittest discover -s tests -t .
+          node --test "../../apps/banco-proyectos/tests/publicar-*.test.mjs"
+
+      - name: Event finder (Python tests and JS data tests)
+        working-directory: pipelines/eventos
+        run: |
+          python3 -I -m unittest discover -s tests -t .
+          node --test "../../apps/banco-proyectos/tests/eventos-*.test.mjs"
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the production image
+        run: docker build -t banco-proyectos-ci .
