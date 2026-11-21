@@ -10,7 +10,7 @@ const GlobalSearchDialog = lazyRoute(() => import('./GlobalSearchDialog'));
 const FIELDS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
 const isTyping = (target) => target instanceof HTMLElement
     && (FIELDS.has(target.tagName) || target.isContentEditable === true || target.closest('[contenteditable]:not([contenteditable="false"])') !== null);
-// A modal dialog of the page (the project panel, «Proponer proyecto») keeps the keyboard to itself.
+// A modal dialog of the page (the project panel) keeps the keyboard to itself.
 const otherModalOpen = () => document.querySelector('[role="dialog"][aria-modal="true"]') !== null;
 
 const platform = () => (typeof navigator === 'undefined' ? '' : navigator.userAgentData?.platform || navigator.platform || '');

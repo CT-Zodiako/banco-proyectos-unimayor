@@ -1,4 +1,4 @@
-// Elements the keyboard can reach, for the focus trap of the modal dialogs (project panel, «Proponer proyecto»).
+// Elements the keyboard can reach, for the focus trap of the modal dialogs (project panel).
 export const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])';
 
 /** The focusable elements of `root` that are visible now (not inside a hidden or inert subtree). */

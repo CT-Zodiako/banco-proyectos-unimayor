@@ -28,7 +28,7 @@ export default function RouteLoader({ what, fallback, children }) {
     );
 }
 
-// Wraps lazy dialogs (search, proposal, project panel): nothing visible while the chunk downloads, and a small card
+// Wraps lazy dialogs (search, project panel): nothing visible while the chunk downloads, and a small card
 // over the page when it fails, with «Reintentar» and «Cerrar» (which closes the dialog that never opened).
 export function DialogLoader({ what, onClose, children }) {
     return (

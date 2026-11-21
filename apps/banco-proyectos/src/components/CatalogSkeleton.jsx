@@ -1,13 +1,11 @@
-import { Plus } from 'lucide-react';
-
 const BLOCK = 'block bg-gray-100 motion-safe:animate-pulse';
 
-// Title, summary line and «Proponer proyecto» of /proyectos. While the projects index downloads the summary is a
-// placeholder of the same height and the button waits, so the title and the intro are on screen from the first paint
-// and nothing moves when the real numbers arrive.
-export function CatalogHeader({ summary, onPropose }) {
+// Title, summary line and intro of /proyectos, all on the left. While the projects index downloads the summary is a
+// placeholder of the same height, so the title and the intro are on screen from the first paint and nothing moves
+// when the real numbers arrive.
+export function CatalogHeader({ summary }) {
     return (
-        <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="mb-6">
             <div>
                 <h1 className="text-3xl font-extrabold leading-tight text-gray-900 mb-1.5">Explorar proyectos</h1>
                 <p className="text-[15px] text-sem-text-2">
@@ -17,10 +15,6 @@ export function CatalogHeader({ summary, onPropose }) {
                     Elige un área, ajusta el nivel y abre un proyecto para ver su alcance, materiales y dónde publicarlo.
                 </p>
             </div>
-            <button type="button" onClick={onPropose} disabled={!onPropose} className="btn btn-primary btn-lg focus-ring">
-                <Plus size={18} aria-hidden="true" />
-                Proponer proyecto
-            </button>
         </div>
     );
 }

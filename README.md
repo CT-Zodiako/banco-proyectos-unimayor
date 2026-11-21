@@ -30,7 +30,7 @@ sources/                original documents of the project bank (not used by the 
 | Route | What you get |
 |---|---|
 | `/` | Home: intro, links to the two tools, the bank in figures |
-| `/proyectos` | Catalog: text search, filters (area, level, sector), sort, pages of 12, active-filter chips each with a remove button, «Compartir esta búsqueda», «Proponer proyecto», and a **Comparar** toggle on each card that fills a tray (max 3) |
+| `/proyectos` | Catalog: text search, filters (area, level, sector), sort, pages of 12, active-filter chips each with a remove button, «Compartir esta búsqueda», and a **Comparar** toggle on each card that fills a tray (max 3) |
 | `/proyectos/comparar` | Side-by-side comparison of 2–3 projects, with toggles «Resaltar diferencias» and «Ocultar filas iguales» and «Compartir comparación» |
 | `/proyecto/:id` | Full project; «¿Dónde publicar?» and «¿A qué eventos ir?» open a slide-over (`?panel=revistas\|eventos`) with the project preselected |
 | `/eventos` | Event finder: type selector (all / convocatorias / para asistir), topic, modality, Colombia, text, city, date range (dd/mm/aaaa), sort, «show more», comparison of up to 3 events; with a project selected, ranked by affinity |

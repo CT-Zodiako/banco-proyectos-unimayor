@@ -64,7 +64,7 @@ const CardLegend = () => (
     </CollapsibleLegend>
 );
 
-// The results part of /proyectos (filters, cards, pages): its own chunk. The title, the summary and «Proponer proyecto»
+// The results part of /proyectos (filters, cards, pages): its own chunk. The title, the summary and the intro
 // are in the page shell (ProjectsPage.jsx), which is always loaded.
 const ProjectsCatalog = ({ projects }) => {
     const [params, setParams] = useSearchParams();

@@ -171,54 +171,6 @@ describe('tooltips without hover', () => {
     });
 });
 
-describe('/proyectos: «Proponer proyecto» dialog', () => {
-    const openDialog = async () => {
-        const user = userEvent.setup();
-        await open('/proyectos', 'Explorar proyectos');
-        const opener = screen.getByRole('button', { name: 'Proponer proyecto' });
-        await user.click(opener);
-        // the dialog is a lazy chunk: it appears once its code has downloaded
-        return { user, opener, dialog: await screen.findByRole('dialog', { name: 'Proponer proyecto' }) };
-    };
-
-    it('is a modal dialog named by its title, with the focus inside and a closing button with a name', async () => {
-        const { dialog } = await openDialog();
-        expect(dialog.getAttribute('aria-modal')).toBe('true');
-        expect(dialog.contains(document.activeElement)).toBe(true);
-        expect(within(dialog).getByRole('button', { name: 'Cerrar' })).toBeTruthy();
-    });
-
-    it('labels each field', async () => {
-        const { dialog } = await openDialog();
-        for (const label of ['Título del Proyecto', 'Área / Tecnología', 'Breve Descripción', 'Sector', 'Nivel', 'Duración Est.']) {
-            expect(within(dialog).getByLabelText(label), label).toBeTruthy();
-        }
-    });
-
-    it('keeps the focus inside with Tab and Shift+Tab', async () => {
-        const { user, dialog } = await openDialog();
-        for (let i = 0; i < 14; i++) {
-            await user.tab();
-            expect(dialog.contains(document.activeElement), `Tab ${i + 1}`).toBe(true);
-        }
-        for (let i = 0; i < 14; i++) {
-            await user.tab({ shift: true });
-            expect(dialog.contains(document.activeElement), `Shift+Tab ${i + 1}`).toBe(true);
-        }
-    });
-
-    it('closes with Esc and with Cancelar and gives the focus back to «Proponer proyecto»', async () => {
-        const { user, opener } = await openDialog();
-        await user.keyboard('{Escape}');
-        expect(screen.queryByRole('dialog')).toBeNull();
-        expect(document.activeElement).toBe(opener);
-        await user.click(opener);
-        await user.click(await screen.findByRole('button', { name: 'Cancelar' }));
-        expect(screen.queryByRole('dialog')).toBeNull();
-        expect(document.activeElement).toBe(opener);
-    });
-});
-
 describe('focus after removing a filter', () => {
     it('/proyectos: removing a chip or clearing the filters leaves the focus on the results heading, not on the page', async () => {
         const user = userEvent.setup();

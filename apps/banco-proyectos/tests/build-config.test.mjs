@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { ROUTE_PRELOADS, manualChunks, preloadMap } from '../vite.config.js';
 
 const root = '/Users/x/banco/';
@@ -87,4 +87,20 @@ test('index.html keeps the preconnects and loads the Inter stylesheet without bl
     assert.doesNotMatch(fallback.replace(/<noscript>/, ''), /media="print"/);
     // only the weights the page uses
     for (const link of fonts) assert.match(link, /Inter:wght@400;500;600;700/);
+});
+
+// T24: «Proponer proyecto» (a form that only showed an alert and saved nothing) was removed with its dialog.
+const SRC = new URL('../src/', import.meta.url);
+const sourceFiles = (dir = SRC) => readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const child = new URL(entry.name + (entry.isDirectory() ? '/' : ''), dir);
+    return entry.isDirectory() ? sourceFiles(child) : [child];
+});
+
+test('the proposal dialog module is gone and nothing in src or the build config refers to it', () => {
+    assert.equal(existsSync(new URL('components/ProposalDialog.jsx', SRC)), false);
+    const files = [...sourceFiles().filter((file) => /\.(jsx?|css|html)$/.test(file.pathname)), new URL('../vite.config.js', import.meta.url), new URL('../index.html', import.meta.url)];
+    for (const file of files) {
+        const text = readFileSync(file, 'utf8');
+        assert.doesNotMatch(text, /ProposalDialog|Proponer proyecto|proposal-/, file.pathname);
+    }
 });

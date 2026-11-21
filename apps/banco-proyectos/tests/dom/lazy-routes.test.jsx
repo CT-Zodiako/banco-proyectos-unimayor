@@ -51,7 +51,7 @@ describe('route fallback while the page code downloads', () => {
         expect(screen.getByRole('heading', { level: 1, name: 'Explorar proyectos' })).toBe(title);
         expect(screen.getByText(/Elige un área, ajusta el nivel/)).toBe(intro);
         expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-        expect(screen.getByRole('button', { name: 'Proponer proyecto' }).disabled).toBe(false);
+        expect(screen.queryByRole('button', { name: 'Proponer proyecto' })).toBeNull();
     });
 
     it('keeps the skip link, the banner, the navigation and the footer while a page loads', async () => {

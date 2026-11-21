@@ -171,12 +171,12 @@ describe('pages that need the projects', () => {
         expect(loading.textContent).toBe('Cargando los proyectos…');
         expect(loading.getAttribute('aria-busy')).toBe('true');
         expect(loading.querySelectorAll('[data-skeleton-block]').length).toBeGreaterThanOrEqual(4);
-        expect(screen.getByRole('button', { name: 'Proponer proyecto' }).disabled).toBe(true);
+        expect(screen.queryByRole('button', { name: 'Proponer proyecto' })).toBeNull();
         expect(screen.queryByRole('region', { name: 'Resultados' })).toBeNull();
         gate.resolve();
         const results = await screen.findByRole('region', { name: 'Resultados' });
         expect(screen.queryByText('Cargando los proyectos…')).toBeNull();
-        expect(screen.getByRole('button', { name: 'Proponer proyecto' }).disabled).toBe(false);
+        expect(screen.queryByRole('button', { name: 'Proponer proyecto' })).toBeNull();
         expect(within(results).getAllByRole('article')).toHaveLength(12);
         expect(within(screen.getByRole('navigation', { name: 'Paginación' })).getByText(`Página 1 de ${Math.ceil(projects.length / 12)} · 12 proyectos por página`)).toBeTruthy();
     });

@@ -7,6 +7,7 @@ import { deferred, mockDataFetch, renderApp } from './helpers.jsx';
 import { PROJECT_ID, eventosFixture, publicarFixture } from './fixtures.js';
 import { projects } from '../../src/data/projects/index.js';
 import { filterProjects } from '../../src/lib/catalog.js';
+import { PANEL_NARROW_QUERY } from '../../src/lib/project-panel.js';
 
 const CATALOG = '/data/publicar-catalog.json';
 const EVENTS = '/data/eventos.json';
@@ -128,15 +129,23 @@ describe('opening', () => {
     });
 
     it('«/» with Ctrl/Alt and Ctrl+K while another modal dialog is open do nothing', async () => {
+        // The project slide-over is a role=dialog aria-modal=true on a narrow screen (T24: it replaces the proposal dialog).
+        vi.stubGlobal('matchMedia', (query) => ({
+            matches: query === PANEL_NARROW_QUERY, media: query, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {},
+        }));
         const user = await openApp();
         fireEvent.keyDown(document.body, { key: '/', ctrlKey: true });
         fireEvent.keyDown(document.body, { key: '/', altKey: true });
         expect(screen.queryByRole('dialog')).toBeNull();
-        await user.click(screen.getByRole('button', { name: 'Proponer proyecto' }));
-        await screen.findByRole('dialog', { name: 'Proponer proyecto' }); // a lazy chunk (T16)
+        cleanup();
+        await openApp(`/proyecto/${PROJECT_ID}?panel=revistas`);
+        const panel = await screen.findByRole('dialog', { name: /Monitoreo Agrícola Distribuido/ });
+        expect(panel.getAttribute('aria-modal')).toBe('true');
         await user.keyboard('{Control>}k{/Control}');
+        fireEvent.keyDown(document.body, { key: '/' });
         expect(screen.getAllByRole('dialog')).toHaveLength(1);
-        expect(screen.getByRole('dialog', { name: 'Proponer proyecto' })).toBeTruthy();
+        expect(screen.getByRole('dialog', { name: /Monitoreo Agrícola Distribuido/ })).toBe(panel);
+        expect(screen.queryByRole('dialog', { name: BUTTON })).toBeNull();
     });
 
     it('the rest of the app is inert and the page cannot scroll while it is open', async () => {
